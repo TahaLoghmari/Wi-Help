@@ -12,13 +12,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { useSearchParams } from "react-router-dom";
 import {
   useResetPassword,
   type ResetPasswordDto,
   resetPasswordFormSchema,
   ResetPasswordDefaults,
-} from "#/auth";
+} from "@/features/auth";
 import {
   Card,
   CardContent,
@@ -26,18 +25,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Route } from "@/routes/auth/reset-password";
 
-export default function ResetPasswordForm() {
+export function ResetPasswordForm() {
   const resetPasswordMutation = useResetPassword();
-  const [searchParams] = useSearchParams();
-  const token = searchParams.get("token");
-  const email = searchParams.get("email");
+  const { email, token } = Route.useSearch();
 
   const form = useForm<z.infer<typeof resetPasswordFormSchema>>({
     resolver: zodResolver(resetPasswordFormSchema),
     mode: "onChange",
     defaultValues: ResetPasswordDefaults(email),
   });
+
   async function onSubmit(formData: z.infer<typeof resetPasswordFormSchema>) {
     const dto: ResetPasswordDto = {
       email: formData.email,
@@ -47,6 +46,7 @@ export default function ResetPasswordForm() {
     };
     resetPasswordMutation.mutate(dto);
   }
+  
   return (
     <div className="flex flex-col gap-6">
       <Card>

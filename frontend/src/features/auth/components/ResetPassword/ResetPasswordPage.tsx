@@ -1,6 +1,6 @@
-import { ResetPasswordForm } from "#/auth";
+import { ResetPasswordForm } from "@/features/auth";
 
-export default function ResetPasswordPage() {
+export function ResetPasswordPage() {
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center gap-6 overflow-y-auto">
       <div className="my-auto flex w-full max-w-sm flex-col gap-6 p-6 md:p-10">
