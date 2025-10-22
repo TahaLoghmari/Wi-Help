@@ -5,11 +5,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useSearchParams } from "react-router-dom";
+import { Route as EmailVerifiedRoute } from "@/routes/auth/email-verified";
 
-export default function EmailVerificationResultPage() {
-  const [searchParams] = useSearchParams();
-  const status = searchParams.get("status");
+export function EmailVerifiedPage() {
+  const { status } = EmailVerifiedRoute.useSearch();
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { useResendConfirmationEmail } from "#/auth";
+import { useSendConfirmationEmail } from "@/features/auth";
 import {
   Card,
   CardContent,
@@ -9,12 +9,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { MoveLeft } from "lucide-react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Route as EmailVerificationRoute } from "@/routes/auth/email-verification";
+import { Link } from "@tanstack/react-router";
+import { ROUTE_PATHS } from "@/config/routes";
 
-export default function EmailVerificationPage() {
-  const resendConfirmationEmailMutation = useResendConfirmationEmail();
-  const [searchParams] = useSearchParams();
-  const email = searchParams.get("email");
+export function EmailVerificationPage() {
+  const resendConfirmationEmailMutation = useSendConfirmationEmail();
+  const { email } = EmailVerificationRoute.useSearch();
 
   return (
     <>
@@ -72,7 +73,8 @@ export default function EmailVerificationPage() {
                   </Button>
                   <Button variant="outline">
                     <Link
-                      to="/login"
+                      to={ROUTE_PATHS.AUTH.LOGIN}
+                      search={{ message: undefined }}
                       className="text-muted-foreground flex cursor-pointer items-center justify-center gap-2"
                     >
                       <MoveLeft />
