@@ -1,2 +1,2 @@
-export { default as EmailVerificationPage } from "./EmailVerificationPage";
-export { default as EmailVerificationResultPage } from "./EmailVerificationResultPage";
+export * from "./EmailVerificationPage";
+export * from "./EmailVerifiedPage";
