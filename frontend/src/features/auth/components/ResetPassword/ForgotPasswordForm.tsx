@@ -12,28 +12,25 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { Link, useNavigate } from "react-router-dom";
 import {
   useForgotPassword,
   forgotPasswordFormSchema,
   type ForgotPasswordDto,
   ForgotPasswordDefautls,
-} from "#/auth";
+} from "@/features/auth";
+import { ROUTE_PATHS } from "@/config/routes";
+import { Link } from "@tanstack/react-router";
 
-export default function ForgotPasswordForm() {
-  const navigate = useNavigate();
+export function ForgotPasswordForm() {
   const forgotPasswordMutation = useForgotPassword();
   const form = useForm<z.infer<typeof forgotPasswordFormSchema>>({
     resolver: zodResolver(forgotPasswordFormSchema),
     mode: "onChange",
     defaultValues: ForgotPasswordDefautls(),
   });
+
   async function onSubmit(credentials: ForgotPasswordDto) {
-    forgotPasswordMutation.mutate(credentials, {
-      onSuccess: () => {
-        navigate(`/forgot-password?email=${credentials.email}`);
-      },
-    });
+    forgotPasswordMutation.mutate(credentials);
   }
   return (
     <Form {...form}>
@@ -63,7 +60,11 @@ export default function ForgotPasswordForm() {
           )}
         </Button>
         <div className="flex w-full cursor-pointer items-center justify-center">
-          <Link to="/login" className="text-primary font-semibold text-sm">
+          <Link
+            to={ROUTE_PATHS.AUTH.LOGIN}
+            search={{ message: undefined }}
+            className="text-primary font-semibold text-sm"
+          >
             Back to Login
           </Link>
         </div>

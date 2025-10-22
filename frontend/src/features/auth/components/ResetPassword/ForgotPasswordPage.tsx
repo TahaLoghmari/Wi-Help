@@ -1,7 +1,6 @@
-import { ForgotPasswordForm, useForgotPassword } from "#/auth";
+import { ForgotPasswordForm, useForgotPassword } from "@/features/auth";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
-import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import {
   Card,
@@ -10,11 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Route as ForgotPasswordRoute } from "@/routes/auth/forgot-password";
+import { Link } from "@tanstack/react-router";
+import { ROUTE_PATHS } from "@/config/routes";
 
-export default function ForgotPasswordPage() {
+export function ForgotPasswordPage() {
   const forgotPasswordMutation = useForgotPassword();
-  const [searchParams] = useSearchParams();
-  const email = searchParams.get("email");
+  const { email } = ForgotPasswordRoute.useSearch();
 
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center gap-6 overflow-y-auto">
@@ -79,7 +80,8 @@ export default function ForgotPasswordPage() {
                     </Button>
                     <div className="flex w-full cursor-pointer items-center justify-center">
                       <Link
-                        to="/login"
+                        to={ROUTE_PATHS.AUTH.LOGIN}
+                        search={{ message: undefined }}
                         className="text-muted-foreground text-sm font-semibold"
                       >
                         Back to Login
