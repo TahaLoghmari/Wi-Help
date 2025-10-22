@@ -1,1 +1,3 @@
-export { ErrorComponent } from "./error-component";
+export * from "./errors";
+export * from "./seo";
+export * from "./ui";

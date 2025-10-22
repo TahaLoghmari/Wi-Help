@@ -3,7 +3,7 @@ import { ForgotPasswordPage } from "@/features/auth";
 import { createFileRoute } from "@tanstack/react-router";
 
 type ForgotPasswordSearchParams = {
-  email: string | undefined;
+  email?: string;
 };
 
 export const Route = createFileRoute(ROUTE_PATHS.AUTH.FORGOT_PASSWORD)({
@@ -11,6 +11,6 @@ export const Route = createFileRoute(ROUTE_PATHS.AUTH.FORGOT_PASSWORD)({
   validateSearch: (
     search: Record<string, unknown>
   ): ForgotPasswordSearchParams => ({
-    email: (search.email as string) ?? undefined,
+    email: search.email as string,
   }),
 });

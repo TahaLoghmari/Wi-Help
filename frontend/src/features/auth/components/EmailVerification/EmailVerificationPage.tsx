@@ -74,7 +74,6 @@ export function EmailVerificationPage() {
                   <Button variant="outline">
                     <Link
                       to={ROUTE_PATHS.AUTH.LOGIN}
-                      search={{ message: undefined }}
                       className="text-muted-foreground flex cursor-pointer items-center justify-center gap-2"
                     >
                       <MoveLeft />

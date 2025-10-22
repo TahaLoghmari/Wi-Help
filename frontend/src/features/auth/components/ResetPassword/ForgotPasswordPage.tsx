@@ -81,7 +81,6 @@ export function ForgotPasswordPage() {
                     <div className="flex w-full cursor-pointer items-center justify-center">
                       <Link
                         to={ROUTE_PATHS.AUTH.LOGIN}
-                        search={{ message: undefined }}
                         className="text-muted-foreground text-sm font-semibold"
                       >
                         Back to Login

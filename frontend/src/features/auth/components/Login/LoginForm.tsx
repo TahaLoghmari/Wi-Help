@@ -29,9 +29,10 @@ import { toast } from "sonner";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Route as LoginRoute } from "@/routes/auth/login";
 import { ROUTE_PATHS } from "@/config/routes";
+import { useAppNavigation } from "@/hooks";
 
 export function LoginForm({
   className,
@@ -39,7 +40,7 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const getGoogleOAuthUrlMutation = useGetGoogleOAuthUrl();
   const { message } = LoginRoute.useSearch();
-  const navigate = useNavigate({ from: LoginRoute.fullPath });
+  const { goTo } = useAppNavigation();
   const loginMutation = useLogin();
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -56,12 +57,11 @@ export function LoginForm({
   useEffect(() => {
     if (message) {
       toast.error(message);
-      navigate({
-        search: { message: undefined },
+      goTo({
         replace: true,
       });
     }
-  }, [message]);
+  }, [message, goTo]);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -128,7 +128,6 @@ export function LoginForm({
                             <FormLabel>Password</FormLabel>
                             <Link
                               to={ROUTE_PATHS.AUTH.FORGOT_PASSWORD}
-                              search={{ email: undefined }}
                               className="ml-auto text-sm underline-offset-4 hover:underline"
                             >
                               Forgot your password?

@@ -171,7 +171,6 @@ export function RegisterForm({
                   Have an account?{" "}
                   <Link
                     to={ROUTE_PATHS.AUTH.LOGIN}
-                    search={{ message: undefined }}
                     className="underline underline-offset-4"
                   >
                     Sign in
