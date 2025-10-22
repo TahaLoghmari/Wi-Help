@@ -26,8 +26,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Route } from "@/routes/auth/reset-password";
+import { useTranslation } from "react-i18next";
 
 export function ResetPasswordForm() {
+  const { t } = useTranslation();
   const resetPasswordMutation = useResetPassword();
   const { email, token } = Route.useSearch();
 
@@ -46,13 +48,15 @@ export function ResetPasswordForm() {
     };
     resetPasswordMutation.mutate(dto);
   }
-  
+
   return (
     <div className="flex flex-col gap-6">
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Reset your Password</CardTitle>
-          <CardDescription>Enter your new password</CardDescription>
+          <CardTitle className="text-xl">{t("auth.resetPassword")}</CardTitle>
+          <CardDescription>
+            {t("auth.resetPasswordDescription")}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -65,11 +69,11 @@ export function ResetPasswordForm() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t("common.email")}</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="Email"
+                        placeholder={t("auth.emailPlaceholder")}
                         readOnly
                         {...field}
                       />
@@ -83,11 +87,11 @@ export function ResetPasswordForm() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t("auth.newPassword")}</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="Password"
+                        placeholder={t("auth.passwordPlaceholder")}
                         {...field}
                       />
                     </FormControl>
@@ -100,11 +104,11 @@ export function ResetPasswordForm() {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
+                    <FormLabel>{t("auth.confirmNewPassword")}</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="Confirm Password"
+                        placeholder={t("auth.confirmPasswordPlaceholder")}
                         {...field}
                       />
                     </FormControl>
@@ -122,7 +126,7 @@ export function ResetPasswordForm() {
                 {resetPasswordMutation.isPending ? (
                   <Spinner className="h-5 w-5 border-2 invert" />
                 ) : (
-                  "Reset Password"
+                  t("auth.updatePassword")
                 )}
               </Button>
             </form>

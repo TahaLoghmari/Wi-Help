@@ -33,11 +33,13 @@ import { Link } from "@tanstack/react-router";
 import { Route as LoginRoute } from "@/routes/auth/login";
 import { ROUTE_PATHS } from "@/config/routes";
 import { useAppNavigation } from "@/hooks";
+import { useTranslation } from "react-i18next";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const { t } = useTranslation();
   const getGoogleOAuthUrlMutation = useGetGoogleOAuthUrl();
   const { message } = LoginRoute.useSearch();
   const { goTo } = useAppNavigation();
@@ -67,8 +69,8 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Welcome back</CardTitle>
-          <CardDescription>Login with your Google account</CardDescription>
+          <CardTitle className="text-xl">{t("auth.welcomeBack")}</CardTitle>
+          <CardDescription>{t("auth.loginDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -90,12 +92,12 @@ export function LoginForm({
                         fill="currentColor"
                       />
                     </svg>
-                    Login with Google
+                    {t("auth.loginWithGoogle")}
                   </Button>
                 </div>
                 <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                   <span className="bg-card text-muted-foreground relative z-10 px-2">
-                    Or continue with
+                    {t("auth.orContinueWith")}
                   </span>
                 </div>
                 <div className="grid gap-6">
@@ -105,11 +107,11 @@ export function LoginForm({
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel>{t("common.email")}</FormLabel>
                           <FormControl>
                             <Input
                               type="email"
-                              placeholder="Email"
+                              placeholder={t("auth.emailPlaceholder")}
                               {...field}
                             />
                           </FormControl>
@@ -125,18 +127,18 @@ export function LoginForm({
                       render={({ field }) => (
                         <FormItem>
                           <div className="flex items-center">
-                            <FormLabel>Password</FormLabel>
+                            <FormLabel>{t("common.password")}</FormLabel>
                             <Link
                               to={ROUTE_PATHS.AUTH.FORGOT_PASSWORD}
                               className="ml-auto text-sm underline-offset-4 hover:underline"
                             >
-                              Forgot your password?
+                              {t("auth.forgotPassword")}
                             </Link>
                           </div>
                           <FormControl>
                             <Input
                               type="password"
-                              placeholder="Password"
+                              placeholder={t("auth.passwordPlaceholder")}
                               {...field}
                             />
                           </FormControl>
@@ -155,17 +157,17 @@ export function LoginForm({
                     {loginMutation.isPending ? (
                       <Spinner className="h-5 w-5 border-2 invert" />
                     ) : (
-                      "Login"
+                      t("common.login")
                     )}
                   </Button>
                 </div>
                 <div className="text-center text-sm">
-                  Don&apos;t have an account?{" "}
+                  {t("auth.dontHaveAccount")}{" "}
                   <Link
                     to={ROUTE_PATHS.AUTH.REGISTER}
                     className="underline underline-offset-4"
                   >
-                    Sign up
+                    {t("auth.signUp")}
                   </Link>
                 </div>
               </div>
@@ -174,8 +176,8 @@ export function LoginForm({
         </CardContent>
       </Card>
       <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
+        {t("auth.termsAgreement")} <a href="#">{t("auth.termsOfService")}</a>{" "}
+        {t("common.and")} <a href="#">{t("auth.privacyPolicy")}</a>.
       </div>
     </div>
   );

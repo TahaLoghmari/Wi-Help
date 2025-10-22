@@ -20,8 +20,10 @@ import {
 } from "@/features/auth";
 import { ROUTE_PATHS } from "@/config/routes";
 import { Link } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 
 export function ForgotPasswordForm() {
+  const { t } = useTranslation();
   const forgotPasswordMutation = useForgotPassword();
   const form = useForm<z.infer<typeof forgotPasswordFormSchema>>({
     resolver: zodResolver(forgotPasswordFormSchema),
@@ -40,9 +42,13 @@ export function ForgotPasswordForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t("common.email")}</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="Email" {...field} />
+                <Input
+                  type="email"
+                  placeholder={t("auth.emailPlaceholder")}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -56,7 +62,7 @@ export function ForgotPasswordForm() {
           {forgotPasswordMutation.isPending ? (
             <Spinner className="h-5 w-5 border-2 invert" />
           ) : (
-            "Reset Password"
+            t("auth.sendResetLink")
           )}
         </Button>
         <div className="flex w-full cursor-pointer items-center justify-center">
@@ -64,7 +70,7 @@ export function ForgotPasswordForm() {
             to={ROUTE_PATHS.AUTH.LOGIN}
             className="text-primary font-semibold text-sm"
           >
-            Back to Login
+            {t("auth.backToLogin")}
           </Link>
         </div>
       </form>

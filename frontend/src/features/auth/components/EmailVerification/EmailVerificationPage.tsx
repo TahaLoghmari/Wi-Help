@@ -12,10 +12,12 @@ import { MoveLeft } from "lucide-react";
 import { Route as EmailVerificationRoute } from "@/routes/auth/email-verification";
 import { Link } from "@tanstack/react-router";
 import { ROUTE_PATHS } from "@/config/routes";
+import { useTranslation } from "react-i18next";
 
 export function EmailVerificationPage() {
   const resendConfirmationEmailMutation = useSendConfirmationEmail();
   const { email } = EmailVerificationRoute.useSearch();
+  const { t } = useTranslation();
 
   return (
     <>
@@ -34,16 +36,16 @@ export function EmailVerificationPage() {
             <Card>
               <CardHeader className="text-center">
                 <CardTitle className="text-xl">
-                  Verify your email address
+                  {t("auth.emailVerificationPage.title")}
                 </CardTitle>
                 <CardDescription>
                   <div className="flex flex-col items-center justify-center gap-2">
                     <p className="text-muted-foreground">
-                      We have sent a verification link to:
+                      {t("auth.emailVerificationPage.sentTo")}
                     </p>
                     <p className="font-medium text-gray-900">{email}</p>
                     <p className="text-muted-foreground text-center text-sm">
-                      Click on the link to complete the verification process.
+                      {t("auth.emailVerificationPage.instructions")}
                     </p>
                   </div>
                 </CardDescription>
@@ -51,8 +53,8 @@ export function EmailVerificationPage() {
               <CardContent className="flex flex-col gap-3">
                 <div className="flex w-full items-center justify-center rounded-lg border border-yellow-200 bg-yellow-50 p-4">
                   <p className="text-sm text-yellow-800">
-                    <strong>Note:</strong> You might need to check your spam
-                    folder.
+                    <strong>{t("auth.emailVerificationPage.noteLabel")}</strong>{" "}
+                    {t("auth.emailVerificationPage.noteDescription")}
                   </p>
                 </div>
                 <div className="flex w-full flex-col gap-3">
@@ -68,7 +70,7 @@ export function EmailVerificationPage() {
                     {resendConfirmationEmailMutation.isPending ? (
                       <Spinner className="h-5 w-5 border-2 invert" />
                     ) : (
-                      "Resend Email"
+                      t("auth.emailVerificationPage.resendButton")
                     )}
                   </Button>
                   <Button variant="outline">
@@ -77,13 +79,14 @@ export function EmailVerificationPage() {
                       className="text-muted-foreground flex cursor-pointer items-center justify-center gap-2"
                     >
                       <MoveLeft />
-                      Return to Site
+                      {t("auth.emailVerificationPage.returnButton")}
                     </Link>
                   </Button>
                 </div>
                 <p className="text-muted-foreground text-center text-xs">
-                  Once you have verified your email, you can click on "Return to
-                  Site" to Log In.
+                  {t("auth.emailVerificationPage.helperText", {
+                    returnLabel: t("auth.emailVerificationPage.returnButton"),
+                  })}
                 </p>
               </CardContent>
             </Card>
