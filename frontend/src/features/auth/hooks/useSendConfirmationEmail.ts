@@ -1,9 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { api, handleApiError, type ProblemDetailsDto } from "@/index";
+import { API_ENDPOINTS } from "@/config/endpoints";
 import { toast } from "sonner";
 
 export const sendConfirmationEmail = (email: string) => {
-  return api.post<void>("/auth/resend-confirmation-email", email);
+  return api.post<void>(API_ENDPOINTS.AUTH.SEND_CONFIRMATION_EMAIL, email);
 };
 
 export function useSendConfirmationEmail() {

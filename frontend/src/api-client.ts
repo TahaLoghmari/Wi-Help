@@ -1,5 +1,6 @@
 import type { ProblemDetailsDto } from "@/types/api.types";
 import { env } from "@/config/env";
+import { API_ENDPOINTS } from "@/config/endpoints";
 
 let isRefreshing = false;
 let refreshPromise: Promise<boolean> | null = null;
@@ -36,13 +37,13 @@ async function request<T>(
 
   if (
     response.status === 401 &&
-    !endpoint.includes("/auth/refresh") &&
-    !endpoint.includes("/auth/login") &&
+    !endpoint.includes(API_ENDPOINTS.AUTH.REFRESH) &&
+    !endpoint.includes(API_ENDPOINTS.AUTH.LOGIN) &&
     !isRefreshing
   ) {
     // Prevent multiple simultaneous refresh attempts
     if (!refreshPromise) {
-      refreshPromise = fetch(`${env.apiUrl}/auth/refresh`, {
+      refreshPromise = fetch(`${env.apiUrl}${API_ENDPOINTS.AUTH.REFRESH}`, {
         credentials: "include",
         method: "POST",
       }).then((res) => {

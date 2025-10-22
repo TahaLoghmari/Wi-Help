@@ -3,11 +3,12 @@ import { type LoginUserDto } from "@/features/auth";
 import { type ProblemDetailsDto } from "@/types/api.types";
 import { useNavigate } from "@tanstack/react-router";
 import { ROUTE_PATHS } from "@/config/routes";
+import { API_ENDPOINTS } from "@/config/endpoints";
 import { api, handleApiError } from "@/index";
 import { toast } from "sonner";
 
 export const login = (credentials: LoginUserDto) => {
-  return api.post<void>("/auth/login", credentials);
+  return api.post<void>(API_ENDPOINTS.AUTH.LOGIN, credentials);
 };
 
 export function useLogin() {

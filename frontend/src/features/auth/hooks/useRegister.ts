@@ -2,12 +2,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { type RegisterUserDto } from "@/features/auth";
 import { api, handleApiError, type ProblemDetailsDto } from "@/index";
 import { ROUTE_PATHS } from "@/config/routes";
+import { API_ENDPOINTS } from "@/config/endpoints";
 import { useNavigate } from "@tanstack/react-router";
 import { Route as RegisterRoute } from "@/routes/auth/register";
 import { toast } from "sonner";
 
 export const register = (credentials: RegisterUserDto) => {
-  return api.post<void>("/auth/register", credentials);
+  return api.post<void>(API_ENDPOINTS.AUTH.REGISTER, credentials);
 };
 
 export function useRegister() {

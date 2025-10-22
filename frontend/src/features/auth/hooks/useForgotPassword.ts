@@ -4,10 +4,11 @@ import { api, handleApiError, type ProblemDetailsDto } from "@/index";
 import { useNavigate } from "@tanstack/react-router";
 import { Route as ForgotPasswordRoute } from "@/routes/auth/forgot-password";
 import { ROUTE_PATHS } from "@/config/routes";
+import { API_ENDPOINTS } from "@/config/endpoints";
 import { toast } from "sonner";
 
 export const forgotPassword = (credentials: ForgotPasswordDto) => {
-  return api.post<void>("/auth/forgot-password", credentials);
+  return api.post<void>(API_ENDPOINTS.AUTH.FORGOT_PASSWORD, credentials);
 };
 
 export function useForgotPassword() {
