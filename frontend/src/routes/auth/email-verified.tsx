@@ -1,5 +1,6 @@
 import { ROUTE_PATHS } from "@/config/routes";
 import { EmailVerifiedPage } from "@/features/auth";
+import { PageLoading } from "@/components/ui";
 import { createFileRoute } from "@tanstack/react-router";
 
 type EmailVerifiedSearch = {
@@ -13,4 +14,5 @@ export const Route = createFileRoute(ROUTE_PATHS.AUTH.EMAIL_VERIFIED)({
     };
   },
   component: EmailVerifiedPage,
+  pendingComponent: PageLoading,
 });

@@ -1,4 +1,5 @@
 import { ResetPasswordPage } from "@/features/auth";
+import { PageLoading } from "@/components/ui";
 import { createFileRoute } from "@tanstack/react-router";
 
 type ResetPasswordSearchParams = {
@@ -8,6 +9,7 @@ type ResetPasswordSearchParams = {
 
 export const Route = createFileRoute("/auth/reset-password")({
   component: ResetPasswordPage,
+  pendingComponent: PageLoading,
   validateSearch: (
     search: Record<string, unknown>
   ): ResetPasswordSearchParams => ({
