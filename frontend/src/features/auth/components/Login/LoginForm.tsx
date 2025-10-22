@@ -29,12 +29,11 @@ import { toast } from "sonner";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { handleApiError } from "@/hooks";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { LoginRoute } from "@/routes/auth/login";
-import type { ProblemDetailsDto } from "@/types/api.types";
+import { Route as LoginRoute } from "@/routes/auth/login";
+import { ROUTE_PATHS } from "@/config/routes";
 
-export default function LoginForm({
+export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
@@ -50,11 +49,7 @@ export default function LoginForm({
   });
 
   async function onSubmit(credentials: LoginUserDto) {
-    loginMutation.mutate(credentials, {
-      onError: (error: ProblemDetailsDto) =>
-        // this is for the toast error when email is not verified
-        handleApiError({ apiError: error, email: form.getValues("email") }),
-    });
+    loginMutation.mutate(credentials);
   }
 
   // this is for google signin/signup failing or any error when the redirection is comming from the backend with an error
@@ -62,7 +57,8 @@ export default function LoginForm({
     if (message) {
       toast.error(message);
       navigate({
-        search: (prev: any) => ({ page: prev.page + 1 }),
+        search: { message: undefined },
+        replace: true,
       });
     }
   }, [message]);
@@ -131,7 +127,8 @@ export default function LoginForm({
                           <div className="flex items-center">
                             <FormLabel>Password</FormLabel>
                             <Link
-                              to="/forgot-password"
+                              to={ROUTE_PATHS.AUTH.FORGOT_PASSWORD}
+                              search={{ email: undefined }}
                               className="ml-auto text-sm underline-offset-4 hover:underline"
                             >
                               Forgot your password?
@@ -165,7 +162,10 @@ export default function LoginForm({
                 </div>
                 <div className="text-center text-sm">
                   Don&apos;t have an account?{" "}
-                  <Link to="/register" className="underline underline-offset-4">
+                  <Link
+                    to={ROUTE_PATHS.AUTH.REGISTER}
+                    className="underline underline-offset-4"
+                  >
                     Sign up
                   </Link>
                 </div>

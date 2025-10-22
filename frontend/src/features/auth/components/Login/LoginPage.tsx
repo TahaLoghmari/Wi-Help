@@ -1,6 +1,6 @@
 import { LoginForm } from "@/features/auth";
 
-export default function LoginPage() {
+export function LoginPage() {
   return (
     <div className="bg-muted flex h-svh flex-col items-center gap-6 overflow-y-auto">
       <div className="my-auto flex w-full max-w-md flex-col gap-6 p-6 md:p-10">

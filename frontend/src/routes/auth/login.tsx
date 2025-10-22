@@ -3,12 +3,12 @@ import { LoginPage } from "@/features/auth";
 import { createFileRoute } from "@tanstack/react-router";
 
 type LoginSearchParams = {
-  message: string;
+  message: string | undefined;
 };
 
-export const LoginRoute = createFileRoute(ROUTE_PATHS.AUTH.LOGIN)({
+export const Route = createFileRoute(ROUTE_PATHS.AUTH.LOGIN)({
   component: LoginPage,
   validateSearch: (search: Record<string, unknown>): LoginSearchParams => ({
-    message: (search.message as string) ?? "",
+    message: (search.message as string) ?? undefined,
   }),
 });

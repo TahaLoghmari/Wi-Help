@@ -3,7 +3,8 @@ import { type LoginUserDto } from "@/features/auth";
 import { type ProblemDetailsDto } from "@/types/api.types";
 import { useNavigate } from "@tanstack/react-router";
 import { ROUTE_PATHS } from "@/config/routes";
-import { api } from "@/index";
+import { api, handleApiError } from "@/index";
+import { toast } from "sonner";
 
 export const login = (credentials: LoginUserDto) => {
   return api.post<void>("/auth/login", credentials);
@@ -16,7 +17,17 @@ export function useLogin() {
     mutationFn: login,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-      navigate({ to: ROUTE_PATHS.APP.INDEX });
+      toast.success("Welcome back!", {
+        description: "You have successfully logged in.",
+      });
+      navigate({ to: ROUTE_PATHS.ROOT });
+    },
+    onError: (error, credentials) => {
+      // this is for the toast error when email is not verified
+      handleApiError({
+        apiError: error,
+        email: credentials?.email,
+      });
     },
   });
 }
