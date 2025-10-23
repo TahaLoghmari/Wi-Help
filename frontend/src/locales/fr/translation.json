@@ -83,7 +83,10 @@
     "networkError": "Erreur réseau. Veuillez vérifier votre connexion.",
     "unauthorized": "Accès non autorisé",
     "notFound": "Page non trouvée",
-    "serverError": "Erreur du serveur. Veuillez réessayer plus tard."
+    "serverError": "Erreur du serveur. Veuillez réessayer plus tard.",
+    "connectionError": "Impossible de se connecter au serveur.",
+    "connectionErrorDescription": "Veuillez vérifier votre connexion Internet et réessayer.",
+    "resendEmail": "Renvoyer l'e-mail"
   },
   "language": {
     "selectLanguage": "Sélectionner la langue",

@@ -44,7 +44,7 @@ export function ResetPasswordPage() {
       email: formData.email,
       newPassword: formData.password,
       confirmPassword: formData.confirmPassword,
-      token: token || "",
+      token,
     };
     resetPasswordMutation.mutate(dto);
   }

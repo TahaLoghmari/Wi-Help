@@ -7,9 +7,8 @@ export const registerFormSchema = z
       .min(1, { message: "Name is required." })
       .max(50, { message: "Name must be at most 50 characters." }),
     email: z
-      .string()
+      .email()
       .min(1, { message: "Email is required." })
-      .email({ message: "Invalid email format." })
       .max(256, { message: "Email must be at most 256 characters." }),
     password: z
       .string()
@@ -40,9 +39,8 @@ export const registerFormSchema = z
 
 export const loginFormSchema = z.object({
   email: z
-    .string()
+    .email()
     .min(1, { message: "Email is required." })
-    .email({ message: "Invalid email format." })
     .max(256, { message: "Email must be at most 256 characters." }),
   password: z.string().min(8, {
     message: "Password must be at least 8 characters.",
@@ -52,9 +50,8 @@ export const loginFormSchema = z.object({
 export const resetPasswordFormSchema = z
   .object({
     email: z
-      .string()
+      .email()
       .min(1, { message: "Email is required." })
-      .email({ message: "Invalid email format." })
       .max(256, { message: "Email must be at most 256 characters." }),
     password: z
       .string()
@@ -85,8 +82,7 @@ export const resetPasswordFormSchema = z
 
 export const forgotPasswordFormSchema = z.object({
   email: z
-    .string()
+    .email()
     .min(1, { message: "Email is required." })
-    .email({ message: "Invalid email format." })
     .max(256, { message: "Email must be at most 256 characters." }),
 });

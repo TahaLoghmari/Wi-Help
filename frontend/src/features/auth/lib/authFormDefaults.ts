@@ -20,9 +20,9 @@ export function ForgotPasswordDefautls() {
   };
 }
 
-export function ResetPasswordDefaults(email: string | null) {
+export function ResetPasswordDefaults(email: string) {
   return {
-    email: email || "",
+    email: email,
     password: "",
     confirmPassword: "",
   };

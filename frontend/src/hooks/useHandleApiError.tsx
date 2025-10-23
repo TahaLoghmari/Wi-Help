@@ -2,6 +2,7 @@ import type { ProblemDetailsDto } from "@/types/api.types";
 import { Link } from "@tanstack/react-router";
 import { ROUTE_PATHS } from "@/config/routes";
 import { toast } from "sonner";
+import i18n from "i18next";
 
 interface handleApiErrorProps {
   apiError: ProblemDetailsDto;
@@ -9,11 +10,13 @@ interface handleApiErrorProps {
 }
 
 export function handleApiError({ apiError, email }: handleApiErrorProps) {
+  const t = i18n.t.bind(i18n);
+
   if (apiError instanceof TypeError) {
-    toast.error("Unable to connect to the server.", {
+    toast.error(t("errors.connectionError"), {
       description: (
         <p className="text-muted-foreground text-xs">
-          Please check your internet connection and try again.
+          {t("errors.connectionErrorDescription")}
         </p>
       ),
     });
@@ -31,7 +34,7 @@ export function handleApiError({ apiError, email }: handleApiErrorProps) {
             search={{ email }}
             className="text-muted-foreground hover:text-muted-foreground/20 underline"
           >
-            Resend Email
+            {t("errors.resendEmail")}
           </Link>
         )}
 
