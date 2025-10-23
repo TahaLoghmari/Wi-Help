@@ -59,6 +59,23 @@
       "resendButton": "Resend Email",
       "returnButton": "Return to Site",
       "helperText": "Once you have verified your email, you can click on \"{{returnLabel}}\" to log in."
+    },
+    "emailVerifiedPage": {
+      "successTitle": "Your email was verified",
+      "successDescription": "You can close this page and continue using this application",
+      "failedTitle": "Email verification failed",
+      "failedDescription": "We're sorry, something has gone wrong. Please try again later"
+    },
+    "forgotPasswordPage": {
+      "title": "Forgot your password?",
+      "description": "Enter your email to reset your password!",
+      "checkEmailTitle": "Check your email",
+      "emailSentTo": "We sent an email to",
+      "clickLinkInstructions": "Click the link in the email to reset your password.",
+      "checkSpamFolder": "If you don't see an email from us, try checking your junk or spam folder.",
+      "resendEmail": "Resend Email",
+      "resendSuccess": "Please check your inbox!",
+      "backToLogin": "Back to Login"
     }
   },
   "errors": {

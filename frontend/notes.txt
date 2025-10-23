@@ -1,0 +1,10 @@
+Color Palette :
+Dark
+- #00394a
+- #00546e
+- #3fa6ff
+- #14d3ac
+Light
+- #00e984
+- #ffecb4
+- #fbfbfb

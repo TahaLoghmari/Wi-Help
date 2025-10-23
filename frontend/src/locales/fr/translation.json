@@ -59,6 +59,23 @@
       "resendButton": "Renvoyer l'e-mail",
       "returnButton": "Retour au site",
       "helperText": "Une fois que vous avez vérifié votre e-mail, vous pouvez cliquer sur \"{{returnLabel}}\" pour vous connecter."
+    },
+    "emailVerifiedPage": {
+      "successTitle": "Votre e-mail a été vérifié",
+      "successDescription": "Vous pouvez fermer cette page et continuer à utiliser cette application",
+      "failedTitle": "La vérification de l'e-mail a échoué",
+      "failedDescription": "Nous sommes désolés, quelque chose s'est mal passé. Veuillez réessayer plus tard"
+    },
+    "forgotPasswordPage": {
+      "title": "Mot de passe oublié ?",
+      "description": "Entrez votre e-mail pour réinitialiser votre mot de passe !",
+      "checkEmailTitle": "Vérifiez votre e-mail",
+      "emailSentTo": "Nous avons envoyé un e-mail à",
+      "clickLinkInstructions": "Cliquez sur le lien dans l'e-mail pour réinitialiser votre mot de passe.",
+      "checkSpamFolder": "Si vous ne voyez pas d'e-mail de notre part, essayez de vérifier votre dossier spam ou courrier indésirable.",
+      "resendEmail": "Renvoyer l'e-mail",
+      "resendSuccess": "Veuillez vérifier votre boîte de réception !",
+      "backToLogin": "Retour à la connexion"
     }
   },
   "errors": {

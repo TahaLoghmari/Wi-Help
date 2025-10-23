@@ -9,10 +9,11 @@ import {
 } from "@/components/ui/card";
 import { AlertCircle, Home, RefreshCw } from "lucide-react";
 import { useAppNavigation } from "@/hooks";
+import { env } from "@/config/env";
 
 export const MainErrorFallback = ({ error, reset }: ErrorComponentProps) => {
   const { goToHome } = useAppNavigation();
-  const isDev = import.meta.env.DEV;
+  const isDev = env.isDevelopment;
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-gray-50">

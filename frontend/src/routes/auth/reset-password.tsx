@@ -1,19 +1,15 @@
 import { ResetPasswordPage } from "@/features/auth";
 import { PageLoading } from "@/components/ui";
 import { createFileRoute } from "@tanstack/react-router";
+import { z } from "zod";
 
-type ResetPasswordSearchParams = {
-  email: string;
-  token: string;
-};
+const resetPasswordSearchSchema = z.object({
+  email: z.email(),
+  token: z.string().min(1),
+});
 
 export const Route = createFileRoute("/auth/reset-password")({
   component: ResetPasswordPage,
   pendingComponent: PageLoading,
-  validateSearch: (
-    search: Record<string, unknown>
-  ): ResetPasswordSearchParams => ({
-    email: search.email as string,
-    token: search.token as string,
-  }),
+  validateSearch: resetPasswordSearchSchema,
 });

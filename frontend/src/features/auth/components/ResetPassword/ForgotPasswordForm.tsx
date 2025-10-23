@@ -56,7 +56,7 @@ export function ForgotPasswordForm() {
         />
         <Button
           type="submit"
-          className="w-full cursor-pointer"
+          className="w-full cursor-pointer bg-[#14d3ac]"
           disabled={!form.formState.isValid || forgotPasswordMutation.isPending}
         >
           {forgotPasswordMutation.isPending ? (

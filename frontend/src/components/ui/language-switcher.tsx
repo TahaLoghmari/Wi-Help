@@ -18,7 +18,7 @@ export function LanguageSwitcher() {
       variant="outline"
       size="sm"
       onClick={toggleLanguage}
-      className="gap-2"
+      className="gap-2 border-none shadow-none"
       title={t("language.changeLanguage")}
     >
       <Globe className="h-4 w-4" />
