@@ -1,6 +1,6 @@
 namespace backend.Host.Settings;
 
-internal class GoogleSettings
+internal sealed class GoogleSettings
 {
     public string? ClientId { get; init; }
     public string? ClientSecret { get; init; }

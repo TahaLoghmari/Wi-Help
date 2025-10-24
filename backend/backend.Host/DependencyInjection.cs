@@ -22,8 +22,6 @@ internal static class DependencyInjection
     {
         builder.Services.ConfigureHttpJsonOptions(options =>
             options.SerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter()));
-
-        builder.Services.AddOpenApi();
         
         string frontendUrl = builder.Configuration["FRONTEND_URL"]!;
 
@@ -126,7 +124,8 @@ internal static class DependencyInjection
 
         return builder;
     }
-    public static WebApplicationBuilder AddServices(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddServices(this WebApplicationBuilder builder
+    )
     {
         string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
         

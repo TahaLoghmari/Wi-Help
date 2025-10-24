@@ -1,9 +1,6 @@
 using backend.Host;
 using backend.Host.Extensions;
 using Hangfire;
-using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Serilog;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -30,28 +27,7 @@ if ( app.Environment.IsDevelopment() )
     await app.ApplyMigrationsAsync();
 }
 
-// Liveness probe - just confirms the app is running
-app.MapHealthChecks("/health/live", new HealthCheckOptions
-{
-    Predicate = _ => false,
-    ResultStatusCodes =
-    {
-        [HealthStatus.Healthy] = StatusCodes.Status200OK
-    }
-});
-
-// Readiness probe - checks all dependencies tagged with "ready"
-app.MapHealthChecks("/health/ready", new HealthCheckOptions
-{
-    Predicate = healthCheck => healthCheck.Tags.Contains("ready"),
-    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
-    ResultStatusCodes =
-    {
-        [HealthStatus.Healthy] = StatusCodes.Status200OK,
-        [HealthStatus.Degraded] = StatusCodes.Status200OK,
-        [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
-    }
-});
+app.MapHealthCheckEndpoints();
 
 app.UseCors("AllowReactApp");
 app.UseAuthentication();
