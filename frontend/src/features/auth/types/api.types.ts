@@ -20,8 +20,11 @@ export interface ForgotPasswordDto {
 }
 
 export interface RegisterUserDto {
-  name: string;
+  firstName: string;
+  lastName: string;
+  gender: string;
   email: string;
+  phoneNumber: string;
   password: string;
   confirmPassword: string;
 }

@@ -11,17 +11,18 @@ import {
 } from "@/components/ui";
 import { useTranslation } from "react-i18next";
 import OnlyTextLogo from "@/assets/OnlyTextLogo.png";
-import { NAVIGATION } from "@/features/landing-page";
+import { getNavigation } from "@/features/landing-page";
 
 export function Header() {
   const { t } = useTranslation();
+  const navigation = getNavigation(t);
 
   return (
     <div className="flex items-center justify-between p-4 border rounded-lg shadow-sm mt-6">
       <img src={OnlyTextLogo} alt="Logo" className="w-45 h-10" />
       <NavigationMenu>
         <NavigationMenuList>
-          {NAVIGATION.map((navigation) => {
+          {navigation.map((navigation) => {
             return navigation.isExtandable ? (
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="text-gray-600">

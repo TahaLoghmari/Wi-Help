@@ -1,16 +1,18 @@
-export const NAVIGATION: { title: string; href: string; isExtandable: boolean }[] = [
+import type { TFunction } from "i18next";
+
+export const getNavigation = (t: TFunction) => [
   {
-    title: "À Propos",
+    title: t("random.aboutYou"),
     href: "#",
     isExtandable: false,
   },
   {
-    title: "Services",
+    title: t("random.services"),
     href: "#",
     isExtandable: true,
   },
   {
-    title: "Fonctionanalités",
+    title: t("random.functionalities"),
     href: "#",
     isExtandable: true,
   },

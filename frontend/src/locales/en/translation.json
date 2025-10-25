@@ -1,8 +1,11 @@
 {
   "common": {
     "email": "Email",
+    "gender": "Gender",
     "password": "Password",
-    "name": "Name",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "phoneNumber": "Phone Number",
     "confirmPassword": "Confirm Password",
     "login": "Login",
     "register": "Register",
@@ -33,7 +36,11 @@
     "privacyPolicy": "Privacy Policy",
     "emailPlaceholder": "Enter your email",
     "passwordPlaceholder": "Enter your password",
-    "namePlaceholder": "Enter your name",
+    "firstNamePlaceholder": "Enter your first name",
+    "lastNamePlaceholder": "Enter your last name",
+    "genderMalePlaceholder": "Male",
+    "genderFemalePlaceholder": "Female",
+    "phoneNumberPlaceholder": "(+216) 95 547 046",
     "confirmPasswordPlaceholder": "Confirm your password",
     "resetPassword": "Reset Password",
     "sendResetLink": "Send Reset Link",
@@ -93,5 +100,11 @@
     "english": "EN",
     "french": "FR",
     "changeLanguage": "Change Language"
+  },
+  "random": {
+    "aboutYou": "About You",
+    "services": "Sevices",
+    "functionalities": "Functionalities",
+    "personal": "Personal"
   }
 }

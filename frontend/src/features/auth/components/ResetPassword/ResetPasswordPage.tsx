@@ -118,7 +118,7 @@ export function ResetPasswordPage() {
               />
               <Button
                 type="submit"
-                className="w-full cursor-pointer"
+                className="w-full cursor-pointer bg-[#386d52] hover:bg-[#386d52]/90"
                 disabled={
                   !form.formState.isValid || resetPasswordMutation.isPending
                 }

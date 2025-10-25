@@ -2,10 +2,22 @@ import z from "zod";
 
 export const registerFormSchema = z
   .object({
-    name: z
+    firstName: z
       .string()
-      .min(1, { message: "Name is required." })
-      .max(50, { message: "Name must be at most 50 characters." }),
+      .min(1, { message: "First Name is required." })
+      .max(50, { message: "Last Name must be at most 50 characters." }),
+    lastName: z
+      .string()
+      .min(1, { message: "Last Name is required." })
+      .max(50, { message: "Last Name must be at most 50 characters." }),
+    gender: z
+      .string()
+      .min(1, { message: "Gender is required." })
+      .max(50, { message: "Gender must be at most 5 characters." }),
+    phoneNumber: z
+      .string()
+      .min(1, { message: "Phone Number is required." })
+      .max(50, { message: "Phone Number must be at most 5 characters." }),
     email: z
       .email()
       .min(1, { message: "Email is required." })

@@ -32,10 +32,10 @@ export function useAppNavigation() {
       });
     },
 
-    goToEmailVerification: (email?: string) => {
+    goToEmailVerification: (email: string) => {
       navigate({
         to: ROUTE_PATHS.AUTH.EMAIL_VERIFICATION,
-        search: { email: email || undefined },
+        search: { email },
       });
     },
 
@@ -46,7 +46,6 @@ export function useAppNavigation() {
     goToApp: () => {
       navigate({ to: ROUTE_PATHS.ROOT });
     },
-
 
     goBack: () => {
       window.history.back();
@@ -59,6 +58,5 @@ export function useAppNavigation() {
         window.location.href = url;
       }
     },
-
   };
 }

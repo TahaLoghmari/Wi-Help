@@ -10,7 +10,10 @@ export function RegisterFormDefaults() {
     email: "",
     password: "",
     confirmPassword: "",
-    name: "",
+    firstName: "",
+    lastName: "",
+    gender: "",
+    phoneNumber: "",
   };
 }
 
