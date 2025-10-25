@@ -38,6 +38,7 @@ app.UseHangfireDashboard();
 app.UseExceptionHandler();
 app.UseSerilogRequestLogging();
 app.UseRateLimiter();
+app.MapEndpoints();
 
 
 await app.RunAsync();

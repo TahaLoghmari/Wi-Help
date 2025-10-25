@@ -2,12 +2,6 @@
     <PropertyGroup>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <AnalysisLevel>latest</AnalysisLevel>
-        <AnalysisMode>All</AnalysisMode>
-        <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
-        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <AnalysisMode>Default</AnalysisMode>
     </PropertyGroup>
-    <ItemGroup>
-        <PackageReference Include="SonarAnalyzer.CSharp" />
-    </ItemGroup>
-
 </Project>

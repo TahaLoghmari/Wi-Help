@@ -2,15 +2,14 @@ using System.Net;
 using System.Text;
 using System.Threading.RateLimiting;
 using backend.Host.Middlewares;
-using backend.Host.Settings;
 using FluentValidation;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Modules.Identity.Infrastructure.Settings;
 
 namespace backend.Host;
 

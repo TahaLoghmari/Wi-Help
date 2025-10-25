@@ -27,4 +27,14 @@
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Modules\Common\Modules.Common.Features\Modules.Common.Features.csproj" />
+    <ProjectReference Include="..\Modules\Identity\Modules.Identity.Features\Modules.Identity.Features.csproj" />
+    <ProjectReference Include="..\Modules\Identity\Modules.Identity.Infrastructure\Modules.Identity.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Settings\" />
+  </ItemGroup>
+
 </Project>

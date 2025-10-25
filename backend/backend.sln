@@ -12,6 +12,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Common.Features", "Modules\Common\Modules.Common.Features\Modules.Common.Features.csproj", "{4FFB0E9A-1B32-46DA-9FCD-A8D0A3A1CAF0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{EA0C4C05-A2AC-4FA2-B8EA-E06E02008458}"
+	ProjectSection(SolutionItems) = preProject
+		Modules\Identity\README.md = Modules\Identity\README.md
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Identity.Domain", "Modules\Identity\Modules.Identity.Domain\Modules.Identity.Domain.csproj", "{274453FA-80C7-4B49-9B96-3856DFF698B3}"
 EndProject
