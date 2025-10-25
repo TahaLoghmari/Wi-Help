@@ -5,7 +5,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
 const emailVerificationSearchSchema = z.object({
-  email: z.email().optional(),
+  email: z.email(),
 });
 
 export const Route = createFileRoute(ROUTE_PATHS.AUTH.EMAIL_VERIFICATION)({

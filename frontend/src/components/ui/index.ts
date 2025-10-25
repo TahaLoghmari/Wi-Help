@@ -5,6 +5,7 @@ export * from "./form";
 export * from "./input";
 export * from "./label";
 export * from "./language-switcher";
+export * from "./navigation-menu";
 export * from "./page-loading";
 export * from "./sonner";
 export * from "./spinner";

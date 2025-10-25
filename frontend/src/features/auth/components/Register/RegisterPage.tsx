@@ -156,7 +156,7 @@ export function RegisterPage({
                   </div>
                   <Button
                     type="submit"
-                    className="w-full bg-[#14d3ac]"
+                    className="w-full bg-[#386d52]"
                     disabled={
                       !form.formState.isValid || registerMutation.isPending
                     }
@@ -172,7 +172,7 @@ export function RegisterPage({
                   {t("auth.alreadyHaveAccount")}{" "}
                   <Link
                     to={ROUTE_PATHS.AUTH.LOGIN}
-                    className="underline underline-offset-4 text-[#14d3ac]"
+                    className="hover:text-[#386d52]/90 font-semibold underline-offset-4 text-[#386d52]"
                   >
                     {t("auth.signIn")}
                   </Link>

@@ -1,28 +1,61 @@
 import { ROUTE_PATHS } from "@/config/routes";
 import { Link } from "@tanstack/react-router";
-import { LanguageSwitcher } from "@/components/ui";
+import {
+  Button,
+  LanguageSwitcher,
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui";
 import { useTranslation } from "react-i18next";
-import Icon1 from "@/assets/Icon-1.png";
-import TextIcon from "@/assets/TextIcon .png";
+import OnlyTextLogo from "@/assets/OnlyTextLogo.png";
+import { NAVIGATION } from "@/features/landing-page";
 
 export function Header() {
   const { t } = useTranslation();
 
   return (
-    <div className="flex items-center justify-between px-1 py-8">
-      <div className="flex items-center">
-        <img src={Icon1} alt="" className="h-20" />
-        <img src={TextIcon} alt="" className="h-20" />
-      </div>
-
+    <div className="flex items-center justify-between p-4 border rounded-lg shadow-sm mt-6">
+      <img src={OnlyTextLogo} alt="Logo" className="w-45 h-10" />
+      <NavigationMenu>
+        <NavigationMenuList>
+          {NAVIGATION.map((navigation) => {
+            return navigation.isExtandable ? (
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="text-gray-600">
+                  {navigation.title}
+                </NavigationMenuTrigger>
+              </NavigationMenuItem>
+            ) : (
+              <NavigationMenuItem>
+                <NavigationMenuLink className="font-semibold cursor-pointer text-gray-600">
+                  {navigation.title}
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            );
+          })}
+        </NavigationMenuList>
+      </NavigationMenu>
       <div className="flex items-center gap-4">
         <LanguageSwitcher />
-        <Link
-          to={ROUTE_PATHS.AUTH.LOGIN}
-          className="cursor-pointer font-semibold text-white transition-all duration-200 hover:bg-[#4ba78a]/80 bg-[#4ba78a] px-4 w-fit h-8 rounded-xl flex items-center justify-center"
-        >
-          {t("auth.signIn")}
-        </Link>
+        <Button asChild variant="outline">
+          <Link
+            to={ROUTE_PATHS.AUTH.LOGIN}
+            className="cursor-pointer font-semibold text-gray-800 text-sm"
+          >
+            {t("auth.signIn")}
+          </Link>
+        </Button>
+        <Button asChild>
+          <Link
+            to={ROUTE_PATHS.AUTH.REGISTER}
+            className="cursor-pointer font-semibold text-white text-sm hover:bg-[#386d52]/80! bg-[#386d52]!"
+          >
+            {t("auth.signUp")}
+          </Link>
+        </Button>
       </div>
     </div>
   );

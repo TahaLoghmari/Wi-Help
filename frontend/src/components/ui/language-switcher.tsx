@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
-import { Globe } from "lucide-react";
+import FranecIcon from "@/assets/france.png";
+import UnitedStatesIcon from "@/assets/unitedStates.png";
 
 export function LanguageSwitcher() {
   const { i18n, t } = useTranslation();
@@ -16,12 +17,15 @@ export function LanguageSwitcher() {
   return (
     <Button
       variant="outline"
-      size="sm"
       onClick={toggleLanguage}
-      className="gap-2 border-none shadow-none"
+      className="gap-2 text-sm cursor-pointer"
       title={t("language.changeLanguage")}
     >
-      <Globe className="h-4 w-4" />
+      {currentLanguage === "FR" ? (
+        <img src={FranecIcon} className="h-4 w-4" />
+      ) : (
+        <img src={UnitedStatesIcon} className="h-4 w-4" />
+      )}
       <span>{currentLanguage}</span>
     </Button>
   );

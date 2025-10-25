@@ -25,7 +25,7 @@
     "dontHaveAccount": "Don't have an account?",
     "alreadyHaveAccount": "Already have an account?",
     "signUp": "Sign up",
-    "signIn": "Sign in",
+    "signIn": "Log in",
     "loginDescription": "Login with your Google account",
     "registerDescription": "Create an account with Google",
     "termsAgreement": "By clicking continue, you agree to our",
@@ -90,8 +90,8 @@
   },
   "language": {
     "selectLanguage": "Select Language",
-    "english": "English",
-    "french": "French",
+    "english": "EN",
+    "french": "FR",
     "changeLanguage": "Change Language"
   }
 }

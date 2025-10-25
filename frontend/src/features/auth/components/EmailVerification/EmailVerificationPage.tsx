@@ -39,15 +39,17 @@ export function EmailVerificationPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
-          <div className="flex w-full items-center justify-center rounded-lg border border-[#00394a] bg-[#00546e]/90 p-4">
-            <p className="text-sm text-[#3fa6ff]">
-              <strong>{t("auth.emailVerificationPage.noteLabel")}</strong>{" "}
+          <div className="flex w-full items-center justify-center rounded-lg border border-[#386d52] p-4">
+            <p className="text-sm">
+              <strong className="text-[#386d52]">
+                {t("auth.emailVerificationPage.noteLabel")}
+              </strong>{" "}
               {t("auth.emailVerificationPage.noteDescription")}
             </p>
           </div>
           <div className="flex w-full flex-col gap-3">
             <Button
-              className="w-full cursor-pointer p-4 bg-[#14d3ac]"
+              className="w-full cursor-pointer p-4 bg-[#386d52] hover:bg-[#386d52]/90"
               onClick={() => {
                 if (email) {
                   resendConfirmationEmailMutation.mutate(email);

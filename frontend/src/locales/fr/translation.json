@@ -90,8 +90,8 @@
   },
   "language": {
     "selectLanguage": "Sélectionner la langue",
-    "english": "Anglais",
-    "french": "Français",
+    "english": "EN",
+    "french": "FR",
     "changeLanguage": "Changer de langue"
   }
 }

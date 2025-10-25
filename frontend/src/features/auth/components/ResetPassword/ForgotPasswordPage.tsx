@@ -43,12 +43,12 @@ export function ForgotPasswordPage() {
                 {t("auth.forgotPasswordPage.checkEmailTitle")}
               </CardTitle>
               <CardDescription>
-                <p className="text-center text-sm">
+                <p className="text-center text-sm mb-4">
                   {t("auth.forgotPasswordPage.emailSentTo")}{" "}
-                  <span className="font-bold text-[#14d3ac]">{email}</span>.{" "}
+                  <span className="font-bold text-[#386d52]">{email}</span>.{" "}
                   {t("auth.forgotPasswordPage.clickLinkInstructions")}
                 </p>
-                <p className="text-center text-sm text-[#7e838b]">
+                <p className="text-center text-sm text-primary font-semibold">
                   {t("auth.forgotPasswordPage.checkSpamFolder")}
                 </p>
               </CardDescription>
@@ -57,7 +57,7 @@ export function ForgotPasswordPage() {
               <>
                 <Button
                   type="button"
-                  className="mb-2 w-full cursor-pointer bg-[#14d3ac]"
+                  className="mb-2 w-full cursor-pointer bg-[#386d52] hover:bg-[#386d52]"
                   disabled={forgotPasswordMutation.isPending}
                   onClick={() => {
                     forgotPasswordMutation.mutate({ email });
