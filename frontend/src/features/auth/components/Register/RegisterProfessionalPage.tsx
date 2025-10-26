@@ -40,7 +40,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export function RegisterPage({
+export function RegisterProfessionalPage({
   className,
   ...props
 }: React.ComponentProps<"div">) {
@@ -69,7 +69,7 @@ export function RegisterPage({
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <div className="grid">
-                <div className="flex flex-col gap-4 mb-4">
+                <div className="mb-4 flex flex-col gap-4">
                   <Button
                     variant="outline"
                     className="w-full"
@@ -86,17 +86,17 @@ export function RegisterPage({
                     {t("auth.orContinueWith")}
                   </span>
                 </div>
-                <div className="w-full justify-between flex mb-2">
-                  <div className="flex flex-col justify-center items-center w-fit gap-1">
-                    <div className="rounded-full px-2 text-xs py-1 bg-[#386d52] text-white w-fit shadow-xs">
+                <div className="mb-2 flex w-full justify-between">
+                  <div className="flex w-fit flex-col items-center justify-center gap-1">
+                    <div className="w-fit rounded-full bg-[#386d52] px-2 py-1 text-xs text-white shadow-xs">
                       1
                     </div>
-                    <p className="text-[#386d52] text-xs font-bold">
+                    <p className="text-xs font-bold text-[#386d52]">
                       {t("random.personal")}
                     </p>
                   </div>
-                  <div className="flex flex-col justify-center items-center w-fit gap-1">
-                    <div className="rounded-full px-2 text-xs py-1 border w-fit shadow-xs">
+                  <div className="flex w-fit flex-col items-center justify-center gap-1">
+                    <div className="w-fit rounded-full border px-2 py-1 text-xs shadow-xs">
                       2
                     </div>
                     <p className="text-muted-foreground text-xs font-bold">
@@ -226,7 +226,7 @@ export function RegisterPage({
                               <Input
                                 type="password"
                                 placeholder={t(
-                                  "auth.confirmPasswordPlaceholder"
+                                  "auth.confirmPasswordPlaceholder",
                                 )}
                                 {...field}
                               />
@@ -257,7 +257,7 @@ export function RegisterPage({
                   </div>
                   <Button
                     type="submit"
-                    className="w-full bg-[#386d52] mb-4"
+                    className="mb-4 w-full bg-[#386d52]"
                     disabled={
                       !form.formState.isValid || registerMutation.isPending
                     }
@@ -273,7 +273,7 @@ export function RegisterPage({
                   {t("auth.alreadyHaveAccount")}{" "}
                   <Link
                     to={ROUTE_PATHS.AUTH.LOGIN}
-                    className="hover:text-[#386d52]/90 font-semibold underline-offset-4 text-[#386d52]"
+                    className="font-semibold text-[#386d52] underline-offset-4 hover:text-[#386d52]/90"
                   >
                     {t("auth.signIn")}
                   </Link>

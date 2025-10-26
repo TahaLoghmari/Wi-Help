@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { useLocation } from "@tanstack/react-router";
 import OnlyTextIcon from "@/assets/OnlyTextLogo.png";
+import { ROUTE_PATHS } from "@/config/routes";
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -8,7 +9,9 @@ interface AuthLayoutProps {
 
 export function AuthLayout({ children }: AuthLayoutProps) {
   const location = useLocation();
-  const isRegisterRoute = location.pathname.includes("/register");
+  const isRegisterRoute =
+    location.pathname.includes(ROUTE_PATHS.AUTH.REGISTER_PROFESSIONAL) ||
+    location.pathname.includes(ROUTE_PATHS.AUTH.REGISTER_PATIENT);
 
   return (
     <div className="bg-muted flex h-svh flex-col items-center gap-6 overflow-y-auto">

@@ -12,6 +12,8 @@ export function RegisterFormDefaults() {
     confirmPassword: "",
     firstName: "",
     lastName: "",
+    dateOfBirth: "",
+    adress:"",
     gender: "",
     phoneNumber: "",
   };

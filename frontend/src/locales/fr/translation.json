@@ -5,8 +5,11 @@
     "password": "Mot de passe",
     "firstName": "Prénom",
     "lastName": "Nom",
+    "dateOfBirth": "Date de naissance",
     "phoneNumber": "Numéro Tel",
     "confirmPassword": "Confirmer le mot de passe",
+    "selectDate": "Sélectionner une date",
+    "address": "Adresse",
     "login": "Connexion",
     "register": "S'inscrire",
     "submit": "Soumettre",
@@ -16,7 +19,10 @@
     "delete": "Supprimer",
     "edit": "Modifier",
     "or": "Ou",
-    "and": "et"
+    "and": "et",
+    "continue": "Continue",
+    "professional": "Professionnel",
+    "patient": "Patient"
   },
   "auth": {
     "welcomeBack": "Bon retour",
@@ -42,6 +48,7 @@
     "genderFemalePlaceholder": "Feminin",
     "phoneNumberPlaceholder": "(+216) 95 547 046",
     "confirmPasswordPlaceholder": "Confirmez votre mot de passe",
+    "addressPlaceholder": "Entrez votre adresse",
     "resetPassword": "Réinitialiser le mot de passe",
     "sendResetLink": "Envoyer le lien de réinitialisation",
     "backToLogin": "Retour à la connexion",
@@ -107,5 +114,4 @@
     "functionalities": "Fonctinnalités",
     "personal": "Personnel"
   }
-  
 }
