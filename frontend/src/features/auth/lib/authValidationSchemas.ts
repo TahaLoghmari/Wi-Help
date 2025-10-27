@@ -5,24 +5,27 @@ export const registerFormSchema = z
     firstName: z
       .string()
       .min(1, { message: "First Name is required." })
-      .max(50, { message: "Last Name must be at most 50 characters." }),
+      .max(50, { message: "First Name must be at most 50 characters." }),
     lastName: z
       .string()
       .min(1, { message: "Last Name is required." })
       .max(50, { message: "Last Name must be at most 50 characters." }),
     dateOfBirth: z.string().min(1, { message: "Date of Birth is required." }),
-    adress: z
+    address: z
       .string()
       .min(1, { message: "Adress is required." })
       .max(50, { message: "Adress must be at most 50 characters." }),
     gender: z
       .string()
       .min(1, { message: "Gender is required." })
-      .max(50, { message: "Gender must be at most 5 characters." }),
+      .max(10, { message: "Gender must be at most 10 characters." }),
     phoneNumber: z
       .string()
       .min(1, { message: "Phone Number is required." })
-      .max(50, { message: "Phone Number must be at most 5 characters." }),
+      .max(20, { message: "Phone Number must be at most 20 characters." })
+      .regex(/^\+?[\d\s\-()]+$/, {
+        message: "Please enter a valid phone number.",
+      }),
     email: z
       .email()
       .min(1, { message: "Email is required." })

@@ -1,4 +1,5 @@
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.RateLimiting;
 using backend.Host.Middlewares;
@@ -8,6 +9,8 @@ using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Modules.Common.Features;
+using Modules.Identity.Infrastructure;
 using Serilog;
 using Modules.Identity.Infrastructure.Settings;
 
@@ -56,8 +59,6 @@ internal static class DependencyInjection
 
     public static WebApplicationBuilder AddErrorHandling(this WebApplicationBuilder builder)
     {
-        builder.Services.AddValidatorsFromAssemblyContaining<Program>();
-
         builder.Services.AddProblemDetails(options =>
             options.CustomizeProblemDetails = context =>
                 context.ProblemDetails.Extensions.TryAdd("requestId", context.HttpContext.TraceIdentifier)
@@ -70,9 +71,8 @@ internal static class DependencyInjection
     
     public static WebApplicationBuilder AddAuthentication(this WebApplicationBuilder builder)
     {
-        builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
-        builder.Services.Configure<GoogleSettings>(builder.Configuration.GetSection("Google"));
-
+        // Settings are configured in Infrastructure.AddIdentityInfrastructure()
+        // But we still need to read them for JWT Bearer setup
         JwtSettings jwtAuthOptions = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()!;
 
         builder.Services
@@ -137,6 +137,16 @@ internal static class DependencyInjection
                 tags: ReadyAndDbTags,
                 timeout: TimeSpan.FromSeconds(5));
         
+        // Register module infrastructure
+        builder.Services.AddIdentityInfrastructure(builder.Configuration);
+        
+        var moduleAssemblies = Assembly.GetExecutingAssembly()
+            .GetReferencedAssemblies()
+            .Where(a => a.Name!.StartsWith("Modules."))
+            .Select(Assembly.Load)
+            .ToArray();
+        
+        builder.Services.AddCommonModule(moduleAssemblies);
         return builder; 
     }
     public static WebApplicationBuilder AddLogging(this WebApplicationBuilder builder)

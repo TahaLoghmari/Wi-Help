@@ -3,8 +3,8 @@ public class Result
 {
     protected Result(bool isSuccess, Error error)
     {
-        if (isSuccess && error != Error.None ||
-            !isSuccess && error == Error.None)
+        if (isSuccess && error != Error.None() ||
+            !isSuccess && error == Error.None())
         {
             throw new ArgumentException("Invalid error", nameof(error));
         }
@@ -19,7 +19,7 @@ public class Result
 
     public Error Error { get; }
 
-    public static Result Success() => new(true, Error.None);
+    public static Result Success() => new(true, Error.None());
 
     public static Result Failure(Error error) => new(false, error);
 }
@@ -38,7 +38,7 @@ public class Result<TValue> : Result
         ? _value!
         : throw new InvalidOperationException("Cannot access value of a failed result");
     
-    public static Result<TValue> Success(TValue value) => new(value, true, Error.None);
+    public static Result<TValue> Success(TValue value) => new(value, true, Error.None());
     
     public static new Result<TValue> Failure(Error error) => new(default!, false, error);
 }

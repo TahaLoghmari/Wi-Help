@@ -9,7 +9,7 @@ async function request<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  let headers: Record<string, string> = {};
+  const headers: Record<string, string> = {};
 
   // Auto-stringify JSON bodies, but leave FormData alone
   let body = options.body;

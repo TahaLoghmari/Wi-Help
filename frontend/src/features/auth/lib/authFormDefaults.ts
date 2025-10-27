@@ -13,7 +13,7 @@ export function RegisterFormDefaults() {
     firstName: "",
     lastName: "",
     dateOfBirth: "",
-    adress:"",
+    address:"",
     gender: "",
     phoneNumber: "",
   };

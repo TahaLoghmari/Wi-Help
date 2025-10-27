@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Modules.Identity.Domain\Modules.Identity.Domain.csproj" />
-    <ProjectReference Include="..\Modules.Identity.Features\Modules.Identity.Features.csproj" />
   </ItemGroup>
 
 </Project>

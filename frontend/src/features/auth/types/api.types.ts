@@ -23,7 +23,7 @@ export interface RegisterUserDto {
   firstName: string;
   lastName: string;
   dateOfBirth: string;
-  adress: string;
+  address: string;
   gender: string;
   email: string;
   phoneNumber: string;

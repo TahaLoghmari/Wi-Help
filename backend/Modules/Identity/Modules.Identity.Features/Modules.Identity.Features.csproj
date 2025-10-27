@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Common\Modules.Common.Features\Modules.Common.Features.csproj" />
+    <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Features\Modules.Common.Features.csproj" />
     <ProjectReference Include="..\Modules.Identity.Infrastructure\Modules.Identity.Infrastructure.csproj" />
   </ItemGroup>
 

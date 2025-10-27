@@ -48,7 +48,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export function RegisterPatientPage({}) {
+export function RegisterPatientPage() {
   const [step, setStep] = useState(1);
   const [open, setOpen] = useState(false);
   const { t } = useTranslation();
@@ -311,7 +311,14 @@ export function RegisterPatientPage({}) {
                                   className={` ${field.value ? "" : "text-muted-foreground"} w-full justify-between font-normal`}
                                 >
                                   {field.value ? (
-                                    new Date(field.value).toLocaleDateString()
+                                    new Date(field.value).toLocaleDateString(
+                                      undefined,
+                                      {
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                      },
+                                    )
                                   ) : (
                                     <div className="flex items-center gap-4">
                                       <CalendarIcon />
@@ -339,9 +346,7 @@ export function RegisterPatientPage({}) {
                                   }
                                   onSelect={(date) =>
                                     field.onChange(
-                                      date
-                                        ? date.toISOString().split("T")[0]
-                                        : "",
+                                      date ? date.toISOString() : "",
                                     )
                                   }
                                   captionLayout="dropdown"
@@ -357,7 +362,7 @@ export function RegisterPatientPage({}) {
                     <div className="grid gap-3">
                       <FormField
                         control={form.control}
-                        name="adress"
+                        name="address"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>{t("common.address")}</FormLabel>

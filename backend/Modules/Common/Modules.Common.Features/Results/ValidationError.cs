@@ -2,14 +2,30 @@ namespace Modules.Common.Features.Results;
 
 public sealed record ValidationError : Error
 {
-    public ValidationError(ValidationFailure[] failures) 
-        : base("Validation.Error", "One or more validation errors occurred.")
+    public ValidationError(Error[] errors)
+        : base(
+            "Validation.General",
+            "One or more validation errors occurred",
+            ErrorType.Validation)
     {
-        Failures = failures;
+        Errors = errors;
     }
 
-    public ValidationFailure[] Failures { get; }
-}
+    public ValidationError(Error error)
+        : this([error])
+    {
+    }
 
-public sealed record ValidationFailure(string PropertyName, string ErrorMessage);
+    public ValidationError(string code, string description)
+        : this([Problem(code, description)])
+    {
+    }
+
+    public Error[] Errors { get; }
+
+    public static ValidationError FromResults(IEnumerable<Result> results)
+    {
+        return new ValidationError(results.Where(r => r.IsFailure).Select(r => r.Error).ToArray());
+    }
+}
 
