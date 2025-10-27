@@ -19,13 +19,14 @@ internal sealed class Register: IEndpoint
                     request.FirstName,
                     request.LastName,
                     request.DateOfBirth,
-                    request.Adress,
+                    request.Address,
                     request.Gender,
                     request.PhoneNumber,
                     request.Email,
                     request.Password,
                     request.ConfirmedPassword,
                     request.Role);
+                    
                 Result result = await handler.Handle(command, cancellationToken);
                 return result.Match(() => Results.Ok(), CustomResults.Problem);
             })
@@ -35,7 +36,7 @@ internal sealed class Register: IEndpoint
         string FirstName,
         string LastName,
         string DateOfBirth,
-        string Adress,
+        string Address,
         string Gender,
         string PhoneNumber,
         string Email,

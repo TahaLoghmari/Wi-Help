@@ -1,18 +1,17 @@
-using Microsoft.AspNetCore.Http;
+using backend.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.Domain.Entities;
 using Modules.Identity.Domain.Errors;
-using Modules.Identity.Features.DTOs;
-using Modules.Identity.Infrastructure.Services;
 
 namespace Modules.Identity.Features.Auth.Register;
 
 public sealed class RegisterCommandHandler(
     UserManager<User> userManager,
-    ILogger<RegisterCommandHandler> logger) : ICommandHandler<RegisterCommand>
+    ILogger<RegisterCommandHandler> logger,
+    EmailService emailService) : ICommandHandler<RegisterCommand>
 {
     public async Task<Result> Handle(
         RegisterCommand command,
@@ -49,9 +48,11 @@ public sealed class RegisterCommandHandler(
         
         logger.LogInformation("User registration successful for {Email}, UserId: {UserId}", 
             command.Email, user.Id);
-
-        await emailSenderService.SendConfirmationEmail(command.Email, user, httpContext, urlHelper);
         
-        logger.LogInformation("Confirmation email sent to {Email}", command.Email);
+        await emailService.SendConfirmationEmail(user);
+        
+        logger.LogInformation("Confirmation email job enqueued for user {UserId}", user.Id);
+        
+        return Result.Success();
     }
 }

@@ -78,12 +78,6 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
         RuleFor(x => x.ConfirmPassword)
             .Equal(x => x.Password)
             .WithMessage("Password and confirmation password do not match.");
-        
-        RuleFor(x => x.Address)
-            .NotEmpty()
-            .WithMessage("Address is required.")
-            .MaximumLength(50)
-            .WithMessage("Address must be at most 50 characters.");
     }
     
     private static bool ContainUppercase(string password)

@@ -71,8 +71,6 @@ internal static class DependencyInjection
     
     public static WebApplicationBuilder AddAuthentication(this WebApplicationBuilder builder)
     {
-        // Settings are configured in Infrastructure.AddIdentityInfrastructure()
-        // But we still need to read them for JWT Bearer setup
         JwtSettings jwtAuthOptions = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()!;
 
         builder.Services
@@ -137,9 +135,6 @@ internal static class DependencyInjection
                 tags: ReadyAndDbTags,
                 timeout: TimeSpan.FromSeconds(5));
         
-        // Register module infrastructure
-        builder.Services.AddIdentityInfrastructure(builder.Configuration);
-        
         var moduleAssemblies = Assembly.GetExecutingAssembly()
             .GetReferencedAssemblies()
             .Where(a => a.Name!.StartsWith("Modules."))
@@ -147,6 +142,7 @@ internal static class DependencyInjection
             .ToArray();
         
         builder.Services.AddCommonModule(moduleAssemblies);
+        builder.Services.AddIdentityModule(builder.Configuration);
         return builder; 
     }
     public static WebApplicationBuilder AddLogging(this WebApplicationBuilder builder)
@@ -193,6 +189,9 @@ internal static class DependencyInjection
                     options.UseNpgsqlConnection(
                         builder.Configuration.GetConnectionString("DefaultConnection"))));
         builder.Services.AddHangfireServer();
+        
+        // Configure Hangfire to use the same retry policy and filter
+        GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute { Attempts = 3 });
 
         return builder;
     }

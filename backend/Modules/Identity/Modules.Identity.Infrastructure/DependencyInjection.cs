@@ -1,15 +1,17 @@
+using backend.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Modules.Identity.Domain.Entities;
 using Modules.Identity.Infrastructure.Services;
+using Modules.Identity.Infrastructure.Settings;
 
 namespace Modules.Identity.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddIdentityInfrastructure(
+    public static IServiceCollection AddIdentityModule(
         this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -20,13 +22,17 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<IdentityDbContext>()
             .AddDefaultTokenProviders();
 
-        // Register Infrastructure services
+        // Required for EmailService to access HttpContext
+        services.AddHttpContextAccessor();
+
         services.AddScoped<TokenManagementService>();
         services.AddScoped<TokenProvider>();
+        services.AddScoped<EmailService>();
 
         // Configure settings
         services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
         services.Configure<GoogleSettings>(configuration.GetSection("Google"));
+        services.Configure<EmailSettings>(configuration.GetSection("Email"));
 
         return services;
     }
