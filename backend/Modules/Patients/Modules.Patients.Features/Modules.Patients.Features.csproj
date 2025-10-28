@@ -5,5 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Features\Modules.Common.Features.csproj" />
+        <ProjectReference Include="..\Modules.Patients.Infrastructure\Modules.Patients.Infrastructure.csproj" />
+    </ItemGroup>
 </Project>
