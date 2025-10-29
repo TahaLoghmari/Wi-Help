@@ -38,8 +38,4 @@
     <ProjectReference Include="..\Modules\Professionals\Modules.Professionals.Infrastructure\Modules.Professionals.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Settings\" />
-  </ItemGroup>
-
 </Project>

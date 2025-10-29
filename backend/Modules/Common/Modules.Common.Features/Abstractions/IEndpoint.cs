@@ -4,5 +4,5 @@ namespace Modules.Common.Features.Abstractions;
 
 public interface IEndpoint
 {
-    static abstract void MapEndpoint(IEndpointRouteBuilder app);
+    void MapEndpoint(IEndpointRouteBuilder app);
 }

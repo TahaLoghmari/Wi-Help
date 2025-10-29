@@ -2,6 +2,7 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading.RateLimiting;
+using backend.Host.Extensions;
 using backend.Host.Middlewares;
 using FluentValidation;
 using Hangfire;
@@ -139,21 +140,23 @@ internal static class DependencyInjection
                 tags: ReadyAndDbTags,
                 timeout: TimeSpan.FromSeconds(5));
         
-        var moduleAssemblies = Assembly.GetExecutingAssembly()
-            .GetReferencedAssemblies()
-            .Where(a => a.Name!.StartsWith("Modules."))
-            .Select(Assembly.Load)
-            .ToArray();
+        Assembly[] moduleApplicationAssemblies = [
+            AssemblyReference.Assembly,
+            Modules.Identity.AssemblyReference.Assembly,
+            Modules.Patients.AssemblyReference.Assembly,
+            Modules.Professionals.AssemblyReference.Assembly ];
         
-        builder.Services.AddCommonModule(moduleAssemblies);
+        builder.Services.AddEndpoints(moduleApplicationAssemblies);
         
         builder.Services.AddIdentityInfrastructure(builder.Configuration);
         
         builder.Services.AddPatientsModule()
             .AddPatientsInfrastructure(builder.Configuration);
-
+        
         builder.Services.AddProfessionalsModule()
             .AddProfessionalsInfrastructure(builder.Configuration);
+        
+        builder.Services.AddCommonModule(moduleApplicationAssemblies);
         
         return builder; 
     }
@@ -201,8 +204,7 @@ internal static class DependencyInjection
                     options.UseNpgsqlConnection(
                         builder.Configuration.GetConnectionString("DefaultConnection"))));
         builder.Services.AddHangfireServer();
-        
-        // Configure Hangfire to use the same retry policy and filter
+
         GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute { Attempts = 3 });
 
         return builder;

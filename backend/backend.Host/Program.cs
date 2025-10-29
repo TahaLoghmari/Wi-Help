@@ -43,6 +43,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseHangfireDashboard();
+app.MapEndpoints();
 
 app.UseExceptionHandler();
 app.UseSerilogRequestLogging();

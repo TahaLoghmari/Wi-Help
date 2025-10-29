@@ -9,7 +9,7 @@ namespace Modules.Identity.Features.Auth.Login;
 
 internal sealed class Login: IEndpoint
 {
-    public static void MapEndpoint(IEndpointRouteBuilder app)
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost(IdentityEndpoints.Login, async (
                 Request request,

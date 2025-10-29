@@ -1,18 +1,42 @@
+using System.Reflection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Modules.Common.Features.Abstractions;
 
 namespace backend.Host.Extensions;
 
 public static class EndpointExtensions
 {
-    public static void MapEndpoints(this WebApplication app)
+    public static IServiceCollection AddEndpoints(
+        this IServiceCollection services,
+        Assembly[] assemblies)
     {
-        var endpointTypes = typeof(Program).Assembly
-            .GetTypes()
-            .Where(t => t.IsAssignableTo(typeof(IEndpoint)) && t != typeof(IEndpoint));
+        ServiceDescriptor[] serviceDescriptors = assemblies
+            .SelectMany(assembly => assembly
+                .DefinedTypes
+                .Where(type => type is { IsAbstract: false, IsInterface: false } &&
+                               type.IsAssignableTo(typeof(IEndpoint))))
+            .Select(type => ServiceDescriptor.Transient(typeof(IEndpoint), type))
+            .ToArray();
 
-        foreach (var type in endpointTypes)
+        services.TryAddEnumerable(serviceDescriptors);
+
+        return services;
+    }
+    public static IApplicationBuilder MapEndpoints(
+        this WebApplication app,
+        RouteGroupBuilder? routeGroupBuilder = null)
+    {
+        IEnumerable<IEndpoint> endpoints = app.Services
+            .GetRequiredService<IEnumerable<IEndpoint>>();
+
+        IEndpointRouteBuilder builder =
+            routeGroupBuilder is null ? app : routeGroupBuilder;
+
+        foreach (IEndpoint endpoint in endpoints)
         {
-            type.GetMethod("MapEndpoint")?.Invoke(null, new object[] { app });
+            endpoint.MapEndpoint(builder);
         }
+
+        return app;
     }
 }

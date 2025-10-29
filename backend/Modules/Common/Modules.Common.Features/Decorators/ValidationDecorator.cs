@@ -1,13 +1,37 @@
 using FluentValidation;
+using FluentValidation.Results;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using FluentValidationFailure = FluentValidation.Results.ValidationFailure;
-using FluentValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace Modules.Common.Features.Decorators;
 
 public static class ValidationDecorator
 {
+    private static async Task<ValidationFailure[]> ValidateAsync<TCommand>(
+        TCommand command,
+        IEnumerable<IValidator<TCommand>> validators)
+    {
+        if (!validators.Any()) return [];
+
+        var context = new ValidationContext<TCommand>(command);
+
+        ValidationResult[] validationResults = await Task.WhenAll(
+            validators.Select(validator => validator.ValidateAsync(context)));
+
+        ValidationFailure[] validationFailures = validationResults
+            .Where(validationResult => !validationResult.IsValid)
+            .SelectMany(validationResult => validationResult.Errors)
+            .ToArray();
+
+        return validationFailures;
+    }
+
+    private static ValidationError CreateValidationError(ValidationFailure[] validationFailures)
+    {
+        return new ValidationError(validationFailures.Select(f => Error.Problem(f.ErrorCode, f.ErrorMessage))
+            .ToArray());
+    }
+
     public sealed class CommandHandler<TCommand, TResponse>(
         ICommandHandler<TCommand, TResponse> innerHandler,
         IEnumerable<IValidator<TCommand>> validators)
@@ -16,43 +40,12 @@ public static class ValidationDecorator
     {
         public async Task<Result<TResponse>> Handle(TCommand command, CancellationToken cancellationToken)
         {
-            FluentValidationFailure[] validationFailures = await ValidateAsync(command, validators, cancellationToken);
+            var validationFailures = await ValidateAsync(command, validators);
 
-            if (validationFailures.Length == 0)
-            {
-                return await innerHandler.Handle(command, cancellationToken);
-            }
+            if (validationFailures.Length == 0) return await innerHandler.Handle(command, cancellationToken);
 
             return Result<TResponse>.Failure(CreateValidationError(validationFailures));
         }
-
-        private static async Task<FluentValidationFailure[]> ValidateAsync(
-            TCommand command,
-            IEnumerable<IValidator<TCommand>> validators,
-            CancellationToken cancellationToken)
-        {
-            var validatorsList = validators.ToList();
-            
-            if (validatorsList.Count == 0)
-            {
-                return [];
-            }
-
-            var context = new ValidationContext<TCommand>(command);
-
-            FluentValidationResult[] validationResults = await Task.WhenAll(
-                validatorsList.Select(validator => validator.ValidateAsync(context, cancellationToken)));
-
-            FluentValidationFailure[] validationFailures = validationResults
-                .Where(validationResult => !validationResult.IsValid)
-                .SelectMany(validationResult => validationResult.Errors)
-                .ToArray();
-
-            return validationFailures;
-        }
-
-        private static ValidationError CreateValidationError(FluentValidationFailure[] validationFailures) =>
-            new(validationFailures.Select(f => new Error(f.PropertyName, f.ErrorMessage, ErrorType.Validation)).ToArray());
     }
 
     public sealed class CommandBaseHandler<TCommand>(
@@ -63,34 +56,12 @@ public static class ValidationDecorator
     {
         public async Task<Result> Handle(TCommand command, CancellationToken cancellationToken)
         {
-            FluentValidationFailure[] validationFailures = await ValidateAsync(command, validators, cancellationToken);
-            if (validationFailures.Length == 0)
-            {
-                return await innerHandler.Handle(command, cancellationToken);
-            }
+            var validationFailures = await ValidateAsync(command, validators);
+
+            if (validationFailures.Length == 0) return await innerHandler.Handle(command, cancellationToken);
+
             return Result.Failure(CreateValidationError(validationFailures));
         }
-        private static async Task<FluentValidationFailure[]> ValidateAsync(
-            TCommand command,
-            IEnumerable<IValidator<TCommand>> validators,
-            CancellationToken cancellationToken)
-        {
-            var validatorsList = validators.ToList();
-            if (validatorsList.Count == 0)
-            {
-                return [];
-            }
-            var context = new ValidationContext<TCommand>(command);
-            FluentValidationResult[] validationResults = await Task.WhenAll(
-                validatorsList.Select(validator => validator.ValidateAsync(context, cancellationToken)));
-            FluentValidationFailure[] validationFailures = validationResults
-                .Where(validationResult => !validationResult.IsValid)
-                .SelectMany(validationResult => validationResult.Errors)
-                .ToArray();
-            return validationFailures;
-        }
-        private static ValidationError CreateValidationError(FluentValidationFailure[] validationFailures) =>
-            new(validationFailures.Select(f => new Error(f.PropertyName, f.ErrorMessage, ErrorType.Validation)).ToArray());
     }
 
     public sealed class QueryHandler<TQuery, TResponse>(
@@ -101,43 +72,12 @@ public static class ValidationDecorator
     {
         public async Task<Result<TResponse>> Handle(TQuery query, CancellationToken cancellationToken)
         {
-            FluentValidationFailure[] validationFailures = await ValidateAsync(query, validators, cancellationToken);
+            var validationFailures = await ValidateAsync(query, validators);
 
-            if (validationFailures.Length == 0)
-            {
-                return await innerHandler.Handle(query, cancellationToken);
-            }
+            if (validationFailures.Length == 0) return await innerHandler.Handle(query, cancellationToken);
 
             return Result<TResponse>.Failure(CreateValidationError(validationFailures));
         }
-
-        private static async Task<FluentValidationFailure[]> ValidateAsync(
-            TQuery query,
-            IEnumerable<IValidator<TQuery>> validators,
-            CancellationToken cancellationToken)
-        {
-            var validatorsList = validators.ToList();
-            
-            if (validatorsList.Count == 0)
-            {
-                return [];
-            }
-
-            var context = new ValidationContext<TQuery>(query);
-
-            FluentValidationResult[] validationResults = await Task.WhenAll(
-                validatorsList.Select(validator => validator.ValidateAsync(context, cancellationToken)));
-
-            FluentValidationFailure[] validationFailures = validationResults
-                .Where(validationResult => !validationResult.IsValid)
-                .SelectMany(validationResult => validationResult.Errors)
-                .ToArray();
-
-            return validationFailures;
-        }
-
-        private static ValidationError CreateValidationError(FluentValidationFailure[] validationFailures) =>
-            new(validationFailures.Select(f => new Error(f.PropertyName, f.ErrorMessage, ErrorType.Validation)).ToArray());
     }
 }
 

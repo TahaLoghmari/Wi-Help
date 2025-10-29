@@ -18,17 +18,46 @@ COPY Directory.Packages.props ./
 
 # Copy all project files to restore dependencies
 COPY backend.Host/backend.Host.csproj ./backend.Host/
-COPY Modules/Carriers/Modules.Carriers.Domain/Modules.Carriers.Domain.csproj ./Modules/Carriers/Modules.Carriers.Domain/
-COPY Modules/Carriers/Modules.Carriers.Features/Modules.Carriers.Features.csproj ./Modules/Carriers/Modules.Carriers.Features/
-COPY Modules/Carriers/Modules.Carriers.Infrastructure/Modules.Carriers.Infrastructure.csproj ./Modules/Carriers/Modules.Carriers.Infrastructure/
-COPY Modules/Carriers/Modules.Carriers.PublicApi/Modules.Carriers.PublicApi.csproj ./Modules/Carriers/Modules.Carriers.PublicApi/
-COPY Modules/Shipments/Modules.Shipments.Domain/Modules.Shipments.Domain.csproj ./Modules/Shipments/Modules.Shipments.Domain/
-COPY Modules/Shipments/Modules.Shipments.Features/Modules.Shipments.Features.csproj ./Modules/Shipments/Modules.Shipments.Features/
-COPY Modules/Shipments/Modules.Shipments.Infrastructure/Modules.Shipments.Infrastructure.csproj ./Modules/Shipments/Modules.Shipments.Infrastructure/
-COPY Modules/Stocks/Modules.Stocks.Domain/Modules.Stocks.Domain.csproj ./Modules/Stocks/Modules.Stocks.Domain/
-COPY Modules/Stocks/Modules.Stocks.Features/Modules.Stocks.Features.csproj ./Modules/Stocks/Modules.Stocks.Features/
-COPY Modules/Stocks/Modules.Stocks.Infrastructure/Modules.Stocks.Infrastructure.csproj ./Modules/Stocks/Modules.Stocks.Infrastructure/
-COPY Modules/Stocks/Modules.Stocks.PublicApi/Modules.Stocks.PublicApi.csproj ./Modules/Stocks/Modules.Stocks.PublicApi/
+COPY Modules/Administration/Modules.Administration.Domain/Modules.Administration.Domain.csproj ./Modules/Administration/Modules.Administration.Domain/
+COPY Modules/Administration/Modules.Administration.Features/Modules.Administration.Features.csproj ./Modules/Administration/Modules.Administration.Features/
+COPY Modules/Administration/Modules.Administration.Infrastructure/Modules.Administration.Infrastructure.csproj ./Modules/Administration/Modules.Administration.Infrastructure/
+COPY Modules/Administration/Modules.Administration.PublicApi/Modules.Administration.PublicApi.csproj ./Modules/Administration/Modules.Administration.PublicApi/
+COPY Modules/Dispatch/Modules.Dispatch.Domain/Modules.Dispatch.Domain.csproj ./Modules/Dispatch/Modules.Dispatch.Domain/
+COPY Modules/Dispatch/Modules.Dispatch.Features/Modules.Dispatch.Features.csproj ./Modules/Dispatch/Modules.Dispatch.Features/
+COPY Modules/Dispatch/Modules.Dispatch.Infrastructure/Modules.Dispatch.Infrastructure.csproj ./Modules/Dispatch/Modules.Dispatch.Infrastructure/
+COPY Modules/Dispatch/Modules.Dispatch.PublicApi/Modules.Dispatch.PublicApi.csproj ./Modules/Dispatch/Modules.Dispatch.PublicApi/
+COPY Modules/Identity/Modules.Identity.Domain/Modules.Identity.Domain.csproj ./Modules/Identity/Modules.Identity.Domain/
+COPY Modules/Identity/Modules.Identity.Features/Modules.Identity.Features.csproj ./Modules/Identity/Modules.Identity.Features/
+COPY Modules/Identity/Modules.Identity.Infrastructure/Modules.Identity.Infrastructure.csproj ./Modules/Identity/Modules.Identity.Infrastructure/
+COPY Modules/Identity/Modules.Identity.PublicApi/Modules.Identity.PublicApi.csproj ./Modules/Identity/Modules.Identity.PublicApi/
+COPY Modules/Messaging/Modules.Messaging.Domain/Modules.Messaging.Domain.csproj ./Modules/Messaging/Modules.Messaging.Domain/
+COPY Modules/Messaging/Modules.Messaging.Features/Modules.Messaging.Features.csproj ./Modules/Messaging/Modules.Messaging.Features/
+COPY Modules/Messaging/Modules.Messaging.Infrastructure/Modules.Messaging.Infrastructure.csproj ./Modules/Messaging/Modules.Messaging.Infrastructure/
+COPY Modules/Messaging/Modules.Messaging.PublicApi/Modules.Messaging.PublicApi.csproj ./Modules/Messaging/Modules.Messaging.PublicApi/
+COPY Modules/Notifications/Modules.Notifications.Domain/Modules.Notifications.Domain.csproj ./Modules/Notifications/Modules.Notifications.Domain/
+COPY Modules/Notifications/Modules.Notifications.Features/Modules.Notifications.Features.csproj ./Modules/Notifications/Modules.Notifications.Features/
+COPY Modules/Notifications/Modules.Notifications.Infrastructure/Modules.Notifications.Infrastructure.csproj ./Modules/Notifications/Modules.Notifications.Infrastructure/
+COPY Modules/Notifications/Modules.Notifications.PublicApi/Modules.Notifications.PublicApi.csproj ./Modules/Notifications/Modules.Notifications.PublicApi/
+COPY Modules/Patients/Modules.Patients.Domain/Modules.Patients.Domain.csproj ./Modules/Patients/Modules.Patients.Domain/
+COPY Modules/Patients/Modules.Patients.Features/Modules.Patients.Features.csproj ./Modules/Patients/Modules.Patients.Features/
+COPY Modules/Patients/Modules.Patients.Infrastructure/Modules.Patients.Infrastructure.csproj ./Modules/Patients/Modules.Patients.Infrastructure/
+COPY Modules/Patients/Modules.Patients.PublicApi/Modules.Patients.PublicApi.csproj ./Modules/Patients/Modules.Patients.PublicApi/
+COPY Modules/Payments/Modules.Payments.Domain/Modules.Payments.Domain.csproj ./Modules/Payments/Modules.Payments.Domain/
+COPY Modules/Payments/Modules.Payments.Features/Modules.Payments.Features.csproj ./Modules/Payments/Modules.Payments.Features/
+COPY Modules/Payments/Modules.Payments.Infrastructure/Modules.Payments.Infrastructure.csproj ./Modules/Payments/Modules.Payments.Infrastructure/
+COPY Modules/Payments/Modules.Payments.PublicApi/Modules.Payments.PublicApi.csproj ./Modules/Payments/Modules.Payments.PublicApi/
+COPY Modules/Professionals/Modules.Professionals.Domain/Modules.Professionals.Domain.csproj ./Modules/Professionals/Modules.Professionals.Domain/
+COPY Modules/Professionals/Modules.Professionals.Features/Modules.Professionals.Features.csproj ./Modules/Professionals/Modules.Professionals.Features/
+COPY Modules/Professionals/Modules.Professionals.Infrastructure/Modules.Professionals.Infrastructure.csproj ./Modules/Professionals/Modules.Professionals.Infrastructure/
+COPY Modules/Professionals/Modules.Professionals.PublicApi/Modules.Professionals.PublicApi.csproj ./Modules/Professionals/Modules.Professionals.PublicApi/
+COPY Modules/Requests/Modules.Requests.Domain/Modules.Requests.Domain.csproj ./Modules/Requests/Modules.Requests.Domain/
+COPY Modules/Requests/Modules.Requests.Features/Modules.Requests.Features.csproj ./Modules/Requests/Modules.Requests.Features/
+COPY Modules/Requests/Modules.Requests.Infrastructure/Modules.Requests.Infrastructure.csproj ./Modules/Requests/Modules.Requests.Infrastructure/
+COPY Modules/Requests/Modules.Requests.PublicApi/Modules.Requests.PublicApi.csproj ./Modules/Requests/Modules.Requests.PublicApi/
+COPY Modules/Reviews/Modules.Reviews.Domain/Modules.Reviews.Domain.csproj ./Modules/Reviews/Modules.Reviews.Domain/
+COPY Modules/Reviews/Modules.Reviews.Features/Modules.Reviews.Features.csproj ./Modules/Reviews/Modules.Reviews.Features/
+COPY Modules/Reviews/Modules.Reviews.Infrastructure/Modules.Reviews.Infrastructure.csproj ./Modules/Reviews/Modules.Reviews.Infrastructure/
+COPY Modules/Reviews/Modules.Reviews.PublicApi/Modules.Reviews.PublicApi.csproj ./Modules/Reviews/Modules.Reviews.PublicApi/
 COPY Modules/Common/Modules.Common.Features/Modules.Common.Features.csproj ./Modules/Common/Modules.Common.Features/
 
 # Restore dependencies
@@ -119,3 +148,4 @@ WORKDIR /app/backend.Host
 
 # Use the compiled DLL for debugging support
 ENTRYPOINT ["dotnet", "bin/Debug/net9.0/backend.Host.dll"]
+

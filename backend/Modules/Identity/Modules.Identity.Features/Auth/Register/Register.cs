@@ -9,7 +9,7 @@ namespace Modules.Identity.Features.Auth.Register;
 
 internal sealed class Register: IEndpoint
 {
-    public static void MapEndpoint(IEndpointRouteBuilder app)
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost(IdentityEndpoints.Register, async (
                 Request request,
