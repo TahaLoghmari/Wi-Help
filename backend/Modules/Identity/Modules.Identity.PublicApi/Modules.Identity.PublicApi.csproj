@@ -10,9 +10,4 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Modules.Identity.Infrastructure\Modules.Identity.Infrastructure.csproj" />
-    <ProjectReference Include="..\Modules.Identity.Features\Modules.Identity.Features.csproj" />
-  </ItemGroup>
-
 </Project>

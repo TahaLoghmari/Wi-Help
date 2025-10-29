@@ -45,7 +45,9 @@ public sealed class LoginCommandHandler(
             return Result<AccessTokensDto>.Failure(LoginErrors.InvalidPassword());
         }
         
-        AccessTokensDto tokens = await tokenManagementService.CreateAndStoreTokens(user.Id, command.Email, cancellationToken);
+        var userRoles = await userManager.GetRolesAsync(user);
+        
+        AccessTokensDto tokens = await tokenManagementService.CreateAndStoreTokens(user.Id,userRoles[0], command.Email, cancellationToken);
 
         logger.LogInformation("Login successful for {Email}, UserId: {UserId}",
             command.Email, user.Id);

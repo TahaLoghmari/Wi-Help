@@ -15,6 +15,7 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" />
+        <PackageReference Include="EFCore.NamingConventions" />
         <PackageReference Include="Microsoft.IdentityModel.Tokens" />
         <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
         <PackageReference Include="Hangfire.AspNetCore" />
@@ -23,6 +24,10 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Modules.Patients.Domain\Modules.Patients.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Database\Migrations\" />
     </ItemGroup>
 
 </Project>

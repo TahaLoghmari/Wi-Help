@@ -27,12 +27,6 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
             .Must(NotBeInFuture)
             .WithMessage("Date of Birth cannot be in the future.");
         
-        RuleFor(x => x.Address)
-            .NotEmpty()
-            .WithMessage("Address is required.")
-            .MaximumLength(50)
-            .WithMessage("Address must be at most 50 characters.");
-        
         RuleFor(x => x.Gender)
             .NotEmpty()
             .WithMessage("Gender is required.")
@@ -78,6 +72,67 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
         RuleFor(x => x.ConfirmPassword)
             .Equal(x => x.Password)
             .WithMessage("Password and confirmation password do not match.");
+        
+        RuleFor(x => x.Address.Street)
+            .NotEmpty()
+            .WithMessage("Street is required.")
+            .MaximumLength(200)
+            .WithMessage("Street must be at most 200 characters.");
+        
+        RuleFor(x => x.Address.City)
+            .NotEmpty()
+            .WithMessage("City is required.")
+            .MaximumLength(100)
+            .WithMessage("City must be at most 100 characters.");
+        
+        RuleFor(x => x.Address.PostalCode)
+            .NotEmpty()
+            .WithMessage("Postal Code is required.")
+            .MaximumLength(20)
+            .WithMessage("Postal Code must be at most 20 characters.");
+        
+        RuleFor(x => x.Address.Country)
+            .NotEmpty()
+            .WithMessage("Country is required.")
+            .MaximumLength(100)
+            .WithMessage("Country must be at most 100 characters.");
+        
+        When(x => x.Role.Equals("patient", StringComparison.OrdinalIgnoreCase), () =>
+        {
+            RuleFor(x => x.EmergencyContact)
+                .NotNull()
+                .WithMessage("Emergency contact is required for patients");
+
+            RuleFor(x => x.EmergencyContact!.FullName)
+                .NotEmpty()
+                .WithMessage("Emergency contact full name is required")
+                .MaximumLength(100);
+    
+            RuleFor(x => x.EmergencyContact!.PhoneNumber)
+                .NotEmpty()
+                .WithMessage("Emergency contact phone number is required")
+                .Matches(@"^\+?[\d\s\-()]+$")
+                .WithMessage("Invalid phone number format")
+                .MaximumLength(20);
+    
+            RuleFor(x => x.EmergencyContact!.Relationship)
+                .NotEmpty()
+                .WithMessage("Relationship is required")
+                .MaximumLength(50);
+        });
+
+        
+        When(x => x.Role.Equals("professional", StringComparison.OrdinalIgnoreCase), () =>
+        {
+            RuleFor(x => x.Specialization)
+                .NotNull()
+                .WithMessage("Specialization is required for professionals");
+        
+            RuleFor(x => x.YearsOfExperience)
+                .NotNull()
+                .WithMessage("Years of Experience is required for professionals");
+        });
+        
     }
     
     private static bool ContainUppercase(string password)

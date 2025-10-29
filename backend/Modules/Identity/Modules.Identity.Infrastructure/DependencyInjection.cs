@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Modules.Identity.Domain.Entities;
+using Modules.Identity.Infrastructure.Database;
 using Modules.Identity.Infrastructure.Services;
 using Modules.Identity.Infrastructure.Settings;
 
@@ -11,12 +12,15 @@ namespace Modules.Identity.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddIdentityModule(
+    public static IServiceCollection AddIdentityInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddDbContext<IdentityDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+        services.AddDbContext<IdentityDbContext>(x => x
+            .EnableSensitiveDataLogging()
+            .UseNpgsql(configuration.GetConnectionString("DefaultConnection"), npgsqlOptions =>
+                npgsqlOptions.MigrationsHistoryTable(DbConsts.MigrationHistoryTableName, DbConsts.IdentitySchemaName))
+            .UseSnakeCaseNamingConvention());
 
         services.AddIdentity<User, IdentityRole<Guid>>()
             .AddEntityFrameworkStores<IdentityDbContext>()

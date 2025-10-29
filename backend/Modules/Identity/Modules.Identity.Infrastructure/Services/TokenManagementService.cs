@@ -5,6 +5,7 @@ using Modules.Common.Features.Results;
 using Modules.Identity.Domain.Entities;
 using Modules.Identity.Domain.Errors;
 using Modules.Identity.Features.DTOs;
+using Modules.Identity.Infrastructure.Database;
 using Modules.Identity.Infrastructure.Settings;
 
 namespace Modules.Identity.Infrastructure.Services;
@@ -20,6 +21,7 @@ public sealed class TokenManagementService(
 
     public async Task<AccessTokensDto> CreateAndStoreTokens(
         Guid userId,
+        string role,
         string email,
         CancellationToken cancellationToken)
     {
@@ -29,7 +31,7 @@ public sealed class TokenManagementService(
         identityDbContext.RefreshTokens.RemoveRange(oldRefreshTokens);
 
         TokenRequest tokenRequest = new TokenRequest(userId, email);
-        AccessTokensDto accessTokens = tokenProvider.Create(tokenRequest);
+        AccessTokensDto accessTokens = tokenProvider.Create(tokenRequest,role);
 
         var refreshToken = new RefreshToken
         {
@@ -47,6 +49,8 @@ public sealed class TokenManagementService(
     }
 
     public async Task<Result<AccessTokensDto>> RefreshUserTokens(
+        Guid userId,
+        string role,
         string refreshTokenValue,
         CancellationToken cancellationToken)
     {
@@ -69,7 +73,7 @@ public sealed class TokenManagementService(
         }
 
         var tokenRequest = new TokenRequest(refreshToken.User.Id, refreshToken.User.Email!);
-        AccessTokensDto tokens = tokenProvider.Create(tokenRequest);
+        AccessTokensDto tokens = tokenProvider.Create(tokenRequest,role);
 
         refreshToken.Token = tokens.RefreshToken;
         refreshToken.ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthSettings.RefreshTokenExpirationDays);

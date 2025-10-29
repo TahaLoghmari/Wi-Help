@@ -6,4 +6,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Modules.Professionals.Domain\Modules.Professionals.Domain.csproj" />
+    <ProjectReference Include="..\Modules.Professionals.Infrastructure\Modules.Professionals.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules.Professionals.PublicApi\Modules.Professionals.PublicApi.csproj" />
+    <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Features\Modules.Common.Features.csproj" />
+  </ItemGroup>
+
 </Project>

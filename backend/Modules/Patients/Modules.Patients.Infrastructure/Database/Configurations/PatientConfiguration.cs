@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Modules.Patients.Domain.Entities;
 
-namespace Modules.Patients.Infrastructure.Configurations;
+namespace Modules.Patients.Infrastructure.Database.Configurations;
 
 public class PatientConfiguration : IEntityTypeConfiguration<Patient>
 {
@@ -15,14 +15,12 @@ public class PatientConfiguration : IEntityTypeConfiguration<Patient>
         builder.Property(p => p.UserId)
             .IsRequired();
 
-        builder.OwnsOne(p => p.DefaultAddress, address =>
+        builder.OwnsOne(p => p.Address, address =>
         {
             address.Property(a => a.Street).HasMaxLength(200);
             address.Property(a => a.City).HasMaxLength(100);
             address.Property(a => a.PostalCode).HasMaxLength(20);
             address.Property(a => a.Country).HasMaxLength(100);
-            address.Property(a => a.Latitude).IsRequired();
-            address.Property(a => a.Longitude).IsRequired();
         });
 
         builder.OwnsOne(p => p.EmergencyContact, contact =>

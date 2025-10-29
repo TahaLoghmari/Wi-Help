@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Modules.Identity.Domain.Entities;
 
-namespace Modules.Identity.Infrastructure.Configurations;
+namespace Modules.Identity.Infrastructure.Database.Configurations;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {

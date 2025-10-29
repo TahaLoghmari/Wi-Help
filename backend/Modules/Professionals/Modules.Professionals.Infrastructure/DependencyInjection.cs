@@ -1,20 +1,20 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Modules.Patients.Infrastructure.Database;
+using Modules.Professionals.Infrastructure.Database;
 
-namespace Modules.Patients.Infrastructure;
+namespace Modules.Professionals.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddPatientsInfrastructure(
+    public static IServiceCollection AddProfessionalsInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddDbContext<PatientsDbContext>(x => x
+        services.AddDbContext<ProfessionalsDbContext>(x => x
             .EnableSensitiveDataLogging()
             .UseNpgsql(configuration.GetConnectionString("DefaultConnection"), npgsqlOptions => 
-                npgsqlOptions.MigrationsHistoryTable(DbConsts.MigrationHistoryTableName, DbConsts.PatientsSchemaName))
+                npgsqlOptions.MigrationsHistoryTable(DbConsts.MigrationHistoryTableName, DbConsts.ProfessionalsSchemaName))
             .UseSnakeCaseNamingConvention()
         );
         return services;

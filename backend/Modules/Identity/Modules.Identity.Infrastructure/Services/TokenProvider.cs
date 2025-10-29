@@ -1,9 +1,11 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using Modules.Identity.Domain.Entities;
 using Modules.Identity.Features.DTOs;
 using Modules.Identity.Infrastructure.Settings;
 
@@ -13,14 +15,18 @@ public sealed class TokenProvider(
     IOptions<JwtSettings> jwtAuthSettings)
 {
     private readonly JwtSettings _jwtAuthSettings = jwtAuthSettings.Value;
-    public AccessTokensDto Create(TokenRequest tokenRequest)
+    public AccessTokensDto Create(
+        TokenRequest tokenRequest,
+        string role )
     {
         return new AccessTokensDto(
-            GenerateAccessToken(tokenRequest),
+            GenerateAccessToken(tokenRequest,role),
             GenerateRefreshToken()
         );
     }
-    private string GenerateAccessToken(TokenRequest tokenRequest)
+    private string GenerateAccessToken(
+        TokenRequest tokenRequest,
+        string role)
     {
         var securityKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_jwtAuthSettings.Key)
@@ -33,7 +39,8 @@ public sealed class TokenProvider(
         List<Claim> claims = new()
         {
             new Claim(JwtRegisteredClaimNames.Sub, tokenRequest.UserId.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, tokenRequest.Email)
+            new Claim(JwtRegisteredClaimNames.Email, tokenRequest.Email),
+            new Claim(ClaimTypes.Role, role)
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor

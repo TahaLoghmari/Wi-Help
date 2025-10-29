@@ -43,13 +43,12 @@ Modules/
 ### Dependency Flow (THE TRUTH)
 
 ```
-Host → Features → Infrastructure → Domain
+Host → PublicApi  →  Features  →  Infrastructure  →  Domain
 ```
 
-**✅ CORRECT**: Features depends on Infrastructure  
+**✅ CORRECT**: Features depends on Infrastructure and Domain  
 **✅ CORRECT**: Infrastructure depends on Domain  
-**✅ CORRECT**: Domain has NO dependencies  
-**❌ WRONG**: "Features must not depend on Infrastructure" (old idea)
+**✅ CORRECT**: Domain has NO dependencies
 
 ### Layer Responsibilities
 

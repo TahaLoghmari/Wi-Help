@@ -13,6 +13,10 @@ using Modules.Common.Features;
 using Modules.Identity.Infrastructure;
 using Serilog;
 using Modules.Identity.Infrastructure.Settings;
+using Modules.Patients.Features;
+using Modules.Patients.Infrastructure;
+using Modules.Professionals.Features;
+using Modules.Professionals.Infrastructure;
 
 namespace backend.Host;
 
@@ -142,7 +146,15 @@ internal static class DependencyInjection
             .ToArray();
         
         builder.Services.AddCommonModule(moduleAssemblies);
-        builder.Services.AddIdentityModule(builder.Configuration);
+        
+        builder.Services.AddIdentityInfrastructure(builder.Configuration);
+        
+        builder.Services.AddPatientsModule()
+            .AddPatientsInfrastructure(builder.Configuration);
+
+        builder.Services.AddProfessionalsModule()
+            .AddProfessionalsInfrastructure(builder.Configuration);
+        
         return builder; 
     }
     public static WebApplicationBuilder AddLogging(this WebApplicationBuilder builder)

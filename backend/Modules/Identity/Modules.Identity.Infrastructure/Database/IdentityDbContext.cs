@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Modules.Identity.Domain.Entities;
 
-namespace Modules.Identity.Infrastructure;
+namespace Modules.Identity.Infrastructure.Database;
 public sealed class IdentityDbContext(DbContextOptions<IdentityDbContext> options)
     : IdentityDbContext<User, IdentityRole<Guid>, Guid>(options)
 {
@@ -11,10 +11,10 @@ public sealed class IdentityDbContext(DbContextOptions<IdentityDbContext> option
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        // Set default schema for Identity module 
-        builder.HasDefaultSchema("identity");
-        
         base.OnModelCreating(builder); // sets up Identity tables
+        
+        // Set default schema for Identity module 
+        builder.HasDefaultSchema(DbConsts.IdentitySchemaName);
         
         // Rename Identity tables to use clean, consistent naming
         builder.Entity<IdentityRole<Guid>>().ToTable("roles");

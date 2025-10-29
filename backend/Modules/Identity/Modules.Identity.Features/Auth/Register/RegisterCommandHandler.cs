@@ -5,13 +5,19 @@ using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.Domain.Entities;
 using Modules.Identity.Domain.Errors;
+using Modules.Patients.PublicApi;
+using Modules.Patients.PublicApi.Contracts;
+using Modules.Professionals.PublicApi;
+using Modules.Professionals.PublicApi.Contracts;
 
 namespace Modules.Identity.Features.Auth.Register;
 
 public sealed class RegisterCommandHandler(
     UserManager<User> userManager,
     ILogger<RegisterCommandHandler> logger,
-    EmailService emailService) : ICommandHandler<RegisterCommand>
+    EmailService emailService,
+    IPatientsModuleApi patientApi,
+    IProfessionalModuleApi professionalApi) : ICommandHandler<RegisterCommand>
 {
     public async Task<Result> Handle(
         RegisterCommand command,
@@ -50,8 +56,42 @@ public sealed class RegisterCommandHandler(
         await emailService.SendConfirmationEmail(user);
         
         await userManager.AddToRoleAsync(user, command.Role);
-        
-        // Profile creation can be handled here via a public API call 
+
+        if (string.Equals(command.Role, "Patient", StringComparison.OrdinalIgnoreCase))
+        {
+            CreatePatientRequest patientRequest = new CreatePatientRequest(
+                user.Id,
+                command.Address,
+                command.EmergencyContact!
+            );
+            
+            Result createPatientResult = await patientApi.CreatePatientAsync(
+                patientRequest,
+                cancellationToken);
+
+            if (!createPatientResult.IsSuccess)
+            {
+                return Result.Failure(createPatientResult.Error);
+            }
+        }
+        else if (string.Equals(command.Role, "Professional", StringComparison.OrdinalIgnoreCase))
+        {
+            CreateProfessionalRequest professionalRequest = new CreateProfessionalRequest(
+                user.Id,
+                command.Specialization!,
+                command.YearsOfExperience!.Value,
+                command.Address
+            );
+            
+            Result createProfessionalRequest = await professionalApi.CreateProfessionalAsync(
+                professionalRequest,
+                cancellationToken);
+
+            if (!createProfessionalRequest.IsSuccess)
+            {
+                return Result.Failure(createProfessionalRequest.Error);
+            }
+        }
         
         logger.LogInformation("Confirmation email job enqueued for user {UserId}", user.Id);
         

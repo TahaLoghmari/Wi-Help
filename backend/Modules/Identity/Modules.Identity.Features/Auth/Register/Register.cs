@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Common.Features.ValueObjects;
 
 namespace Modules.Identity.Features.Auth.Register;
 
@@ -19,13 +20,16 @@ internal sealed class Register: IEndpoint
                     request.FirstName,
                     request.LastName,
                     request.DateOfBirth,
-                    request.Address,
                     request.Gender,
                     request.PhoneNumber,
                     request.Email,
                     request.Password,
                     request.ConfirmedPassword,
-                    request.Role);
+                    request.Role,
+                    request.Address,
+                    request.EmergencyContact,
+                    request.Specialization,
+                    request.YearsOfExperience);
                     
                 Result result = await handler.Handle(command, cancellationToken);
                 return result.Match(() => Results.Ok(), CustomResults.Problem);
@@ -36,11 +40,14 @@ internal sealed class Register: IEndpoint
         string FirstName,
         string LastName,
         string DateOfBirth,
-        string Address,
         string Gender,
         string PhoneNumber,
         string Email,
         string Password,
         string ConfirmedPassword,
-        string Role);
+        string Role,
+        Address Address,
+        EmergencyContact EmergencyContact,
+        string? Specialization,
+        int? YearsOfExperience);
 }
