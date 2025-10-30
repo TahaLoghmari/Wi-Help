@@ -12,11 +12,12 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.AddDbContext<PatientsDbContext>(x => x
-            .EnableSensitiveDataLogging()
-            .UseNpgsql(configuration.GetConnectionString("DefaultConnection"), npgsqlOptions => 
+            .UseNpgsql(configuration.GetConnectionString("DefaultConnection"), npgsqlOptions =>
                 npgsqlOptions.MigrationsHistoryTable(DbConsts.MigrationHistoryTableName, DbConsts.PatientsSchemaName))
             .UseSnakeCaseNamingConvention()
         );
         return services;
     }
 }
+
+

@@ -42,6 +42,8 @@ internal static class DependencyInjection
                 )
         );
         
+        builder.Services.AddControllers();
+
         return builder;
     }
     
@@ -51,12 +53,15 @@ internal static class DependencyInjection
         {
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>
-                options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "Wi Help",
-                    Description = "An ASP.NET Core Web API for your application.",
-                })
-            ); 
+                    options.SwaggerDoc("v1", new OpenApiInfo
+                    {
+                        Title = "Wi Help",
+                        Description = "An ASP.NET Core Web API for your application.",
+                    });
+                    options.CustomSchemaIds(t => t.FullName?.Replace("+", "."));
+                }
+            );
         }
         
         return builder;
@@ -142,9 +147,9 @@ internal static class DependencyInjection
         
         Assembly[] moduleApplicationAssemblies = [
             AssemblyReference.Assembly,
-            Modules.Identity.AssemblyReference.Assembly,
-            Modules.Patients.AssemblyReference.Assembly,
-            Modules.Professionals.AssemblyReference.Assembly ];
+            Modules.Identity.Features.AssemblyReference.Assembly,
+            Modules.Patients.Features.AssemblyReference.Assembly,
+            Modules.Professionals.Features.AssemblyReference.Assembly ];
         
         builder.Services.AddEndpoints(moduleApplicationAssemblies);
         

@@ -12,8 +12,7 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.AddDbContext<ProfessionalsDbContext>(x => x
-            .EnableSensitiveDataLogging()
-            .UseNpgsql(configuration.GetConnectionString("DefaultConnection"), npgsqlOptions => 
+            .UseNpgsql(configuration.GetConnectionString("DefaultConnection"), npgsqlOptions =>
                 npgsqlOptions.MigrationsHistoryTable(DbConsts.MigrationHistoryTableName, DbConsts.ProfessionalsSchemaName))
             .UseSnakeCaseNamingConvention()
         );

@@ -6,11 +6,13 @@ public class Professional
 {
     public Guid Id { get; private set; }
     public Guid UserId { get; private set; }
-    public string Specialization { get; private set; }
+    public string Specialization { get; private set; } = string.Empty;
     public int YearsOfExperience { get; private set; }
     public bool IsVerified { get; private set; }
-    public Address Workplace { get; private set; }
+    public Address Workplace { get; private set; } = null!;
     public DateTime CreatedAt { get; private set; }
+    
+    private Professional(){}
 
     public Professional(
         Guid userId,

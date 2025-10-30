@@ -17,7 +17,6 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.AddDbContext<IdentityDbContext>(x => x
-            .EnableSensitiveDataLogging()
             .UseNpgsql(configuration.GetConnectionString("DefaultConnection"), npgsqlOptions =>
                 npgsqlOptions.MigrationsHistoryTable(DbConsts.MigrationHistoryTableName, DbConsts.IdentitySchemaName))
             .UseSnakeCaseNamingConvention());
@@ -32,8 +31,8 @@ public static class DependencyInjection
         services.AddScoped<TokenManagementService>();
         services.AddScoped<TokenProvider>();
         services.AddScoped<EmailService>();
+        services.AddScoped<CookieService>();
 
-        // Configure settings
         services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
         services.Configure<GoogleSettings>(configuration.GetSection("Google"));
         services.Configure<EmailSettings>(configuration.GetSection("Email"));
@@ -41,4 +40,3 @@ public static class DependencyInjection
         return services;
     }
 }
-

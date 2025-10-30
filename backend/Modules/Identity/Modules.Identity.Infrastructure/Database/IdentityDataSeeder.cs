@@ -4,7 +4,7 @@ namespace Modules.Identity.Infrastructure.Database;
 
 public static class IdentityDataSeeder
 {
-    public static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager)
+    public static async Task SeedRolesAsync(RoleManager<IdentityRole<Guid>> roleManager)
     {
         string[] roles = { "Admin", "Professional", "Patient" };
 
@@ -12,7 +12,7 @@ public static class IdentityDataSeeder
         {
             if (!await roleManager.RoleExistsAsync(role))
             {
-                await roleManager.CreateAsync(new IdentityRole(role));
+                await roleManager.CreateAsync(new IdentityRole<Guid>(role));
             }
         }
     }
