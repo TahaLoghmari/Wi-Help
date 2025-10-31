@@ -10,7 +10,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui";
 import { useTranslation } from "react-i18next";
-import OnlyTextLogo from "@/assets/OnlyTextLogo.png";
+import Icon2 from "@/assets/Icon-2.png";
 import { getNavigation } from "@/features/landing-page";
 import {
   Popover,
@@ -23,8 +23,16 @@ export function Header() {
   const navigation = getNavigation(t);
 
   return (
-    <div className="mt-6 flex items-center justify-between rounded-lg border p-4 shadow-sm">
-      <img src={OnlyTextLogo} alt="Logo" className="h-10 w-45" />
+    <div className="mt-1 flex items-center justify-between p-4">
+      <div className="flex items-center gap-5">
+        <img src={Icon2} alt="Logo" className="h-10" />
+        <div className="flex flex-col">
+          <p className="text-xl font-bold">Wi Help</p>
+          <p className="text-muted-foreground text-xs">
+            taking care of others is our priority
+          </p>
+        </div>
+      </div>
       <NavigationMenu>
         <NavigationMenuList>
           {navigation.map((navigation, index) => {
@@ -46,7 +54,7 @@ export function Header() {
       </NavigationMenu>
       <div className="flex items-center gap-4">
         <LanguageSwitcher />
-        <Button asChild variant="outline">
+        <Button asChild variant="outline" className="border-none shadow-none">
           <Link
             to={ROUTE_PATHS.AUTH.LOGIN}
             className="cursor-pointer text-sm font-semibold text-gray-800"
@@ -56,7 +64,7 @@ export function Header() {
         </Button>
         <Popover>
           <PopoverTrigger asChild>
-            <Button className="cursor-pointer bg-[#386d52]! text-sm font-semibold text-white hover:bg-[#386d52]/80!">
+            <Button className="cursor-pointer bg-linear-to-r from-[#3fa6ff] to-[#14d3ac] text-sm font-semibold">
               {t("auth.signUp")}
             </Button>
           </PopoverTrigger>
@@ -65,32 +73,62 @@ export function Header() {
               className="group flex w-full items-center justify-between"
               to={ROUTE_PATHS.AUTH.REGISTER_PATIENT}
             >
-              <p className="cursor-pointer text-lg font-extrabold text-gray-800 group-hover:text-gray-800/70">
+              <p className="cursor-pointer text-sm font-extrabold text-gray-800 group-hover:text-gray-800/70">
                 {t("common.patient")}
               </p>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 -960 960 960"
-                fill="currentColor"
-                className="h-5 w-5 text-[#386d52]"
+                fill="none"
+                className="h-5 w-5"
               >
-                <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z" />
+                <defs>
+                  <linearGradient
+                    id="patientGradient"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="0%"
+                  >
+                    <stop offset="0%" stop-color="#3fa6ff" />
+                    <stop offset="100%" stop-color="#14d3ac" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z"
+                  fill="url(#patientGradient)"
+                />
               </svg>
             </Link>
             <Link
               to={ROUTE_PATHS.AUTH.REGISTER_PROFESSIONAL}
               className="group flex w-full items-center justify-between"
             >
-              <p className="cursor-pointer text-lg font-extrabold text-gray-800 group-hover:text-gray-800/70">
+              <p className="cursor-pointer text-sm font-extrabold text-gray-800 group-hover:text-gray-800/70">
                 {t("common.professional")}
               </p>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 -960 960 960"
-                fill="currentColor"
-                className="h-5 w-5 text-[#386d52]"
+                fill="none"
+                className="h-5 w-5"
               >
-                <path d="M720-280v-120H600v-80h120v-120h80v120h120v80H800v120h-80ZM440-120 313-234q-72-65-123.5-116t-85-96q-33.5-45-49-87T40-621q0-94 63-156.5T260-840q52 0 99 21.5t81 61.5q34-40 81-61.5t99-21.5q85 0 142.5 51.5T834-668q-18-7-36-10.5t-35-3.5q-101 0-172 70.5T520-440q0 52 21 98.5t59 79.5q-19 17-49.5 43.5T498-172l-58 52Z" />
+                <defs>
+                  <linearGradient
+                    id="professionalGradient"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="0%"
+                  >
+                    <stop offset="0%" stop-color="#3fa6ff" />
+                    <stop offset="100%" stop-color="#14d3ac" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M720-280v-120H600v-80h120v-120h80v120h120v80H800v120h-80ZM440-120 313-234q-72-65-123.5-116t-85-96q-33.5-45-49-87T40-621q0-94 63-156.5T260-840q52 0 99 21.5t81 61.5q34-40 81-61.5t99-21.5q85 0 142.5 51.5T834-668q-18-7-36-10.5t-35-3.5q-101 0-172 70.5T520-440q0 52 21 98.5t59 79.5q-19 17-49.5 43.5T498-172l-58 52Z"
+                  fill="url(#professionalGradient)"
+                />
               </svg>
             </Link>
           </PopoverContent>
