@@ -3,8 +3,8 @@ import { ROUTE_PATHS } from "@/config/routes";
 import { Link } from "@tanstack/react-router";
 export function WelcomeSection() {
   return (
-    <div className="flex gap-10">
-      <div className="flex flex-1 flex-col justify-between">
+    <div className="flex gap-10 items-center">
+      <div className="flex flex-1 flex-col justify-between gap-6">
         <div className="flex flex-col gap-6">
           <p className="text-6xl font-semibold text-white">
             Professional <span className="text-[#00e984]">Healthcare</span> at
