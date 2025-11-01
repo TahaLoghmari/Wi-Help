@@ -13,8 +13,7 @@ import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
-import { Route as AuthRegisterProfessionalRouteImport } from './routes/auth/register-professional'
-import { Route as AuthRegisterPatientRouteImport } from './routes/auth/register-patient'
+import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
 import { Route as AuthEmailVerifiedRouteImport } from './routes/auth/email-verified'
@@ -40,15 +39,9 @@ const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthRegisterProfessionalRoute =
-  AuthRegisterProfessionalRouteImport.update({
-    id: '/register-professional',
-    path: '/register-professional',
-    getParentRoute: () => AuthRouteRoute,
-  } as any)
-const AuthRegisterPatientRoute = AuthRegisterPatientRouteImport.update({
-  id: '/register-patient',
-  path: '/register-patient',
+const AuthRegisterRoute = AuthRegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
   getParentRoute: () => AuthRouteRoute,
 } as any)
 const AuthLoginRoute = AuthLoginRouteImport.update({
@@ -79,8 +72,7 @@ export interface FileRoutesByFullPath {
   '/auth/email-verified': typeof AuthEmailVerifiedRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
-  '/auth/register-patient': typeof AuthRegisterPatientRoute
-  '/auth/register-professional': typeof AuthRegisterProfessionalRoute
+  '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/': typeof AuthIndexRoute
 }
@@ -90,8 +82,7 @@ export interface FileRoutesByTo {
   '/auth/email-verified': typeof AuthEmailVerifiedRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
-  '/auth/register-patient': typeof AuthRegisterPatientRoute
-  '/auth/register-professional': typeof AuthRegisterProfessionalRoute
+  '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth': typeof AuthIndexRoute
 }
@@ -103,8 +94,7 @@ export interface FileRoutesById {
   '/auth/email-verified': typeof AuthEmailVerifiedRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
-  '/auth/register-patient': typeof AuthRegisterPatientRoute
-  '/auth/register-professional': typeof AuthRegisterProfessionalRoute
+  '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/': typeof AuthIndexRoute
 }
@@ -117,8 +107,7 @@ export interface FileRouteTypes {
     | '/auth/email-verified'
     | '/auth/forgot-password'
     | '/auth/login'
-    | '/auth/register-patient'
-    | '/auth/register-professional'
+    | '/auth/register'
     | '/auth/reset-password'
     | '/auth/'
   fileRoutesByTo: FileRoutesByTo
@@ -128,8 +117,7 @@ export interface FileRouteTypes {
     | '/auth/email-verified'
     | '/auth/forgot-password'
     | '/auth/login'
-    | '/auth/register-patient'
-    | '/auth/register-professional'
+    | '/auth/register'
     | '/auth/reset-password'
     | '/auth'
   id:
@@ -140,8 +128,7 @@ export interface FileRouteTypes {
     | '/auth/email-verified'
     | '/auth/forgot-password'
     | '/auth/login'
-    | '/auth/register-patient'
-    | '/auth/register-professional'
+    | '/auth/register'
     | '/auth/reset-password'
     | '/auth/'
   fileRoutesById: FileRoutesById
@@ -181,18 +168,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthResetPasswordRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/auth/register-professional': {
-      id: '/auth/register-professional'
-      path: '/register-professional'
-      fullPath: '/auth/register-professional'
-      preLoaderRoute: typeof AuthRegisterProfessionalRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/auth/register-patient': {
-      id: '/auth/register-patient'
-      path: '/register-patient'
-      fullPath: '/auth/register-patient'
-      preLoaderRoute: typeof AuthRegisterPatientRouteImport
+    '/auth/register': {
+      id: '/auth/register'
+      path: '/register'
+      fullPath: '/auth/register'
+      preLoaderRoute: typeof AuthRegisterRouteImport
       parentRoute: typeof AuthRouteRoute
     }
     '/auth/login': {
@@ -231,8 +211,7 @@ interface AuthRouteRouteChildren {
   AuthEmailVerifiedRoute: typeof AuthEmailVerifiedRoute
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthLoginRoute: typeof AuthLoginRoute
-  AuthRegisterPatientRoute: typeof AuthRegisterPatientRoute
-  AuthRegisterProfessionalRoute: typeof AuthRegisterProfessionalRoute
+  AuthRegisterRoute: typeof AuthRegisterRoute
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   AuthIndexRoute: typeof AuthIndexRoute
 }
@@ -242,8 +221,7 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthEmailVerifiedRoute: AuthEmailVerifiedRoute,
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthLoginRoute: AuthLoginRoute,
-  AuthRegisterPatientRoute: AuthRegisterPatientRoute,
-  AuthRegisterProfessionalRoute: AuthRegisterProfessionalRoute,
+  AuthRegisterRoute: AuthRegisterRoute,
   AuthResetPasswordRoute: AuthResetPasswordRoute,
   AuthIndexRoute: AuthIndexRoute,
 }

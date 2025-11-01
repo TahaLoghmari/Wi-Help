@@ -1,5 +1,8 @@
+export * from "./avatar";
 export * from "./button";
+export * from "./calendar";
 export * from "./card";
+export * from "./carousel";
 export * from "./content-loading";
 export * from "./form";
 export * from "./input";
@@ -7,5 +10,8 @@ export * from "./label";
 export * from "./language-switcher";
 export * from "./navigation-menu";
 export * from "./page-loading";
+export * from "./popover";
+export * from "./progress";
+export * from "./select";
 export * from "./sonner";
 export * from "./spinner";

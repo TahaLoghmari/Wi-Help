@@ -13,9 +13,28 @@ export function RegisterFormDefaults() {
     firstName: "",
     lastName: "",
     dateOfBirth: "",
-    address:"",
     gender: "",
     phoneNumber: "",
+    role: "",
+    address: {
+      streetAddress: "",
+      city: "",
+      postalCode: "",
+      country: "",
+    },
+    emergencyContact: {
+      name: "",
+      phoneNumber: "",
+      relationship: "",
+    },
+    workplace: {
+      streetAddress: "",
+      city: "",
+      postalCode: "",
+      country: "",
+    },
+    specialization: "",
+    yearsOfExperience: "",
   };
 }
 

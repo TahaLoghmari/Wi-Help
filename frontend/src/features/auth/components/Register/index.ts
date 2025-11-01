@@ -1,2 +1,3 @@
-export * from "./RegisterPatientPage";
-export * from "./RegisterProfessionalPage";
+export * from "./Register";
+export * from "./PatientForm";
+export * from "./ProfessionalForm";

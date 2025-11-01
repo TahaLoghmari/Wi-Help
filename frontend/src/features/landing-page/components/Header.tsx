@@ -71,7 +71,7 @@ export function Header() {
           <PopoverContent className="mt-[15px] flex flex-col gap-4">
             <Link
               className="group flex w-full items-center justify-between"
-              to={ROUTE_PATHS.AUTH.REGISTER_PATIENT}
+              to={ROUTE_PATHS.AUTH.REGISTER}
             >
               <p className="cursor-pointer text-sm font-extrabold text-gray-800 group-hover:text-gray-800/70">
                 {t("common.patient")}
@@ -101,7 +101,7 @@ export function Header() {
               </svg>
             </Link>
             <Link
-              to={ROUTE_PATHS.AUTH.REGISTER_PROFESSIONAL}
+              to={ROUTE_PATHS.AUTH.REGISTER}
               className="group flex w-full items-center justify-between"
             >
               <p className="cursor-pointer text-sm font-extrabold text-gray-800 group-hover:text-gray-800/70">

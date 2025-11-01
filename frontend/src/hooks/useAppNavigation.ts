@@ -14,12 +14,8 @@ export function useAppNavigation() {
       });
     },
 
-    goToRegisterPatient: () => {
-      navigate({ to: ROUTE_PATHS.AUTH.REGISTER_PATIENT });
-    },
-
-    goToRegisterProfessional: () => {
-      navigate({ to: ROUTE_PATHS.AUTH.REGISTER_PROFESSIONAL });
+    goToRegister: () => {
+      navigate({ to: ROUTE_PATHS.AUTH.REGISTER });
     },
 
     goToForgotPassword: (email?: string) => {

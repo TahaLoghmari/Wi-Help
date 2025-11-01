@@ -10,6 +10,26 @@ export interface User {
   hasPassword: boolean;
 }
 
+export interface Address {
+  streetAddress: string;
+  city: string;
+  postalCode: string;
+  country: string;
+}
+
+export interface Workplace {
+  streetAddress: string;
+  city: string;
+  postalCode: string;
+  country: string;
+}
+
+export interface EmergencyContact {
+  name: string;
+  phoneNumber: string;
+  relationship: string;
+}
+
 export interface LoginUserDto {
   email: string;
   password: string;
@@ -20,15 +40,20 @@ export interface ForgotPasswordDto {
 }
 
 export interface RegisterUserDto {
+  email: string;
+  password: string;
+  confirmPassword: string;
   firstName: string;
   lastName: string;
   dateOfBirth: string;
-  address: string;
   gender: string;
-  email: string;
   phoneNumber: string;
-  password: string;
-  confirmPassword: string;
+  role: string;
+  address?: Address;
+  emergencyContact?: EmergencyContact;
+  workplace?: Workplace;
+  specialization?: string;
+  yearsOfExperience?: string;
 }
 
 export interface ResetPasswordDto {

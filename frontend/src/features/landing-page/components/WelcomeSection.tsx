@@ -17,13 +17,13 @@ export function WelcomeSection() {
         </div>
         <div className="flex items-center gap-4">
           <Link
-            to={ROUTE_PATHS.AUTH.REGISTER_PATIENT}
+            to={ROUTE_PATHS.AUTH.REGISTER}
             className="text-primary cursor-pointer rounded-full border-2 border-[#00e984] bg-[#00e984] p-4 text-xs font-bold transition-all duration-300 hover:border-[#5fd1ab] hover:bg-[#5fd1ab]"
           >
             Book Care Now
           </Link>
           <Link
-            to={ROUTE_PATHS.AUTH.REGISTER_PROFESSIONAL}
+            to={ROUTE_PATHS.AUTH.REGISTER}
             className="hover:text-primary cursor-pointer rounded-full border-2 p-4 text-xs font-bold text-white transition-all duration-300 hover:bg-white"
           >
             Join as Professional

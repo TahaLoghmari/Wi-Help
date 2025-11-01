@@ -40,7 +40,7 @@ export function JoinSection() {
           </div>
         </div>
         <Link
-          to={ROUTE_PATHS.AUTH.REGISTER_PROFESSIONAL}
+          to={ROUTE_PATHS.AUTH.REGISTER}
           className="text-primary w-fit cursor-pointer rounded-full bg-[#00e984] p-4 text-xs font-bold transition-all duration-300 hover:bg-[#5fd1ab]"
         >
           Apply as Professional

@@ -160,7 +160,7 @@ export function LoginPage({
                 <div className="text-center text-sm">
                   {t("auth.dontHaveAccount")}{" "}
                   <Link
-                    to={ROUTE_PATHS.AUTH.REGISTER_PATIENT}
+                    to={ROUTE_PATHS.AUTH.REGISTER}
                     className="font-semibold text-[#386d52] underline-offset-4 hover:text-[#386d52]/90"
                   >
                     {t("auth.signUp")}
