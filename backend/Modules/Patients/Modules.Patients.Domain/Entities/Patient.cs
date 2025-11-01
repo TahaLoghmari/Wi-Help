@@ -8,7 +8,7 @@ public class Patient
     public Guid UserId { get; private set; }
 
     public Address Address { get; private set; } = null!;
-    public EmergencyContact? EmergencyContact { get; private set; }
+    public EmergencyContact EmergencyContact { get; private set; } = null!;
 
     private Patient() { } 
 
