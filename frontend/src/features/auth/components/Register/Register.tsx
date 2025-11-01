@@ -32,7 +32,10 @@ export function Register() {
   const form = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
     mode: "onChange",
-    defaultValues: RegisterFormDefaults(),
+    defaultValues: {
+      ...RegisterFormDefaults(),
+      role: registerRole,
+    },
   });
 
   const steps =
@@ -41,6 +44,9 @@ export function Register() {
       : ["Personal Info", "Address Info", "Professional Info"];
 
   const onSubmit = async (credentials: z.infer<typeof registerFormSchema>) => {
+    console.log("Form validation passed! Submitting...", credentials);
+    console.log("Form errors:", form.formState.errors);
+    setStep(1);
     registerMutation.mutate({
       ...credentials,
       role: registerRole,
@@ -69,7 +75,14 @@ export function Register() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form
+              onSubmit={(e) => {
+                console.log("Form submit event triggered");
+                console.log("Current form values:", form.getValues());
+                console.log("Form errors:", form.formState.errors);
+                form.handleSubmit(onSubmit)(e);
+              }}
+            >
               <div className="mt-1 grid">
                 <div className="flex flex-col">
                   <p className="mb-2 text-xs font-semibold text-gray-600">
@@ -101,6 +114,7 @@ export function Register() {
                     onClick={() => {
                       setStep(1);
                       setRegisterRole("patient");
+                      form.setValue("role", "patient");
                     }}
                   >
                     <svg
@@ -118,6 +132,7 @@ export function Register() {
                     onClick={() => {
                       setStep(1);
                       setRegisterRole("professional");
+                      form.setValue("role", "professional");
                     }}
                   >
                     <svg

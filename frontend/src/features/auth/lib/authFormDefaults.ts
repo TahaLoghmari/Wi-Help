@@ -17,24 +17,24 @@ export function RegisterFormDefaults() {
     phoneNumber: "",
     role: "",
     address: {
-      streetAddress: "",
+      street: "",
       city: "",
       postalCode: "",
       country: "",
     },
     emergencyContact: {
-      name: "",
+      fullName: "",
       phoneNumber: "",
       relationship: "",
     },
     workplace: {
-      streetAddress: "",
+      street: "",
       city: "",
       postalCode: "",
       country: "",
     },
     specialization: "",
-    yearsOfExperience: "",
+    yearsOfExperience: undefined as number | undefined,
   };
 }
 

@@ -305,7 +305,7 @@ export function PatientForm({ form }: PatientFormProps) {
           <div className="grid gap-3">
             <FormField
               control={form.control}
-              name="address.streetAddress"
+              name="address.street"
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-2">
                   <FormLabel className="text-xs text-gray-700">
@@ -416,7 +416,7 @@ export function PatientForm({ form }: PatientFormProps) {
               className="cursor-pointer bg-linear-to-r from-[#3fa6ff] to-[#00e984] transition-transform duration-200 hover:scale-101 hover:shadow-lg"
               onClick={async () => {
                 const isStep2Valid = await form.trigger([
-                  "address.streetAddress",
+                  "address.street",
                   "address.city",
                   "address.postalCode",
                   "address.country",
@@ -447,7 +447,7 @@ export function PatientForm({ form }: PatientFormProps) {
           <div className="grid gap-3">
             <FormField
               control={form.control}
-              name="emergencyContact.name"
+              name="emergencyContact.fullName"
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-2">
                   <FormLabel className="text-xs text-gray-700">Name</FormLabel>
@@ -534,7 +534,7 @@ export function PatientForm({ form }: PatientFormProps) {
             <Button
               type="submit"
               className="cursor-pointer bg-linear-to-r from-[#3fa6ff] to-[#00e984] transition-transform duration-200 hover:scale-101 hover:shadow-lg"
-              disabled={!form.formState.isValid || registerMutation.isPending}
+              disabled={registerMutation.isPending}
             >
               {registerMutation.isPending ? (
                 <Spinner className="h-5 w-5 border-2 invert" />

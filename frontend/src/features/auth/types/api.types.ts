@@ -11,21 +11,21 @@ export interface User {
 }
 
 export interface Address {
-  streetAddress: string;
+  street: string;
   city: string;
   postalCode: string;
   country: string;
 }
 
 export interface Workplace {
-  streetAddress: string;
+  street: string;
   city: string;
   postalCode: string;
   country: string;
 }
 
 export interface EmergencyContact {
-  name: string;
+  fullName: string;
   phoneNumber: string;
   relationship: string;
 }
@@ -53,7 +53,7 @@ export interface RegisterUserDto {
   emergencyContact?: EmergencyContact;
   workplace?: Workplace;
   specialization?: string;
-  yearsOfExperience?: string;
+  yearsOfExperience?: number;
 }
 
 export interface ResetPasswordDto {

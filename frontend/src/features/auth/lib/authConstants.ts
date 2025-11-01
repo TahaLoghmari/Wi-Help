@@ -194,13 +194,3 @@ export const SPECIALIZATIONS: SelectItem[] = [
   { label: "Nursing", value: "nursing" },
   { label: "Other", value: "other" },
 ];
-
-export const EXPERIENCES: SelectItem[] = [
-  { label: "Less than 1 year", value: "lessThan1Year" },
-  { label: "1 - 3 years", value: "oneToThreeYears" },
-  { label: "3 - 5 years", value: "threeToFiveYears" },
-  { label: "5 - 10 years", value: "fiveToTenYears" },
-  { label: "10 - 15 years", value: "tenToFifteenYears" },
-  { label: "15 - 20 years", value: "fifteenToTwentyYears" },
-  { label: "More than 20 years", value: "moreThanTwentyYears" },
-];

@@ -5,7 +5,6 @@ import {
   COUNTRIES,
   useRegister,
   SPECIALIZATIONS,
-  EXPERIENCES,
 } from "@/features/auth";
 import type z from "zod";
 import {
@@ -306,7 +305,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
           <div className="grid gap-3">
             <FormField
               control={form.control}
-              name="workplace.streetAddress"
+              name="workplace.street"
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-2">
                   <FormLabel className="text-xs text-gray-700">
@@ -417,7 +416,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
               className="cursor-pointer bg-linear-to-r from-[#3fa6ff] to-[#00e984] transition-transform duration-200 hover:scale-101 hover:shadow-lg"
               onClick={async () => {
                 const isStep2Valid = await form.trigger([
-                  "workplace.streetAddress",
+                  "workplace.street",
                   "workplace.city",
                   "workplace.postalCode",
                   "workplace.country",
@@ -490,25 +489,20 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                     Years Of Experience
                   </FormLabel>
                   <FormControl>
-                    <Select
-                      key={`yearsOfExperience-${step}`}
-                      value={field.value || ""}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue
-                          className="text-xs placeholder:text-xs"
-                          placeholder="Select experience"
-                        ></SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        {EXPERIENCES.map((experience, idx) => (
-                          <SelectItem key={idx} value={experience.value}>
-                            {experience.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      type="number"
+                      min="0"
+                      max="100"
+                      className="text-xs placeholder:text-sm"
+                      placeholder="Enter years of experience"
+                      value={field.value ?? ""}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        field.onChange(
+                          value === "" ? undefined : Number(value),
+                        );
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

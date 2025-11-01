@@ -1,10 +1,10 @@
 import z from "zod";
 
 const addressSchema = z.object({
-  streetAddress: z
+  street: z
     .string()
-    .min(1, { message: "Street Address is required." })
-    .max(100, { message: "Street Address must be at most 100 characters." }),
+    .min(1, { message: "Street is required." })
+    .max(100, { message: "Street must be at most 100 characters." }),
   city: z
     .string()
     .min(1, { message: "City is required." })
@@ -20,26 +20,20 @@ const addressSchema = z.object({
 });
 
 const workplaceSchema = z.object({
-  streetAddress: z
+  street: z
     .string()
-    .min(1, { message: "Street Address is required." })
-    .max(100, { message: "Street Address must be at most 100 characters." }),
-  city: z
-    .string()
-    .min(1, { message: "City is required." })
-    .max(50, { message: "City must be at most 50 characters." }),
+    .max(100, { message: "Street must be at most 100 characters." }),
+  city: z.string().max(50, { message: "City must be at most 50 characters." }),
   postalCode: z
     .string()
-    .min(1, { message: "Postal Code is required." })
     .max(20, { message: "Postal Code must be at most 20 characters." }),
   country: z
     .string()
-    .min(1, { message: "Country is required." })
     .max(50, { message: "Country must be at most 50 characters." }),
 });
 
 const emergencyContactSchema = z.object({
-  name: z
+  fullName: z
     .string()
     .min(1, { message: "Emergency Contact Name is required." })
     .max(100, {
@@ -70,7 +64,17 @@ export const registerFormSchema = z
       .string()
       .min(1, { message: "Last Name is required." })
       .max(50, { message: "Last Name must be at most 50 characters." }),
-    dateOfBirth: z.string().min(1, { message: "Date of Birth is required." }),
+    dateOfBirth: z
+      .string()
+      .min(1, { message: "Date of Birth is required." })
+      .refine(
+        (date) => {
+          const selectedDate = new Date(date);
+          const today = new Date();
+          return selectedDate <= today;
+        },
+        { message: "Date of Birth cannot be in the future." },
+      ),
     gender: z
       .string()
       .min(1, { message: "Gender is required." })
@@ -115,10 +119,7 @@ export const registerFormSchema = z
       .string()
       .max(100, { message: "Specialization must be at most 100 characters." })
       .optional(),
-    yearsOfExperience: z
-      .string()
-      .max(50, { message: "Years of experience must be at most 50." })
-      .optional(),
+    yearsOfExperience: z.number().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Password and confirmation password do not match.",
@@ -163,7 +164,17 @@ export const registerFormSchema = z
   .refine(
     (data) => {
       if (data.role === "professional") {
-        return !!data.workplace;
+        return (
+          !!data.workplace &&
+          !!data.workplace.street &&
+          data.workplace.street.trim().length > 0 &&
+          !!data.workplace.city &&
+          data.workplace.city.trim().length > 0 &&
+          !!data.workplace.postalCode &&
+          data.workplace.postalCode.trim().length > 0 &&
+          !!data.workplace.country &&
+          data.workplace.country.trim().length > 0
+        );
       }
       return true;
     },
@@ -176,7 +187,10 @@ export const registerFormSchema = z
     (data) => {
       if (data.role === "professional") {
         return (
-          !!data.yearsOfExperience && data.yearsOfExperience.trim().length > 0
+          data.yearsOfExperience !== undefined &&
+          data.yearsOfExperience !== null &&
+          typeof data.yearsOfExperience === "number" &&
+          data.yearsOfExperience >= 0
         );
       }
       return true;
