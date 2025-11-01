@@ -29,7 +29,7 @@ public sealed class User : IdentityUser<Guid>
             FirstName = firstName,
             LastName = lastName,
             Gender = gender,
-            DateOfBirth = DateTime.Parse(dateOfBirth),
+            DateOfBirth = DateTime.SpecifyKind(DateTime.Parse(dateOfBirth), DateTimeKind.Utc),
             CreatedAt = DateTime.UtcNow,
             Email = email,
             PhoneNumber = phoneNumber,

@@ -17,14 +17,14 @@ internal sealed class Register: IEndpoint
                 CancellationToken cancellationToken) =>
             {
                 RegisterCommand command = new RegisterCommand(
+                    request.Email,
+                    request.Password,
+                    request.ConfirmPassword,
                     request.FirstName,
                     request.LastName,
                     request.DateOfBirth,
                     request.Gender,
                     request.PhoneNumber,
-                    request.Email,
-                    request.Password,
-                    request.ConfirmedPassword,
                     request.Role,
                     request.Address,
                     request.EmergencyContact,
@@ -37,14 +37,14 @@ internal sealed class Register: IEndpoint
             .WithTags(Tags.Authentication);
     }
     private sealed record Request(
+        string Email,
+        string Password,
+        string ConfirmPassword,
         string FirstName,
         string LastName,
         string DateOfBirth,
         string Gender,
         string PhoneNumber,
-        string Email,
-        string Password,
-        string ConfirmedPassword,
         string Role,
         Address Address,
         EmergencyContact EmergencyContact,

@@ -38,7 +38,8 @@ public sealed class TokenManagementService(
             Id = Guid.CreateVersion7(),
             UserId = userId,
             Token = accessTokens.RefreshToken,
-            ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthSettings.RefreshTokenExpirationDays)
+            ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthSettings.RefreshTokenExpirationDays),
+            CreatedAtUtc = DateTime.UtcNow
         };
 
         identityDbContext.RefreshTokens.Add(refreshToken);

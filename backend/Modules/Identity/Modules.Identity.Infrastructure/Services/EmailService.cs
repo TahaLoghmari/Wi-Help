@@ -4,9 +4,7 @@ using System.Text.Encodings.Web;
 using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Modules.Identity.Domain.Entities;
@@ -20,8 +18,7 @@ public sealed class EmailService(
     UserManager<User> userManager,
     ILogger<EmailService> logger,
     IBackgroundJobClient backgroundJobClient,
-    IHttpContextAccessor httpContextAccessor,
-    IUrlHelperFactory urlHelperFactory)
+    IConfiguration configuration)
 {
     private readonly EmailSettings _emailSettings = emailSettings.Value;
 
@@ -68,17 +65,10 @@ public sealed class EmailService(
         var token = await userManager.GeneratePasswordResetTokenAsync(user);
         logger.LogInformation("Generated password reset token for user {UserId}", user.Id);
         
-        var httpContext = httpContextAccessor.HttpContext!;
-
-        var url = urlHelperFactory.GetUrlHelper(new ActionContext(
-            httpContext,
-            httpContext.GetRouteData(),
-            new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor()));
-
-        var passwordResetLink = url.Action("GetResetPasswordPage", "Auth",
-            new { Email = email, Token = token }, protocol: httpContext.Request.Scheme);
+        var baseUrl = configuration["VITE_API_URL"] ?? "http://localhost:5000";
+        var passwordResetLink = $"{baseUrl}/auth/reset-password?Email={Uri.EscapeDataString(email)}&Token={Uri.EscapeDataString(token)}";
         
-        if (passwordResetLink is null)
+        if (string.IsNullOrEmpty(passwordResetLink))
         {
             logger.LogError("Password reset link generation failed for user {UserId}. The generated link was null.", user.Id);
             return;
@@ -103,17 +93,10 @@ public sealed class EmailService(
         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
         logger.LogInformation("Generated email confirmation token for user {UserId}", user.Id);
         
-        var httpContext = httpContextAccessor.HttpContext!;
+        var baseUrl = configuration["VITE_API_URL"] ?? "http://localhost:5000";
+        var confirmationLink = $"{baseUrl}/auth/confirm-email?UserId={Uri.EscapeDataString(user.Id.ToString())}&Token={Uri.EscapeDataString(token)}";
 
-        var url = urlHelperFactory.GetUrlHelper(new ActionContext(
-            httpContext,
-            httpContext.GetRouteData(),
-            new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor()));
-
-        var confirmationLink = url.Action("ConfirmEmail", "Auth",
-            new { UserId = user.Id, Token = token }, protocol: httpContext.Request.Scheme);
-
-        if (confirmationLink is null)
+        if (string.IsNullOrEmpty(confirmationLink))
         {
             logger.LogError("Email confirmation link generation failed for user {UserId}. The generated link was null.", user.Id);
             return;

@@ -4,14 +4,14 @@ using Modules.Common.Features.ValueObjects;
 namespace Modules.Identity.Features.Auth.Register;
 
 public sealed record RegisterCommand(
+    string Email,
+    string Password,
+    string ConfirmPassword,
     string FirstName,
     string LastName,
     string DateOfBirth,
     string Gender,
     string PhoneNumber,
-    string Email,
-    string Password,
-    string ConfirmPassword,
     string Role, 
     Address Address,
     EmergencyContact? EmergencyContact,
