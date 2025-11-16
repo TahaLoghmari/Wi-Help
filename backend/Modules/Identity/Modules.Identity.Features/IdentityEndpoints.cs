@@ -6,4 +6,5 @@ public static class IdentityEndpoints
     public const string Register = "auth/register";
     public const string ConfirmEmail = "auth/confirm-email";
     public const string GetCurrentUser = "auth/me";
+    public const string Refresh = "auth/refresh";
 }

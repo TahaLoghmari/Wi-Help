@@ -18,7 +18,7 @@ import {
   useDashboardSidebarStateStore,
   useLogoutDialogStore,
   type SidebarNavUserProps,
-} from "@/features/patient";
+} from "@/features/dashboard";
 import { useCurrentScreenSize } from "@/hooks";
 
 export function DashboardSidebarNavUser({ user }: SidebarNavUserProps) {

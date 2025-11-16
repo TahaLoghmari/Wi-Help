@@ -7,8 +7,8 @@ import {
 } from "@/features/dashboard";
 import { toast } from "sonner";
 import { useEffect } from "react";
-// import { Spinner } from "@/components/ui/spinner";
-// import { useCurrentUser } from "#/auth";
+import { Spinner } from "@/components/ui/spinner";
+import { useCurrentUser } from "@/features/auth";
 import { useCurrentScreenSize } from "@/hooks";
 import { Route as DashboardRoute } from "@/routes/patient/index";
 import { useAppNavigation } from "@/index";
@@ -16,7 +16,7 @@ import { Outlet } from "@tanstack/react-router";
 
 export function DashboardLayout() {
   const { setIsSidebarOpen } = useDashboardSidebarStateStore();
-  // const { data: user, isPending } = useCurrentUser();
+  const { isPending } = useCurrentUser();
   const { currentScreenSize } = useCurrentScreenSize();
   const { message } = DashboardRoute.useSearch();
   const { goToPatientApp } = useAppNavigation();
@@ -36,12 +36,12 @@ export function DashboardLayout() {
     else setIsSidebarOpen(true);
   }, [setIsSidebarOpen, currentScreenSize]);
 
-  // if (isPending)
-  //   return (
-  //     <div className="flex h-screen w-full items-center justify-center">
-  //       <Spinner />
-  //     </div>
-  //   );
+  if (isPending)
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <Spinner />
+      </div>
+    );
 
   return (
     <div className="flex">

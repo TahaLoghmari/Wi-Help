@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import type { SidebarNavProps } from "@/features/patient";
-import { useDashboardSidebarStateStore } from "@/features/patient";
+import {
+  type SidebarNavProps,
+  useDashboardSidebarStateStore,
+} from "@/features/dashboard";
 
-export function DashboardSidebarNavSecondary({
-  items,
-}: SidebarNavProps) {
+export function DashboardSidebarNavSecondary({ items }: SidebarNavProps) {
   const { isSidebarOpen } = useDashboardSidebarStateStore();
   return (
     <div className="flex flex-col gap-1 p-2">

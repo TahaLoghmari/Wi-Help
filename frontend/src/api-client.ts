@@ -7,11 +7,10 @@ let refreshPromise: Promise<boolean> | null = null;
 
 async function request<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<T> {
   const headers: Record<string, string> = {};
 
-  // Auto-stringify JSON bodies, but leave FormData alone
   let body = options.body;
   if (body && !(body instanceof FormData)) {
     if (typeof body === "object") {

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { type LogoutDialogStore } from "#/dashboard";
+import { type LogoutDialogStore } from "@/features/dashboard";
 
 export const useLogoutDialogStore = create<LogoutDialogStore>((set) => ({
   isOpen: false,

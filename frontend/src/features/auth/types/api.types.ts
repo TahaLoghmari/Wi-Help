@@ -1,9 +1,8 @@
-export interface User {
+export interface UserDto {
   id: string;
   email: string;
   userName: string;
   imageUrl: string;
-  emailConfirmed?: boolean;
   role: string;
 }
 

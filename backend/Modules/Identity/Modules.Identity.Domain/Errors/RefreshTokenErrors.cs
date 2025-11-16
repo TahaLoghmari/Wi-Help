@@ -15,4 +15,8 @@ public static class RefreshTokenErrors
     public static Error Invalid(Guid id) => Error.Problem(
         "RefreshToken.Invalid",
         $"Refresh token with ID '{id}' is invalid.");
+    
+    public static Error Missing() => Error.Unauthorized(
+        "RefreshToken.Missing",
+        "Refresh token is missing.");
 }

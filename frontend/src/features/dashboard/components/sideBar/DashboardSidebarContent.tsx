@@ -1,11 +1,11 @@
-import { useCurrentUser } from "#/auth";
+import { useCurrentUser } from "@/features/auth";
 import {
   DashboardSidebarNavMain,
   DashboardSidebarNavSecondary,
   DashboardSidebarNavUser,
   getNavigationData,
   useDashboardSidebarStateStore,
-} from "@/features/patient";
+} from "@/features/dashboard";
 import Icon2 from "@/assets/Icon-2.png";
 
 export function DashboardSidebarContent({ className }: { className?: string }) {
@@ -14,7 +14,7 @@ export function DashboardSidebarContent({ className }: { className?: string }) {
   const navigationData = getNavigationData(user!);
   return (
     <div
-      className={`bg-sidebar flex h-svh flex-col transition-[width,height,margin,padding] duration-200 focus:outline-none ${isSidebarOpen ? "w-[287px]" : "w-[48px]"} ${className}`}
+      className={`bg-sidebar flex h-svh flex-col transition-[width,height,margin,padding] duration-200 focus:outline-none ${isSidebarOpen ? "w-[287px]" : "w-12"} ${className}`}
     >
       <div className="p-3">
         <div className="flex items-center justify-center">

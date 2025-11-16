@@ -1,4 +1,4 @@
-import { useLogout, useCurrentUser } from "#/auth";
+import { useCurrentUser } from "@/features/auth";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,24 +9,26 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useLogoutDialogStore } from "@/features/patient";
+import { useLogoutDialogStore } from "@/features/dashboard";
 
 export function DashboardSidebarLogoutButton() {
   const { data: user } = useCurrentUser();
   const { isOpen, setIsOpen } = useLogoutDialogStore();
-  const logoutMutation = useLogout();
+  // const logoutMutation = useLogout();
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure you want to log out?</AlertDialogTitle>
           <AlertDialogDescription>
-            Log out of SmartPly as {user?.email}?
+            Log out of Wi Help as {user?.email}?
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => logoutMutation.mutate()}>
+          <AlertDialogAction
+          //  onClick={() => logoutMutation.mutate()}
+           >
             Logout
           </AlertDialogAction>
         </AlertDialogFooter>

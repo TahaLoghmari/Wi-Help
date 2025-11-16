@@ -1,7 +1,9 @@
-import { useDashboardOverallSidebarState } from "@/features/patient";
 import { useCurrentScreenSize } from "@/hooks";
 import { PanelRight } from "lucide-react";
-import { DashboardHeaderNotificationBell } from "@/features/dashboard";
+import {
+  DashboardHeaderNotificationBell,
+  useDashboardOverallSidebarState,
+} from "@/features/dashboard";
 
 export function DashboardHeader() {
   const { isOverallSidebarOpen, setIsOverallSidebarOpen } =

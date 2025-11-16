@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { type DashboardOverallSidebarState } from "#/dashboard";
+import { type DashboardOverallSidebarState } from "@/features/dashboard";
 
 export const useDashboardOverallSidebarState =
   create<DashboardOverallSidebarState>((set) => ({

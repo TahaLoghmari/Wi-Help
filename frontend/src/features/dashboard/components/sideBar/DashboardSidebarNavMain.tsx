@@ -1,7 +1,7 @@
 import {
   useDashboardSidebarStateStore,
   type SidebarNavProps,
-} from "@/features/patient";
+} from "@/features/dashboard";
 import { Link } from "@tanstack/react-router";
 
 export function DashboardSidebarNavMain({ items }: SidebarNavProps) {

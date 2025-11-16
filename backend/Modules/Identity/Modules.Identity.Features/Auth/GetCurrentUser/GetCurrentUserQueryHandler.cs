@@ -35,16 +35,9 @@ public sealed class GetCurrentUserQueryHandler(
 
         var userDto = new UserDto(
             user.Id,
-            user.FirstName,
-            user.LastName,
-            user.Gender,
-            user.Address,
-            user.DateOfBirth,
-            user.CreatedAt,
-            user.UpdatedAt,
             user.Email!,
-            user.PhoneNumber!,
             user.UserName!,
+            "",
             userRoles.FirstOrDefault() ?? string.Empty);
 
         return Result<UserDto>.Success(userDto);

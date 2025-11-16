@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -14,7 +15,8 @@ public sealed class TokenManagementService(
     IdentityDbContext identityDbContext,
     IOptions<JwtSettings> jwtAuthSettings,
     TokenProvider tokenProvider,
-    ILogger<TokenManagementService> logger
+    ILogger<TokenManagementService> logger,
+    UserManager<User> userManager
 )
 {
     private readonly JwtSettings _jwtAuthSettings = jwtAuthSettings.Value;
@@ -50,8 +52,6 @@ public sealed class TokenManagementService(
     }
 
     public async Task<Result<AccessTokensDto>> RefreshUserTokens(
-        Guid userId,
-        string role,
         string refreshTokenValue,
         CancellationToken cancellationToken)
     {
@@ -72,6 +72,9 @@ public sealed class TokenManagementService(
             await identityDbContext.SaveChangesAsync(cancellationToken);
             return Result<AccessTokensDto>.Failure(RefreshTokenErrors.Expired(refreshToken.Id));
         }
+        
+        IList<string> userRoles = await userManager.GetRolesAsync(refreshToken.User);
+        string role = userRoles[0];
 
         var tokenRequest = new TokenRequest(refreshToken.User.Id, refreshToken.User.Email!);
         AccessTokensDto tokens = tokenProvider.Create(tokenRequest,role);

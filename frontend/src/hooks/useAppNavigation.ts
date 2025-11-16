@@ -44,7 +44,7 @@ export function useAppNavigation() {
     },
 
     goToPatientApp: () => {
-      navigate({ to: ROUTE_PATHS.PATIENT.INDEX });
+      navigate({ to: ROUTE_PATHS.PATIENT.ROOT });
     },
 
     goBack: () => {

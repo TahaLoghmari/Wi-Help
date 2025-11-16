@@ -1,7 +1,7 @@
 import {
   DashboardSidebarContent,
   useDashboardOverallSidebarState,
-} from "@/features/patient";
+} from "@/features/dashboard";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useCurrentScreenSize } from "@/hooks";
 
