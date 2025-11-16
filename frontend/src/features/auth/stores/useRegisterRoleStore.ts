@@ -1,8 +1,10 @@
 import { create } from "zustand";
 
+export type RegisterRole = "patient" | "professional";
+
 export interface RegisterRoleStore {
-  registerRole: string;
-  setRegisterRole: (state: string) => void;
+  registerRole: RegisterRole;
+  setRegisterRole: (state: RegisterRole) => void;
 }
 
 export const useRegisterRoleStore = create<RegisterRoleStore>((set) => ({

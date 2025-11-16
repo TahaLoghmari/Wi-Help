@@ -6,8 +6,6 @@ public class Patient
 {
     public Guid Id { get; private set; }
     public Guid UserId { get; private set; }
-
-    public Address Address { get; private set; } = null!;
     public EmergencyContact EmergencyContact { get; private set; } = null!;
 
     private Patient() { } 
@@ -19,7 +17,6 @@ public class Patient
     {
         Id = Guid.NewGuid();
         UserId = userId;
-        Address = defaultAddress;
         EmergencyContact = contact;
 
     }

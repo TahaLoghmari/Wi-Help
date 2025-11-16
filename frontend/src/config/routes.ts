@@ -14,7 +14,8 @@ export const ROUTE_PATHS = {
     RESET_PASSWORD: "/auth/reset-password",
   },
 
-  APP: {
-    INDEX: "/app",
+  PATIENT: {
+    ROOT: "/patient",
+    INDEX: "/patient/",
   },
 } as const;

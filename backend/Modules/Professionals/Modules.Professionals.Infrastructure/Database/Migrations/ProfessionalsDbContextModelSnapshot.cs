@@ -57,51 +57,6 @@ namespace Modules.Professionals.Infrastructure.Database.Migrations
 
                     b.ToTable("professionals", "professionals");
                 });
-
-            modelBuilder.Entity("Modules.Professionals.Domain.Entities.Professional", b =>
-                {
-                    b.OwnsOne("Modules.Common.Features.ValueObjects.Address", "Workplace", b1 =>
-                        {
-                            b1.Property<Guid>("ProfessionalId")
-                                .HasColumnType("uuid")
-                                .HasColumnName("id");
-
-                            b1.Property<string>("City")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)")
-                                .HasColumnName("workplace_city");
-
-                            b1.Property<string>("Country")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)")
-                                .HasColumnName("workplace_country");
-
-                            b1.Property<string>("PostalCode")
-                                .IsRequired()
-                                .HasMaxLength(20)
-                                .HasColumnType("character varying(20)")
-                                .HasColumnName("workplace_postal_code");
-
-                            b1.Property<string>("Street")
-                                .IsRequired()
-                                .HasMaxLength(200)
-                                .HasColumnType("character varying(200)")
-                                .HasColumnName("workplace_street");
-
-                            b1.HasKey("ProfessionalId");
-
-                            b1.ToTable("professionals", "professionals");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ProfessionalId")
-                                .HasConstraintName("fk_professionals_professionals_id");
-                        });
-
-                    b.Navigation("Workplace")
-                        .IsRequired();
-                });
 #pragma warning restore 612, 618
         }
     }

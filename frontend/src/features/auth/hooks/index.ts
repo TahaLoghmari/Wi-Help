@@ -4,3 +4,4 @@ export * from "./useRegister";
 export * from "./useForgotPassword";
 export * from "./useSendConfirmationEmail";
 export * from "./useResetPassword";
+export * from "./useCurrentUser";

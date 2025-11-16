@@ -1,0 +1,57 @@
+import {
+  DashboardSidebar,
+  DashboardSidebarLogoutButton,
+  DashboardHeader,
+  useDashboardSidebarStateStore,
+  // useSignalRNotifications,
+} from "@/features/dashboard";
+import { toast } from "sonner";
+import { useEffect } from "react";
+// import { Spinner } from "@/components/ui/spinner";
+// import { useCurrentUser } from "#/auth";
+import { useCurrentScreenSize } from "@/hooks";
+import { Route as DashboardRoute } from "@/routes/patient/index";
+import { useAppNavigation } from "@/index";
+import { Outlet } from "@tanstack/react-router";
+
+export function DashboardLayout() {
+  const { setIsSidebarOpen } = useDashboardSidebarStateStore();
+  // const { data: user, isPending } = useCurrentUser();
+  const { currentScreenSize } = useCurrentScreenSize();
+  const { message } = DashboardRoute.useSearch();
+  const { goToPatientApp } = useAppNavigation();
+  // useSignalRNotifications(user?.id);
+
+  // this is for google signin/signup failing or any error when the redirection is comming from the backend with an error
+  useEffect(() => {
+    if (message) {
+      toast.error(message);
+      goToPatientApp();
+    }
+  }, [message, goToPatientApp]);
+
+  useEffect(() => {
+    if (currentScreenSize >= 768 && currentScreenSize < 1280)
+      setIsSidebarOpen(false);
+    else setIsSidebarOpen(true);
+  }, [setIsSidebarOpen, currentScreenSize]);
+
+  // if (isPending)
+  //   return (
+  //     <div className="flex h-screen w-full items-center justify-center">
+  //       <Spinner />
+  //     </div>
+  //   );
+
+  return (
+    <div className="flex">
+      <DashboardSidebar />
+      <div className="flex h-svh flex-1 flex-col overflow-hidden">
+        <DashboardHeader />
+        <Outlet />
+        {/* this is a dialog */}
+        <DashboardSidebarLogoutButton />
+      </div>
+    </div>
+  );
+}

@@ -5,34 +5,39 @@ export function LoginFormDefaults() {
   };
 }
 
-export function RegisterFormDefaults() {
+const commonDefaults = {
+  email: "",
+  password: "",
+  confirmPassword: "",
+  firstName: "",
+  lastName: "",
+  dateOfBirth: "",
+  gender: "",
+  phoneNumber: "",
+  address: {
+    street: "",
+    city: "",
+    postalCode: "",
+    country: "",
+  },
+};
+
+export function PatientFormDefaults() {
   return {
-    email: "",
-    password: "",
-    confirmPassword: "",
-    firstName: "",
-    lastName: "",
-    dateOfBirth: "",
-    gender: "",
-    phoneNumber: "",
-    role: "",
-    address: {
-      street: "",
-      city: "",
-      postalCode: "",
-      country: "",
-    },
+    ...commonDefaults,
+    role: "patient" as const,
     emergencyContact: {
       fullName: "",
       phoneNumber: "",
       relationship: "",
     },
-    workplace: {
-      street: "",
-      city: "",
-      postalCode: "",
-      country: "",
-    },
+  };
+}
+
+export function ProfessionalFormDefaults() {
+  return {
+    ...commonDefaults,
+    role: "professional" as const,
     specialization: "",
     yearsOfExperience: undefined as number | undefined,
   };

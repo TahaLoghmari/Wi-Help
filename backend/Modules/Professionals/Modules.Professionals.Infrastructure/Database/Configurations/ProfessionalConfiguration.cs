@@ -27,13 +27,5 @@ public class ProfessionalConfiguration : IEntityTypeConfiguration<Professional>
 
         builder.Property(p => p.CreatedAt)
             .IsRequired();
-
-        builder.OwnsOne(p => p.Workplace, address =>
-        {
-            address.Property(a => a.Street).HasMaxLength(200);
-            address.Property(a => a.City).HasMaxLength(100);
-            address.Property(a => a.PostalCode).HasMaxLength(20);
-            address.Property(a => a.Country).HasMaxLength(100);
-        });
     }
 }

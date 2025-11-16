@@ -15,14 +15,6 @@ public class PatientConfiguration : IEntityTypeConfiguration<Patient>
         builder.Property(p => p.UserId)
             .IsRequired();
 
-        builder.OwnsOne(p => p.Address, address =>
-        {
-            address.Property(a => a.Street).HasMaxLength(200);
-            address.Property(a => a.City).HasMaxLength(100);
-            address.Property(a => a.PostalCode).HasMaxLength(20);
-            address.Property(a => a.Country).HasMaxLength(100);
-        });
-
         builder.OwnsOne(p => p.EmergencyContact, contact =>
         {
             contact.Property(c => c.FullName).IsRequired().HasMaxLength(100);

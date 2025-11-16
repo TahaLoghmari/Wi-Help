@@ -1,23 +1,13 @@
 export interface User {
   id: string;
   email: string;
-  googleEmail: string;
-  name: string;
+  userName: string;
   imageUrl: string;
-  gmailConnected: boolean;
   emailConfirmed?: boolean;
-  isInitialSyncComplete: boolean;
-  hasPassword: boolean;
+  role: string;
 }
 
 export interface Address {
-  street: string;
-  city: string;
-  postalCode: string;
-  country: string;
-}
-
-export interface Workplace {
   street: string;
   city: string;
   postalCode: string;
@@ -51,7 +41,6 @@ export interface RegisterUserDto {
   role: string;
   address?: Address;
   emergencyContact?: EmergencyContact;
-  workplace?: Workplace;
   specialization?: string;
   yearsOfExperience?: number;
 }

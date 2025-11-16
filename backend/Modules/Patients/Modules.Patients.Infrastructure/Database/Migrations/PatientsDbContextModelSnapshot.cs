@@ -42,45 +42,6 @@ namespace Modules.Patients.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("Modules.Patients.Domain.Entities.Patient", b =>
                 {
-                    b.OwnsOne("Modules.Common.Features.ValueObjects.Address", "Address", b1 =>
-                        {
-                            b1.Property<Guid>("PatientId")
-                                .HasColumnType("uuid")
-                                .HasColumnName("id");
-
-                            b1.Property<string>("City")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)")
-                                .HasColumnName("address_city");
-
-                            b1.Property<string>("Country")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)")
-                                .HasColumnName("address_country");
-
-                            b1.Property<string>("PostalCode")
-                                .IsRequired()
-                                .HasMaxLength(20)
-                                .HasColumnType("character varying(20)")
-                                .HasColumnName("address_postal_code");
-
-                            b1.Property<string>("Street")
-                                .IsRequired()
-                                .HasMaxLength(200)
-                                .HasColumnType("character varying(200)")
-                                .HasColumnName("address_street");
-
-                            b1.HasKey("PatientId");
-
-                            b1.ToTable("patients", "patients");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PatientId")
-                                .HasConstraintName("fk_patients_patients_id");
-                        });
-
                     b.OwnsOne("Modules.Common.Features.ValueObjects.EmergencyContact", "EmergencyContact", b1 =>
                         {
                             b1.Property<Guid>("PatientId")
@@ -113,9 +74,6 @@ namespace Modules.Patients.Infrastructure.Database.Migrations
                                 .HasForeignKey("PatientId")
                                 .HasConstraintName("fk_patients_patients_id");
                         });
-
-                    b.Navigation("Address")
-                        .IsRequired();
 
                     b.Navigation("EmergencyContact")
                         .IsRequired();

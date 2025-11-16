@@ -105,7 +105,7 @@ public sealed class EmailService(
         logger.LogInformation("Successfully generated email confirmation link for user {UserId}", user.Id);
         var safeLink = HtmlEncoder.Default.Encode(confirmationLink);
 
-        var subject = "Welcome to SmartPly! Please Confirm Your Email";
+        var subject = "Welcome to Wi Help! Please Confirm Your Email";
 
         EmailDto sendEmailDto = new EmailDto(user.Email!, subject, EmailTemplates.EmailConfirmation(user.UserName!,confirmationLink), true);
 

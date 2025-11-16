@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { type RegisterUserDto } from "@/features/auth";
+import { useStepsStore, type RegisterUserDto } from "@/features/auth";
 import { api, handleApiError, type ProblemDetailsDto } from "@/index";
 import { API_ENDPOINTS } from "@/config/endpoints";
 import { toast } from "sonner";
@@ -12,6 +12,7 @@ export const register = (credentials: RegisterUserDto) => {
 export function useRegister() {
   const queryClient = useQueryClient();
   const { goToEmailVerification } = useAppNavigation();
+  const { setStep } = useStepsStore();
   return useMutation<void, ProblemDetailsDto, RegisterUserDto>({
     mutationFn: register,
     onSuccess: (_data, credentials) => {
@@ -20,6 +21,7 @@ export function useRegister() {
         description: "Please check your email to verify your account.",
       });
       goToEmailVerification(credentials.email);
+      setStep(1);
     },
     onError: (error) => handleApiError({ apiError: error }),
   });

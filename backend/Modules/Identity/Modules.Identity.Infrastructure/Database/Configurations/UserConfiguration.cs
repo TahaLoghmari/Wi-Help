@@ -24,6 +24,14 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.DateOfBirth)
             .IsRequired();
+        
+        builder.OwnsOne(p => p.Address, address =>
+        {
+            address.Property(a => a.Street).HasMaxLength(200);
+            address.Property(a => a.City).HasMaxLength(100);
+            address.Property(a => a.PostalCode).HasMaxLength(20);
+            address.Property(a => a.Country).HasMaxLength(100);
+        });
 
         builder.Property(u => u.CreatedAt)
             .IsRequired();
