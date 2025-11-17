@@ -74,6 +74,13 @@ public sealed class TokenManagementService(
         }
         
         IList<string> userRoles = await userManager.GetRolesAsync(refreshToken.User);
+        
+        if (userRoles.Count == 0)
+        {
+            logger.LogError("User {UserId} has no assigned roles during token refresh", refreshToken.User.Id);
+            return Result<AccessTokensDto>.Failure(RefreshTokenErrors.NotFound(refreshToken.Id));
+        }
+        
         string role = userRoles[0];
 
         var tokenRequest = new TokenRequest(refreshToken.User.Id, refreshToken.User.Email!);
