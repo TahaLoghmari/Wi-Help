@@ -14,6 +14,7 @@ import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProfessionalIndexRouteImport } from './routes/professional/index'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
+import { Route as ProfessionalAppointmentsRouteImport } from './routes/professional/appointments'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
@@ -46,6 +47,12 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const ProfessionalAppointmentsRoute =
+  ProfessionalAppointmentsRouteImport.update({
+    id: '/appointments',
+    path: '/appointments',
+    getParentRoute: () => ProfessionalRouteRoute,
+  } as any)
 const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -87,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/professional/appointments': typeof ProfessionalAppointmentsRoute
   '/auth/': typeof AuthIndexRoute
   '/professional/': typeof ProfessionalIndexRoute
 }
@@ -98,6 +106,7 @@ export interface FileRoutesByTo {
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/professional/appointments': typeof ProfessionalAppointmentsRoute
   '/auth': typeof AuthIndexRoute
   '/professional': typeof ProfessionalIndexRoute
 }
@@ -112,6 +121,7 @@ export interface FileRoutesById {
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/professional/appointments': typeof ProfessionalAppointmentsRoute
   '/auth/': typeof AuthIndexRoute
   '/professional/': typeof ProfessionalIndexRoute
 }
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/register'
     | '/auth/reset-password'
+    | '/professional/appointments'
     | '/auth/'
     | '/professional/'
   fileRoutesByTo: FileRoutesByTo
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/register'
     | '/auth/reset-password'
+    | '/professional/appointments'
     | '/auth'
     | '/professional'
   id:
@@ -151,6 +163,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/register'
     | '/auth/reset-password'
+    | '/professional/appointments'
     | '/auth/'
     | '/professional/'
   fileRoutesById: FileRoutesById
@@ -197,6 +210,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/'
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof AuthRouteRoute
+    }
+    '/professional/appointments': {
+      id: '/professional/appointments'
+      path: '/appointments'
+      fullPath: '/professional/appointments'
+      preLoaderRoute: typeof ProfessionalAppointmentsRouteImport
+      parentRoute: typeof ProfessionalRouteRoute
     }
     '/auth/reset-password': {
       id: '/auth/reset-password'
@@ -268,10 +288,12 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 )
 
 interface ProfessionalRouteRouteChildren {
+  ProfessionalAppointmentsRoute: typeof ProfessionalAppointmentsRoute
   ProfessionalIndexRoute: typeof ProfessionalIndexRoute
 }
 
 const ProfessionalRouteRouteChildren: ProfessionalRouteRouteChildren = {
+  ProfessionalAppointmentsRoute: ProfessionalAppointmentsRoute,
   ProfessionalIndexRoute: ProfessionalIndexRoute,
 }
 

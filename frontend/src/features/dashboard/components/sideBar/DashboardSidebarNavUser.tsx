@@ -27,7 +27,7 @@ export function DashboardSidebarNavUser({ user }: SidebarNavUserProps) {
   const { setIsOpen } = useLogoutDialogStore();
   const { isSidebarOpen } = useDashboardSidebarStateStore();
   return (
-    <div className="p-3">
+    <div className="border-t p-4">
       <DropdownMenu>
         <DropdownMenuTrigger
           asChild

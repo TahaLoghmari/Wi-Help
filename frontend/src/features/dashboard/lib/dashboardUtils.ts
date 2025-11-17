@@ -50,12 +50,12 @@ export function getNavigationData(user: UserDto) {
   const patientNavMain = [
     {
       title: "Favorites",
-      url: "favorites",
+      url: "/patient/favorites",
       icon: Heart,
     },
     {
       title: "Messages",
-      url: "messages",
+      url: "/patient/messages",
       icon: MessageSquare,
     },
   ];
@@ -74,7 +74,7 @@ export function getNavigationData(user: UserDto) {
     navSecondary: [
       {
         title: "Settings",
-        url: "settings",
+        url: "/professional/settings",
         icon: IconSettings,
       },
     ],

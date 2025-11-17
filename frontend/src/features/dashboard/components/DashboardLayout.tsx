@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useCurrentUser } from "@/features/auth";
 import { useCurrentScreenSize } from "@/hooks";
-import { Route as DashboardRoute } from "@/routes/professional/index";
+import { Route as ProfessionalRoute } from "@/routes/professional/route";
 import { useAppNavigation } from "@/index";
 import { Outlet } from "@tanstack/react-router";
 
@@ -18,7 +18,7 @@ export function DashboardLayout() {
   const { setIsSidebarOpen } = useDashboardSidebarStateStore();
   const { isPending } = useCurrentUser();
   const { currentScreenSize } = useCurrentScreenSize();
-  const { message } = DashboardRoute.useSearch();
+  const { message } = ProfessionalRoute.useSearch();
   const { goToProfessionalApp } = useAppNavigation();
   // useSignalRNotifications(user?.id);
 
