@@ -1,7 +1,4 @@
-import {
-  QueryClient,
-  type DefaultOptions,
-} from "@tanstack/react-query";
+import { QueryClient, type DefaultOptions } from "@tanstack/react-query";
 
 function isRetriableError(error: any): boolean {
   if (!error.response) return true; // Network error
@@ -11,7 +8,7 @@ function isRetriableError(error: any): boolean {
 
 const queryConfig = {
   queries: {
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     refetchOnReconnect: true,
 
     // Retry with exponential backoff
@@ -21,14 +18,14 @@ const queryConfig = {
     },
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
 
-    staleTime: 1000 * 60 * 5, 
-    gcTime: 1000 * 60 * 10, 
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
   },
   mutations: {
-    retry: 0, 
+    retry: 0,
   },
 } satisfies DefaultOptions;
 
 export const queryClient = new QueryClient({
-  defaultOptions: queryConfig
+  defaultOptions: queryConfig,
 });
