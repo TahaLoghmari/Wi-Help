@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -16,7 +17,7 @@ internal sealed class GetCurrentUser : IEndpoint
                 HttpContext httpContext,
                 CancellationToken cancellationToken) =>
             {
-                var userId = httpContext.User.FindFirst("sub")?.Value ?? httpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                var userId = httpContext.User.FindFirst("sub")?.Value ?? httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
                 GetCurrentUserQuery query = new GetCurrentUserQuery(userId);
                 Result<UserDto> result = await handler.Handle(query, cancellationToken);
