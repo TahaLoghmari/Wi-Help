@@ -8,7 +8,7 @@ export interface GuestGuardProps {
 
 export function GuestGuard({ children }: GuestGuardProps) {
   const { data: user, isLoading, isError } = useCurrentUser();
-  const { goToPatientApp } = useAppNavigation();
+  const { goToProfessionalApp } = useAppNavigation();
 
   if (isError) return <>{children}</>;
 
@@ -20,7 +20,7 @@ export function GuestGuard({ children }: GuestGuardProps) {
     );
   }
 
-  if (user) goToPatientApp();
+  if (user) goToProfessionalApp();
 
   return <>{children}</>;
 }
