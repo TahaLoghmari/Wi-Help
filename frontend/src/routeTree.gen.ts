@@ -9,10 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as PatientRouteRouteImport } from './routes/patient/route'
+import { Route as ProfessionalRouteRouteImport } from './routes/professional/route'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as PatientIndexRouteImport } from './routes/patient/index'
+import { Route as ProfessionalIndexRouteImport } from './routes/professional/index'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
@@ -21,9 +21,9 @@ import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-pas
 import { Route as AuthEmailVerifiedRouteImport } from './routes/auth/email-verified'
 import { Route as AuthEmailVerificationRouteImport } from './routes/auth/email-verification'
 
-const PatientRouteRoute = PatientRouteRouteImport.update({
-  id: '/patient',
-  path: '/patient',
+const ProfessionalRouteRoute = ProfessionalRouteRouteImport.update({
+  id: '/professional',
+  path: '/professional',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRouteRoute = AuthRouteRouteImport.update({
@@ -36,10 +36,10 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PatientIndexRoute = PatientIndexRouteImport.update({
+const ProfessionalIndexRoute = ProfessionalIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => PatientRouteRoute,
+  getParentRoute: () => ProfessionalRouteRoute,
 } as any)
 const AuthIndexRoute = AuthIndexRouteImport.update({
   id: '/',
@@ -80,7 +80,7 @@ const AuthEmailVerificationRoute = AuthEmailVerificationRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
-  '/patient': typeof PatientRouteRouteWithChildren
+  '/professional': typeof ProfessionalRouteRouteWithChildren
   '/auth/email-verification': typeof AuthEmailVerificationRoute
   '/auth/email-verified': typeof AuthEmailVerifiedRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -88,7 +88,7 @@ export interface FileRoutesByFullPath {
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/': typeof AuthIndexRoute
-  '/patient/': typeof PatientIndexRoute
+  '/professional/': typeof ProfessionalIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -99,13 +99,13 @@ export interface FileRoutesByTo {
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth': typeof AuthIndexRoute
-  '/patient': typeof PatientIndexRoute
+  '/professional': typeof ProfessionalIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
-  '/patient': typeof PatientRouteRouteWithChildren
+  '/professional': typeof ProfessionalRouteRouteWithChildren
   '/auth/email-verification': typeof AuthEmailVerificationRoute
   '/auth/email-verified': typeof AuthEmailVerifiedRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -113,14 +113,14 @@ export interface FileRoutesById {
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/': typeof AuthIndexRoute
-  '/patient/': typeof PatientIndexRoute
+  '/professional/': typeof ProfessionalIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/auth'
-    | '/patient'
+    | '/professional'
     | '/auth/email-verification'
     | '/auth/email-verified'
     | '/auth/forgot-password'
@@ -128,7 +128,7 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/auth/reset-password'
     | '/auth/'
-    | '/patient/'
+    | '/professional/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -139,12 +139,12 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/auth/reset-password'
     | '/auth'
-    | '/patient'
+    | '/professional'
   id:
     | '__root__'
     | '/'
     | '/auth'
-    | '/patient'
+    | '/professional'
     | '/auth/email-verification'
     | '/auth/email-verified'
     | '/auth/forgot-password'
@@ -152,22 +152,22 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/auth/reset-password'
     | '/auth/'
-    | '/patient/'
+    | '/professional/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
-  PatientRouteRoute: typeof PatientRouteRouteWithChildren
+  ProfessionalRouteRoute: typeof ProfessionalRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/patient': {
-      id: '/patient'
-      path: '/patient'
-      fullPath: '/patient'
-      preLoaderRoute: typeof PatientRouteRouteImport
+    '/professional': {
+      id: '/professional'
+      path: '/professional'
+      fullPath: '/professional'
+      preLoaderRoute: typeof ProfessionalRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -184,12 +184,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/patient/': {
-      id: '/patient/'
+    '/professional/': {
+      id: '/professional/'
       path: '/'
-      fullPath: '/patient/'
-      preLoaderRoute: typeof PatientIndexRouteImport
-      parentRoute: typeof PatientRouteRoute
+      fullPath: '/professional/'
+      preLoaderRoute: typeof ProfessionalIndexRouteImport
+      parentRoute: typeof ProfessionalRouteRoute
     }
     '/auth/': {
       id: '/auth/'
@@ -267,22 +267,21 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
-interface PatientRouteRouteChildren {
-  PatientIndexRoute: typeof PatientIndexRoute
+interface ProfessionalRouteRouteChildren {
+  ProfessionalIndexRoute: typeof ProfessionalIndexRoute
 }
 
-const PatientRouteRouteChildren: PatientRouteRouteChildren = {
-  PatientIndexRoute: PatientIndexRoute,
+const ProfessionalRouteRouteChildren: ProfessionalRouteRouteChildren = {
+  ProfessionalIndexRoute: ProfessionalIndexRoute,
 }
 
-const PatientRouteRouteWithChildren = PatientRouteRoute._addFileChildren(
-  PatientRouteRouteChildren,
-)
+const ProfessionalRouteRouteWithChildren =
+  ProfessionalRouteRoute._addFileChildren(ProfessionalRouteRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
-  PatientRouteRoute: PatientRouteRouteWithChildren,
+  ProfessionalRouteRoute: ProfessionalRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
