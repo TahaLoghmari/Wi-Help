@@ -14,6 +14,11 @@ import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProfessionalIndexRouteImport } from './routes/professional/index'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
+import { Route as ProfessionalScheduleTimingsRouteImport } from './routes/professional/schedule-timings'
+import { Route as ProfessionalReviewsRouteImport } from './routes/professional/reviews'
+import { Route as ProfessionalMyPatientsRouteImport } from './routes/professional/my-patients'
+import { Route as ProfessionalMessagesRouteImport } from './routes/professional/messages'
+import { Route as ProfessionalInvoicesRouteImport } from './routes/professional/invoices'
 import { Route as ProfessionalAppointmentsRouteImport } from './routes/professional/appointments'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
@@ -46,6 +51,32 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthRouteRoute,
+} as any)
+const ProfessionalScheduleTimingsRoute =
+  ProfessionalScheduleTimingsRouteImport.update({
+    id: '/schedule-timings',
+    path: '/schedule-timings',
+    getParentRoute: () => ProfessionalRouteRoute,
+  } as any)
+const ProfessionalReviewsRoute = ProfessionalReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => ProfessionalRouteRoute,
+} as any)
+const ProfessionalMyPatientsRoute = ProfessionalMyPatientsRouteImport.update({
+  id: '/my-patients',
+  path: '/my-patients',
+  getParentRoute: () => ProfessionalRouteRoute,
+} as any)
+const ProfessionalMessagesRoute = ProfessionalMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => ProfessionalRouteRoute,
+} as any)
+const ProfessionalInvoicesRoute = ProfessionalInvoicesRouteImport.update({
+  id: '/invoices',
+  path: '/invoices',
+  getParentRoute: () => ProfessionalRouteRoute,
 } as any)
 const ProfessionalAppointmentsRoute =
   ProfessionalAppointmentsRouteImport.update({
@@ -95,6 +126,11 @@ export interface FileRoutesByFullPath {
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/professional/appointments': typeof ProfessionalAppointmentsRoute
+  '/professional/invoices': typeof ProfessionalInvoicesRoute
+  '/professional/messages': typeof ProfessionalMessagesRoute
+  '/professional/my-patients': typeof ProfessionalMyPatientsRoute
+  '/professional/reviews': typeof ProfessionalReviewsRoute
+  '/professional/schedule-timings': typeof ProfessionalScheduleTimingsRoute
   '/auth/': typeof AuthIndexRoute
   '/professional/': typeof ProfessionalIndexRoute
 }
@@ -107,6 +143,11 @@ export interface FileRoutesByTo {
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/professional/appointments': typeof ProfessionalAppointmentsRoute
+  '/professional/invoices': typeof ProfessionalInvoicesRoute
+  '/professional/messages': typeof ProfessionalMessagesRoute
+  '/professional/my-patients': typeof ProfessionalMyPatientsRoute
+  '/professional/reviews': typeof ProfessionalReviewsRoute
+  '/professional/schedule-timings': typeof ProfessionalScheduleTimingsRoute
   '/auth': typeof AuthIndexRoute
   '/professional': typeof ProfessionalIndexRoute
 }
@@ -122,6 +163,11 @@ export interface FileRoutesById {
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/professional/appointments': typeof ProfessionalAppointmentsRoute
+  '/professional/invoices': typeof ProfessionalInvoicesRoute
+  '/professional/messages': typeof ProfessionalMessagesRoute
+  '/professional/my-patients': typeof ProfessionalMyPatientsRoute
+  '/professional/reviews': typeof ProfessionalReviewsRoute
+  '/professional/schedule-timings': typeof ProfessionalScheduleTimingsRoute
   '/auth/': typeof AuthIndexRoute
   '/professional/': typeof ProfessionalIndexRoute
 }
@@ -138,6 +184,11 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/auth/reset-password'
     | '/professional/appointments'
+    | '/professional/invoices'
+    | '/professional/messages'
+    | '/professional/my-patients'
+    | '/professional/reviews'
+    | '/professional/schedule-timings'
     | '/auth/'
     | '/professional/'
   fileRoutesByTo: FileRoutesByTo
@@ -150,6 +201,11 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/auth/reset-password'
     | '/professional/appointments'
+    | '/professional/invoices'
+    | '/professional/messages'
+    | '/professional/my-patients'
+    | '/professional/reviews'
+    | '/professional/schedule-timings'
     | '/auth'
     | '/professional'
   id:
@@ -164,6 +220,11 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/auth/reset-password'
     | '/professional/appointments'
+    | '/professional/invoices'
+    | '/professional/messages'
+    | '/professional/my-patients'
+    | '/professional/reviews'
+    | '/professional/schedule-timings'
     | '/auth/'
     | '/professional/'
   fileRoutesById: FileRoutesById
@@ -210,6 +271,41 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/'
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof AuthRouteRoute
+    }
+    '/professional/schedule-timings': {
+      id: '/professional/schedule-timings'
+      path: '/schedule-timings'
+      fullPath: '/professional/schedule-timings'
+      preLoaderRoute: typeof ProfessionalScheduleTimingsRouteImport
+      parentRoute: typeof ProfessionalRouteRoute
+    }
+    '/professional/reviews': {
+      id: '/professional/reviews'
+      path: '/reviews'
+      fullPath: '/professional/reviews'
+      preLoaderRoute: typeof ProfessionalReviewsRouteImport
+      parentRoute: typeof ProfessionalRouteRoute
+    }
+    '/professional/my-patients': {
+      id: '/professional/my-patients'
+      path: '/my-patients'
+      fullPath: '/professional/my-patients'
+      preLoaderRoute: typeof ProfessionalMyPatientsRouteImport
+      parentRoute: typeof ProfessionalRouteRoute
+    }
+    '/professional/messages': {
+      id: '/professional/messages'
+      path: '/messages'
+      fullPath: '/professional/messages'
+      preLoaderRoute: typeof ProfessionalMessagesRouteImport
+      parentRoute: typeof ProfessionalRouteRoute
+    }
+    '/professional/invoices': {
+      id: '/professional/invoices'
+      path: '/invoices'
+      fullPath: '/professional/invoices'
+      preLoaderRoute: typeof ProfessionalInvoicesRouteImport
+      parentRoute: typeof ProfessionalRouteRoute
     }
     '/professional/appointments': {
       id: '/professional/appointments'
@@ -289,11 +385,21 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 
 interface ProfessionalRouteRouteChildren {
   ProfessionalAppointmentsRoute: typeof ProfessionalAppointmentsRoute
+  ProfessionalInvoicesRoute: typeof ProfessionalInvoicesRoute
+  ProfessionalMessagesRoute: typeof ProfessionalMessagesRoute
+  ProfessionalMyPatientsRoute: typeof ProfessionalMyPatientsRoute
+  ProfessionalReviewsRoute: typeof ProfessionalReviewsRoute
+  ProfessionalScheduleTimingsRoute: typeof ProfessionalScheduleTimingsRoute
   ProfessionalIndexRoute: typeof ProfessionalIndexRoute
 }
 
 const ProfessionalRouteRouteChildren: ProfessionalRouteRouteChildren = {
   ProfessionalAppointmentsRoute: ProfessionalAppointmentsRoute,
+  ProfessionalInvoicesRoute: ProfessionalInvoicesRoute,
+  ProfessionalMessagesRoute: ProfessionalMessagesRoute,
+  ProfessionalMyPatientsRoute: ProfessionalMyPatientsRoute,
+  ProfessionalReviewsRoute: ProfessionalReviewsRoute,
+  ProfessionalScheduleTimingsRoute: ProfessionalScheduleTimingsRoute,
   ProfessionalIndexRoute: ProfessionalIndexRoute,
 }
 

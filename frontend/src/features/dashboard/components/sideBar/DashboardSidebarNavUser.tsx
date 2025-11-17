@@ -17,11 +17,20 @@ import {
 import {
   useDashboardSidebarStateStore,
   useLogoutDialogStore,
-  type SidebarNavUserProps,
 } from "@/features/dashboard";
 import { useCurrentScreenSize } from "@/hooks";
 
-export function DashboardSidebarNavUser({ user }: SidebarNavUserProps) {
+interface DashboardSidebarNavUserProps {
+  user: {
+    name: string;
+    email: string;
+    avatar: string;
+  };
+}
+
+export function DashboardSidebarNavUser({
+  user,
+}: DashboardSidebarNavUserProps) {
   const { currentScreenSize } = useCurrentScreenSize();
   const isMobile = currentScreenSize < 768;
   const { setIsOpen } = useLogoutDialogStore();

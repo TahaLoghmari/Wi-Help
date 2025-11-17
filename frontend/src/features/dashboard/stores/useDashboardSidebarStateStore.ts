@@ -1,5 +1,9 @@
 import { create } from "zustand";
-import { type DashboardSidebarStateStore } from "@/features/dashboard";
+
+interface DashboardSidebarStateStore {
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: (state: boolean) => void;
+}
 
 export const useDashboardSidebarStateStore = create<DashboardSidebarStateStore>(
   (set) => ({

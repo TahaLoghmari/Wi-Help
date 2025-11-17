@@ -18,6 +18,11 @@ export const ROUTE_PATHS = {
     ROOT: "/professional",
     INDEX: "/professional/",
     APPOINTMENTS: "/professional/appointments",
+    MYPATIENTS: "/professional/my-patients",
+    SCHEDULETIMINGS: "/professional/schedule-timings",
+    INVOICES: "/professional/invoices",
+    REVIEWS: "/professional/reviews",
+    MESSAGES: "/professional/messages",
     NOTIFICATIONS: "/professional/notifications",
   },
 } as const;

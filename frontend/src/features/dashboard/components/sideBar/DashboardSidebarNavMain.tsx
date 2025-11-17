@@ -1,12 +1,22 @@
 import {
   useActiveNavigationPageStore,
   useDashboardSidebarStateStore,
-  type SidebarNavProps,
 } from "@/features/dashboard";
+import type { Icon } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 
-export function DashboardSidebarNavMain({ items }: SidebarNavProps) {
+interface DashboardSidebarNavMainProps {
+  items: {
+    title: string;
+    url: string;
+    icon: Icon | React.ElementType;
+  }[];
+}
+
+export function DashboardSidebarNavMain({
+  items,
+}: DashboardSidebarNavMainProps) {
   const { isSidebarOpen } = useDashboardSidebarStateStore();
   const { setActiveNavigationPage } = useActiveNavigationPageStore();
   return (
