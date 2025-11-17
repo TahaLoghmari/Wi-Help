@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useCurrentUser } from "@/features/auth";
 import { useCurrentScreenSize } from "@/hooks";
-import { Route as DashboardRoute } from "@/routes/patient/index";
+import { Route as DashboardRoute } from "@/routes/professional/index";
 import { useAppNavigation } from "@/index";
 import { Outlet } from "@tanstack/react-router";
 
@@ -19,16 +19,16 @@ export function DashboardLayout() {
   const { isPending } = useCurrentUser();
   const { currentScreenSize } = useCurrentScreenSize();
   const { message } = DashboardRoute.useSearch();
-  const { goToPatientApp } = useAppNavigation();
+  const { goToProfessionalApp } = useAppNavigation();
   // useSignalRNotifications(user?.id);
 
   // this is for google signin/signup failing or any error when the redirection is comming from the backend with an error
   useEffect(() => {
     if (message) {
       toast.error(message);
-      goToPatientApp();
+      goToProfessionalApp();
     }
-  }, [message, goToPatientApp]);
+  }, [message, goToProfessionalApp]);
 
   useEffect(() => {
     if (currentScreenSize >= 768 && currentScreenSize < 1280)

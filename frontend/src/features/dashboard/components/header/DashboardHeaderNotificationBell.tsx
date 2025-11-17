@@ -13,7 +13,7 @@ export function DashboardHeaderNotificationBell() {
 
   return (
     <Link
-      to={ROUTE_PATHS.PATIENT.INDEX}
+      to={ROUTE_PATHS.PROFESSIONAL.INDEX}
       className="hover:text-accent-foreground relative flex h-8 cursor-pointer items-center rounded-md px-2 hover:bg-gray-200"
     >
       {({ isActive }) => (
