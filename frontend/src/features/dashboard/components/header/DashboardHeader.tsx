@@ -10,7 +10,7 @@ export function DashboardHeader() {
     useDashboardOverallSidebarState();
   const { currentScreenSize } = useCurrentScreenSize();
   return (
-    <header className="flex h-12 items-center justify-center border-b">
+    <header className="flex h-[69px] items-center justify-center border-b">
       <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
         <div
           className={`hover:bg-accent flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-sm font-medium ${currentScreenSize < 1280 && currentScreenSize >= 768 && "hidden"}`}

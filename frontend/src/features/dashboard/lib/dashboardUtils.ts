@@ -17,32 +17,32 @@ export function getNavigationData(user: UserDto) {
   const professionalNavMain = [
     {
       title: "Appointments",
-      url: "appointments",
+      url: "/professional/appointments",
       icon: Calendar,
     },
     {
       title: "My Patients",
-      url: "my-patients",
+      url: "/professional/my-patients",
       icon: Users,
     },
     {
       title: "Schedule Timings",
-      url: "schedule-timings",
+      url: "/professional/schedule-timings",
       icon: Clock,
     },
     {
       title: "Invoices",
-      url: "invoices",
+      url: "/professional/invoices",
       icon: FileText,
     },
     {
       title: "Reviews",
-      url: "reviews",
+      url: "/professional/reviews",
       icon: Star,
     },
     {
       title: "Messages",
-      url: "messages",
+      url: "/professional/messages",
       icon: MessageSquare,
     },
   ];
