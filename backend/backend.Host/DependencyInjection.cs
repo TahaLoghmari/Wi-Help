@@ -92,7 +92,7 @@ internal static class DependencyInjection
             })
             .AddJwtBearer(options =>
             {
-                IWebHostEnvironment env = builder.Environment;
+                var env = builder.Environment;
                 options.RequireHttpsMetadata = !env.IsDevelopment();
                 options.SaveToken = true;
                 
@@ -106,7 +106,6 @@ internal static class DependencyInjection
 
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAuthOptions.Key)),
-
                 };
                 options.Events = new JwtBearerEvents
                 {
@@ -117,22 +116,6 @@ internal static class DependencyInjection
                             context.Token = context.Request.Cookies["accessToken"];
                         }
                         return Task.CompletedTask;
-                    },
-                    OnChallenge = context =>
-                    {
-                        context.HandleResponse();
-                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        context.Response.ContentType = "application/problem+json";
-                        
-                        var problemDetails = new
-                        {
-                            type = "https://tools.ietf.org/html/rfc7235#section-3.1",
-                            title = "Unauthorized",
-                            status = StatusCodes.Status401Unauthorized,
-                            detail = context.ErrorDescription ?? "You are not authorized to access this resource."
-                        };
-                        
-                        return context.Response.WriteAsJsonAsync(problemDetails);
                     }
                 };
             })
