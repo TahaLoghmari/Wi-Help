@@ -11,9 +11,9 @@ using Serilog;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder
     .AddApi()
-    .AddAuthentication()
+    .AddAuthentication()  
+    .AddServices()     
     .AddErrorHandling()
-    .AddServices()
     .AddLogging()
     .AddSwagger()
     .AddRateLimiting()
@@ -47,20 +47,19 @@ using (var scope = app.Services.CreateScope())
     await IdentityDataSeeder.SeedRolesAsync(roleManager);
 }
 
+app.UseExceptionHandler();           
+app.UseSerilogRequestLogging(); 
+app.UseRateLimiter();         
 
-app.MapHealthCheckEndpoints();
+app.MapHealthCheckEndpoints();   
 
-app.UseCors("AllowReactApp");
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseCors("AllowReactApp");     
+app.UseAuthentication();       
+app.UseAuthorization();       
 
-app.UseHangfireDashboard();
-app.MapEndpoints();
-
-app.UseExceptionHandler();
-app.UseSerilogRequestLogging();
-app.UseRateLimiter();
-app.MapControllers();
+app.UseHangfireDashboard();   
+app.MapEndpoints();            
+app.MapControllers();   
 
 
 await app.RunAsync();
