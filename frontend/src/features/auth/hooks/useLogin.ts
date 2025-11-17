@@ -11,7 +11,7 @@ export const login = (credentials: LoginUserDto) => {
 };
 
 export function useLogin() {
-  const { goToPatientApp } = useAppNavigation();
+  const { goToProfessionalApp } = useAppNavigation();
   const queryClient = useQueryClient();
   return useMutation<void, ProblemDetailsDto, LoginUserDto>({
     mutationFn: login,
@@ -20,7 +20,7 @@ export function useLogin() {
       toast.success("Welcome back!", {
         description: "You have successfully logged in.",
       });
-      goToPatientApp();
+      goToProfessionalApp();
     },
     onError: (error, credentials) => {
       // this is for the toast error when email is not verified
