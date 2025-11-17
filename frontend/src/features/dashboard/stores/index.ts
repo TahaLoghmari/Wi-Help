@@ -1,3 +1,3 @@
 export * from "./useLogoutDialogStore";
 export * from "./useDashboardSidebarStateStore";
-export * from "./useDashboardOverallSidebarState";
+export * from "./useActiveNavigationPageStore";

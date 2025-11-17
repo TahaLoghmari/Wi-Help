@@ -18,5 +18,6 @@ export const ROUTE_PATHS = {
     ROOT: "/professional",
     INDEX: "/professional/",
     APPOINTMENTS: "/professional/appointments",
+    NOTIFICATIONS: "/professional/notifications",
   },
 } as const;
