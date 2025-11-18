@@ -48,9 +48,7 @@ export function DashboardLayout() {
       <DashboardSidebar />
       <div className="flex h-svh flex-1 flex-col overflow-hidden">
         <DashboardHeader />
-        <div className="h-full w-full bg-[#fafafb]">
-          <Outlet />
-        </div>
+        <Outlet />
         {/* this is a dialog */}
         <DashboardSidebarLogoutButton />
       </div>

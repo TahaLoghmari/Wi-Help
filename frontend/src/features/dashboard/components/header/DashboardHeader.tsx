@@ -15,7 +15,7 @@ export function DashboardHeader() {
   const { currentScreenSize } = useCurrentScreenSize();
   const { activeNavigationPage } = useActiveNavigationPageStore();
   return (
-    <header className="flex h-[69px] w-full items-center justify-between gap-1 border-b px-4 lg:gap-2 lg:px-6">
+    <div className="flex h-16 w-full items-center justify-between gap-1 border-b px-4 lg:gap-2 lg:px-6 shrink-0">
       <div className="flex items-center gap-3">
         <div
           className={`hover:bg-accent flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-sm font-medium ${currentScreenSize < 1280 && currentScreenSize >= 768 && "hidden"}`}
@@ -44,6 +44,6 @@ export function DashboardHeader() {
         <DashboardHeaderDate />
         <DashboardHeaderNotificationBell />
       </div>
-    </header>
+    </div>
   );
 }
