@@ -25,4 +25,16 @@ export const ROUTE_PATHS = {
     MESSAGES: "/professional/messages",
     NOTIFICATIONS: "/professional/notifications",
   },
+
+  PATIENT: {
+    ROOT: "/patient",
+    INDEX: "/patient/",
+    APPOINTMENTS: "/patient/appointments",
+    BILLING: "/patient/billing",
+    FAVORITES: "/patient/favorites",
+    FINDPROFESSIONAL: "/patient/find-professional",
+    MEDICALRECORDS: "/patient/medical-records",
+    MESSAGES: "/patient/messages",
+    PRESCRIPTIONS: "/patient/prescriptions",
+  },
 } as const;
