@@ -31,7 +31,7 @@ export function EmailVerificationPage() {
               <p className="text-muted-foreground">
                 {t("auth.emailVerificationPage.sentTo")}
               </p>
-              <p className="font-medium text-gray-900">{email}</p>
+              <p className="font-medium text-[#00394a]">{email}</p>
               <p className="text-muted-foreground text-center text-sm">
                 {t("auth.emailVerificationPage.instructions")}
               </p>
@@ -39,17 +39,30 @@ export function EmailVerificationPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
-          <div className="flex w-full items-center justify-center rounded-lg border border-[#386d52] p-4">
+          {/* <div className="flex w-full items-center justify-center rounded-lg border border-[#386d52] p-4">
             <p className="text-sm">
               <strong className="text-[#386d52]">
                 {t("auth.emailVerificationPage.noteLabel")}
               </strong>{" "}
               {t("auth.emailVerificationPage.noteDescription")}
             </p>
+          </div> */}
+          <div
+            className={`group flex items-center rounded-md bg-[#fcf4d4] px-3 py-3 text-[#00394a]`}
+          >
+            <span
+              className={`mr-3 h-7 w-1 rounded-full bg-[#00394a] transition-colors`}
+            ></span>
+            <div className={`cursor-pointer rounded-md text-sm text-[#00394a]`}>
+              <span className="mr-1 font-semibold">
+                {t("auth.emailVerificationPage.noteLabel")}
+              </span>
+              {t("auth.emailVerificationPage.noteDescription")}
+            </div>
           </div>
           <div className="flex w-full flex-col gap-3">
             <Button
-              className="w-full cursor-pointer p-4 bg-[#386d52] hover:bg-[#386d52]/90"
+              className="w-full cursor-pointer bg-[#00394a] p-4 hover:bg-[#00394a]/90"
               onClick={() => {
                 if (email) {
                   resendConfirmationEmailMutation.mutate(email);
