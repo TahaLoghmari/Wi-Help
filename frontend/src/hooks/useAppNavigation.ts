@@ -47,6 +47,10 @@ export function useAppNavigation() {
       navigate({ to: ROUTE_PATHS.PROFESSIONAL.ROOT });
     },
 
+    goToPatientApp: () => {
+      navigate({ to: ROUTE_PATHS.ROOT }); 
+    },
+
     goBack: () => {
       window.history.back();
     },

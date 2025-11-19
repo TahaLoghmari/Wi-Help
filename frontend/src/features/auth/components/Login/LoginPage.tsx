@@ -126,7 +126,7 @@ export function LoginPage({
                             <FormLabel>{t("common.password")}</FormLabel>
                             <Link
                               to={ROUTE_PATHS.AUTH.FORGOT_PASSWORD}
-                              className="ml-auto text-sm font-semibold text-[#386d52] underline-offset-4 hover:text-[#386d52]/90"
+                              className="ml-auto text-xs font-semibold text-[#3fa6ff] hover:text-[#3fa6ff]/90"
                             >
                               {t("auth.forgotPassword")}
                             </Link>
@@ -145,10 +145,7 @@ export function LoginPage({
                   </div>
                   <Button
                     type="submit"
-                    className="w-full bg-[#386d52]"
-                    disabled={
-                      !form.formState.isValid || loginMutation.isPending
-                    }
+                    className="w-full bg-[#00394a] hover:bg-[#00546e]"
                   >
                     {loginMutation.isPending ? (
                       <Spinner className="h-5 w-5 border-2 invert" />
@@ -161,7 +158,7 @@ export function LoginPage({
                   {t("auth.dontHaveAccount")}{" "}
                   <Link
                     to={ROUTE_PATHS.AUTH.REGISTER}
-                    className="font-semibold text-[#386d52] underline-offset-4 hover:text-[#386d52]/90"
+                    className="font-semibold text-[#3fa6ff] underline-offset-4 hover:text-[#3fa6ff]/90"
                   >
                     {t("auth.signUp")}
                   </Link>

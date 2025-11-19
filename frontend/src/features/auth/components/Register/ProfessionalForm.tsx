@@ -278,7 +278,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
               Back
             </Button>
             <Button
-              className="cursor-pointer bg-linear-to-r from-[#3fa6ff] to-[#00e984] transition-transform duration-200 hover:scale-101 hover:shadow-lg"
+              className="cursor-pointer bg-[#00394a] transition-transform duration-200 hover:scale-101 hover:bg-[#00394a] hover:shadow-lg"
               onClick={async () => {
                 const isStep1Valid = await form.trigger([
                   "firstName",
@@ -413,7 +413,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
               Back
             </Button>
             <Button
-              className="cursor-pointer bg-linear-to-r from-[#3fa6ff] to-[#00e984] transition-transform duration-200 hover:scale-101 hover:shadow-lg"
+              className="cursor-pointer bg-[#00394a] transition-transform duration-200 hover:scale-101 hover:bg-[#00394a] hover:shadow-lg"
               onClick={async () => {
                 const isStep2Valid = await form.trigger([
                   "address.street",
@@ -521,7 +521,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
             </Button>
             <Button
               type="submit"
-              className="cursor-pointer bg-linear-to-r from-[#3fa6ff] to-[#00e984] transition-transform duration-200 hover:scale-101 hover:shadow-lg"
+              className="cursor-pointer bg-[#00394a] transition-transform duration-200 hover:scale-101 hover:bg-[#00394a] hover:shadow-lg"
               disabled={registerMutation.isPending}
             >
               {registerMutation.isPending ? (

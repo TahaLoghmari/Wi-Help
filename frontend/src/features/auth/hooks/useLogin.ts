@@ -4,23 +4,22 @@ import { type ProblemDetailsDto } from "@/types/api.types";
 import { API_ENDPOINTS } from "@/config/endpoints";
 import { api, handleApiError } from "@/index";
 import { toast } from "sonner";
-import { useAppNavigation } from "@/hooks";
 
 export const login = (credentials: LoginUserDto) => {
   return api.post<void>(API_ENDPOINTS.AUTH.LOGIN, credentials);
 };
 
 export function useLogin() {
-  const { goToProfessionalApp } = useAppNavigation();
   const queryClient = useQueryClient();
+
   return useMutation<void, ProblemDetailsDto, LoginUserDto>({
     mutationFn: login,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       toast.success("Welcome back!", {
         description: "You have successfully logged in.",
       });
-      goToProfessionalApp();
+      // Navigation will be handled by GuestGuard's useEffect when user data loads
     },
     onError: (error, credentials) => {
       // this is for the toast error when email is not verified
