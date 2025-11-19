@@ -8,6 +8,10 @@ import {
   Star,
   MessageSquare,
   Heart,
+  Search,
+  ClipboardList,
+  Pill,
+  CreditCard,
 } from "lucide-react";
 
 export function getNavigationData(user: UserDto) {
@@ -48,6 +52,31 @@ export function getNavigationData(user: UserDto) {
   ];
 
   const patientNavMain = [
+    {
+      title: "Appointments",
+      url: "/patient/appointments",
+      icon: Calendar,
+    },
+    {
+      title: "Find Professional",
+      url: "/patient/find-professional",
+      icon: Search,
+    },
+    {
+      title: "Medical Records",
+      url: "/patient/medical-records",
+      icon: ClipboardList,
+    },
+    {
+      title: "Prescriptions",
+      url: "/patient/prescriptions",
+      icon: Pill,
+    },
+    {
+      title: "Billing",
+      url: "/patient/billing",
+      icon: CreditCard,
+    },
     {
       title: "Favorites",
       url: "/patient/favorites",
