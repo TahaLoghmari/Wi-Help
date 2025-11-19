@@ -28,7 +28,7 @@ public class PatientModuleApi(
             return Result.Failure(PatientErrors.AlreadyExists(request.UserId));
         }
 
-        var patient = new Patient(request.UserId, request.Address,request.EmergencyContact);
+        var patient = new Patient(request.UserId,request.EmergencyContact);
         
         dbContext.Patients.Add(patient);
         await dbContext.SaveChangesAsync(cancellationToken);

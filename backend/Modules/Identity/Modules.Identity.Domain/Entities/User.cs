@@ -24,7 +24,8 @@ public sealed class User : IdentityUser<Guid>
         string dateOfBirth,
         string gender,
         string phoneNumber,
-        string email)
+        string email,
+        Address address)
     {
         return new User
         {
@@ -36,6 +37,7 @@ public sealed class User : IdentityUser<Guid>
             Email = email,
             PhoneNumber = phoneNumber,
             UserName = $"{firstName.ToLower()}.{lastName.ToLower()}",
+            Address =  address
         };
     }
 }

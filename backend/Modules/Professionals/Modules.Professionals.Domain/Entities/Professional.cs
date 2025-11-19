@@ -16,8 +16,7 @@ public class Professional
     public Professional(
         Guid userId,
         string specialization,
-        int yearsOfExperience,
-        Address address)
+        int yearsOfExperience)
     {
         Id = Guid.NewGuid();
         UserId = userId;

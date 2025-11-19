@@ -12,7 +12,6 @@ public class Patient
 
     public Patient (
         Guid userId,
-        Address defaultAddress,
         EmergencyContact contact)
     {
         Id = Guid.NewGuid();

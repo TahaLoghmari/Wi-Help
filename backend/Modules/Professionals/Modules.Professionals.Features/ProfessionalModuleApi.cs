@@ -32,8 +32,7 @@ public class ProfessionalModuleApi(
         var professional = new Professional(
             request.UserId,
             request.Specialization,
-            request.YearsOfExperience,
-            request.Address);
+            request.YearsOfExperience);
         
         dbContext.Professionals.Add(professional);
         await dbContext.SaveChangesAsync(cancellationToken);

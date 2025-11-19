@@ -38,7 +38,8 @@ public sealed class RegisterCommandHandler(
                 command.DateOfBirth,
                 command.Gender,
                 command.PhoneNumber,
-                command.Email);
+                command.Email,
+                command.Address);
 
         IdentityResult result = await userManager.CreateAsync(user, command.Password);
 
@@ -61,7 +62,6 @@ public sealed class RegisterCommandHandler(
         {
             CreatePatientRequest patientRequest = new CreatePatientRequest(
                 user.Id,
-                command.Address,
                 command.EmergencyContact!
             );
             
@@ -79,8 +79,7 @@ public sealed class RegisterCommandHandler(
             CreateProfessionalRequest professionalRequest = new CreateProfessionalRequest(
                 user.Id,
                 command.Specialization!,
-                command.YearsOfExperience!.Value,
-                command.Address
+                command.YearsOfExperience!.Value
             );
             
             Result createProfessionalRequest = await professionalApi.CreateProfessionalAsync(
