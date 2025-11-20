@@ -506,7 +506,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
           <div className="grid gap-3">
             <FormField
               control={form.control}
-              name="yearsOfExperience"
+              name="experience"
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-2">
                   <FormLabel className="text-xs text-gray-700">

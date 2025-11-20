@@ -40,7 +40,7 @@ export function ProfessionalFormDefaults() {
     ...commonDefaults,
     role: "professional" as const,
     specialization: "",
-    yearsOfExperience: undefined as number | undefined,
+    experience: undefined as number | undefined,
   };
 }
 

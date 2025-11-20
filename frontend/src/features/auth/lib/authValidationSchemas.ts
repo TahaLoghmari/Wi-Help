@@ -122,7 +122,7 @@ export const professionalSchema = z
       .string()
       .min(1, { message: "Specialization is required." })
       .max(100, { message: "Specialization must be at most 100 characters." }),
-    yearsOfExperience: z
+    experience: z
       .number()
       .min(0, { message: "Years of Experience must be at least 0." }),
   })

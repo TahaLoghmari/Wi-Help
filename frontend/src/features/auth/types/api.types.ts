@@ -42,7 +42,7 @@ export interface RegisterUserDto {
   address?: Address;
   emergencyContact?: EmergencyContact;
   specialization?: string;
-  yearsOfExperience?: number;
+  experience?: number;
 }
 
 export interface ResetPasswordDto {
