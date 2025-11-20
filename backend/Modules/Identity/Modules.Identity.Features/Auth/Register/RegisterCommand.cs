@@ -16,4 +16,4 @@ public sealed record RegisterCommand(
     Address Address,
     EmergencyContact? EmergencyContact,
     string? Specialization,
-    int? YearsOfExperience) : ICommand;
+    int? Experience) : ICommand;

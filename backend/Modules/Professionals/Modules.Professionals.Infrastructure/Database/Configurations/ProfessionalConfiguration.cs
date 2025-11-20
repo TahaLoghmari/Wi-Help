@@ -19,13 +19,28 @@ public class ProfessionalConfiguration : IEntityTypeConfiguration<Professional>
             .IsRequired()
             .HasMaxLength(100);
 
-        builder.Property(p => p.YearsOfExperience)
+        builder.Property(p => p.Experience)
             .IsRequired();
+
+        builder.Property(p => p.StartPrice)
+            .IsRequired();
+
+        builder.Property(p => p.EndPrice)
+            .IsRequired();
+
+        builder.Property(p => p.Bio)
+            .HasMaxLength(2000);
 
         builder.Property(p => p.IsVerified)
             .IsRequired();
 
         builder.Property(p => p.CreatedAt)
+            .IsRequired();
+
+        builder.Property(p => p.UpdatedAt)
+            .IsRequired();
+
+        builder.Property(p => p.Services)
             .IsRequired();
     }
 }

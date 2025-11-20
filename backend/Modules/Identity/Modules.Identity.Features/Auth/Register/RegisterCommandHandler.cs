@@ -79,7 +79,7 @@ public sealed class RegisterCommandHandler(
             CreateProfessionalRequest professionalRequest = new CreateProfessionalRequest(
                 user.Id,
                 command.Specialization!,
-                command.YearsOfExperience!.Value
+                command.Experience!.Value
             );
             
             Result createProfessionalRequest = await professionalApi.CreateProfessionalAsync(

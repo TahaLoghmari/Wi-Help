@@ -134,7 +134,7 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
                 .NotNull()
                 .WithMessage("Specialization is required for professionals");
         
-            RuleFor(x => x.YearsOfExperience)
+            RuleFor(x => x.Experience)
                 .NotNull()
                 .WithMessage("Years of Experience is required for professionals");
         });

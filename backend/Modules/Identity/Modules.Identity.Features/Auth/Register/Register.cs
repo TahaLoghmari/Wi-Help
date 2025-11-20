@@ -29,7 +29,7 @@ internal sealed class Register: IEndpoint
                     request.Address,
                     request.EmergencyContact,
                     request.Specialization,
-                    request.YearsOfExperience);
+                    request.Experience);
                     
                 Result result = await handler.Handle(command, cancellationToken);
                 return result.Match(() => Results.Ok(), CustomResults.Problem);
@@ -49,5 +49,5 @@ internal sealed class Register: IEndpoint
         Address Address,
         EmergencyContact EmergencyContact,
         string? Specialization,
-        int? YearsOfExperience);
+        int? Experience);
 }
