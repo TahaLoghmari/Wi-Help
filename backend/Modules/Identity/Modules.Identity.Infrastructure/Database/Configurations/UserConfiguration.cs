@@ -31,6 +31,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             address.Property(a => a.City).HasMaxLength(100);
             address.Property(a => a.PostalCode).HasMaxLength(20);
             address.Property(a => a.Country).HasMaxLength(100);
+            address.Property(a => a.State).HasMaxLength(100);
         });
 
         builder.Property(u => u.CreatedAt)

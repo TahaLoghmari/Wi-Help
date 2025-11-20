@@ -97,6 +97,12 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
             .MaximumLength(100)
             .WithMessage("Country must be at most 100 characters.");
         
+        RuleFor(x => x.Address.State )
+            .NotEmpty()
+            .WithMessage("State is required.")
+            .MaximumLength(100)
+            .WithMessage("State must be at most 100 characters.");
+        
         When(x => x.Role.Equals("patient", StringComparison.OrdinalIgnoreCase), () =>
         {
             RuleFor(x => x.EmergencyContact)
