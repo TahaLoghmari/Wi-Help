@@ -11,6 +11,7 @@ export interface Address {
   city: string;
   postalCode: string;
   country: string;
+  state: string;
 }
 
 export interface EmergencyContact {

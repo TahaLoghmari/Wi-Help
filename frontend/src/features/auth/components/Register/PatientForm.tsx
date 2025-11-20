@@ -327,6 +327,64 @@ export function PatientForm({ form }: PatientFormProps) {
             <div className="grid gap-3">
               <FormField
                 control={form.control}
+                name="address.country"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col gap-2">
+                    <FormLabel className="text-xs text-gray-700">
+                      Country
+                    </FormLabel>
+                    <FormControl>
+                      <Select
+                        key={`country-${step}`}
+                        value={field.value || ""}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue
+                            className="text-xs placeholder:text-xs"
+                            placeholder="Select Country"
+                          ></SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {COUNTRIES.map((country, idx) => (
+                            <SelectItem key={idx} value={country.value}>
+                              {country.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="grid gap-3">
+              <FormField
+                control={form.control}
+                name="address.state"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col gap-2">
+                    <FormLabel className="text-xs text-gray-700">
+                      State
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className="text-xs placeholder:text-sm"
+                        placeholder="Enter state"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="grid gap-3">
+              <FormField
+                control={form.control}
                 name="address.city"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
@@ -367,41 +425,6 @@ export function PatientForm({ form }: PatientFormProps) {
               />
             </div>
           </div>
-          <div className="grid gap-3">
-            <FormField
-              control={form.control}
-              name="address.country"
-              render={({ field }) => (
-                <FormItem className="flex flex-col gap-2">
-                  <FormLabel className="text-xs text-gray-700">
-                    Country
-                  </FormLabel>
-                  <FormControl>
-                    <Select
-                      key={`country-${step}`}
-                      value={field.value || ""}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue
-                          className="text-xs placeholder:text-xs"
-                          placeholder="Select Country"
-                        ></SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        {COUNTRIES.map((country, idx) => (
-                          <SelectItem key={idx} value={country.value}>
-                            {country.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
           <div className="mt-10 mb-2 flex w-full items-center justify-between">
             <Button
               variant="outline"
@@ -420,6 +443,7 @@ export function PatientForm({ form }: PatientFormProps) {
                   "address.city",
                   "address.postalCode",
                   "address.country",
+                  "address.state",
                 ]);
                 if (isStep2Valid) {
                   setStep(step + 1);

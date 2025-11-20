@@ -17,6 +17,10 @@ const addressSchema = z.object({
     .string()
     .min(1, { message: "Country is required." })
     .max(50, { message: "Country must be at most 50 characters." }),
+  state: z
+    .string()
+    .min(1, { message: "State is required." })
+    .max(50, { message: "State must be at most 50 characters." }),
 });
 
 const emergencyContactSchema = z.object({

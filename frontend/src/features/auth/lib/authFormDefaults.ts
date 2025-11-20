@@ -19,6 +19,7 @@ const commonDefaults = {
     city: "",
     postalCode: "",
     country: "",
+    state: "",
   },
 };
 
