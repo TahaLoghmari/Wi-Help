@@ -1,4 +1,6 @@
-export function ProfileAndBioFormDefaults() {
+import type { UserDto } from "@/features/auth";
+
+export function ProfileAndBioFormDefaults(user: UserDto) {
   return {
     firstName: "",
     lastName: "",
