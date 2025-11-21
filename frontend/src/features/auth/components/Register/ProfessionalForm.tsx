@@ -3,7 +3,7 @@ import {
   useStepsStore,
   type registerFormSchema,
   COUNTRIES,
-  useRegister,
+  useRegisterProfessional,
   SPECIALIZATIONS,
 } from "@/features/auth";
 import type z from "zod";
@@ -35,7 +35,7 @@ interface ProfessionalFormProps {
 
 export function ProfessionalForm({ form }: ProfessionalFormProps) {
   const { step, setStep } = useStepsStore();
-  const registerMutation = useRegister();
+  const registerProfessionalMutation = useRegisterProfessional();
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -546,9 +546,9 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
             <Button
               type="submit"
               className="cursor-pointer bg-[#00394a] transition-transform duration-200 hover:scale-101 hover:bg-[#00394a] hover:shadow-lg"
-              disabled={registerMutation.isPending}
+              disabled={registerProfessionalMutation.isPending}
             >
-              {registerMutation.isPending ? (
+              {registerProfessionalMutation.isPending ? (
                 <Spinner className="h-5 w-5 border-2 invert" />
               ) : (
                 "Register"

@@ -26,7 +26,6 @@ const commonDefaults = {
 export function PatientFormDefaults() {
   return {
     ...commonDefaults,
-    role: "patient" as const,
     emergencyContact: {
       fullName: "",
       phoneNumber: "",
@@ -38,9 +37,8 @@ export function PatientFormDefaults() {
 export function ProfessionalFormDefaults() {
   return {
     ...commonDefaults,
-    role: "professional" as const,
     specialization: "",
-    experience: undefined as number | undefined,
+    experience: 0,
   };
 }
 

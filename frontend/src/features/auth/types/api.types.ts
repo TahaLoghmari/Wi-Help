@@ -33,7 +33,21 @@ export interface ForgotPasswordDto {
   email: string;
 }
 
-export interface RegisterUserDto {
+export interface RegisterProfessionalDto {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  gender: string;
+  phoneNumber: string;
+  address?: Address;
+  specialization?: string;
+  experience?: number;
+}
+
+export interface RegisterPatientDto {
   email: string;
   password: string;
   confirmPassword: string;
@@ -45,8 +59,6 @@ export interface RegisterUserDto {
   role: string;
   address?: Address;
   emergencyContact?: EmergencyContact;
-  specialization?: string;
-  experience?: number;
 }
 
 export interface ResetPasswordDto {

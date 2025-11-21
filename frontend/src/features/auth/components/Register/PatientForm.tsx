@@ -4,7 +4,7 @@ import {
   type registerFormSchema,
   COUNTRIES,
   RELATIONSHIPS,
-  useRegister,
+  useRegisterPatient,
 } from "@/features/auth";
 import type z from "zod";
 import {
@@ -35,7 +35,7 @@ interface PatientFormProps {
 
 export function PatientForm({ form }: PatientFormProps) {
   const { step, setStep } = useStepsStore();
-  const registerMutation = useRegister();
+  const registerPatientMutation = useRegisterPatient();
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -558,9 +558,9 @@ export function PatientForm({ form }: PatientFormProps) {
             <Button
               type="submit"
               className="cursor-pointer bg-[#00394a] transition-transform duration-200 hover:scale-101 hover:bg-[#00394a] hover:shadow-lg"
-              disabled={registerMutation.isPending}
+              disabled={registerPatientMutation.isPending}
             >
-              {registerMutation.isPending ? (
+              {registerPatientMutation.isPending ? (
                 <Spinner className="h-5 w-5 border-2 invert" />
               ) : (
                 "Register"

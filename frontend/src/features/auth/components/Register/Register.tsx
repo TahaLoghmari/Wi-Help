@@ -10,7 +10,8 @@ import {
   Progress,
 } from "@/components/ui";
 import {
-  useRegister,
+  useRegisterPatient,
+  useRegisterProfessional,
   registerFormSchema,
   PatientFormDefaults,
   ProfessionalFormDefaults,
@@ -29,7 +30,8 @@ export function Register() {
   const { registerRole, setRegisterRole } = useRegisterRoleStore();
   const { step, setStep } = useStepsStore();
   const { t } = useTranslation();
-  const registerMutation = useRegister();
+  const registerPatientMutation = useRegisterPatient();
+  const registerProfessionMutation = useRegisterProfessional();
 
   const form = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
@@ -46,7 +48,8 @@ export function Register() {
       : ["Personal Info", "Address Info", "Professional Info"];
 
   const onSubmit = async (credentials: z.infer<typeof registerFormSchema>) => {
-    registerMutation.mutate(credentials);
+    if (registerRole === "patient") registerPatientMutation.mutate(credentials);
+    else registerProfessionMutation.mutate(credentials);
   };
 
   return (
