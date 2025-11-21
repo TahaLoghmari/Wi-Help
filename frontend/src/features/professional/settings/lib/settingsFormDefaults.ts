@@ -2,6 +2,8 @@ export function ProfileAndBioFormDefaults() {
   return {
     firstName: "",
     lastName: "",
+    phoneNumber: "",
+    experience: 0,
     address: {
       street: "",
       city: "",

@@ -130,6 +130,55 @@ export function ProfileAndBio() {
                   />
                 </div>
 
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="phoneNumber"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col gap-1">
+                        <FormLabel className="block text-[11px] font-medium text-slate-700">
+                          Phone Number
+                        </FormLabel>
+                        <FormControl>
+                          <input
+                            type="tel"
+                            className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                            placeholder="Enter phone number"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage className="text-xs" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="experience"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col gap-1">
+                        <FormLabel className="block text-[11px] font-medium text-slate-700">
+                          Experience
+                        </FormLabel>
+                        <FormControl>
+                          <input
+                            type="number"
+                            className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                            placeholder="0"
+                            value={field.value ?? ""}
+                            onChange={(e) =>
+                              field.onChange(
+                                e.target.value ? Number(e.target.value) : 0,
+                              )
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage className="text-xs" />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <FormField
                     control={form.control}
@@ -291,7 +340,7 @@ export function ProfileAndBio() {
                                     )}
                                   </div>
                                 ) : (
-                                  "Add service..."
+                                  <p className="text-muted-foreground text-[11px]">Add service...</p>
                                 )}
                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                               </Button>
@@ -449,6 +498,31 @@ export function ProfileAndBio() {
                     </FormItem>
                   )}
                 />
+              </div>
+              <div className="flex w-full items-center justify-end">
+                <button
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[#00394a] px-3 py-1.5 text-[11px] text-white transition-colors hover:bg-[#00546e]"
+                  type="submit"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    data-lucide="save"
+                    className="lucide lucide-save h-3.5 w-3.5 text-white"
+                  >
+                    <path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path>
+                    <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"></path>
+                    <path d="M7 3v4a1 1 0 0 0 1 1h7"></path>
+                  </svg>
+                  Save changes
+                </button>
               </div>
             </section>
           </form>

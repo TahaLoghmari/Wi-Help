@@ -22,26 +22,6 @@ export function SettingsLayout() {
             preferences.
           </p>
         </div>
-        <button className="inline-flex items-center gap-1.5 rounded-full bg-[#00394a] px-3 py-1.5 text-[11px] text-white transition-colors hover:bg-[#00546e]">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            data-lucide="save"
-            className="lucide lucide-save h-3.5 w-3.5 text-white"
-          >
-            <path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path>
-            <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"></path>
-            <path d="M7 3v4a1 1 0 0 0 1 1h7"></path>
-          </svg>
-          Save changes
-        </button>
       </div>
       <div className="space-y-4 rounded-2xl border border-slate-200 bg-white pt-4 pr-4 pb-4 pl-4 text-xs shadow-sm shadow-slate-100 sm:p-5">
         <div className="flex flex-wrap items-center gap-1 border-b border-slate-200 pb-2 text-[11px]">

@@ -29,6 +29,14 @@ export const profileAndBioFormSchema = z
       .string()
       .min(1, { message: "Last Name is required." })
       .max(50, { message: "Last Name must be at most 50 characters." }),
+    phoneNumber: z
+      .string()
+      .min(1, { message: "Phone number is required." })
+      .regex(/^[0-9+\-\s()]+$/, { message: "Invalid phone number format." }),
+    experience: z
+      .number({ message: "Years of experience is required." })
+      .int({ message: "Experience must be a whole number." })
+      .nonnegative({ message: "Experience cannot be negative." }),
     address: addressSchema,
     specialization: z
       .string()
