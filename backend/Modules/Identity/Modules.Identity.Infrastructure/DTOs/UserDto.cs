@@ -4,7 +4,11 @@ namespace Modules.Identity.Features.DTOs;
 
 public sealed record UserDto(
     Guid Id,
+    string FirstName,
+    string LastName,
+    string DateOfBirth,
+    string Gender,
+    string PhoneNumber,
     string Email,
-    string UserName,
-    string ImageUrl,
+    Address Address,
     string Role);
