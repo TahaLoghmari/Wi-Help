@@ -24,6 +24,7 @@ export const ROUTE_PATHS = {
     REVIEWS: "/professional/reviews",
     MESSAGES: "/professional/messages",
     NOTIFICATIONS: "/professional/notifications",
+    SETTINGS: "/professional/settings",
   },
 
   PATIENT: {

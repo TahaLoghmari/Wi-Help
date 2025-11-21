@@ -510,7 +510,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-2">
                   <FormLabel className="text-xs text-gray-700">
-                    Years Of Experience
+                    Experience
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -518,7 +518,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                       min="0"
                       max="100"
                       className="text-xs placeholder:text-sm"
-                      placeholder="Enter years of experience"
+                      placeholder="Enter experience"
                       value={field.value ?? ""}
                       onChange={(e) => {
                         const value = e.target.value;

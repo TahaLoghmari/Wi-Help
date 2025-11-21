@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProfessionalIndexRouteImport } from './routes/professional/index'
 import { Route as PatientIndexRouteImport } from './routes/patient/index'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
+import { Route as ProfessionalSettingsRouteImport } from './routes/professional/settings'
 import { Route as ProfessionalScheduleTimingsRouteImport } from './routes/professional/schedule-timings'
 import { Route as ProfessionalReviewsRouteImport } from './routes/professional/reviews'
 import { Route as ProfessionalMyPatientsRouteImport } from './routes/professional/my-patients'
@@ -70,6 +71,11 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthRouteRoute,
+} as any)
+const ProfessionalSettingsRoute = ProfessionalSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => ProfessionalRouteRoute,
 } as any)
 const ProfessionalScheduleTimingsRoute =
   ProfessionalScheduleTimingsRouteImport.update({
@@ -193,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/professional/my-patients': typeof ProfessionalMyPatientsRoute
   '/professional/reviews': typeof ProfessionalReviewsRoute
   '/professional/schedule-timings': typeof ProfessionalScheduleTimingsRoute
+  '/professional/settings': typeof ProfessionalSettingsRoute
   '/auth/': typeof AuthIndexRoute
   '/patient/': typeof PatientIndexRoute
   '/professional/': typeof ProfessionalIndexRoute
@@ -218,6 +225,7 @@ export interface FileRoutesByTo {
   '/professional/my-patients': typeof ProfessionalMyPatientsRoute
   '/professional/reviews': typeof ProfessionalReviewsRoute
   '/professional/schedule-timings': typeof ProfessionalScheduleTimingsRoute
+  '/professional/settings': typeof ProfessionalSettingsRoute
   '/auth': typeof AuthIndexRoute
   '/patient': typeof PatientIndexRoute
   '/professional': typeof ProfessionalIndexRoute
@@ -247,6 +255,7 @@ export interface FileRoutesById {
   '/professional/my-patients': typeof ProfessionalMyPatientsRoute
   '/professional/reviews': typeof ProfessionalReviewsRoute
   '/professional/schedule-timings': typeof ProfessionalScheduleTimingsRoute
+  '/professional/settings': typeof ProfessionalSettingsRoute
   '/auth/': typeof AuthIndexRoute
   '/patient/': typeof PatientIndexRoute
   '/professional/': typeof ProfessionalIndexRoute
@@ -277,6 +286,7 @@ export interface FileRouteTypes {
     | '/professional/my-patients'
     | '/professional/reviews'
     | '/professional/schedule-timings'
+    | '/professional/settings'
     | '/auth/'
     | '/patient/'
     | '/professional/'
@@ -302,6 +312,7 @@ export interface FileRouteTypes {
     | '/professional/my-patients'
     | '/professional/reviews'
     | '/professional/schedule-timings'
+    | '/professional/settings'
     | '/auth'
     | '/patient'
     | '/professional'
@@ -330,6 +341,7 @@ export interface FileRouteTypes {
     | '/professional/my-patients'
     | '/professional/reviews'
     | '/professional/schedule-timings'
+    | '/professional/settings'
     | '/auth/'
     | '/patient/'
     | '/professional/'
@@ -392,6 +404,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/'
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof AuthRouteRoute
+    }
+    '/professional/settings': {
+      id: '/professional/settings'
+      path: '/settings'
+      fullPath: '/professional/settings'
+      preLoaderRoute: typeof ProfessionalSettingsRouteImport
+      parentRoute: typeof ProfessionalRouteRoute
     }
     '/professional/schedule-timings': {
       id: '/professional/schedule-timings'
@@ -586,6 +605,7 @@ interface ProfessionalRouteRouteChildren {
   ProfessionalMyPatientsRoute: typeof ProfessionalMyPatientsRoute
   ProfessionalReviewsRoute: typeof ProfessionalReviewsRoute
   ProfessionalScheduleTimingsRoute: typeof ProfessionalScheduleTimingsRoute
+  ProfessionalSettingsRoute: typeof ProfessionalSettingsRoute
   ProfessionalIndexRoute: typeof ProfessionalIndexRoute
 }
 
@@ -596,6 +616,7 @@ const ProfessionalRouteRouteChildren: ProfessionalRouteRouteChildren = {
   ProfessionalMyPatientsRoute: ProfessionalMyPatientsRoute,
   ProfessionalReviewsRoute: ProfessionalReviewsRoute,
   ProfessionalScheduleTimingsRoute: ProfessionalScheduleTimingsRoute,
+  ProfessionalSettingsRoute: ProfessionalSettingsRoute,
   ProfessionalIndexRoute: ProfessionalIndexRoute,
 }
 
