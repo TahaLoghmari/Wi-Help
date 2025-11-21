@@ -11,6 +11,7 @@
     <ProjectReference Include="..\Modules.Professionals.Infrastructure\Modules.Professionals.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules.Professionals.PublicApi\Modules.Professionals.PublicApi.csproj" />
     <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Features\Modules.Common.Features.csproj" />
+    <ProjectReference Include="..\..\Identity\Modules.Identity.PublicApi\Modules.Identity.PublicApi.csproj" />
   </ItemGroup>
 
 </Project>

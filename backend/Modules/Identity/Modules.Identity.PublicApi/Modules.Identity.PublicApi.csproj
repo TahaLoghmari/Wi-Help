@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Modules.Common.Features\Modules.Common.Features.csproj" />
+  </ItemGroup>
+
 </Project>

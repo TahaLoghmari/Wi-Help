@@ -10,5 +10,6 @@
         <ProjectReference Include="..\Modules.Patients.Infrastructure\Modules.Patients.Infrastructure.csproj" />
         <ProjectReference Include="..\Modules.Patients.Domain\Modules.Patients.Domain.csproj" />
         <ProjectReference Include="..\Modules.Patients.PublicApi\Modules.Patients.PublicApi.csproj" />
+        <ProjectReference Include="..\..\Identity\Modules.Identity.PublicApi\Modules.Identity.PublicApi.csproj" />
     </ItemGroup>
 </Project>

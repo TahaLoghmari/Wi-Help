@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Modules.Common.Features;
+using Modules.Identity.Features;
 using Modules.Identity.Infrastructure;
 using Serilog;
 using Modules.Identity.Infrastructure.Settings;
@@ -152,7 +153,8 @@ internal static class DependencyInjection
         
         builder.Services.AddEndpoints(moduleApplicationAssemblies);
         
-        builder.Services.AddIdentityInfrastructure(builder.Configuration);
+        builder.Services.AddIdentityModule()
+            .AddIdentityInfrastructure(builder.Configuration);
         
         builder.Services.AddPatientsModule()
             .AddPatientsInfrastructure(builder.Configuration);
