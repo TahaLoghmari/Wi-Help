@@ -40,4 +40,28 @@ public sealed class User : IdentityUser<Guid>
             Address =  address
         };
     }
+    
+    public void Update(
+        string? firstName = null,
+        string? lastName = null,
+        string? phoneNumber = null,
+        Address? address = null)
+    {
+        if (!string.IsNullOrWhiteSpace(firstName))
+            FirstName = firstName;
+        
+        if (!string.IsNullOrWhiteSpace(lastName))
+            LastName = lastName;
+        
+        if (!string.IsNullOrWhiteSpace(phoneNumber))
+            PhoneNumber = phoneNumber;
+        
+        if (address != null)
+            Address = address;
+        
+        if (!string.IsNullOrWhiteSpace(firstName) || !string.IsNullOrWhiteSpace(lastName))
+            UserName = $"{FirstName.ToLower()}.{LastName.ToLower()}";
+        
+        UpdatedAt = DateTime.UtcNow;
+    }
 }

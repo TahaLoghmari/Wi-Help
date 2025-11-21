@@ -8,4 +8,8 @@ public interface IPatientsModuleApi
     Task<Result> CreatePatientAsync(
         CreatePatientRequest request,
         CancellationToken cancellationToken);
+    
+    Task<Result> UpdatePatientAsync(
+        UpdatePatientRequest request,
+        CancellationToken cancellationToken);
 }

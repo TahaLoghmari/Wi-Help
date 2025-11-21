@@ -19,4 +19,10 @@ public class Patient
         EmergencyContact = contact;
 
     }
+    
+    public void Update(EmergencyContact? emergencyContact = null)
+    {
+        if (emergencyContact != null)
+            EmergencyContact = emergencyContact;
+    }
 }

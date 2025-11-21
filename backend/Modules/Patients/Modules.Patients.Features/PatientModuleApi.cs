@@ -38,4 +38,29 @@ public class PatientModuleApi(
 
         return Result.Success();
     }
+
+    public async Task<Result> UpdatePatientAsync(
+        UpdatePatientRequest request,
+        CancellationToken cancellationToken)
+    {
+        logger.LogInformation("Updating patient for UserId: {UserId}", request.UserId);
+
+        var patient = await dbContext.Patients
+            .FirstOrDefaultAsync(p => p.UserId == request.UserId, cancellationToken);
+        
+        if (patient is null)
+        {
+            logger.LogWarning("Patient not found for UserId: {UserId}", request.UserId);
+            return Result.Failure(PatientErrors.NotFound(request.UserId));
+        }
+
+        patient.Update(request.EmergencyContact);
+        
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation("Patient updated successfully for UserId: {UserId}, PatientId: {PatientId}",
+            request.UserId, patient.Id);
+
+        return Result.Success();
+    }
 }

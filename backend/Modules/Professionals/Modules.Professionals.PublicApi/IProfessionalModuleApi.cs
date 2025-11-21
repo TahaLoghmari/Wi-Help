@@ -8,4 +8,8 @@ public interface IProfessionalModuleApi
     Task<Result> CreateProfessionalAsync(
         CreateProfessionalRequest request,
         CancellationToken cancellationToken);
+    
+    Task<Result> UpdateProfessionalAsync(
+        UpdateProfessionalRequest request,
+        CancellationToken cancellationToken);
 }

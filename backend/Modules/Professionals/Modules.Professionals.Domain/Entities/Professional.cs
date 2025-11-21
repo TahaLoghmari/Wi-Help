@@ -35,4 +35,33 @@ public class Professional
         UpdatedAt = DateTime.UtcNow;
         Services = new List<string>();
     }
+    
+    public void Update(
+        string? specialization = null,
+        List<string>? services = null,
+        int? experience = null,
+        int? startPrice = null,
+        int? endPrice = null,
+        string? bio = null)
+    {
+        if (!string.IsNullOrWhiteSpace(specialization))
+            Specialization = specialization;
+        
+        if (services != null && services.Count > 0)
+            Services = services;
+        
+        if (experience.HasValue)
+            Experience = experience.Value;
+        
+        if (startPrice.HasValue)
+            StartPrice = startPrice.Value;
+        
+        if (endPrice.HasValue)
+            EndPrice = endPrice.Value;
+        
+        if (!string.IsNullOrWhiteSpace(bio))
+            Bio = bio;
+        
+        UpdatedAt = DateTime.UtcNow;
+    }
 }

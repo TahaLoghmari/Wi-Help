@@ -42,4 +42,35 @@ public class ProfessionalModuleApi(
 
         return Result.Success();
     }
+
+    public async Task<Result> UpdateProfessionalAsync(
+        UpdateProfessionalRequest request,
+        CancellationToken cancellationToken)
+    {
+        logger.LogInformation("Updating professional for UserId: {UserId}", request.UserId);
+
+        var professional = await dbContext.Professionals
+            .FirstOrDefaultAsync(p => p.UserId == request.UserId, cancellationToken);
+        
+        if (professional is null)
+        {
+            logger.LogWarning("Professional not found for UserId: {UserId}", request.UserId);
+            return Result.Failure(ProfessionalErrors.NotFound(request.UserId));
+        }
+
+        professional.Update(
+            request.Specialization,
+            request.Services,
+            request.Experience,
+            request.StartPrice,
+            request.EndPrice,
+            request.Bio);
+        
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation("Professional updated successfully for UserId: {UserId}, ProfessionalId: {ProfessionalId}",
+            request.UserId, professional.Id);
+
+        return Result.Success();
+    }
 }
