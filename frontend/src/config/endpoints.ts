@@ -7,6 +7,7 @@ export const API_ENDPOINTS = {
     FORGOT_PASSWORD: "/auth/forgot-password",
     RESET_PASSWORD: "/auth/reset-password",
     SEND_CONFIRMATION_EMAIL: "/auth/send-confirmation-email",
+    CURRENT_USER: "/auth/me",
   },
   PROFESSIONALS: {
     REGISTER_PROFESSIONAL: "/professionals/register",
