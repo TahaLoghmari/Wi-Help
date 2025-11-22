@@ -11,7 +11,7 @@ import {
 export function SettingsLayout() {
   const [tab, setTab] = useState("Profile & Bio");
   return (
-    <div className="flex h-full w-full flex-col gap-5 bg-[#fafafb] px-8 py-5">
+    <div className="flex w-full flex-1 flex-col gap-5 overflow-auto bg-[#fafafb] px-8 py-5 transition-all duration-200">
       <div className="flex flex-col gap-3 gap-x-3 gap-y-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="">
           <h2 className="text-sm font-semibold tracking-tight text-[#00394a]">
@@ -24,7 +24,7 @@ export function SettingsLayout() {
         </div>
       </div>
       <div className="space-y-4 rounded-2xl border border-slate-200 bg-white pt-4 pr-4 pb-4 pl-4 text-xs shadow-sm shadow-slate-100 sm:p-5">
-        <div className="flex flex-wrap items-center gap-1 border-b border-slate-200 pb-2 text-[11px]">
+        <div className="flex flex-wrap items-center gap-1 border-b border-slate-200 pb-4 text-[11px]">
           <button
             className={`${tab === "Profile & Bio" ? "bg-[#00394a] text-white" : "border border-slate-200 bg-white text-slate-700 hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5"} inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5`}
             onClick={() => setTab("Profile & Bio")}

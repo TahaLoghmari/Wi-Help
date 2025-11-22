@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import {
   useStepsStore,
   type RegisterProfessionalDto,
@@ -16,13 +16,11 @@ export const registerProfessional = (credentials: RegisterProfessionalDto) => {
 };
 
 export function useRegisterProfessional() {
-  const queryClient = useQueryClient();
   const { goToEmailVerification } = useAppNavigation();
   const { setStep } = useStepsStore();
   return useMutation<void, ProblemDetailsDto, RegisterProfessionalDto>({
     mutationFn: registerProfessional,
     onSuccess: (_data, credentials) => {
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       toast.success("Account created successfully!", {
         description: "Please check your email to verify your account.",
       });

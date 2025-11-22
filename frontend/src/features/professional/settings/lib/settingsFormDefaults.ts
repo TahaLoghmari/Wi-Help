@@ -10,6 +10,7 @@ export function ProfileAndBioFormDefaults(professional: ProfessionalDto) {
       street: professional.address.street,
       city: professional.address.city,
       state: professional.address.state,
+      postalCode: professional.address.postalCode,
       country: professional.address.country,
     },
     specialization: professional.specialization,

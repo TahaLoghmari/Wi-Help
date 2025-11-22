@@ -19,7 +19,7 @@ export function useLogin() {
       toast.success("Welcome back!", {
         description: "You have successfully logged in.",
       });
-      // Navigation will be handled by GuestGuard's useEffect when user data loads
+      // Navigation will be handled by GuestGuard's useEffect when user data loads by invalidating queries
     },
     onError: (error, credentials) => {
       // this is for the toast error when email is not verified

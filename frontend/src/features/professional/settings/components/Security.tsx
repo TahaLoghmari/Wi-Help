@@ -2,7 +2,7 @@ export function Security() {
   return (
     <div className="grid gap-4 lg:grid-cols-[2fr,1fr]">
       <form className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50/60 p-3 sm:p-4">
-        <div className="mb-1 border-b border-slate-200 pb-3">
+        <div className="mb-1 border-slate-200 pb-3">
           <h3 className="text-xs font-semibold tracking-tight text-[#00394a]">
             Security
           </h3>
