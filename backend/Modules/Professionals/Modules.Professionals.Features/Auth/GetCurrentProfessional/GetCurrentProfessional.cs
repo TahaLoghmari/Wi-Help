@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -33,6 +34,6 @@ internal sealed class GetCurrentProfessional : IEndpoint
                     error => CustomResults.Problem(error));
             })
             .WithTags(Tags.Professionals)
-            .RequireAuthorization();
+            .RequireAuthorization(new AuthorizeAttribute { Roles = "Professional" });
     }
 }
