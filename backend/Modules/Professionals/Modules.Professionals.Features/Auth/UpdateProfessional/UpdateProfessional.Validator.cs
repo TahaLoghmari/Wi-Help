@@ -36,32 +36,22 @@ public class UpdateProfessionalCommandValidator : AbstractValidator<UpdateProfes
         When(x => x.Address != null, () =>
         {
             RuleFor(x => x.Address!.Street)
-                .NotEmpty()
-                .WithMessage("Street is required when address is provided")
                 .MaximumLength(200)
                 .WithMessage("Street cannot exceed 200 characters");
 
             RuleFor(x => x.Address!.City)
-                .NotEmpty()
-                .WithMessage("City is required when address is provided")
                 .MaximumLength(100)
                 .WithMessage("City cannot exceed 100 characters");
 
             RuleFor(x => x.Address!.State)
-                .NotEmpty()
-                .WithMessage("State/Province is required when address is provided")
                 .MaximumLength(100)
                 .WithMessage("State/Province cannot exceed 100 characters");
 
             RuleFor(x => x.Address!.PostalCode)
-                .NotEmpty()
-                .WithMessage("Postal code is required when address is provided")
                 .MaximumLength(20)
                 .WithMessage("Postal code cannot exceed 20 characters");
 
             RuleFor(x => x.Address!.Country)
-                .NotEmpty()
-                .WithMessage("Country is required when address is provided")
                 .MaximumLength(100)
                 .WithMessage("Country cannot exceed 100 characters");
         });

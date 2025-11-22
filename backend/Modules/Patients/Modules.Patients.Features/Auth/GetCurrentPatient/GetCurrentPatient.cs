@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Patients.Infrastructure.DTOs;
 
 namespace Modules.Patients.Features.Auth.GetCurrentPatient;
 

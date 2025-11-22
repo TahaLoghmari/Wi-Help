@@ -1,6 +1,6 @@
 using Modules.Common.Features.ValueObjects;
 
-namespace Modules.Professionals.Features.Auth.GetCurrentProfessional;
+namespace Modules.Professionals.Infrastructure.DTOs;
 
 public sealed record ProfessionalProfileDto(
     Guid Id,

@@ -1,6 +1,6 @@
 using Modules.Common.Features.ValueObjects;
 
-namespace Modules.Patients.Features.Auth.GetCurrentPatient;
+namespace Modules.Patients.Infrastructure.DTOs;
 
 public sealed record PatientProfileDto(
     Guid Id,

@@ -5,6 +5,7 @@ using Modules.Common.Features.Results;
 using Modules.Identity.PublicApi;
 using Modules.Professionals.Domain;
 using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Infrastructure.DTOs;
 
 namespace Modules.Professionals.Features.Auth.GetCurrentProfessional;
 

@@ -5,6 +5,7 @@ using Modules.Common.Features.Results;
 using Modules.Identity.PublicApi;
 using Modules.Patients.Domain;
 using Modules.Patients.Infrastructure.Database;
+using Modules.Patients.Infrastructure.DTOs;
 
 namespace Modules.Patients.Features.Auth.GetCurrentPatient;
 

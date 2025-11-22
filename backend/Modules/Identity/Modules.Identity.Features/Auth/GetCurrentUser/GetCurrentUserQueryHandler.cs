@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.Domain.Entities;
-using Modules.Identity.Features.DTOs;
+using Modules.Identity.Infrastructure.DTOs;
 
 namespace Modules.Identity.Features.Auth.GetCurrentUser;
 

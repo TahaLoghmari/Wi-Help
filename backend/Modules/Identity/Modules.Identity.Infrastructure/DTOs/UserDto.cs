@@ -1,6 +1,6 @@
 using Modules.Common.Features.ValueObjects;
 
-namespace Modules.Identity.Features.DTOs;
+namespace Modules.Identity.Infrastructure.DTOs;
 
 public sealed record UserDto(
     Guid Id,

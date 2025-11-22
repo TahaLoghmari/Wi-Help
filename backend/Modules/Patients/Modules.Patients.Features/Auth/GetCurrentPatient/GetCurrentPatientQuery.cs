@@ -1,4 +1,5 @@
 using Modules.Common.Features.Abstractions;
+using Modules.Patients.Infrastructure.DTOs;
 
 namespace Modules.Patients.Features.Auth.GetCurrentPatient;
 
