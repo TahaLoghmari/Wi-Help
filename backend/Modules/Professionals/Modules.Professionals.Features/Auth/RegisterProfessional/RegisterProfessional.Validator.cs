@@ -34,12 +34,16 @@ public class RegisterProfessionalCommandValidator : AbstractValidator<RegisterPr
         RuleFor(x => x.FirstName)
             .NotEmpty()
             .WithMessage("First name is required")
-            .MaximumLength(100);
+            .MaximumLength(100)
+            .Matches(@"^[a-zA-Z]+$")
+            .WithMessage("First name must contain only letters");
 
         RuleFor(x => x.LastName)
             .NotEmpty()
             .WithMessage("Last name is required")
-            .MaximumLength(100);
+            .MaximumLength(100)
+            .Matches(@"^[a-zA-Z]+$")
+            .WithMessage("Last name must contain only letters");
 
         RuleFor(x => x.DateOfBirth)
             .NotEmpty()
@@ -52,7 +56,7 @@ public class RegisterProfessionalCommandValidator : AbstractValidator<RegisterPr
         RuleFor(x => x.Gender)
             .NotEmpty()
             .WithMessage("Gender is required")
-            .Must(g => new[] { "Male", "Female", "Other" }.Contains(g, StringComparer.OrdinalIgnoreCase))
+            .Must(g => new[] { "Male", "Female" }.Contains(g, StringComparer.OrdinalIgnoreCase))
             .WithMessage("Gender must be Male, Female, or Other");
 
         RuleFor(x => x.PhoneNumber)

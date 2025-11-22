@@ -14,14 +14,18 @@ public class UpdatePatientCommandValidator : AbstractValidator<UpdatePatientComm
         {
             RuleFor(x => x.FirstName)
                 .MaximumLength(100)
-                .WithMessage("First name cannot exceed 100 characters");
+                .WithMessage("First name cannot exceed 100 characters")
+                .Matches(@"^[a-zA-Z]+$")
+                .WithMessage("First name must contain only letters");
         });
 
         When(x => !string.IsNullOrWhiteSpace(x.LastName), () =>
         {
             RuleFor(x => x.LastName)
                 .MaximumLength(100)
-                .WithMessage("Last name cannot exceed 100 characters");
+                .WithMessage("Last name cannot exceed 100 characters")
+                .Matches(@"^[a-zA-Z]+$")
+                .WithMessage("Last name must contain only letters");
         });
 
         When(x => !string.IsNullOrWhiteSpace(x.PhoneNumber), () =>
