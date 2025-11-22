@@ -48,8 +48,7 @@ public sealed class GetCurrentPatientQueryHandler(
             user.DateOfBirth,
             user.Gender,
             user.Address,
-            patient.EmergencyContact,
-            user.Role);
+            patient.EmergencyContact);
 
         logger.LogInformation("Patient profile retrieved successfully for UserId: {UserId}", query.UserId);
 

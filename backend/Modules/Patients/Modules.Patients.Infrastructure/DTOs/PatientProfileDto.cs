@@ -12,5 +12,4 @@ public sealed record PatientProfileDto(
     string DateOfBirth,
     string Gender,
     Address Address,
-    EmergencyContact EmergencyContact,
-    string Role);
+    EmergencyContact EmergencyContact);
