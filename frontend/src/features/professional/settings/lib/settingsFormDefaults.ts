@@ -1,21 +1,21 @@
-import type { UserDto } from "@/features/auth";
+import type { ProfessionalDto } from "../../types";
 
-export function ProfileAndBioFormDefaults(user: UserDto) {
+export function ProfileAndBioFormDefaults(professional: ProfessionalDto) {
   return {
-    firstName: "",
-    lastName: "",
-    phoneNumber: "",
-    experience: 0,
+    firstName: professional.firstName,
+    lastName: professional.lastName,
+    phoneNumber: professional.phoneNumber,
+    experience: professional.experience,
     address: {
-      street: "",
-      city: "",
-      state: "",
-      country: "",
+      street: professional.address.street,
+      city: professional.address.city,
+      state: professional.address.state,
+      country: professional.address.country,
     },
-    specialization: "",
-    services: [] as string[],
-    startPrice: 0,
-    endPrice: 0,
-    bio: "",
+    specialization: professional.specialization,
+    services: professional.services,
+    startPrice: professional.startPrice,
+    endPrice: professional.endPrice,
+    bio: professional.bio,
   };
 }

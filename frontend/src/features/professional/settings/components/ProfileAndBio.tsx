@@ -28,6 +28,7 @@ import {
   ProfileAndBioFormDefaults,
   profileAndBioFormSchema,
   getServicesForSpecialization,
+  useCurrentProfessional,
 } from "@/features/professional";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SPECIALIZATIONS } from "@/features/auth";
@@ -36,10 +37,11 @@ import { cn } from "@/lib";
 import { useState } from "react";
 
 export function ProfileAndBio() {
+  const { data: professional } = useCurrentProfessional();
   const form = useForm<z.infer<typeof profileAndBioFormSchema>>({
     resolver: zodResolver(profileAndBioFormSchema),
     mode: "onChange",
-    defaultValues: ProfileAndBioFormDefaults(),
+    defaultValues: ProfileAndBioFormDefaults(professional!),
   });
   const [open, setOpen] = useState(false);
 
@@ -340,7 +342,9 @@ export function ProfileAndBio() {
                                     )}
                                   </div>
                                 ) : (
-                                  <p className="text-muted-foreground text-[11px]">Add service...</p>
+                                  <p className="text-muted-foreground text-[11px]">
+                                    Add service...
+                                  </p>
                                 )}
                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                               </Button>

@@ -18,6 +18,7 @@ import { Outlet, useRouterState } from "@tanstack/react-router";
 export function DashboardLayout() {
   const { setIsSidebarOpen } = useDashboardSidebarStateStore();
   const { data: user, isLoading: isPending } = useCurrentUser();
+
   const { currentScreenSize } = useCurrentScreenSize();
   const routerState = useRouterState();
   const isPatientRoute = routerState.location.pathname.startsWith("/patient");
@@ -29,7 +30,7 @@ export function DashboardLayout() {
   const patientSearch = isPatientRoute
     ? PatientRoute.useSearch()
     : { message: undefined };
-    
+
   const message = isPatientRoute
     ? patientSearch.message
     : professionalSearch.message;

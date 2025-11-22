@@ -48,6 +48,7 @@ export function Register() {
       : ["Personal Info", "Address Info", "Professional Info"];
 
   const onSubmit = async (credentials: z.infer<typeof registerFormSchema>) => {
+    console.log(credentials);
     if (registerRole === "patient") registerPatientMutation.mutate(credentials);
     else registerProfessionMutation.mutate(credentials);
   };

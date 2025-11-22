@@ -1,5 +1,5 @@
 import { PageLoading } from "@/components";
-import { UserGuard } from "@/components/Guards";
+import { PatientGuard } from "@/components/Guards";
 import { ROUTE_PATHS } from "@/config/routes";
 import { DashboardLayout } from "@/features/dashboard";
 import { createFileRoute } from "@tanstack/react-router";
@@ -12,9 +12,9 @@ const PatientDashboardSearchSchema = z.object({
 export const Route = createFileRoute(ROUTE_PATHS.PATIENT.ROOT)({
   validateSearch: PatientDashboardSearchSchema,
   component: () => (
-    <UserGuard>
+    <PatientGuard>
       <DashboardLayout />
-    </UserGuard>
+    </PatientGuard>
   ),
   pendingComponent: PageLoading,
 });

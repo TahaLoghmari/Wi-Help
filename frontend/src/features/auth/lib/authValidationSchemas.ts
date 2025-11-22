@@ -106,7 +106,6 @@ const commonFields = {
 export const patientSchema = z
   .object({
     ...commonFields,
-    role: z.literal("patient"),
     emergencyContact: emergencyContactSchema,
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -117,7 +116,6 @@ export const patientSchema = z
 export const professionalSchema = z
   .object({
     ...commonFields,
-    role: z.literal("professional"),
     specialization: z
       .string()
       .min(1, { message: "Specialization is required." })

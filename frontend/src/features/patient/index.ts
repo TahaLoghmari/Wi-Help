@@ -5,3 +5,5 @@ export * from "./find-professional";
 export * from "./medical-records";
 export * from "./messages";
 export * from "./prescriptions";
+export * from "./types";
+export * from "./hooks";
