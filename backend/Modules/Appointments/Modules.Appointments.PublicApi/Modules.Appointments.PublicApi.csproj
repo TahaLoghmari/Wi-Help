@@ -7,4 +7,8 @@
     <RootNamespace>Modules.Appointments.PublicApi</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Modules.Common.Features\Modules.Common.Features.csproj" />
+  </ItemGroup>
+
 </Project>

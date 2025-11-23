@@ -1,5 +1,3 @@
-
-
 using Modules.Common.Features.Abstractions;
 using Modules.Professionals.PublicApi.Contracts;
 

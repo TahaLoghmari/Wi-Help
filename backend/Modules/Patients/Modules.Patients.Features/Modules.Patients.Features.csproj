@@ -8,6 +8,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Features\Modules.Common.Features.csproj" />
         <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Infrastructure\Modules.Common.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\Appointments\Modules.Appointments.PublicApi\Modules.Appointments.PublicApi.csproj" />
         <ProjectReference Include="..\..\Professionals\Modules.Professionals.PublicApi\Modules.Professionals.PublicApi.csproj" />
         <ProjectReference Include="..\Modules.Patients.Infrastructure\Modules.Patients.Infrastructure.csproj" />
         <ProjectReference Include="..\Modules.Patients.Domain\Modules.Patients.Domain.csproj" />
