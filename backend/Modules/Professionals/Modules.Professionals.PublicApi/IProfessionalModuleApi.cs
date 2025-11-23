@@ -8,6 +8,8 @@ public interface IProfessionalModuleApi
 {
     Task<Result<ProfessionalDto>> GetProfessionalByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
 
+    Task<Result<List<ProfessionalDto>>> GetProfessionalsByIdsAsync(IEnumerable<Guid> professionalIds, CancellationToken cancellationToken = default);
+
     Task<MonthlyAvailabilityResponse> GetMonthlyAvailability(GetProfessionalAvailabilityByMonthQuery query);
 }
 
