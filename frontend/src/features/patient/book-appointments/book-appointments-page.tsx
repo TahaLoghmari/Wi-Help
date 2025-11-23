@@ -1,10 +1,14 @@
 import { useBooking } from "./hooks/use-booking";
 import { CalendarCard } from "./components/calendar-card";
 import { AvailableSlots } from "./components/available-slots";
+import { useParams } from "@tanstack/react-router";
+import { ErrorComponent } from "@/components";
 
 export function BookingPage() {
-  // TODO: Get professionalId from route params or props
-  const professionalId = "cd61772a-f6da-4409-860a-f4112c9e396a"; // Placeholder
+  const { professionalId } = useParams({ strict: false }) as Record<
+    string,
+    string | undefined
+  >;
 
   const {
     state,
@@ -17,6 +21,15 @@ export function BookingPage() {
 
   const { selectedDate, selectedSlot } = state;
   const { isLoading } = monthlyAvailabilityQuery;
+
+  if (!professionalId) {
+    return (
+      <ErrorComponent
+        title="Professional not found"
+        message="Professional ID not found"
+      />
+    );
+  }
 
   return (
     <div className="flex w-full flex-col justify-center space-y-6 p-10">

@@ -62,7 +62,7 @@ export const ErrorComponent = ({
           <CardTitle className="text-2xl">{title}</CardTitle>
           <CardDescription className="text-base">{message}</CardDescription>
         </CardHeader>
-        <CardFooter className="flex gap-2 justify-center">
+        <CardFooter className="flex justify-center gap-2">
           {showBackButton && (
             <Button variant="outline" onClick={goBack}>
               <ArrowLeft className="mr-2 h-4 w-4" />

@@ -7,6 +7,13 @@ export function useAppNavigation() {
   return {
     goTo: navigate,
 
+    goToBook: (professionalId: string) => {
+      navigate({
+        to: ROUTE_PATHS.PATIENT.BOOK,
+        params: { professionalId },
+      });
+    },
+
     goToLogin: (message?: string) => {
       navigate({
         to: ROUTE_PATHS.AUTH.LOGIN,
