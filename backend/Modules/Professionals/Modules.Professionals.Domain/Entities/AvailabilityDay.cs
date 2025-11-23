@@ -6,6 +6,7 @@ public class AvailabilityDay
     public Guid ProfessionalId { get; private set; } // foreign key to Professional
     
     public DayOfWeek DayOfWeek { get; private set; }
+    public string TimeZone { get; private set; } = "Africa/Tunis";
     
     public bool IsActive { get; private set; }
     
@@ -20,5 +21,10 @@ public class AvailabilityDay
     public void SetActiveStatus(bool isActive)
     {
         IsActive = isActive;
+    }
+    
+    public void SetTimeZone(string timeZone)
+    {
+        TimeZone = timeZone;
     }
 }

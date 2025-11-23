@@ -1,5 +1,5 @@
 import { type Address } from "@/features/auth";
-import type { profileAndBioFormSchema } from "@/features/professional";
+import type { profileAndBioFormSchema, scheduleFormSchema } from "@/features/professional";
 import type z from "zod";
 
 export interface ProfessionalDto {
@@ -23,3 +23,4 @@ export interface ProfessionalDto {
 }
 
 export type UpdateProfessionalDto = z.infer<typeof profileAndBioFormSchema>;
+export type SetupScheduleDto = z.infer<typeof scheduleFormSchema>;

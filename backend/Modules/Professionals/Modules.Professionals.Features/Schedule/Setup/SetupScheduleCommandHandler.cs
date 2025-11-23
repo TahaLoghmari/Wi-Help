@@ -4,10 +4,11 @@ using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain.Entities;
 using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Infrastructure.DTOs;
 
-namespace Modules.Professionals.Features.Schedule;
+namespace Modules.Professionals.Features.Schedule.Setup;
 
-public record SetupScheduleCommand(List<DayAvailability> DayAvailabilities, Guid ProfessionalId, string TimeZoneId)
+public record SetupScheduleCommand(List<DayAvailabilityDto> DayAvailabilities, Guid UserId, string TimeZoneId)
     : ICommand;
 
 public class SetupScheduleCommandHandler(
@@ -18,10 +19,22 @@ public class SetupScheduleCommandHandler(
     {
         try
         {
-            logger.LogInformation("Setting schedule for professional {ProfessionalId}", command.ProfessionalId);
+            var professional = await professionalsDbContext.Professionals
+                .FirstOrDefaultAsync(p => p.UserId == command.UserId, cancellationToken);
+
+            if (professional is null)
+            {
+                return Result.Failure(
+                    Error.NotFound(
+                        "SetupSchedule.ProfessionalNotFound",
+                        $"No professional found for UserId '{command.UserId}'."));
+            }
+
+            logger.LogInformation("Setting schedule for professional {ProfessionalId}", professional.Id);
 
             var exisitingDayAvailabilities = await professionalsDbContext.AvailabilityDays
                 .Include(ad => ad.AvailabilitySlots)
+                .Where(ad => ad.ProfessionalId == professional.Id)
                 .ToListAsync(cancellationToken);
 
 
@@ -32,6 +45,7 @@ public class SetupScheduleCommandHandler(
 
                 // Update day active status 
                 availabilityDay.SetActiveStatus(dayRequest.IsActive);
+                availabilityDay.SetTimeZone(command.TimeZoneId);
                 // Skip creating time slots for inactive days
                 if (!dayRequest.IsActive) continue;
 
@@ -43,7 +57,7 @@ public class SetupScheduleCommandHandler(
                 professionalsDbContext.AvailabilitySlots.RemoveRange(existingAvailabilities);
 
                 // Create new availabilities
-                foreach (var timeSlot in dayRequest.AvailabilityRanges)
+                foreach (var timeSlot in dayRequest.AvailabilitySlot)
                 {
                     if (!TimeOnly.TryParseExact(
                             timeSlot.StartTime,
@@ -87,7 +101,7 @@ public class SetupScheduleCommandHandler(
 
             await professionalsDbContext.SaveChangesAsync(cancellationToken);
             logger.LogInformation("Successfully set schedule for professional {ProfessionalId}",
-                command.ProfessionalId);
+                professional.Id);
             return Result.Success();
         }
         catch (Exception ex)
@@ -95,7 +109,7 @@ public class SetupScheduleCommandHandler(
             logger.LogError(
                 ex,
                 "Failed to set schedule for professional {ProfessionalId}",
-                command.ProfessionalId);
+                professional?.Id ?? Guid.Empty);
             return Result.Failure(
                 Error.Problem(
                     "Professional.ScheduleSetFailed",

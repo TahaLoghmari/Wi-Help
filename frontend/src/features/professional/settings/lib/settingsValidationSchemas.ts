@@ -76,3 +76,9 @@ export const profileAndBioFormSchema = z
       path: ["endPrice"],
     },
   );
+
+
+
+export const scheduleFormSchema = z.object({
+
+});
