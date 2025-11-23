@@ -21,6 +21,7 @@ export const API_ENDPOINTS = {
   PATIENTS: {
     REGISTER_PATIENT: "/patients/register",
     CURRENT_PATIENT: "/patients/me",
+    GET_PATIENT_BY_ID: (id: string) => `/patients/${id}`,
     UPDATE_PATIENT: "/patients/me",
     GET_PROFESSIONAL_AVAILABILITY: (professionalId: string) =>
       `/professionals/${professionalId}/availability`,

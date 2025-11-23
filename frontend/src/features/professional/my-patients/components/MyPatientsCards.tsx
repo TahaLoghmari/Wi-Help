@@ -1,4 +1,5 @@
 import { useProfessionalPatients } from "../../hooks";
+import { useNavigate } from "@tanstack/react-router";
 
 interface Patient {
   imageUrl: string;
@@ -13,10 +14,12 @@ interface Patient {
   lastVisit: string;
   status: string;
   careModality: string;
+  originalId: string;
 }
 
 export function MyPatientsCards() {
   const { data: patients, isLoading } = useProfessionalPatients();
+  const navigate = useNavigate();
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -76,6 +79,7 @@ export function MyPatientsCards() {
     lastVisit: "N/A", // Mocking missing data
     status: "Active", // Mocking missing data
     careModality: "Hybrid", // Mocking missing data
+    originalId: p.id,
   }));
 
   return (
@@ -177,7 +181,15 @@ export function MyPatientsCards() {
               </svg>
               Message
             </button>
-            <button className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-[#00394a] px-2 py-1.5 text-[11px] text-white transition-colors hover:bg-[#00546e]">
+            <button
+              onClick={() =>
+                navigate({
+                  to: "/professional/patient/$patientId",
+                  params: { patientId: patient.originalId },
+                })
+              }
+              className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-[#00394a] px-2 py-1.5 text-[11px] text-white transition-colors hover:bg-[#00546e]"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
