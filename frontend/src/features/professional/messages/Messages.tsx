@@ -1,4 +1,5 @@
-export function Messages()
-{
-    return <div></div>
+import { ComingSoon } from "@/components";
+
+export function Messages() {
+  return <ComingSoon />;
 }

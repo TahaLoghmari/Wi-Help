@@ -19,5 +19,5 @@ function PatientProfileRoute() {
     return <div>Patient not found</div>;
   }
 
-  return <PatientProfile patient={patient} />;
+  return <PatientProfile patient={patient} showBackButton />;
 }

@@ -1,4 +1,5 @@
-export function Invoices()
-{
-    return <div></div>
+import { ComingSoon } from "@/components";
+
+export function Invoices() {
+  return <ComingSoon />;
 }

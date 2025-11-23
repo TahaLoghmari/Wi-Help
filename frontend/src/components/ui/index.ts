@@ -6,6 +6,7 @@ export * from "./calendar";
 export * from "./card";
 export * from "./carousel";
 export * from "./command";
+export * from "./coming-soon";
 export * from "./content-loading";
 export * from "./dialog";
 export * from "./dropdown-menu";

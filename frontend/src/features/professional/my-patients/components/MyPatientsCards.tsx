@@ -1,50 +1,10 @@
 import { useProfessionalPatients } from "../../hooks";
 import { useNavigate } from "@tanstack/react-router";
 
-interface Patient {
-  imageUrl: string;
-  firstName: string;
-  lastName: string;
-  age: string;
-  gender: string;
-  city: string;
-  state: string;
-  id: string;
-  phoneNumber: string;
-  lastVisit: string;
-  status: string;
-  careModality: string;
-  originalId: string;
-}
-
 export function MyPatientsCards() {
   const { data: patients, isLoading } = useProfessionalPatients();
+  console.log(patients);
   const navigate = useNavigate();
-
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "active":
-        return {
-          text: "text-[#14d3ac]",
-          bg: "bg-[#14d3ac]",
-        };
-      case "inactive":
-        return {
-          text: "text-[#ef4444]",
-          bg: "bg-[#ef4444]",
-        };
-      case "new":
-        return {
-          text: "text-[#3b82f6]",
-          bg: "bg-[#3b82f6]",
-        };
-      default:
-        return {
-          text: "text-slate-500",
-          bg: "bg-slate-500",
-        };
-    }
-  };
 
   const calculateAge = (dob: string) => {
     if (!dob) return "N/A";
@@ -66,32 +26,16 @@ export function MyPatientsCards() {
     );
   }
 
-  const mappedPatients: Patient[] = patients.map((p) => ({
-    imageUrl: p.profilePictureUrl || "https://via.placeholder.com/150",
-    firstName: p.firstName,
-    lastName: p.lastName,
-    age: calculateAge(p.dateOfBirth),
-    gender: p.gender === "Male" ? "M" : p.gender === "Female" ? "F" : "O",
-    city: p.address?.city || "Unknown",
-    state: p.address?.state || "Unknown",
-    id: p.id.substring(0, 6).toUpperCase(), // Mocking a short ID
-    phoneNumber: p.phoneNumber,
-    lastVisit: "N/A", // Mocking missing data
-    status: "Active", // Mocking missing data
-    careModality: "Hybrid", // Mocking missing data
-    originalId: p.id,
-  }));
-
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {mappedPatients.map((patient, index) => (
+      {patients.map((patient, index) => (
         <article
           key={index}
           className="flex h-45 flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-100 transition-all hover:border-[#3fa6ff]/70 hover:shadow-md hover:shadow-slate-100"
         >
           <div className="items:center flex gap-3">
             <img
-              src={patient.imageUrl}
+              src={patient.profilePictureUrl}
               alt="Patient"
               className="h-10 w-10 rounded-full border border-slate-200 object-cover"
             />
@@ -101,17 +45,18 @@ export function MyPatientsCards() {
                   {patient.firstName} {patient.lastName}
                 </h4>
                 <span className="inline-flex items-center rounded-full border border-[#ffecb4] bg-[#ffecb4]/60 px-1.5 py-0.5 text-[10px] text-[#00394a]">
-                  ID: {patient.id}
+                  ID: #{patient.id.substring(0, 8)}
                 </span>
               </div>
               <p className="truncate text-[11px] text-slate-500">
-                {patient.age} yrs • {patient.gender} • {patient.city} •{" "}
-                {patient.state}
+                {calculateAge(patient.dateOfBirth)} yrs • {patient.gender} •{" "}
+                {patient.address?.city || "Unknown"} •{" "}
+                {patient.address?.state || "Unknown"}
               </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 text-[11px] text-slate-600">
+          <div className="mt-2 flex flex-col gap-1 text-[11px] text-slate-600">
             <div className="flex items-center gap-1.5">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -120,17 +65,16 @@ export function MyPatientsCards() {
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                data-lucide="phone"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 className="lucide lucide-phone h-3.5 w-3.5 text-slate-400"
               >
-                <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path>
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
               </svg>
               <span className="">{patient.phoneNumber}</span>
             </div>
-            <div className="flex items-center gap-1.5 justify-self-end">
+            <div className="flex items-center gap-1.5">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -138,27 +82,23 @@ export function MyPatientsCards() {
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                data-lucide="map-pin"
-                className="lucide lucide-map-pin h-3.5 w-3.5 text-slate-400"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-mail h-3.5 w-3.5 text-slate-400"
               >
-                <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                <circle cx="12" cy="10" r="3"></circle>
+                <rect width="20" height="16" x="2" y="4" rx="2" />
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
               </svg>
+              <span className="truncate">{patient.email}</span>
             </div>
           </div>
 
           <div className="flex items-center justify-between border-t border-dashed border-slate-200 pt-2 text-[11px] text-slate-500">
-            <span className="">Last visit: {patient.lastVisit}</span>
-            <span
-              className={`inline-flex items-center gap-1 ${getStatusColor(patient.status).text}`}
-            >
-              <span
-                className={`h-1.5 w-1.5 rounded-full ${getStatusColor(patient.status).bg}`}
-              ></span>
-              {patient.status}
+            <span className="">Last visit: N/A</span>
+            <span className={`inline-flex items-center gap-1 text-[#14d3ac]`}>
+              <span className={`h-1.5 w-1.5 rounded-full bg-[#14d3ac]`}></span>
+              Active
             </span>
           </div>
 
@@ -185,7 +125,7 @@ export function MyPatientsCards() {
               onClick={() =>
                 navigate({
                   to: "/professional/patient/$patientId",
-                  params: { patientId: patient.originalId },
+                  params: { patientId: patient.id },
                 })
               }
               className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-[#00394a] px-2 py-1.5 text-[11px] text-white transition-colors hover:bg-[#00546e]"
