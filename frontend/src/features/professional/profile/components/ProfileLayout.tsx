@@ -3,7 +3,7 @@ import {
   getServicesForSpecialization,
   useCurrentProfessional,
 } from "@/features/professional";
-import { SPECIALIZATIONS } from "@/features/auth";
+import { COUNTRIES, SPECIALIZATIONS } from "@/features/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui";
 
 export function ProfileLayout() {
@@ -518,33 +518,62 @@ export function ProfileLayout() {
               Address &amp; Contact
             </h3>
             <div className="space-y-2 text-[11px] text-slate-700">
-              <div className="flex items-start gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  data-lucide="home"
-                  className="lucide lucide-home mt-0.5 h-3.5 w-3.5 text-slate-500"
-                >
-                  <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
-                  <path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                </svg>
-                <div>
-                  <p className="text-[10px] text-slate-500">Practice address</p>
-                  <p className="font-medium tracking-tight text-slate-900">
-                    {professional?.address.street}
-                    <br />
-                    {professional?.address.city}, {professional?.address.state}{" "}
-                    {professional?.address.postalCode}
-                    <br />
-                    {professional?.address.country}
-                  </p>
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    data-lucide="home"
+                    className="lucide lucide-home h-3.5 w-3.5 text-slate-500"
+                  >
+                    <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
+                    <path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                  </svg>
+                  <p className="text-slate-500">Address</p>
+                </div>
+                <div className="grid gap-1 pl-5">
+                  <div className="flex items-center gap-1">
+                    <span className="text-slate-500">Street: </span>
+                    <span className="font-medium tracking-tight text-slate-900">
+                      {professional?.address.street}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-slate-500">City: </span>
+                    <span className="font-medium tracking-tight text-slate-900">
+                      {professional?.address.city}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-slate-500">State: </span>
+                    <span className="font-medium tracking-tight text-slate-900">
+                      {professional?.address.state}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-slate-500">Postal Code: </span>
+                    <span className="font-medium tracking-tight text-slate-900">
+                      {professional?.address.postalCode}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-slate-500">Country: </span>
+                    <span className="font-medium tracking-tight text-slate-900">
+                      {COUNTRIES.find(
+                        (country) =>
+                          country.value === professional?.address?.country,
+                      )?.label ??
+                        professional?.address?.country ??
+                        ""}
+                    </span>
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -564,8 +593,11 @@ export function ProfileLayout() {
                   <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"></path>
                   <rect x="2" y="4" width="20" height="16" rx="2"></rect>
                 </svg>
-                <span className="font-medium tracking-tight text-slate-900">
-                  {professional?.email}
+                <span>
+                  <span className="text-slate-500">Email: </span>
+                  <span className="font-medium tracking-tight text-slate-900">
+                    {professional?.email}
+                  </span>
                 </span>
               </div>
               <div className="flex items-center gap-2">

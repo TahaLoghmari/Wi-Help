@@ -39,5 +39,6 @@ export const ROUTE_PATHS = {
     MESSAGES: "/patient/messages",
     PRESCRIPTIONS: "/patient/prescriptions",
     SETTINGS: "/patient/settings",
+    PROFILE: "/patient/profile",
   },
 } as const;

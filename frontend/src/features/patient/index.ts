@@ -8,3 +8,4 @@ export * from "./medical-records";
 export * from "./messages";
 export * from "./prescriptions";
 export * from "./settings";
+export * from "./profile";
