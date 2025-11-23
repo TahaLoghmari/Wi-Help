@@ -25,9 +25,9 @@ public class PatientConfiguration : IEntityTypeConfiguration<Patient>
         builder.OwnsOne(p => p.MedicalInfo, medicalInfo =>
         {
             medicalInfo.Property(m => m.MobilityStatus).IsRequired();
-            medicalInfo.Property(m => m.ChronicConditions);
-            medicalInfo.Property(m => m.Allergies);
-            medicalInfo.Property(m => m.Medications);
+            medicalInfo.Property(m => m.ChronicConditions).IsRequired(false);
+            medicalInfo.Property(m => m.Allergies).IsRequired(false);
+            medicalInfo.Property(m => m.Medications).IsRequired(false);
         });
 
     }
