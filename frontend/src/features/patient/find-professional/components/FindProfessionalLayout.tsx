@@ -3,6 +3,7 @@ import { useProfessionals } from "@/features/professional";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui";
 import { Calendar, CalendarPlus, MapPin, Star, User } from "lucide-react";
 import { SPECIALIZATIONS } from "@/features/auth";
+import { Link } from "@tanstack/react-router";
 
 export function FindProfessionalLayout() {
   const { data: professionals } = useProfessionals();
@@ -140,10 +141,14 @@ export function FindProfessionalLayout() {
                   <CalendarPlus className="h-3.5 w-3.5 text-white" />
                   Book
                 </button>
-                <button className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white px-2 py-1.5 text-[11px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5">
+                <Link
+                  to="/patient/professional/$professionalId"
+                  params={{ professionalId: professional.id }}
+                  className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white px-2 py-1.5 text-[11px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5"
+                >
                   <User className="h-3.5 w-3.5 text-slate-500" />
                   View Profile
-                </button>
+                </Link>
               </div>
             </div>
           </article>

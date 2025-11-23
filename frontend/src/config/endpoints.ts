@@ -12,6 +12,7 @@ export const API_ENDPOINTS = {
   PROFESSIONALS: {
     REGISTER_PROFESSIONAL: "/professionals/register",
     CURRENT_PROFESSIONAL: "/professionals/me",
+    GET_PROFESSIONAL_BY_ID: "/professionals", // + /:id
     UPDATE_PROFESSIONAL: "/professionals/me",
     SETUP_SCHEDULE: "/professionals/schedule",
     GET_SCHEDULE: "/professionals/schedule",

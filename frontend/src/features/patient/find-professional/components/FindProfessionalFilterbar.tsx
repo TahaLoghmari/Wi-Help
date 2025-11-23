@@ -83,10 +83,20 @@ export function FindProfessionalFilterbar() {
               <option>This week</option>
             </select>
             <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
               data-lucide="chevron-down"
-              className="pointer-events-none absolute top-1/2 right-2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400"
-              strokeWidth="1.5"
-            ></svg>
+              className="lucide lucide-chevron-down pointer-events-none absolute top-1/2 right-2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400"
+            >
+              <path d="m6 9 6 6 6-6"></path>
+            </svg>
           </div>
         </div>
         <div className="space-y-1">

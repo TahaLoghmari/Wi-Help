@@ -39,6 +39,7 @@ import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
 import { Route as AuthEmailVerifiedRouteImport } from './routes/auth/email-verified'
 import { Route as AuthEmailVerificationRouteImport } from './routes/auth/email-verification'
+import { Route as PatientProfessionalProfessionalIdRouteImport } from './routes/patient/professional.$professionalId'
 
 const ProfessionalRouteRoute = ProfessionalRouteRouteImport.update({
   id: '/professional',
@@ -192,6 +193,12 @@ const AuthEmailVerificationRoute = AuthEmailVerificationRouteImport.update({
   path: '/email-verification',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const PatientProfessionalProfessionalIdRoute =
+  PatientProfessionalProfessionalIdRouteImport.update({
+    id: '/professional/$professionalId',
+    path: '/professional/$professionalId',
+    getParentRoute: () => PatientRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -224,6 +231,7 @@ export interface FileRoutesByFullPath {
   '/auth/': typeof AuthIndexRoute
   '/patient/': typeof PatientIndexRoute
   '/professional/': typeof ProfessionalIndexRoute
+  '/patient/professional/$professionalId': typeof PatientProfessionalProfessionalIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -253,6 +261,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthIndexRoute
   '/patient': typeof PatientIndexRoute
   '/professional': typeof ProfessionalIndexRoute
+  '/patient/professional/$professionalId': typeof PatientProfessionalProfessionalIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -286,6 +295,7 @@ export interface FileRoutesById {
   '/auth/': typeof AuthIndexRoute
   '/patient/': typeof PatientIndexRoute
   '/professional/': typeof ProfessionalIndexRoute
+  '/patient/professional/$professionalId': typeof PatientProfessionalProfessionalIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -320,6 +330,7 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/patient/'
     | '/professional/'
+    | '/patient/professional/$professionalId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -349,6 +360,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/patient'
     | '/professional'
+    | '/patient/professional/$professionalId'
   id:
     | '__root__'
     | '/'
@@ -381,6 +393,7 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/patient/'
     | '/professional/'
+    | '/patient/professional/$professionalId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -602,6 +615,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthEmailVerificationRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/patient/professional/$professionalId': {
+      id: '/patient/professional/$professionalId'
+      path: '/professional/$professionalId'
+      fullPath: '/patient/professional/$professionalId'
+      preLoaderRoute: typeof PatientProfessionalProfessionalIdRouteImport
+      parentRoute: typeof PatientRouteRoute
+    }
   }
 }
 
@@ -640,6 +660,7 @@ interface PatientRouteRouteChildren {
   PatientProfileRoute: typeof PatientProfileRoute
   PatientSettingsRoute: typeof PatientSettingsRoute
   PatientIndexRoute: typeof PatientIndexRoute
+  PatientProfessionalProfessionalIdRoute: typeof PatientProfessionalProfessionalIdRoute
 }
 
 const PatientRouteRouteChildren: PatientRouteRouteChildren = {
@@ -653,6 +674,8 @@ const PatientRouteRouteChildren: PatientRouteRouteChildren = {
   PatientProfileRoute: PatientProfileRoute,
   PatientSettingsRoute: PatientSettingsRoute,
   PatientIndexRoute: PatientIndexRoute,
+  PatientProfessionalProfessionalIdRoute:
+    PatientProfessionalProfessionalIdRoute,
 }
 
 const PatientRouteRouteWithChildren = PatientRouteRoute._addFileChildren(

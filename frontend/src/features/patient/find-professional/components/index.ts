@@ -1,2 +1,3 @@
 export * from "./FindProfessionalLayout";
-export * from "./FindProfessionalFilterbar"
+export * from "./FindProfessionalFilterbar";
+export * from "./ProfessionalProfileView";
