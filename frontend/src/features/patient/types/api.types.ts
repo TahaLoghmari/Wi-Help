@@ -28,3 +28,31 @@ export interface PatientDto {
 }
 
 export type UpdatePatientDto = z.infer<typeof profileAndBioFormSchema>;
+
+// Professional Availability API Types
+export interface TimeSlotResponse {
+  startTime: string;
+  endTime: string;
+  isBooked: boolean;
+  isAvailable: boolean;
+}
+
+export interface DailySummary {
+  totalSlots: number;
+  availableSlots: number;
+  bookedSlots: number;
+  availabilityPercentage: number;
+}
+
+export interface DailyAvailabilityResponse {
+  date: string;
+  isAvailable: boolean;
+  timeSlots: TimeSlotResponse[];
+  summary: DailySummary;
+}
+
+export interface MonthlyAvailabilityResponse {
+  year: number;
+  month: number;
+  days: DailyAvailabilityResponse[];
+}
