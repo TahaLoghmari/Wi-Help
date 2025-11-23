@@ -1,4 +1,7 @@
-import { useProfessionalAvailability } from "@/features/patient/hooks";
+import {
+  useProfessionalAvailability,
+  useBookAppointment,
+} from "@/features/patient/hooks";
 import type {
   TimeSlotResponse,
   DailyAvailabilityResponse,
@@ -15,12 +18,15 @@ import {
 } from "@/features/patient/book-appointments/consts";
 
 export function useBooking({ professionalId }: { professionalId?: string }) {
+  const bookAppointmentMutation = useBookAppointment();
+
   const form = useForm<BookingHookState>({
     resolver: zodResolver(bookingHookStateSchema),
     defaultValues: {
       selectedDate: new Date(),
       selectedSlot: null,
       step: "select",
+      price: 0,
       notes: "",
     },
   });
@@ -80,11 +86,12 @@ export function useBooking({ professionalId }: { professionalId?: string }) {
       selectedDate: undefined,
       selectedSlot: null,
       step: "select",
+      price: 0,
       notes: "",
     });
   };
 
-  // Handle booking submission (MOCKED)
+  // Handle booking submission with real API
   const handleBookSession = form.handleSubmit(
     async (data: BookingHookState) => {
       if (!data.selectedDate || !data.selectedSlot || !professionalId) {
@@ -95,21 +102,35 @@ export function useBooking({ professionalId }: { professionalId?: string }) {
       try {
         setStep("confirm");
 
-        // MOCKED: Simulate API call delay
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // Build the start and end DateTime in ISO format
+        const dateStr = data.selectedDate.toLocaleDateString("en-CA"); // YYYY-MM-DD
+        const startDateTime = new Date(
+          `${dateStr}T${data.selectedSlot.startTime}`,
+        );
+        const endDateTime = new Date(`${dateStr}T${data.selectedSlot.endTime}`);
 
-        logger.info("Booking submitted (mocked):", {
+        logger.info("Booking appointment:", {
           professionalId,
-          date: data.selectedDate.toLocaleDateString("en-CA"),
-          startTime: data.selectedSlot.startTime,
-          endTime: data.selectedSlot.endTime,
-          notes: data.notes,
+          startDate: startDateTime.toISOString(),
+          endDate: endDateTime.toISOString(),
+          price: data.price,
+          notes: data.notes || "",
+        });
+
+        // Note: userId will be extracted from authentication token on the backend
+        // We pass it here but the backend will override it with the authenticated user
+        await bookAppointmentMutation.mutateAsync({
+          professionalId,
+          startDate: startDateTime.toISOString(),
+          endDate: endDateTime.toISOString(),
+          price: data.price,
           timeZoneId:
             Intl.DateTimeFormat().resolvedOptions().timeZone || "Africa/Tunis",
+          notes: data.notes || "",
         });
 
         toast.success(
-          `Appointment booked successfully! (Mocked)\nDate: ${data.selectedDate.toLocaleDateString()}\nTime: ${data.selectedSlot.startTime} - ${data.selectedSlot.endTime}`,
+          `Appointment booked successfully!\nDate: ${data.selectedDate.toLocaleDateString()}\nTime: ${data.selectedSlot.startTime} - ${data.selectedSlot.endTime}`,
         );
 
         resetBooking();
@@ -135,6 +156,9 @@ export function useBooking({ professionalId }: { professionalId?: string }) {
 
     // Queries
     monthlyAvailabilityQuery,
+
+    // Mutations
+    bookAppointmentMutation,
 
     // Actions
     setSelectedDate,

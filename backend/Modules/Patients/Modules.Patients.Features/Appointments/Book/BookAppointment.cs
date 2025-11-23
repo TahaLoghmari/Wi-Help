@@ -13,7 +13,6 @@ public class BookAppointment : IEndpoint
 
 {
     public sealed record Request(
-        Guid UserId,
         Guid ProfessionalId,
         DateTime StartDate,
         DateTime EndDate,
@@ -37,7 +36,7 @@ public class BookAppointment : IEndpoint
                 }
 
                 var query = new BookAppointmentCommand(
-                    request.UserId, request.ProfessionalId, request.StartDate, request.EndDate, request.Price,
+                    userIdGuid, request.ProfessionalId, request.StartDate, request.EndDate, request.Price,
                     request.TimeZoneId, request.Notes
                 );
 

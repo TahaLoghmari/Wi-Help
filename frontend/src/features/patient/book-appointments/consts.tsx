@@ -16,23 +16,12 @@ export const bookingHookStateSchema = z.object({
   selectedDate: z.date().optional(),
   selectedSlot: sessionSlotSchema.nullable(),
   step: bookingStepSchema,
-  title: z
-    .string()
-    .max(1000, "Title cannot exceed 1000 characters")
-    .optional()
-    .or(z.literal("")),
-  email: z.string().email("Please enter a valid email address."),
-  name: z
-    .string()
-    .min(2, "Name must be at least 2 characters long.")
-    .max(100, "Name cannot exceed 100 characters."),
-  phone: z
-    .string()
-    .regex(/^\+?[\d\s\-\(\)]+$/, "Please enter a valid phone number."),
+  price: z.number().positive("Price must be a positive number"),
   notes: z
     .string()
     .max(1000, "Notes cannot exceed 1000 characters.")
-    .optional(),
+    .optional()
+    .or(z.literal("")),
 });
 export type SessionSlotType = z.infer<typeof sessionSlotSchema>;
 
