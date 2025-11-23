@@ -11,4 +11,4 @@ public record UserResponse(
     string Gender,
     string PhoneNumber,
     Address Address,
-    string Role);
+    string ProfilePictureUrl);

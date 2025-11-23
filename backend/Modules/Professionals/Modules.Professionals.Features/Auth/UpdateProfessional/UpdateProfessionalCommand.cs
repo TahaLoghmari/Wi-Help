@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.ValueObjects;
 
@@ -14,4 +15,5 @@ public sealed record UpdateProfessionalCommand(
     int? Experience,
     int? StartPrice,
     int? EndPrice,
-    string? Bio) : ICommand;
+    string? Bio,
+    IFormFile? ProfilePicture) : ICommand;

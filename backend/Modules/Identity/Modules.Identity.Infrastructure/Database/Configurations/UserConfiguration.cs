@@ -33,6 +33,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             address.Property(a => a.Country).HasMaxLength(100);
             address.Property(a => a.State).HasMaxLength(100);
         });
+        
+        builder.Property(u => u.ProfilePictureUrl)
+            .HasMaxLength(500)  
+            .IsRequired(false);  
 
         builder.Property(u => u.CreatedAt)
             .IsRequired();

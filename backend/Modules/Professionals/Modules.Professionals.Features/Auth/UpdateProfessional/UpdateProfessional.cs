@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
@@ -14,7 +15,7 @@ internal sealed class UpdateProfessional : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPut(ProfessionalsEndpoints.UpdateProfessional, async (
-                Request request,
+                [FromForm] Request request,
                 HttpContext httpContext,
                 ICommandHandler<UpdateProfessionalCommand> handler,
                 CancellationToken cancellationToken) =>
@@ -37,24 +38,29 @@ internal sealed class UpdateProfessional : IEndpoint
                     request.Experience,
                     request.StartPrice,
                     request.EndPrice,
-                    request.Bio);
+                    request.Bio,
+                    request.ProfilePicture);
 
                 Result result = await handler.Handle(command, cancellationToken);
                 return result.Match(() => Results.Ok(), CustomResults.Problem);
             })
             .WithTags(Tags.Professionals)
+            .DisableAntiforgery()
             .RequireAuthorization(new AuthorizeAttribute { Roles = "Professional" });
     }
 
-    private sealed record Request(
-        string? FirstName,
-        string? LastName,
-        string? PhoneNumber,
-        Address? Address,
-        string? Specialization,
-        List<string>? Services,
-        int? Experience,
-        int? StartPrice,
-        int? EndPrice,
-        string? Bio);
+    public sealed class Request
+    {
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? PhoneNumber { get; set; }
+        public Address? Address { get; set; }
+        public string? Specialization { get; set; }
+        public List<string>? Services { get; set; }
+        public int? Experience { get; set; }
+        public int? StartPrice { get; set; }
+        public int? EndPrice { get; set; }
+        public string? Bio { get; set; }
+        public IFormFile? ProfilePicture { get; set; }
+    }
 }

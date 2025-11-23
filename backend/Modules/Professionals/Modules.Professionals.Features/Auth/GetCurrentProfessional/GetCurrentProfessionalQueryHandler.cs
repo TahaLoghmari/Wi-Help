@@ -20,7 +20,6 @@ public sealed class GetCurrentProfessionalQueryHandler(
     {
         logger.LogInformation("Retrieving current professional profile for UserId: {UserId}", query.UserId);
 
-        // Get user from Identity module
         var userResult = await identityApi.GetUserByIdAsync(query.UserId, cancellationToken);
         if (!userResult.IsSuccess)
         {
@@ -30,7 +29,6 @@ public sealed class GetCurrentProfessionalQueryHandler(
 
         var user = userResult.Value;
 
-        // Get professional profile
         var professional = await dbContext.Professionals
             .FirstOrDefaultAsync(p => p.UserId == query.UserId, cancellationToken);
 
@@ -57,7 +55,8 @@ public sealed class GetCurrentProfessionalQueryHandler(
             professional.StartPrice,
             professional.EndPrice,
             professional.Bio,
-            professional.IsVerified);
+            professional.IsVerified,
+            user.ProfilePictureUrl);
 
         logger.LogInformation("Professional profile retrieved successfully for UserId: {UserId}", query.UserId);
 

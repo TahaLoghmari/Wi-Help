@@ -6,12 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using Modules.Identity.Infrastructure.Database;
 using Modules.Patients.Infrastructure.Database;
 using Modules.Professionals.Infrastructure.Database;
+using Modules.Common.Infrastructure.Services;
 using Serilog;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder
     .AddApi()
-    .AddAuthentication()  
+    .AddAuthentication()
     .AddServices()     
     .AddErrorHandling()
     .AddLogging()
@@ -45,6 +46,9 @@ using (var scope = app.Services.CreateScope())
     
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
     await IdentityDataSeeder.SeedRolesAsync(roleManager);
+
+    var supabaseService = scope.ServiceProvider.GetRequiredService<SupabaseService>();
+    await supabaseService.InitializeAsync();
 }
 
 app.UseExceptionHandler();           

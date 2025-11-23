@@ -34,5 +34,6 @@
       <PackageVersion Include="Microsoft.IdentityModel.Tokens" Version="8.3.0" />
       <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.3.0" />
       <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.3.0" />
+      <PackageVersion Include="Supabase" Version="1.1.1" />
   </ItemGroup>
 </Project>

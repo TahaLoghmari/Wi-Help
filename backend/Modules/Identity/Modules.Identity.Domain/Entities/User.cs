@@ -8,6 +8,7 @@ public sealed class User : IdentityUser<Guid>
     public string FirstName { get; private set; } = string.Empty;
     public string LastName { get; private set; } = string.Empty;
     public string Gender { get; private set; } = string.Empty;
+    public string ProfilePictureUrl { get; private set; } = string.Empty;
     public Address Address { get; private set; } = null!;
     public DateTime DateOfBirth { get; private set; } = DateTime.MinValue;
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
@@ -45,7 +46,8 @@ public sealed class User : IdentityUser<Guid>
         string? firstName = null,
         string? lastName = null,
         string? phoneNumber = null,
-        Address? address = null)
+        Address? address = null,
+        string? profilePictureUrl = null)
     {
         if (!string.IsNullOrWhiteSpace(firstName))
             FirstName = firstName;
@@ -61,6 +63,9 @@ public sealed class User : IdentityUser<Guid>
         
         if (!string.IsNullOrWhiteSpace(firstName) || !string.IsNullOrWhiteSpace(lastName))
             UserName = $"{FirstName.ToLower()}.{LastName.ToLower()}";
+        
+        if ( !string.IsNullOrWhiteSpace(profilePictureUrl) )
+            ProfilePictureUrl = profilePictureUrl;
         
         UpdatedAt = DateTime.UtcNow;
     }

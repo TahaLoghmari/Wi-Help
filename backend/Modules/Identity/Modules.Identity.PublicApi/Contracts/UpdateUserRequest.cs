@@ -7,4 +7,5 @@ public record UpdateUserRequest(
     string? FirstName,
     string? LastName,
     string? PhoneNumber,
-    Address? Address);
+    Address? Address,
+    string? ProfilePictureUrl);

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Features\Modules.Common.Features.csproj" />
+    <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Infrastructure\Modules.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules.Identity.Infrastructure\Modules.Identity.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules.Identity.Domain\Modules.Identity.Domain.csproj" />
     <ProjectReference Include="..\Modules.Identity.PublicApi\Modules.Identity.PublicApi.csproj" />

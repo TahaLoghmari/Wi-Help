@@ -18,4 +18,5 @@ public sealed record ProfessionalProfileDto(
     int StartPrice,
     int EndPrice,
     string Bio,
-    bool IsVerified);
+    bool IsVerified,
+    string ProfilePictureUrl);

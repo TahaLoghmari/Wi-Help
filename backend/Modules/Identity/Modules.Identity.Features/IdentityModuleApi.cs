@@ -2,6 +2,7 @@ using backend.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Results;
+using Modules.Common.Infrastructure.Services;
 using Modules.Identity.Domain.Entities;
 using Modules.Identity.Domain.Errors;
 using Modules.Identity.PublicApi;
@@ -12,6 +13,7 @@ namespace Modules.Identity.Features;
 public class IdentityModuleApi(
     UserManager<User> userManager,
     EmailService emailService,
+    SupabaseService supabaseService,
     ILogger<IdentityModuleApi> logger) : IIdentityModuleApi
 {
     public async Task<Result<Guid>> CreateUserAsync(
@@ -70,9 +72,6 @@ public class IdentityModuleApi(
             return Result<UserResponse>.Failure(Error.NotFound("IdentityApi.UserNotFound", $"User with ID '{userId}' not found."));
         }
 
-        var userRoles = await userManager.GetRolesAsync(user);
-        var role = userRoles.FirstOrDefault() ?? string.Empty;
-
         var userResponse = new UserResponse(
             user.Id,
             user.Email!,
@@ -82,7 +81,7 @@ public class IdentityModuleApi(
             user.Gender,
             user.PhoneNumber!,
             user.Address,
-            role);
+            user.ProfilePictureUrl);
 
         logger.LogInformation("User retrieved successfully for UserId: {UserId}", userId);
 
@@ -102,11 +101,17 @@ public class IdentityModuleApi(
             return Result.Failure(Error.NotFound("IdentityApi.UserNotFound", $"User with ID '{request.UserId}' not found."));
         }
 
+        if (!string.IsNullOrEmpty(request.ProfilePictureUrl) && !string.IsNullOrEmpty(user.ProfilePictureUrl))
+        {
+            await supabaseService.DeleteFileAsync(user.ProfilePictureUrl, "profile-pictures");
+        }
+
         user.Update(
             request.FirstName,
             request.LastName,
             request.PhoneNumber,
-            request.Address);
+            request.Address,
+            string.IsNullOrWhiteSpace(request.ProfilePictureUrl) ? user.ProfilePictureUrl : request.ProfilePictureUrl);
 
         IdentityResult result = await userManager.UpdateAsync(user);
 

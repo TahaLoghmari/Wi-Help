@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Modules.Common.Features.Abstractions;
-using Modules.Common.Features.Results;
+using Modules.Common.Infrastructure.Services;
 using Modules.Identity.PublicApi;
 using Modules.Professionals.Domain;
 using Modules.Professionals.Infrastructure.Database;
 using System.Transactions;
+using Modules.Common.Features.Abstractions;
+using Modules.Common.Features.Results;
 using Modules.Identity.PublicApi.Contracts;
 
 namespace Modules.Professionals.Features.Auth.UpdateProfessional;
@@ -13,6 +14,7 @@ namespace Modules.Professionals.Features.Auth.UpdateProfessional;
 public sealed class UpdateProfessionalCommandHandler(
     IIdentityModuleApi identityApi,
     ProfessionalsDbContext dbContext,
+    SupabaseService supabaseService,
     ILogger<UpdateProfessionalCommandHandler> logger) : ICommandHandler<UpdateProfessionalCommand>
 {
     public async Task<Result> Handle(
@@ -34,12 +36,23 @@ public sealed class UpdateProfessionalCommandHandler(
 
         try
         {
+            string? profilePictureUrl = "";
+            if (command.ProfilePicture is not null)
+            {
+                profilePictureUrl = await supabaseService.UploadFileAsync(
+                    command.ProfilePicture,
+                    "profilePicture",
+                    "profile-pictures",
+                    cancellationToken);
+            }
+
             var updateUserRequest = new UpdateUserRequest(
                 command.UserId,
                 command.FirstName,
                 command.LastName,
                 command.PhoneNumber,
-                command.Address);
+                command.Address,
+                profilePictureUrl);
 
             var updateResult = await identityApi.UpdateUserAsync(updateUserRequest, cancellationToken);
             if (!updateResult.IsSuccess)

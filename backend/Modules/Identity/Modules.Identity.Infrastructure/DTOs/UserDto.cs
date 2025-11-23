@@ -11,4 +11,5 @@ public sealed record UserDto(
     string PhoneNumber,
     string Email,
     Address Address,
-    string Role);
+    string Role,
+    string ProfilePictureUrl);

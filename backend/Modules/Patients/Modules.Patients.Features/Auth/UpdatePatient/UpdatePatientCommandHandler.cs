@@ -39,7 +39,8 @@ public sealed class UpdatePatientCommandHandler(
                 command.FirstName,
                 command.LastName,
                 command.PhoneNumber,
-                command.Address);
+                command.Address,
+                "");
 
             var updateResult = await identityApi.UpdateUserAsync(updateUserRequest, cancellationToken);
             if (!updateResult.IsSuccess)
