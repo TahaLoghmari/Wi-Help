@@ -1,6 +1,7 @@
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using backend.Host.Extensions;
 using backend.Host.Middlewares;
@@ -8,6 +9,7 @@ using FluentValidation;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Modules.Common.Features;
@@ -31,24 +33,24 @@ internal static class DependencyInjection
     {
         builder.Services.ConfigureHttpJsonOptions(options =>
             options.SerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter()));
-        
+
         string frontendUrl = builder.Configuration["FRONTEND_URL"]!;
 
         builder.Services.AddCors(options =>
             options.AddPolicy("AllowReactApp", policy =>
-                   policy
-                  .WithOrigins(frontendUrl)
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowCredentials()
-                )
+                policy
+                    .WithOrigins(frontendUrl)
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials()
+            )
         );
-        
+
         builder.Services.AddControllers();
 
         return builder;
     }
-    
+
     public static WebApplicationBuilder AddSwagger(this WebApplicationBuilder builder)
     {
         if (builder.Environment.IsDevelopment())
@@ -65,7 +67,7 @@ internal static class DependencyInjection
                 }
             );
         }
-        
+
         return builder;
     }
 
@@ -80,7 +82,7 @@ internal static class DependencyInjection
 
         return builder;
     }
-    
+
     public static WebApplicationBuilder AddAuthentication(this WebApplicationBuilder builder)
     {
         JwtSettings jwtAuthOptions = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()!;
@@ -90,14 +92,13 @@ internal static class DependencyInjection
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
             })
             .AddJwtBearer(options =>
             {
                 var env = builder.Environment;
                 options.RequireHttpsMetadata = !env.IsDevelopment();
                 options.SaveToken = true;
-                
+
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -117,6 +118,7 @@ internal static class DependencyInjection
                         {
                             context.Token = context.Request.Cookies["accessToken"];
                         }
+
                         return Task.CompletedTask;
                     }
                 };
@@ -132,11 +134,12 @@ internal static class DependencyInjection
 
         return builder;
     }
+
     public static WebApplicationBuilder AddServices(this WebApplicationBuilder builder
     )
     {
         string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
-        
+
         builder.Services.AddHealthChecks()
             .AddNpgSql(
                 connectionString,
@@ -145,35 +148,39 @@ internal static class DependencyInjection
                 failureStatus: Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy,
                 tags: ReadyAndDbTags,
                 timeout: TimeSpan.FromSeconds(5));
-        
-        Assembly[] moduleApplicationAssemblies = [
+
+        Assembly[] moduleApplicationAssemblies =
+        [
             AssemblyReference.Assembly,
             Modules.Identity.Features.AssemblyReference.Assembly,
             Modules.Patients.Features.AssemblyReference.Assembly,
-            Modules.Professionals.Features.AssemblyReference.Assembly ];
-        
+            Modules.Professionals.Features.AssemblyReference.Assembly
+        ];
+
         builder.Services.AddEndpoints(moduleApplicationAssemblies);
-        
+
         builder.Services.AddIdentityModule()
             .AddIdentityInfrastructure(builder.Configuration);
-        
+
         builder.Services.AddPatientsModule()
             .AddPatientsInfrastructure(builder.Configuration);
-        
+
         builder.Services.AddProfessionalsModule()
             .AddProfessionalsInfrastructure(builder.Configuration);
 
         builder.Services.AddCommonModule(moduleApplicationAssemblies)
             .AddCommonInfrastructure(builder.Configuration);
-        
-        return builder; 
+
+        return builder;
     }
+
     public static WebApplicationBuilder AddLogging(this WebApplicationBuilder builder)
     {
         builder.Host.UseSerilog((context, configuration) =>
             configuration.ReadFrom.Configuration(context.Configuration));
         return builder;
     }
+
     public static WebApplicationBuilder AddRateLimiting(this WebApplicationBuilder builder)
     {
         builder.Services.AddRateLimiter(options =>
@@ -183,8 +190,8 @@ internal static class DependencyInjection
                 return RateLimitPartition.GetFixedWindowLimiter(ipAddress,
                     _ => new FixedWindowRateLimiterOptions
                     {
-                        PermitLimit = 100, 
-                        Window = TimeSpan.FromMinutes(1), 
+                        PermitLimit = 100,
+                        Window = TimeSpan.FromMinutes(1),
                         QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                         QueueLimit = 0
                     });
@@ -215,6 +222,22 @@ internal static class DependencyInjection
 
         GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute { Attempts = 3 });
 
+        return builder;
+    }
+
+    public static WebApplicationBuilder AddJsonConfiguration(this WebApplicationBuilder builder)
+    {
+        builder.Services.ConfigureHttpJsonOptions(options =>
+        {
+            // ignore circular references in JSON serialization 
+            options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        });
+
+        // Map enums to strings 
+        builder.Services.Configure<JsonOptions>(options =>
+        {
+            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
         return builder;
     }
 }
