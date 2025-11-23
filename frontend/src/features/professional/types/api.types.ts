@@ -1,5 +1,5 @@
-import { type Address } from "@/features/auth/types/api.types";
-import type { profileAndBioFormSchema } from "../settings";
+import { type Address } from "@/features/auth";
+import type { profileAndBioFormSchema } from "@/features/professional";
 import type z from "zod";
 
 export interface ProfessionalDto {
@@ -19,6 +19,7 @@ export interface ProfessionalDto {
   endPrice: number;
   bio: string;
   isVerified: boolean;
+  profilePictureUrl: string;
 }
 
 export type UpdateProfessionalDto = z.infer<typeof profileAndBioFormSchema>;

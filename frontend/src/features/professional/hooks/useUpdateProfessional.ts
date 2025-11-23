@@ -3,11 +3,14 @@ import { api, handleApiError, type ProblemDetailsDto } from "@/index";
 import { API_ENDPOINTS } from "@/config/endpoints";
 import { toast } from "sonner";
 import type { UpdateProfessionalDto } from "@/features/professional";
+import { toFormData } from "@/lib/utils";
 
 export const updateProfessional = (credentials: UpdateProfessionalDto) => {
+  const formData = toFormData(credentials);
+
   return api.put<void>(
     API_ENDPOINTS.PROFESSIONALS.UPDATE_PROFESSIONAL,
-    credentials,
+    formData,
   );
 };
 

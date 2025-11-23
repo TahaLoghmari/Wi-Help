@@ -47,6 +47,7 @@ export const profileAndBioFormSchema = z
       .nonnegative({ message: "Experience cannot be negative." })
       .optional(),
     address: addressSchema.optional(),
+    profilePicture: z.file().optional(),
     specialization: z
       .string()
       .max(50, { message: "Specialization must be at most 50 characters." })

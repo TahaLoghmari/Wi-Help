@@ -21,6 +21,9 @@ import {
   CommandItem,
   CommandList,
   Badge,
+  Avatar,
+  AvatarImage,
+  AvatarFallback,
 } from "@/components/ui";
 import { useForm } from "react-hook-form";
 import type z from "zod";
@@ -32,13 +35,14 @@ import {
   useUpdateProfessional,
 } from "@/features/professional";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { COUNTRIES, SPECIALIZATIONS } from "@/features/auth";
+import { COUNTRIES, SPECIALIZATIONS, useCurrentUser } from "@/features/auth";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib";
 import { useState } from "react";
 
 export function ProfileAndBio() {
   const { data: professional } = useCurrentProfessional();
+  const { data: user } = useCurrentUser();
   const form = useForm<z.infer<typeof profileAndBioFormSchema>>({
     resolver: zodResolver(profileAndBioFormSchema),
     mode: "onChange",
@@ -46,15 +50,25 @@ export function ProfileAndBio() {
   });
   const updateProfessionalMutation = useUpdateProfessional();
   const [open, setOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const selectedSpecialization = form.watch("specialization");
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      form.setValue("profilePicture", file);
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+    }
+  };
 
   const onSubmit = async (
     credentials: z.infer<typeof profileAndBioFormSchema>,
   ) => {
-    console.log(credentials);
     updateProfessionalMutation.mutate(credentials);
   };
+  console.log(professional, user);
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -92,7 +106,98 @@ export function ProfileAndBio() {
               </svg>
             </button>
           </header>
-          <div className="section-body space-y-3">
+          <div className="flex flex-col gap-3">
+            <div className="my-4 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <Avatar className="h-20 w-20">
+                  <AvatarImage
+                    className="object-cover"
+                    src={previewUrl || professional?.profilePictureUrl}
+                    alt={professional?.firstName}
+                  />
+                  <AvatarFallback className="rounded-lg">
+                    {professional?.firstName && professional?.lastName
+                      ? professional.firstName.charAt(0).toUpperCase() +
+                        professional.lastName.charAt(0).toUpperCase()
+                      : "U"}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col gap-1 text-[11px] text-slate-600">
+                  <p className="font-medium tracking-tight text-slate-900">
+                    Profile picture
+                  </p>
+                  <p className="text-[10px] text-slate-500">
+                    JPG, PNG up to 5MB.
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2 text-[11px] sm:justify-end">
+                <FormField
+                  control={form.control}
+                  name="profilePicture"
+                  render={({ field: { value, onChange, ...field } }) => (
+                    <FormItem>
+                      <FormControl>
+                        <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700 hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            data-lucide="upload"
+                            className="lucide lucide-upload h-3.5 w-3.5 text-slate-500"
+                          >
+                            <path d="M12 3v12"></path>
+                            <path d="m17 8-5-5-5 5"></path>
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                          </svg>
+                          <span>Upload new</span>
+                          <input
+                            {...field}
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(event) => {
+                              handleFileChange(event);
+                              onChange(event.target.files?.[0]);
+                            }}
+                          />
+                        </label>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <button
+                  type="button"
+                  id="profile-avatar-remove"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-500 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    data-lucide="x"
+                    className="lucide lucide-x h-3.5 w-3.5"
+                  >
+                    <path d="M18 6 6 18"></path>
+                    <path d="m6 6 12 12"></path>
+                  </svg>
+                  <span>Remove</span>
+                </button>
+              </div>
+            </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <FormField
                 control={form.control}

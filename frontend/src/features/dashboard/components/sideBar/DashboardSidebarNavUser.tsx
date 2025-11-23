@@ -19,6 +19,8 @@ import {
   useLogoutDialogStore,
 } from "@/features/dashboard";
 import { useCurrentScreenSize } from "@/hooks";
+import { Link } from "@tanstack/react-router";
+import { ROUTE_PATHS } from "@/config/routes";
 
 interface DashboardSidebarNavUserProps {
   user: {
@@ -86,9 +88,13 @@ export function DashboardSidebarNavUser({
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <IconUserCircle />
-              Account
+            <DropdownMenuItem asChild>
+              <Link to={ROUTE_PATHS.PROFESSIONAL.PROFILE}>
+                <>
+                  <IconUserCircle />
+                  Profile
+                </>
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />

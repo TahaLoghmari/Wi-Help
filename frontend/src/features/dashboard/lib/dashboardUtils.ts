@@ -93,7 +93,7 @@ export function getNavigationData(user: UserDto) {
     user: {
       name: user!.firstName + " " + user.lastName,
       email: user!.email,
-      avatar: "",
+      avatar: user.profilePictureUrl,
     },
     navMain: isProfessional
       ? professionalNavMain

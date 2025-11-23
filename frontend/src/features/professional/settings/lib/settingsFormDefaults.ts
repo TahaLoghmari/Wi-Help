@@ -1,4 +1,4 @@
-import type { ProfessionalDto } from "../../types";
+import type { ProfessionalDto } from "@/features/professional";
 
 export function ProfileAndBioFormDefaults(professional: ProfessionalDto) {
   return {
@@ -18,5 +18,6 @@ export function ProfileAndBioFormDefaults(professional: ProfessionalDto) {
     startPrice: professional.startPrice,
     endPrice: professional.endPrice,
     bio: professional.bio,
+    profilePicture: undefined,
   };
 }
