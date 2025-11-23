@@ -23,7 +23,13 @@ export function toFormData(obj: Record<string, any>): FormData {
         // @ts-ignore
         const subValue = value[subKey];
         if (subValue !== undefined && subValue !== null) {
-          formData.append(`${key}.${subKey}`, subValue.toString());
+          if (Array.isArray(subValue)) {
+            subValue.forEach((item, index) => {
+              formData.append(`${key}.${subKey}[${index}]`, item);
+            });
+          } else {
+            formData.append(`${key}.${subKey}`, subValue.toString());
+          }
         }
       });
     } else {

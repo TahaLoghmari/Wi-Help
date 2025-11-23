@@ -4,27 +4,28 @@ import {
   useCurrentProfessional,
 } from "@/features/professional";
 import { SPECIALIZATIONS } from "@/features/auth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui";
 
 export function ProfileLayout() {
   const { data: professional } = useCurrentProfessional();
-  const practiceAddress = {
-    street: "Heart & Vascular Center, Suite 402",
-    city: "Boston",
-    state: "MA",
-    postalCode: "02114",
-    country: "United States",
-  };
-
   return (
     <section className="flex-1 space-y-5 overflow-y-auto px-4 py-5 sm:px-6 lg:px-8">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <img
-              src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/917d6f93-fb36-439a-8c48-884b67b35381_1600w.jpg"
-              alt="Doctor Avatar"
-              className="h-12 w-12 rounded-full border border-slate-200 object-cover"
-            />
+            <Avatar className="h-20 w-20">
+              <AvatarImage
+                className="object-cover"
+                src={professional?.profilePictureUrl}
+                alt={professional?.firstName}
+              />
+              <AvatarFallback className="rounded-lg">
+                {professional?.firstName && professional?.lastName
+                  ? professional.firstName.charAt(0).toUpperCase() +
+                    professional.lastName.charAt(0).toUpperCase()
+                  : "U"}
+              </AvatarFallback>
+            </Avatar>
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <h2 className="text-sm font-semibold tracking-tight text-[#00394a]">
@@ -537,12 +538,12 @@ export function ProfileLayout() {
                 <div>
                   <p className="text-[10px] text-slate-500">Practice address</p>
                   <p className="font-medium tracking-tight text-slate-900">
-                    {practiceAddress.street}
+                    {professional?.address.street}
                     <br />
-                    {practiceAddress.city}, {practiceAddress.state}{" "}
-                    {practiceAddress.postalCode}
+                    {professional?.address.city}, {professional?.address.state}{" "}
+                    {professional?.address.postalCode}
                     <br />
-                    {practiceAddress.country}
+                    {professional?.address.country}
                   </p>
                 </div>
               </div>
@@ -564,7 +565,7 @@ export function ProfileLayout() {
                   <rect x="2" y="4" width="20" height="16" rx="2"></rect>
                 </svg>
                 <span className="font-medium tracking-tight text-slate-900">
-                  eleanor.shaw@exampleclinic.com
+                  {professional?.email}
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -590,7 +591,10 @@ export function ProfileLayout() {
                 <span>
                   Gender:{" "}
                   <span className="font-medium tracking-tight text-slate-900">
-                    Female
+                    {professional?.gender
+                      ? professional.gender.charAt(0).toUpperCase() +
+                        professional.gender.slice(1).toLowerCase()
+                      : ""}
                   </span>
                 </span>
               </div>
@@ -599,7 +603,7 @@ export function ProfileLayout() {
                 <span>
                   Date Of Birth:{" "}
                   <span className="font-medium tracking-tight text-slate-900">
-                    1981-06-14
+                    {professional?.dateOfBirth}
                   </span>
                 </span>
               </div>
@@ -608,7 +612,7 @@ export function ProfileLayout() {
                 <span>
                   Phone Number:{" "}
                   <span className="font-medium tracking-tight text-slate-900">
-                    +216 95 547 046
+                    +216 {professional?.phoneNumber}
                   </span>
                 </span>
               </div>
