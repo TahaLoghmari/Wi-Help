@@ -12,6 +12,10 @@ public interface IIdentityModuleApi
     Task<Result<UserResponse>> GetUserByIdAsync(
         Guid userId,
         CancellationToken cancellationToken);
+
+    Task<Result<List<UserResponse>>> GetUsersByIdsAsync(
+        IEnumerable<Guid> userIds,
+        CancellationToken cancellationToken);
     
     Task<Result> UpdateUserAsync(
         UpdateUserRequest request,

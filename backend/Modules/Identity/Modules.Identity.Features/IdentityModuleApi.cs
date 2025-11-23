@@ -1,5 +1,6 @@
 using backend.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Results;
 using Modules.Common.Infrastructure.Services;
@@ -126,5 +127,32 @@ public class IdentityModuleApi(
         logger.LogInformation("User updated successfully for UserId: {UserId}", request.UserId);
 
         return Result.Success();
+    }
+
+    public async Task<Result<List<UserResponse>>> GetUsersByIdsAsync(
+        IEnumerable<Guid> userIds,
+        CancellationToken cancellationToken)
+    {
+        logger.LogInformation("Retrieving users by IDs");
+
+        var users = await userManager.Users
+            .AsNoTracking()
+            .Where(u => userIds.Contains(u.Id))
+            .ToListAsync(cancellationToken);
+
+        var userResponses = users.Select(user => new UserResponse(
+            user.Id,
+            user.Email!,
+            user.FirstName,
+            user.LastName,
+            user.DateOfBirth.ToString("yyyy-MM-dd"),
+            user.Gender,
+            user.PhoneNumber!,
+            user.Address,
+            user.ProfilePictureUrl)).ToList();
+
+        logger.LogInformation("Retrieved {Count} users", userResponses.Count);
+
+        return Result<List<UserResponse>>.Success(userResponses);
     }
 }
