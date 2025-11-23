@@ -1,4 +1,35 @@
+import { AppointmentUrgency, useAppointments } from "@/features/professional";
+
 export function AppointmentsTable() {
+  const pageSize = 5;
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useAppointments({ pageSize });
+
+  const appointments = data?.pages.flatMap((page) => page.items) || [];
+  const totalCount = data?.pages[0]?.totalCount || 0;
+
+  if (isLoading) {
+    return (
+      <div className="p-4 text-center text-sm text-slate-500">
+        Loading appointments...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 text-center text-sm text-red-500">
+        Error loading appointments
+      </div>
+    );
+  }
+
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-100">
       <div className="border-b border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-2 pl-4 sm:px-5">
@@ -20,9 +51,9 @@ export function AppointmentsTable() {
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 data-lucide="sliders-horizontal"
                 className="lucide lucide-sliders-horizontal h-3.5 w-3.5 text-slate-500"
               >
@@ -46,9 +77,9 @@ export function AppointmentsTable() {
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 data-lucide="download"
                 className="lucide lucide-download h-3.5 w-3.5 text-slate-500"
               >
@@ -93,10 +124,10 @@ export function AppointmentsTable() {
                 Purpose
               </th>
               <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Type
+                Urgency
               </th>
               <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Paid Amount
+                Price
               </th>
               <th className="px-4 py-2.5 text-right text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
                 Actions
@@ -104,224 +135,81 @@ export function AppointmentsTable() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            <tr className="hover:bg-slate-50/70">
-              <td className="pt-3.5 pr-4 pb-3.5 pl-4 whitespace-nowrap sm:px-5">
-                <div className="flex items-center gap-3">
-                  <img
-                    src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&amp;fit=crop&amp;w=200&amp;q=80"
-                    alt="Patient"
-                    className="h-8 w-8 rounded-full border border-slate-200 object-cover"
-                  />
-                  <div className="">
-                    <div className="text-xs font-medium tracking-tight text-slate-900">
-                      Jonathan Barnes
-                    </div>
-                    <div className="text-[11px] text-slate-500">
-                      MRN: 003849 • 45 yrs
-                    </div>
-                  </div>
-                </div>
-              </td>
-              <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-700 sm:px-5">
-                18 Nov 2025 • 09:15
-              </td>
-              <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
-                Chest pain follow-up, medication review.
-              </td>
-              <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
-                <span className="inline-flex items-center rounded-full border border-[#3fa6ff]/40 bg-[#3fa6ff]/10 px-2 py-0.5 text-[11px] text-[#00394a]">
-                  New patient
-                </span>
-              </td>
-              <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-800 sm:px-5">
-                $220.00
-              </td>
-              <td className="px-4 py-3.5 text-right whitespace-nowrap sm:px-5">
-                <div className="flex items-center justify-end gap-1.5">
-                  <button className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5">
-                    View
-                  </button>
-                  <button className="inline-flex items-center rounded-full border border-[#00394a] bg-[#00394a] px-2 py-1 text-[11px] text-white transition-colors hover:bg-[#00546e]">
-                    Accept request
-                  </button>
-                </div>
-              </td>
-            </tr>
-
-            <tr className="hover:bg-slate-50/70">
-              <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
-                <div className="flex items-center gap-3">
-                  <img
-                    src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/917d6f93-fb36-439a-8c48-884b67b35381_1600w.jpg"
-                    alt="Patient"
-                    className="h-8 w-8 rounded-full border border-slate-200 object-cover"
-                  />
-                  <div className="">
-                    <div className="text-xs font-medium tracking-tight text-slate-900">
-                      Maria Gonzalez
-                    </div>
-                    <div className="text-[11px] text-slate-500">
-                      MRN: 002174 • 62 yrs
+            {appointments.map((appointment) => (
+              <tr key={appointment.id} className="hover:bg-slate-50/70">
+                <td className="pt-3.5 pr-4 pb-3.5 pl-4 whitespace-nowrap sm:px-5">
+                  <div className="flex items-center gap-3">
+                    {appointment.patientAvatar ? (
+                      <img
+                        src={appointment.patientAvatar}
+                        alt={appointment.patientName}
+                        className="h-8 w-8 rounded-full border border-slate-200 object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
+                        {appointment.patientName.charAt(0)}
+                      </div>
+                    )}
+                    <div className="">
+                      <div className="text-xs font-medium tracking-tight text-slate-900">
+                        {appointment.patientName}
+                      </div>
+                      <div className="text-[11px] text-slate-500">
+                        {appointment.patientDateOfBirth ? (
+                          <span>
+                            DOB:{" "}
+                            {new Date(
+                              appointment.patientDateOfBirth,
+                            ).toLocaleDateString()}
+                          </span>
+                        ) : (
+                          <span>
+                            Patient ID: {appointment.patientId.substring(0, 6)}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </td>
-              <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-700 sm:px-5">
-                18 Nov 2025 • 10:00
-              </td>
-              <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
-                Post-procedure review and lab results discussion.
-              </td>
-              <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
-                <span className="inline-flex items-center rounded-full border border-[#14d3ac]/40 bg-[#14d3ac]/10 px-2 py-0.5 text-[11px] text-[#00546e]">
-                  Existing patient
-                </span>
-              </td>
-              <td className="sm:px- px-4 py-3.5 text-xs whitespace-nowrap text-slate-800">
-                $180.00
-              </td>
-              <td className="px-4 py-3.5 text-right whitespace-nowrap sm:px-5">
-                <div className="flex items-center justify-end gap-1.5">
-                  <button className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5">
-                    View
-                  </button>
-                  <button className="inline-flex items-center rounded-full border border-[#00394a] bg-[#00394a] px-2 py-1 text-[11px] text-white transition-colors hover:bg-[#00546e]">
-                    Accept request
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr className="hover:bg-slate-50/70">
-              <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
-                <div className="flex items-center gap-3">
-                  <img
-                    src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/4734259a-bad7-422f-981e-ce01e79184f2_1600w.jpg"
-                    alt="Patient"
-                    className="h-8 w-8 rounded-full border border-slate-200 object-cover"
-                  />
-                  <div className="">
-                    <div className="text-xs font-medium tracking-tight text-slate-900">
-                      Priya Desai
-                    </div>
-                    <div className="text-[11px] text-slate-500">
-                      MRN: 005834 • 29 yrs
-                    </div>
+                </td>
+                <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-700 sm:px-5">
+                  {new Date(appointment.startDate).toLocaleDateString()} •{" "}
+                  {new Date(appointment.startDate).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </td>
+                <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
+                  {appointment.notes}
+                </td>
+                <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
+                  <span
+                    className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] ${
+                      appointment.urgency === AppointmentUrgency.High ||
+                      appointment.urgency === AppointmentUrgency.Critical
+                        ? "border-red-200 bg-red-50 text-red-700"
+                        : appointment.urgency === AppointmentUrgency.Medium
+                          ? "border-yellow-200 bg-yellow-50 text-yellow-700"
+                          : "border-[#3fa6ff]/40 bg-[#3fa6ff]/10 text-[#00394a]"
+                    }`}
+                  >
+                    {appointment.urgency}
+                  </span>
+                </td>
+                <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-800 sm:px-5">
+                  ${appointment.price.toFixed(2)}
+                </td>
+                <td className="px-4 py-3.5 text-right whitespace-nowrap sm:px-5">
+                  <div className="flex items-center justify-end gap-1.5">
+                    <button className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5">
+                      View
+                    </button>
+                    <button className="inline-flex items-center rounded-full border border-[#00394a] bg-[#00394a] px-2 py-1 text-[11px] text-white transition-colors hover:bg-[#00546e]">
+                      Accept
+                    </button>
                   </div>
-                </div>
-              </td>
-              <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-700 sm:px-5">
-                18 Nov 2025 • 11:00
-              </td>
-              <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
-                Follow-up for hypertension management.
-              </td>
-              <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
-                <span className="inline-flex items-center rounded-full border border-[#14d3ac]/40 bg-[#14d3ac]/10 px-2 py-0.5 text-[11px] text-[#00546e]">
-                  Existing patient
-                </span>
-              </td>
-              <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-800 sm:px-5">
-                $130.00
-              </td>
-              <td className="px-4 py-3.5 text-right whitespace-nowrap sm:px-5">
-                <div className="flex items-center justify-end gap-1.5">
-                  <button className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5">
-                    View
-                  </button>
-                  <button className="inline-flex items-center rounded-full border border-[#00394a] bg-[#00394a] px-2 py-1 text-[11px] text-white transition-colors hover:bg-[#00546e]">
-                    Accept request
-                  </button>
-                </div>
-              </td>
-            </tr>
-
-            <tr className="hover:bg-slate-50/70">
-              <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
-                <div className="flex items-center gap-3">
-                  <img
-                    src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/c543a9e1-f226-4ced-80b0-feb8445a75b9_1600w.jpg"
-                    alt="Patient"
-                    className="h-8 w-8 rounded-full border border-slate-200 object-cover"
-                  />
-                  <div className="">
-                    <div className="text-xs font-medium tracking-tight text-slate-900">
-                      Ahmed El-Sayed
-                    </div>
-                    <div className="text-[11px] text-slate-500">
-                      MRN: 007642 • 51 yrs
-                    </div>
-                  </div>
-                </div>
-              </td>
-              <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-700 sm:px-5">
-                18 Nov 2025 • 13:30
-              </td>
-              <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
-                Results review and treatment plan update.
-              </td>
-              <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
-                <span className="inline-flex items-center rounded-full border border-[#3fa6ff]/40 bg-[#3fa6ff]/10 px-2 py-0.5 text-[11px] text-[#00394a]">
-                  New patient
-                </span>
-              </td>
-              <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-800 sm:px-5">
-                $250.00
-              </td>
-              <td className="px-4 py-3.5 text-right whitespace-nowrap sm:px-5">
-                <div className="flex items-center justify-end gap-1.5">
-                  <button className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5">
-                    View
-                  </button>
-                  <button className="inline-flex items-center rounded-full border border-[#00394a] bg-[#00394a] px-2 py-1 text-[11px] text-white transition-colors hover:bg-[#00546e]">
-                    Accept request
-                  </button>
-                </div>
-              </td>
-            </tr>
-
-            <tr className="hover:bg-slate-50/70">
-              <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
-                <div className="flex items-center gap-3">
-                  <img
-                    src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/5bab247f-35d9-400d-a82b-fd87cfe913d2_1600w.webp"
-                    alt="Patient"
-                    className="h-8 w-8 rounded-full border border-slate-200 object-cover"
-                  />
-                  <div className="">
-                    <div className="text-xs font-medium tracking-tight text-slate-900">
-                      Olivia Chen
-                    </div>
-                    <div className="text-[11px] text-slate-500">
-                      MRN: 001293 • 36 yrs
-                    </div>
-                  </div>
-                </div>
-              </td>
-              <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-700 sm:px-5">
-                18 Nov 2025 • 15:00
-              </td>
-              <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
-                Routine follow-up and medication refill.
-              </td>
-              <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
-                <span className="inline-flex items-center rounded-full border border-[#14d3ac]/40 bg-[#14d3ac]/10 px-2 py-0.5 text-[11px] text-[#00546e]">
-                  Existing patient
-                </span>
-              </td>
-              <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-800 sm:px-5">
-                $95.00
-              </td>
-              <td className="px-4 py-3.5 text-right whitespace-nowrap sm:px-5">
-                <div className="flex items-center justify-end gap-1.5">
-                  <button className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5">
-                    View
-                  </button>
-                  <button className="inline-flex items-center rounded-full border border-[#00394a] bg-[#00394a] px-2 py-1 text-[11px] text-white transition-colors hover:bg-[#00546e]">
-                    Accept request
-                  </button>
-                </div>
-              </td>
-            </tr>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -329,28 +217,25 @@ export function AppointmentsTable() {
       <div className="flex flex-col items-center justify-between gap-3 gap-x-3 gap-y-3 border-t border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-3 pl-4 sm:flex-row sm:px-5">
         <div className="text-[11px] text-slate-500">
           Showing
-          <span className="font-medium text-slate-700">5</span>
+          <span className="font-medium text-slate-700">
+            {" "}
+            {appointments.length}{" "}
+          </span>
           of
-          <span className="font-medium text-slate-700">24</span>
+          <span className="font-medium text-slate-700"> {totalCount} </span>
           appointments.
         </div>
         <div className="flex items-center gap-1.5 text-[11px]">
-          <button className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-slate-600 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5">
-            Previous
-          </button>
-          <div className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1 text-slate-700">
-            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#00394a] text-[11px] font-medium text-white">
-              1
-            </span>
-            <span className="inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-full text-slate-600 hover:bg-slate-100">
-              2
-            </span>
-            <span className="inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-full text-slate-600 hover:bg-slate-100">
-              3
-            </span>
-          </div>
-          <button className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-slate-600 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5">
-            Next
+          <button
+            onClick={() => fetchNextPage()}
+            disabled={!hasNextPage || isFetchingNextPage}
+            className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-slate-600 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isFetchingNextPage
+              ? "Loading more..."
+              : hasNextPage
+                ? "Load More"
+                : "No more appointments"}
           </button>
         </div>
       </div>

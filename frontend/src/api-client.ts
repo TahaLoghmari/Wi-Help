@@ -5,7 +5,7 @@ import { API_ENDPOINTS } from "@/config/endpoints";
 let isRefreshing = false;
 let refreshPromise: Promise<boolean> | null = null;
 
-async function request<T>(
+export async function request<T>(
   endpoint: string,
   options: RequestInit = {},
 ): Promise<T> {
