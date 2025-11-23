@@ -41,6 +41,6 @@ export const ROUTE_PATHS = {
     PRESCRIPTIONS: "/patient/prescriptions",
     SETTINGS: "/patient/settings",
     PROFILE: "/patient/profile",
-    BOOK: "/patient/book",
+    BOOK: "/patient/book/$professionalId",
   },
 } as const;

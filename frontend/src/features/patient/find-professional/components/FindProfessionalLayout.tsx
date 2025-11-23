@@ -4,11 +4,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui";
 import { Calendar, CalendarPlus, MapPin, Star, User } from "lucide-react";
 import { SPECIALIZATIONS } from "@/features/auth";
 import { Link } from "@tanstack/react-router";
+import { useAppNavigation } from "@/hooks";
 
 export function FindProfessionalLayout() {
+  const navigate = useAppNavigation();
   const { data: professionals } = useProfessionals();
+
   return (
-    <div className="flex h-full w-full flex-col gap-5 bg-[#fafafb] px-8 py-5">
+    <div className="flex h-full w-full flex-col gap-5 overflow-auto bg-[#fafafb] px-8 py-5">
       <FindProfessionalFilterbar />
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -137,7 +140,10 @@ export function FindProfessionalLayout() {
               </div>
 
               <div className="flex items-center gap-2 pt-1">
-                <button className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-[#00394a] px-2 py-1.5 text-[11px] text-white transition-colors hover:bg-[#00546e]">
+                <button
+                  onClick={() => navigate.goToBook(professional.id)}
+                  className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-[#00394a] px-2 py-1.5 text-[11px] text-white transition-colors hover:bg-[#00546e]"
+                >
                   <CalendarPlus className="h-3.5 w-3.5 text-white" />
                   Book
                 </button>
