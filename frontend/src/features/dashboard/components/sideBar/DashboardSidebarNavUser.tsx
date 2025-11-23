@@ -15,24 +15,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  useActiveNavigationPageStore,
   useDashboardSidebarStateStore,
   useLogoutDialogStore,
 } from "@/features/dashboard";
 import { useCurrentScreenSize } from "@/hooks";
 import { Link } from "@tanstack/react-router";
 import { ROUTE_PATHS } from "@/config/routes";
+import type { UserDto } from "@/features/auth";
+import { useEffect } from "react";
 
 interface DashboardSidebarNavUserProps {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
+  user: UserDto;
 }
 
 export function DashboardSidebarNavUser({
   user,
 }: DashboardSidebarNavUserProps) {
+  const { setActiveNavigationPage } = useActiveNavigationPageStore();
   const { currentScreenSize } = useCurrentScreenSize();
   const isMobile = currentScreenSize < 768;
   const { setIsOpen } = useLogoutDialogStore();
@@ -46,15 +46,24 @@ export function DashboardSidebarNavUser({
         >
           <div>
             <Avatar className="h-8 w-8 rounded-lg">
-              <AvatarImage src={user.avatar} alt={user.name} />
+              <AvatarImage
+                className="object-cover"
+                src={user?.profilePictureUrl}
+                alt={user?.firstName}
+              />
               <AvatarFallback className="rounded-lg">
-                {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+                {user?.firstName && user?.lastName
+                  ? user.firstName.charAt(0).toUpperCase() +
+                    user.lastName.charAt(0).toUpperCase()
+                  : "U"}
               </AvatarFallback>
             </Avatar>
             {isSidebarOpen && (
               <>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
+                  <span className="truncate font-medium">
+                    {user.firstName} {user.lastName}
+                  </span>
                   <span className="text-muted-foreground truncate text-xs">
                     {user.email}
                   </span>
@@ -73,13 +82,22 @@ export function DashboardSidebarNavUser({
           <DropdownMenuLabel className="p-0 font-normal">
             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarImage
+                  className="object-cover"
+                  src={user?.profilePictureUrl}
+                  alt={user?.firstName}
+                />
                 <AvatarFallback className="rounded-lg">
-                  {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+                  {user?.firstName && user?.lastName
+                    ? user.firstName.charAt(0).toUpperCase() +
+                      user.lastName.charAt(0).toUpperCase()
+                    : "U"}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate font-medium">
+                  {user.firstName} {user.lastName}
+                </span>
                 <span className="text-muted-foreground truncate text-xs">
                   {user.email}
                 </span>
@@ -89,11 +107,26 @@ export function DashboardSidebarNavUser({
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
-              <Link to={ROUTE_PATHS.PROFESSIONAL.PROFILE}>
-                <>
-                  <IconUserCircle />
-                  Profile
-                </>
+              <Link
+                to={
+                  user.role.toLowerCase() === "professional"
+                    ? ROUTE_PATHS.PROFESSIONAL.PROFILE
+                    : ROUTE_PATHS.PATIENT.PROFILE
+                }
+              >
+                {({ isActive }) => {
+                  useEffect(() => {
+                    if (isActive) {
+                      setActiveNavigationPage("Profile Overview");
+                    }
+                  }, [isActive]);
+                  return (
+                    <>
+                      <IconUserCircle />
+                      Profile
+                    </>
+                  );
+                }}
               </Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>

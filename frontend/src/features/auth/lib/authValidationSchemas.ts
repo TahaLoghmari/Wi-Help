@@ -9,7 +9,7 @@ const addressSchema = z.object({
     .string()
     .min(1, { message: "City is required." })
     .max(50, { message: "City must be at most 50 characters." })
-    .regex(/^[a-zA-Z]+$/, { message: "Last Name must contain only letters." }),
+    .regex(/^[a-zA-Z]+$/, { message: "City must contain only letters." }),
   postalCode: z
     .string()
     .min(1, { message: "Postal Code is required." })
@@ -22,7 +22,7 @@ const addressSchema = z.object({
     .string()
     .min(1, { message: "State is required." })
     .max(50, { message: "State must be at most 50 characters." })
-    .regex(/^[a-zA-Z]+$/, { message: "Last Name must contain only letters." }),
+    .regex(/^[a-zA-Z]+$/, { message: "City must contain only letters." }),
 });
 
 const emergencyContactSchema = z.object({
@@ -31,8 +31,7 @@ const emergencyContactSchema = z.object({
     .min(1, { message: "Emergency Contact Name is required." })
     .max(100, {
       message: "Emergency Contact Name must be at most 100 characters.",
-    })
-    .regex(/^[a-zA-Z]+$/, { message: "Last Name must contain only letters." }),
+    }),
   phoneNumber: z
     .string()
     .min(1, { message: "Emergency Contact Phone Number is required." })

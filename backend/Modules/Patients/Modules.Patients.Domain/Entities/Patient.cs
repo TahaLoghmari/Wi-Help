@@ -1,4 +1,4 @@
-using Modules.Common.Features.ValueObjects;
+using Modules.Patients.Domain.ValueObjects;
 
 namespace Modules.Patients.Domain.Entities;
 
@@ -7,6 +7,8 @@ public class Patient
     public Guid Id { get; private set; }
     public Guid UserId { get; private set; }
     public EmergencyContact EmergencyContact { get; private set; } = null!;
+    public MedicalInfo MedicalInfo { get; private set; } = new MedicalInfo();
+    public string Bio { get; private set; } = string.Empty;
 
     private Patient() { } 
 
@@ -17,12 +19,20 @@ public class Patient
         Id = Guid.NewGuid();
         UserId = userId;
         EmergencyContact = contact;
-
+        MedicalInfo = new MedicalInfo();
+        Bio = "";
     }
     
-    public void Update(EmergencyContact? emergencyContact = null)
+    public void Update(
+        EmergencyContact? emergencyContact = null,
+        MedicalInfo? medicalInfo = null,
+        string? bio = null)
     {
         if (emergencyContact != null)
             EmergencyContact = emergencyContact;
+        if (medicalInfo != null)
+            MedicalInfo = medicalInfo;
+        if ( bio != null )
+            Bio = bio;
     }
 }

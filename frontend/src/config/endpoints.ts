@@ -19,5 +19,6 @@ export const API_ENDPOINTS = {
   PATIENTS: {
     REGISTER_PATIENT: "/patients/register",
     CURRENT_PATIENT: "/patients/me",
+    UPDATE_PATIENT: "/patients/me",
   },
 } as const;

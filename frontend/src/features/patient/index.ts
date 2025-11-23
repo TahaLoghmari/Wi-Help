@@ -1,3 +1,5 @@
+export * from "./types";
+export * from "./hooks";
 export * from "./appointments";
 export * from "./billing";
 export * from "./favorites";
@@ -5,5 +7,5 @@ export * from "./find-professional";
 export * from "./medical-records";
 export * from "./messages";
 export * from "./prescriptions";
-export * from "./types";
-export * from "./hooks";
+export * from "./settings";
+export * from "./profile";

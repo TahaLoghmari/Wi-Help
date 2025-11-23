@@ -28,30 +28,33 @@ import {
 import { useForm } from "react-hook-form";
 import type z from "zod";
 import {
+  ALLERGIES,
+  CHRONIC_CONDITIONS,
+  MEDICATIONS,
+  MOBILITY_STATUSES,
   ProfileAndBioFormDefaults,
   profileAndBioFormSchema,
-  getServicesForSpecialization,
-  useCurrentProfessional,
-  useUpdateProfessional,
-} from "@/features/professional";
+  useCurrentPatient,
+  useUpdatePatient,
+} from "@/features/patient";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { COUNTRIES, SPECIALIZATIONS } from "@/features/auth";
+import { COUNTRIES, RELATIONSHIPS } from "@/features/auth";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib";
 import { useState } from "react";
 
 export function ProfileAndBio() {
-  const { data: professional } = useCurrentProfessional();
+  const { data: patient } = useCurrentPatient();
   const form = useForm<z.infer<typeof profileAndBioFormSchema>>({
     resolver: zodResolver(profileAndBioFormSchema),
     mode: "onChange",
-    defaultValues: ProfileAndBioFormDefaults(professional!),
+    defaultValues: ProfileAndBioFormDefaults(patient!),
   });
-  const updateProfessionalMutation = useUpdateProfessional();
-  const [open, setOpen] = useState(false);
+  const updatePatientMutation = useUpdatePatient();
+  const [openAllergies, setOpenAllergies] = useState(false);
+  const [openChronicConditions, setOpenChronicConditions] = useState(false);
+  const [openMedications, setOpenMedications] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-
-  const selectedSpecialization = form.watch("specialization");
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -65,8 +68,10 @@ export function ProfileAndBio() {
   const onSubmit = async (
     credentials: z.infer<typeof profileAndBioFormSchema>,
   ) => {
-    updateProfessionalMutation.mutate(credentials);
+    console.log(credentials);
+    updatePatientMutation.mutate(credentials);
   };
+  
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -80,7 +85,7 @@ export function ProfileAndBio() {
                 Basic Information
               </h3>
               <p className="mt-0.5 text-[11px] text-slate-500">
-                Core details shown on your public professional profile.
+                Core details shown on your public patient profile.
               </p>
             </div>
             <button
@@ -110,13 +115,13 @@ export function ProfileAndBio() {
                 <Avatar className="h-20 w-20">
                   <AvatarImage
                     className="object-cover"
-                    src={previewUrl || professional?.profilePictureUrl}
-                    alt={professional?.firstName}
+                    src={previewUrl || patient?.profilePictureUrl}
+                    alt={patient?.firstName}
                   />
                   <AvatarFallback className="rounded-lg">
-                    {professional?.firstName && professional?.lastName
-                      ? professional.firstName.charAt(0).toUpperCase() +
-                        professional.lastName.charAt(0).toUpperCase()
+                    {patient?.firstName && patient?.lastName
+                      ? patient.firstName.charAt(0).toUpperCase() +
+                        patient.lastName.charAt(0).toUpperCase()
                       : "U"}
                   </AvatarFallback>
                 </Avatar>
@@ -239,55 +244,29 @@ export function ProfileAndBio() {
                 )}
               />
             </div>
-
-            <div className="grid gap-3 sm:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="phoneNumber"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col gap-1">
-                    <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      Phone Number
-                    </FormLabel>
-                    <FormControl>
-                      <input
-                        type="tel"
-                        className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
-                        placeholder="Enter phone number"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className="text-xs" />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="experience"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col gap-1">
-                    <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      Experience
-                    </FormLabel>
-                    <FormControl>
-                      <input
-                        type="number"
-                        className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
-                        placeholder="0"
-                        value={field.value ?? ""}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value ? Number(e.target.value) : 0,
-                          )
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage className="text-xs" />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="phoneNumber"
+              render={({ field }) => (
+                <FormItem className="flex flex-col gap-1">
+                  <FormLabel className="block text-[11px] font-medium text-slate-700">
+                    Phone Number
+                  </FormLabel>
+                  <FormControl>
+                    <input
+                      type="tel"
+                      className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                      placeholder="Enter phone number"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-xs" />
+                </FormItem>
+              )}
+            />
+            <h3 className="mt-2 text-xs font-semibold tracking-tight text-[#00394a]">
+              Address
+            </h3>
             <div className="grid gap-3 sm:grid-cols-2">
               <FormField
                 control={form.control}
@@ -384,49 +363,33 @@ export function ProfileAndBio() {
                 )}
               />
             </div>
+            <h3 className="mt-2 text-xs font-semibold tracking-tight text-[#00394a]">
+              Emergency Contact
+            </h3>
             <div className="grid grid-cols-1 gap-4">
               <FormField
                 control={form.control}
-                name="address.street"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col gap-1">
-                    <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      Street
-                    </FormLabel>
-                    <FormControl>
-                      <input
-                        type="text"
-                        className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
-                        placeholder="Enter street address"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className="text-xs" />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="specialization"
+                name="emergencyContact.relationship"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      Specialization
+                      Relationship
                     </FormLabel>
                     <FormControl>
                       <Select
                         value={field.value || ""}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger className="w-full text-xs shadow-none [&>span]:text-[11px]">
-                          <SelectValue placeholder="Select specialization" />
+                        <SelectTrigger className="h-8! w-full rounded-lg! text-xs shadow-none [&>span]:text-[11px]">
+                          <SelectValue
+                            className="text-xs placeholder:text-xs"
+                            placeholder="Select Relationship"
+                          ></SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          {SPECIALIZATIONS.map((specialization, idx) => (
-                            <SelectItem key={idx} value={specialization.value}>
-                              {specialization.label}
+                          {RELATIONSHIPS.map((relationship, idx) => (
+                            <SelectItem key={idx} value={relationship.value}>
+                              {relationship.label}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -436,38 +399,88 @@ export function ProfileAndBio() {
                   </FormItem>
                 )}
               />
-
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
               <FormField
                 control={form.control}
-                name="services"
+                name="emergencyContact.fullName"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col gap-2">
+                  <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      Services
+                      Full Name
                     </FormLabel>
                     <FormControl>
-                      <Popover open={open} onOpenChange={setOpen}>
-                        <PopoverTrigger asChild className="shadow-none">
+                      <input
+                        type="text"
+                        className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                        placeholder="Enter full name"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="emergencyContact.phoneNumber"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col gap-1">
+                    <FormLabel className="block text-[11px] font-medium text-slate-700">
+                      Phone Number
+                    </FormLabel>
+                    <FormControl>
+                      <input
+                        type="text"
+                        className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                        placeholder="Enter phone number"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <h3 className="mt-2 text-xs font-semibold tracking-tight text-[#00394a]">
+              Medical Info
+            </h3>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="medicalInfo.allergies"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col gap-1">
+                    <FormLabel className="block text-[11px] font-medium text-slate-700">
+                      Allergies
+                    </FormLabel>
+                    <FormControl>
+                      <Popover
+                        open={openAllergies}
+                        onOpenChange={setOpenAllergies}
+                      >
+                        <PopoverTrigger
+                          asChild
+                          className="h-8! rounded-lg shadow-none"
+                        >
                           <Button
                             variant="outline"
                             role="combobox"
-                            aria-expanded={open}
+                            aria-expanded={openAllergies}
                             className="h-9 w-full justify-between text-xs"
                           >
                             {field.value && field.value.length > 0 ? (
                               <div
                                 className={`flex flex-wrap items-center gap-1`}
                               >
-                                {field.value.slice(0, 4).map((techValue) => (
+                                {field.value.slice(0, 4).map((allergie) => (
                                   <Badge
                                     variant="secondary"
-                                    key={techValue}
+                                    key={allergie}
                                     className="text-[11px]"
                                   >
-                                    {getServicesForSpecialization(
-                                      selectedSpecialization || "",
-                                    ).find((s) => s.value === techValue)
-                                      ?.label || techValue}
+                                    {ALLERGIES.find((a) => a.value === allergie)
+                                      ?.label || allergie}
                                   </Badge>
                                 ))}
 
@@ -479,7 +492,7 @@ export function ProfileAndBio() {
                               </div>
                             ) : (
                               <p className="text-muted-foreground text-[11px]">
-                                Add service...
+                                Add allergie...
                               </p>
                             )}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -488,18 +501,16 @@ export function ProfileAndBio() {
                         <PopoverContent className="w-[300px] p-0">
                           <Command>
                             <CommandInput
-                              placeholder="Search services..."
+                              placeholder="Search allergies..."
                               className="h-9"
                             />
                             <CommandList>
-                              <CommandEmpty>No service found.</CommandEmpty>
+                              <CommandEmpty>No allergie found.</CommandEmpty>
                               <CommandGroup>
-                                {getServicesForSpecialization(
-                                  selectedSpecialization || "",
-                                ).map((service) => (
+                                {ALLERGIES.map((allergie) => (
                                   <CommandItem
-                                    key={service.value}
-                                    value={service.value}
+                                    key={allergie.value}
+                                    value={allergie.value}
                                     onSelect={(currentValue) => {
                                       const currentValues = Array.isArray(
                                         field.value,
@@ -521,15 +532,133 @@ export function ProfileAndBio() {
                                           currentValue,
                                         ]);
                                       }
-                                      setOpen(true);
+                                      setOpenAllergies(true);
                                     }}
                                   >
-                                    {service.label}
+                                    {allergie.label}
                                     <Check
                                       className={cn(
                                         "ml-auto",
                                         Array.isArray(field.value) &&
-                                          field.value.includes(service.value)
+                                          field.value.includes(allergie.value)
+                                          ? "opacity-100"
+                                          : "opacity-0",
+                                      )}
+                                    />
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                    </FormControl>
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="medicalInfo.chronicConditions"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col gap-1">
+                    <FormLabel className="block text-[11px] font-medium text-slate-700">
+                      Chronic Conditions
+                    </FormLabel>
+                    <FormControl>
+                      <Popover
+                        open={openChronicConditions}
+                        onOpenChange={setOpenChronicConditions}
+                      >
+                        <PopoverTrigger
+                          asChild
+                          className="h-8! rounded-lg shadow-none"
+                        >
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={openChronicConditions}
+                            className="h-9 w-full justify-between text-xs"
+                          >
+                            {field.value && field.value.length > 0 ? (
+                              <div
+                                className={`flex flex-wrap items-center gap-1`}
+                              >
+                                {field.value
+                                  .slice(0, 3)
+                                  .map((chronicCondition) => (
+                                    <Badge
+                                      variant="secondary"
+                                      key={chronicCondition}
+                                      className="text-[11px]"
+                                    >
+                                      {CHRONIC_CONDITIONS.find(
+                                        (cc) => cc.value === chronicCondition,
+                                      )?.label || chronicCondition}
+                                    </Badge>
+                                  ))}
+
+                                {field.value.length > 3 && (
+                                  <Badge variant="outline">
+                                    +{field.value.length - 3} more
+                                  </Badge>
+                                )}
+                              </div>
+                            ) : (
+                              <p className="text-muted-foreground text-[11px]">
+                                Add chronic condition...
+                              </p>
+                            )}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[300px] p-0">
+                          <Command>
+                            <CommandInput
+                              placeholder="Search chronic conditions..."
+                              className="h-9"
+                            />
+                            <CommandList>
+                              <CommandEmpty>
+                                No chronic condition found.
+                              </CommandEmpty>
+                              <CommandGroup>
+                                {CHRONIC_CONDITIONS.map((chronicCondition) => (
+                                  <CommandItem
+                                    key={chronicCondition.value}
+                                    value={chronicCondition.value}
+                                    onSelect={(currentValue) => {
+                                      const currentValues = Array.isArray(
+                                        field.value,
+                                      )
+                                        ? field.value
+                                        : [];
+                                      const isSelected =
+                                        currentValues.includes(currentValue);
+
+                                      if (isSelected) {
+                                        field.onChange(
+                                          currentValues.filter(
+                                            (v) => v !== currentValue,
+                                          ),
+                                        );
+                                      } else {
+                                        field.onChange([
+                                          ...currentValues,
+                                          currentValue,
+                                        ]);
+                                      }
+                                      setOpenChronicConditions(true);
+                                    }}
+                                  >
+                                    {chronicCondition.label}
+                                    <Check
+                                      className={cn(
+                                        "ml-auto",
+                                        Array.isArray(field.value) &&
+                                          field.value.includes(
+                                            chronicCondition.value,
+                                          )
                                           ? "opacity-100"
                                           : "opacity-0",
                                       )}
@@ -547,31 +676,114 @@ export function ProfileAndBio() {
                 )}
               />
             </div>
-
             <div className="grid gap-3 sm:grid-cols-2">
               <FormField
                 control={form.control}
-                name="startPrice"
+                name="medicalInfo.medications"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      Start price
+                      Medications
                     </FormLabel>
                     <FormControl>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[11px] text-slate-500">$</span>
-                        <input
-                          type="number"
-                          className="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
-                          placeholder="0"
-                          value={field.value ?? ""}
-                          onChange={(e) =>
-                            field.onChange(
-                              e.target.value ? Number(e.target.value) : 0,
-                            )
-                          }
-                        />
-                      </div>
+                      <Popover
+                        open={openMedications}
+                        onOpenChange={setOpenMedications}
+                      >
+                        <PopoverTrigger
+                          asChild
+                          className="h-8! rounded-lg shadow-none"
+                        >
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={openMedications}
+                            className="h-9 w-full justify-between text-xs"
+                          >
+                            {field.value && field.value.length > 0 ? (
+                              <div
+                                className={`flex flex-wrap items-center gap-1`}
+                              >
+                                {field.value.slice(0, 4).map((medication) => (
+                                  <Badge
+                                    variant="secondary"
+                                    key={medication}
+                                    className="text-[11px]"
+                                  >
+                                    {MEDICATIONS.find(
+                                      (m) => m.value === medication,
+                                    )?.label || medication}
+                                  </Badge>
+                                ))}
+
+                                {field.value.length > 4 && (
+                                  <Badge variant="outline">
+                                    +{field.value.length - 4} more
+                                  </Badge>
+                                )}
+                              </div>
+                            ) : (
+                              <p className="text-muted-foreground text-[11px]">
+                                Add medication...
+                              </p>
+                            )}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[300px] p-0">
+                          <Command>
+                            <CommandInput
+                              placeholder="Search medications..."
+                              className="h-9"
+                            />
+                            <CommandList>
+                              <CommandEmpty>No medication found.</CommandEmpty>
+                              <CommandGroup>
+                                {MEDICATIONS.map((medication) => (
+                                  <CommandItem
+                                    key={medication.value}
+                                    value={medication.value}
+                                    onSelect={(currentValue) => {
+                                      const currentValues = Array.isArray(
+                                        field.value,
+                                      )
+                                        ? field.value
+                                        : [];
+                                      const isSelected =
+                                        currentValues.includes(currentValue);
+
+                                      if (isSelected) {
+                                        field.onChange(
+                                          currentValues.filter(
+                                            (v) => v !== currentValue,
+                                          ),
+                                        );
+                                      } else {
+                                        field.onChange([
+                                          ...currentValues,
+                                          currentValue,
+                                        ]);
+                                      }
+                                      setOpenMedications(true);
+                                    }}
+                                  >
+                                    {medication.label}
+                                    <Check
+                                      className={cn(
+                                        "ml-auto",
+                                        Array.isArray(field.value) &&
+                                          field.value.includes(medication.value)
+                                          ? "opacity-100"
+                                          : "opacity-0",
+                                      )}
+                                    />
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                     </FormControl>
                     <FormMessage className="text-xs" />
                   </FormItem>
@@ -579,34 +791,37 @@ export function ProfileAndBio() {
               />
               <FormField
                 control={form.control}
-                name="endPrice"
+                name="medicalInfo.mobilityStatus"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      End price
+                      Mobility Status
                     </FormLabel>
                     <FormControl>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[11px] text-slate-500">$</span>
-                        <input
-                          type="number"
-                          className="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
-                          placeholder="0"
-                          value={field.value ?? ""}
-                          onChange={(e) =>
-                            field.onChange(
-                              e.target.value ? Number(e.target.value) : 0,
-                            )
-                          }
-                        />
-                      </div>
+                      <Select
+                        value={field.value || ""}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="h-8! w-full rounded-lg! text-xs shadow-none [&>span]:text-[11px]">
+                          <SelectValue
+                            className="text-xs placeholder:text-xs"
+                            placeholder="Select Mobility Status"
+                          ></SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {MOBILITY_STATUSES.map((status, idx) => (
+                            <SelectItem key={idx} value={status.value}>
+                              {status.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage className="text-xs" />
                   </FormItem>
                 )}
               />
             </div>
-
             <FormField
               control={form.control}
               name="bio"

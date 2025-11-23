@@ -6,6 +6,7 @@ using Modules.Identity.PublicApi;
 using Modules.Patients.Domain;
 using Modules.Patients.Infrastructure.Database;
 using System.Transactions;
+using Modules.Common.Infrastructure.Services;
 using Modules.Identity.PublicApi.Contracts;
 
 namespace Modules.Patients.Features.Auth.UpdatePatient;
@@ -13,6 +14,7 @@ namespace Modules.Patients.Features.Auth.UpdatePatient;
 public sealed class UpdatePatientCommandHandler(
     IIdentityModuleApi identityApi,
     PatientsDbContext dbContext,
+    SupabaseService supabaseService,
     ILogger<UpdatePatientCommandHandler> logger) : ICommandHandler<UpdatePatientCommand>
 {
     public async Task<Result> Handle(
@@ -34,13 +36,23 @@ public sealed class UpdatePatientCommandHandler(
 
         try
         {
+            string? profilePictureUrl = "";
+            if (command.ProfilePicture is not null)
+            {
+                profilePictureUrl = await supabaseService.UploadFileAsync(
+                    command.ProfilePicture,
+                    "profilePicture",
+                    "profile-pictures",
+                    cancellationToken);
+            }
+
             var updateUserRequest = new UpdateUserRequest(
                 command.UserId,
                 command.FirstName,
                 command.LastName,
                 command.PhoneNumber,
                 command.Address,
-                "");
+                profilePictureUrl);
 
             var updateResult = await identityApi.UpdateUserAsync(updateUserRequest, cancellationToken);
             if (!updateResult.IsSuccess)
@@ -60,7 +72,7 @@ public sealed class UpdatePatientCommandHandler(
                 return Result.Failure(PatientErrors.NotFound(command.UserId));
             }
 
-            patient.Update(command.EmergencyContact);
+            patient.Update(command.EmergencyContact,command.MedicalInfo,command.Bio);
 
             await dbContext.SaveChangesAsync(cancellationToken);
 

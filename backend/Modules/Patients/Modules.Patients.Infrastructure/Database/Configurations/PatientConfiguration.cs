@@ -22,5 +22,13 @@ public class PatientConfiguration : IEntityTypeConfiguration<Patient>
             contact.Property(c => c.Relationship).IsRequired().HasMaxLength(50);
         });
 
+        builder.OwnsOne(p => p.MedicalInfo, medicalInfo =>
+        {
+            medicalInfo.Property(m => m.MobilityStatus).IsRequired();
+            medicalInfo.Property(m => m.ChronicConditions);
+            medicalInfo.Property(m => m.Allergies);
+            medicalInfo.Property(m => m.Medications);
+        });
+
     }
 }

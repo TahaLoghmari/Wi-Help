@@ -1,4 +1,5 @@
 import type { UserDto } from "@/features/auth";
+import { ROUTE_PATHS } from "@/config/routes";
 import { IconSettings } from "@tabler/icons-react";
 import {
   Calendar,
@@ -21,32 +22,32 @@ export function getNavigationData(user: UserDto) {
   const professionalNavMain = [
     {
       title: "Appointments",
-      url: "/professional/appointments",
+      url: ROUTE_PATHS.PROFESSIONAL.APPOINTMENTS,
       icon: Calendar,
     },
     {
       title: "My Patients",
-      url: "/professional/my-patients",
+      url: ROUTE_PATHS.PROFESSIONAL.MYPATIENTS,
       icon: Users,
     },
     {
       title: "Schedule Timings",
-      url: "/professional/schedule-timings",
+      url: ROUTE_PATHS.PROFESSIONAL.SCHEDULETIMINGS,
       icon: Clock,
     },
     {
       title: "Invoices",
-      url: "/professional/invoices",
+      url: ROUTE_PATHS.PROFESSIONAL.INVOICES,
       icon: FileText,
     },
     {
       title: "Reviews",
-      url: "/professional/reviews",
+      url: ROUTE_PATHS.PROFESSIONAL.REVIEWS,
       icon: Star,
     },
     {
       title: "Messages",
-      url: "/professional/messages",
+      url: ROUTE_PATHS.PROFESSIONAL.MESSAGES,
       icon: MessageSquare,
     },
   ];
@@ -54,47 +55,43 @@ export function getNavigationData(user: UserDto) {
   const patientNavMain = [
     {
       title: "Appointments",
-      url: "/patient/appointments",
+      url: ROUTE_PATHS.PATIENT.APPOINTMENTS,
       icon: Calendar,
     },
     {
       title: "Find Professional",
-      url: "/patient/find-professional",
+      url: ROUTE_PATHS.PATIENT.FINDPROFESSIONAL,
       icon: Search,
     },
     {
       title: "Medical Records",
-      url: "/patient/medical-records",
+      url: ROUTE_PATHS.PATIENT.MEDICALRECORDS,
       icon: ClipboardList,
     },
     {
       title: "Prescriptions",
-      url: "/patient/prescriptions",
+      url: ROUTE_PATHS.PATIENT.PRESCRIPTIONS,
       icon: Pill,
     },
     {
       title: "Billing",
-      url: "/patient/billing",
+      url: ROUTE_PATHS.PATIENT.BILLING,
       icon: CreditCard,
     },
     {
       title: "Favorites",
-      url: "/patient/favorites",
+      url: ROUTE_PATHS.PATIENT.FAVORITES,
       icon: Heart,
     },
     {
       title: "Messages",
-      url: "/patient/messages",
+      url: ROUTE_PATHS.PATIENT.MESSAGES,
       icon: MessageSquare,
     },
   ];
 
   return {
-    user: {
-      name: user!.firstName + " " + user.lastName,
-      email: user!.email,
-      avatar: user.profilePictureUrl,
-    },
+    user,
     navMain: isProfessional
       ? professionalNavMain
       : isPatient
@@ -103,7 +100,9 @@ export function getNavigationData(user: UserDto) {
     navSecondary: [
       {
         title: "Settings",
-        url: "/professional/settings",
+        url: isProfessional
+          ? ROUTE_PATHS.PROFESSIONAL.SETTINGS
+          : ROUTE_PATHS.PATIENT.SETTINGS,
         icon: IconSettings,
       },
     ],
