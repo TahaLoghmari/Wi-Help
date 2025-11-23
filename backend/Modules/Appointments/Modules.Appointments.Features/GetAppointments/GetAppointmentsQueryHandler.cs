@@ -25,7 +25,6 @@ public sealed class GetAppointmentsQueryHandler(
             .Take(query.PageSize)
             .ToListAsync(cancellationToken);
 
-        // Fetch Patient Details
         var patientIds = appointments.Select(a => a.PatientId).Distinct().ToList();
         var patientsResult = await patientsApi.GetPatientsByIdsAsync(patientIds, cancellationToken);
         var patientsMap = patientsResult.IsSuccess 
