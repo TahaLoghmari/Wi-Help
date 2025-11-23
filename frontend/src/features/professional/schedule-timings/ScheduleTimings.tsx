@@ -1,8 +1,9 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Clock, Timer } from "lucide-react";
+import { Clock, Timer, X } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button, Card, CardContent, CardHeader, SelectItem, CardTitle, Select, SelectContent, SelectTrigger, SelectValue } from "@/components";
 import { Switch } from "@radix-ui/react-switch";
+import { GenerateIdCrypto } from "@/lib";
 
 export const TIME_OPTIONS = Array.from({ length: 24 }, (_, i) => {
     const hour = i.toString().padStart(2, '0');
