@@ -108,8 +108,8 @@ public class SetupScheduleCommandHandler(
         {
             logger.LogError(
                 ex,
-                "Failed to set schedule for professional {ProfessionalId}",
-                professional?.Id ?? Guid.Empty);
+                "Failed to set schedule for user {ProfessionalId}",
+                 command.UserId);
             return Result.Failure(
                 Error.Problem(
                     "Professional.ScheduleSetFailed",
