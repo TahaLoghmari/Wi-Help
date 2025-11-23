@@ -1,5 +1,6 @@
 import { useProfessionalPatients } from "../../hooks";
 import { useNavigate } from "@tanstack/react-router";
+import { Spinner } from "@/components/ui";
 
 import { Spinner } from "@/components/ui";
 
