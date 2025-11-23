@@ -8,4 +8,5 @@ public static class PatientsEndpoints
     public const string GetPatient = "patients/{patientId}";
     // todo : maybe add prefix = patients/appointments/ ? 
     public const string GetProfessionalAvailability = $"professionals/{{professionalId}}/availability";
+    public const string BookAppointment = "patients/appointments/book";
 }

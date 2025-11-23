@@ -10,7 +10,7 @@ public class Appointment
     public string Notes { get; private set; } = string.Empty;
     public DateTime StartDate { get; private set; }
     public DateTime EndDate { get; private set; }
-    public AppointmentUrgency Urgency { get; private set; }
+    public AppointmentUrgency Urgency { get; private set; } = AppointmentUrgency.Low;
     public AppointmentStatus Status { get; private set; }
     public decimal Price { get; private set; }
 
