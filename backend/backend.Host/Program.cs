@@ -40,6 +40,9 @@ using (var scope = app.Services.CreateScope())
     var identityDbContext = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
     await identityDbContext.Database.MigrateAsync();
     
+    var appointmentsDbContext = scope.ServiceProvider.GetRequiredService<AppointmentsDbContext>();
+    await appointmentsDbContext.Database.MigrateAsync();
+    
     var patientsDbContext = scope.ServiceProvider.GetRequiredService<PatientsDbContext>();
     await patientsDbContext.Database.MigrateAsync();
     

@@ -26,7 +26,7 @@ export function CalendarCard({
         <div className="flex w-full items-center justify-center">
           <Calendar
             mode="single"
-            className="max-h-fit flex-1 rounded-xl border-0"
+            className="rounded-xl border-0"
             captionLayout="label"
             defaultMonth={selectedDate}
             onSelect={setSelectedDate}

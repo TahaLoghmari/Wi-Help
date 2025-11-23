@@ -24,6 +24,7 @@ export const API_ENDPOINTS = {
     UPDATE_PATIENT: "/patients/me",
     GET_PROFESSIONAL_AVAILABILITY: (professionalId: string) =>
       `/professionals/${professionalId}/availability`,
+    BOOK_APPOINTMENT: "/patients/appointments/book",
   },
   APPOINTMENTS: {
     GET_ALL: "/appointments",
