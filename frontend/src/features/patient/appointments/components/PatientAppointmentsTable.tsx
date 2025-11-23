@@ -9,6 +9,9 @@ import { useCurrentPatient } from "../../hooks";
 export function PatientAppointmentsTable() {
   const { data: currentPatient } = useCurrentPatient();
   const pageSize = 5;
+  const [statusFilter, setStatusFilter] = useState<"Offered" | "Confirmed">(
+    "Offered",
+  );
   const {
     data,
     isLoading,
@@ -21,8 +24,13 @@ export function PatientAppointmentsTable() {
     pageSize,
   });
 
-  const appointments = data?.pages.flatMap((page) => page.items) || [];
-  const totalCount = data?.pages[0]?.totalCount || 0;
+  const allAppointments = data?.pages.flatMap((page) => page.items) || [];
+  const appointments = allAppointments.filter(
+    (appointment) => appointment.status === statusFilter,
+  );
+  const totalCount = allAppointments.filter(
+    (appointment) => appointment.status === statusFilter,
+  ).length;
 
   console.log(appointments);
 
@@ -60,7 +68,7 @@ export function PatientAppointmentsTable() {
               My Appointments
             </h2>
             <p className="mt-0.5 text-[11px] text-slate-500">
-              Manage upcoming and today’s appointments with quick actions.
+              Manage offered and confirmed appointments with quick actions.
             </p>
           </div>
           <div className="hidden items-center gap-2 text-[11px] sm:flex">
@@ -115,18 +123,36 @@ export function PatientAppointmentsTable() {
 
         <div className="flex items-center gap-1 pb-1 text-xs">
           <button
-            id="appt-tab-upcoming"
-            className="relative inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 font-medium text-[#00394a]"
+            id="appt-tab-offered"
+            onClick={() => setStatusFilter("Offered")}
+            className={`relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-medium transition-colors ${
+              statusFilter === "Offered"
+                ? "border-slate-200 bg-white text-[#00394a]"
+                : "border-transparent text-slate-500 hover:border-slate-200 hover:bg-white"
+            }`}
           >
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#3fa6ff]"></span>
-            Upcoming
+            <span
+              className={`inline-block h-1.5 w-1.5 rounded-full ${
+                statusFilter === "Offered" ? "bg-[#3fa6ff]" : "bg-slate-300"
+              }`}
+            ></span>
+            Offered
           </button>
           <button
-            id="appt-tab-today"
-            className="relative inline-flex items-center gap-1.5 rounded-full border border-transparent px-3 py-1.5 text-slate-500 transition-colors hover:border-slate-200 hover:bg-white"
+            id="appt-tab-confirmed"
+            onClick={() => setStatusFilter("Confirmed")}
+            className={`relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-medium transition-colors ${
+              statusFilter === "Confirmed"
+                ? "border-slate-200 bg-white text-[#00394a]"
+                : "border-transparent text-slate-500 hover:border-slate-200 hover:bg-white"
+            }`}
           >
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-slate-300"></span>
-            Today
+            <span
+              className={`inline-block h-1.5 w-1.5 rounded-full ${
+                statusFilter === "Confirmed" ? "bg-[#3fa6ff]" : "bg-slate-300"
+              }`}
+            ></span>
+            Confirmed
           </button>
         </div>
       </div>

@@ -3,3 +3,4 @@ export * from "./useUpdateProfessional";
 export * from "./useProfessionals";
 export * from "./useProfessional";
 export * from "./useProfessionalPatients";
+export * from "./useRespondToAppointment";

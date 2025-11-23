@@ -3,12 +3,16 @@ import {
   type AppointmentDto,
   AppointmentUrgency,
   useProfessionalAppointments,
+  useRespondToAppointment,
 } from "@/features/professional";
 import { useCurrentProfessional } from "../../hooks";
 
 export function AppointmentsTable() {
   const { data: currentProfessional } = useCurrentProfessional();
   const pageSize = 5;
+  const [statusFilter, setStatusFilter] = useState<"Offered" | "Confirmed">(
+    "Offered",
+  );
   const {
     data,
     isLoading,
@@ -21,13 +25,21 @@ export function AppointmentsTable() {
     pageSize,
   });
 
-  const appointments = data?.pages.flatMap((page) => page.items) || [];
-  const totalCount = data?.pages[0]?.totalCount || 0;
+  const allAppointments = data?.pages.flatMap((page) => page.items) || [];
+  const appointments = allAppointments.filter(
+    (appointment) => appointment.status === statusFilter,
+  );
+  const totalCount = allAppointments.filter(
+    (appointment) => appointment.status === statusFilter,
+  ).length;
 
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [acceptModalOpen, setAcceptModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] =
     useState<AppointmentDto | null>(null);
+
+  const { mutate: respondToAppointment, isPending: isResponding } =
+    useRespondToAppointment();
 
   const handleView = (appointment: AppointmentDto) => {
     setSelectedAppointment(appointment);
@@ -40,17 +52,37 @@ export function AppointmentsTable() {
   };
 
   const handleConfirmAppointment = () => {
-    // TODO: Call backend API to accept the appointment
-    console.log("Accepting appointment:", selectedAppointment?.id);
-    setAcceptModalOpen(false);
-    setSelectedAppointment(null);
+    if (!selectedAppointment) return;
+
+    respondToAppointment(
+      {
+        appointmentId: selectedAppointment.id,
+        isAccepted: true,
+      },
+      {
+        onSuccess: () => {
+          setAcceptModalOpen(false);
+          setSelectedAppointment(null);
+        },
+      },
+    );
   };
 
   const handleRejectAppointment = () => {
-    // TODO: Call backend API to reject the appointment
-    console.log("Rejecting appointment:", selectedAppointment?.id);
-    setAcceptModalOpen(false);
-    setSelectedAppointment(null);
+    if (!selectedAppointment) return;
+
+    respondToAppointment(
+      {
+        appointmentId: selectedAppointment.id,
+        isAccepted: false,
+      },
+      {
+        onSuccess: () => {
+          setAcceptModalOpen(false);
+          setSelectedAppointment(null);
+        },
+      },
+    );
   };
 
   if (isLoading) {
@@ -78,7 +110,7 @@ export function AppointmentsTable() {
               Patient Appointments
             </h2>
             <p className="mt-0.5 text-[11px] text-slate-500">
-              Manage upcoming and today’s appointments with quick actions.
+              Manage offered and confirmed appointments with quick actions.
             </p>
           </div>
           <div className="hidden items-center gap-2 text-[11px] sm:flex">
@@ -133,18 +165,36 @@ export function AppointmentsTable() {
 
         <div className="flex items-center gap-1 pb-1 text-xs">
           <button
-            id="appt-tab-upcoming"
-            className="relative inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 font-medium text-[#00394a]"
+            id="appt-tab-offered"
+            onClick={() => setStatusFilter("Offered")}
+            className={`relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-medium transition-colors ${
+              statusFilter === "Offered"
+                ? "border-slate-200 bg-white text-[#00394a]"
+                : "border-transparent text-slate-500 hover:border-slate-200 hover:bg-white"
+            }`}
           >
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#3fa6ff]"></span>
-            Upcoming
+            <span
+              className={`inline-block h-1.5 w-1.5 rounded-full ${
+                statusFilter === "Offered" ? "bg-[#3fa6ff]" : "bg-slate-300"
+              }`}
+            ></span>
+            Offered
           </button>
           <button
-            id="appt-tab-today"
-            className="relative inline-flex items-center gap-1.5 rounded-full border border-transparent px-3 py-1.5 text-slate-500 transition-colors hover:border-slate-200 hover:bg-white"
+            id="appt-tab-confirmed"
+            onClick={() => setStatusFilter("Confirmed")}
+            className={`relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-medium transition-colors ${
+              statusFilter === "Confirmed"
+                ? "border-slate-200 bg-white text-[#00394a]"
+                : "border-transparent text-slate-500 hover:border-slate-200 hover:bg-white"
+            }`}
           >
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-slate-300"></span>
-            Today
+            <span
+              className={`inline-block h-1.5 w-1.5 rounded-full ${
+                statusFilter === "Confirmed" ? "bg-[#3fa6ff]" : "bg-slate-300"
+              }`}
+            ></span>
+            Confirmed
           </button>
         </div>
       </div>
@@ -522,15 +572,17 @@ export function AppointmentsTable() {
             <div className="flex gap-3 border-t border-slate-200 bg-slate-50/70 px-6 py-4">
               <button
                 onClick={handleRejectAppointment}
-                className="flex-1 rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-medium text-red-700 transition-colors hover:bg-red-50"
+                disabled={isResponding}
+                className="flex-1 rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-medium text-red-700 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Reject
+                {isResponding ? "Processing..." : "Reject"}
               </button>
               <button
                 onClick={handleConfirmAppointment}
-                className="flex-1 rounded-lg border border-[#00394a] bg-[#00394a] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#00546e]"
+                disabled={isResponding}
+                className="flex-1 rounded-lg border border-[#00394a] bg-[#00394a] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#00546e] disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Accept
+                {isResponding ? "Processing..." : "Accept"}
               </button>
             </div>
           </div>
