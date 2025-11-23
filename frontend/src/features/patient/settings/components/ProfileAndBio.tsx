@@ -24,6 +24,7 @@ import {
   Avatar,
   AvatarImage,
   AvatarFallback,
+  Spinner,
 } from "@/components/ui";
 import { useForm } from "react-hook-form";
 import type z from "zod";
@@ -44,7 +45,24 @@ import { cn } from "@/lib";
 import { useState } from "react";
 
 export function ProfileAndBio() {
-  const { data: patient } = useCurrentPatient();
+  const { data: patient, isLoading, isError } = useCurrentPatient();
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center p-8">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="p-4 text-red-500">
+        Error loading patient profile. Please try again later.
+      </div>
+    );
+  }
+
   const form = useForm<z.infer<typeof profileAndBioFormSchema>>({
     resolver: zodResolver(profileAndBioFormSchema),
     mode: "onChange",
@@ -71,7 +89,7 @@ export function ProfileAndBio() {
     console.log(credentials);
     updatePatientMutation.mutate(credentials);
   };
-  
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>

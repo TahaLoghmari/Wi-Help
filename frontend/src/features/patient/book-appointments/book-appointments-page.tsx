@@ -5,6 +5,7 @@ import { useParams } from "@tanstack/react-router";
 import { ErrorComponent } from "@/components";
 import { useProfessional } from "@/features/professional";
 import { useEffect } from "react";
+import { Spinner } from "@/components/ui";
 
 export function BookingPage() {
   const { professionalId } = useParams({ strict: false }) as Record<
@@ -23,8 +24,11 @@ export function BookingPage() {
     handleBookSession,
   } = useBooking({ professionalId });
 
-  const { data: professional, isLoading: isProfessionalLoading } =
-    useProfessional(professionalId ?? "", !!professionalId);
+  const {
+    data: professional,
+    isLoading: isProfessionalLoading,
+    isError,
+  } = useProfessional(professionalId ?? "", !!professionalId);
 
   const { selectedDate, selectedSlot, price } = state;
   const { isLoading } = monthlyAvailabilityQuery;
@@ -39,20 +43,29 @@ export function BookingPage() {
     }
   }, [professional, price, form]);
 
+  if (isProfessionalLoading) {
+    return (
+      <div className="flex h-full w-full items-center justify-center p-8">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <ErrorComponent
+        title="Error"
+        message="Error loading professional details."
+      />
+    );
+  }
+
   if (!professionalId) {
     return (
       <ErrorComponent
         title="Professional not found"
         message="Professional ID not found"
       />
-    );
-  }
-
-  if (isProfessionalLoading) {
-    return (
-      <div className="flex w-full items-center justify-center p-10">
-        <p>Loading professional details...</p>
-      </div>
     );
   }
 

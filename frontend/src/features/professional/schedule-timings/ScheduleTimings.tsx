@@ -1,5 +1,6 @@
 import { Clock, Timer, X, Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Button,
   Card,
@@ -31,8 +32,11 @@ export const TIME_OPTIONS = Array.from({ length: 24 }, (_, i) => {
 type ScheduleFormValues = z.infer<typeof scheduleFormSchema>;
 
 export function ScheduleTimings() {
-  const { data: currentSchedule, isLoading: isLoadingSchedule } =
-    useCurrentSchedule();
+  const {
+    data: currentSchedule,
+    isLoading: isLoadingSchedule,
+    isError,
+  } = useCurrentSchedule();
   const { mutate: saveSchedule, isPending: isSaving } = useSetupSchedule();
 
   const form = useForm<ScheduleFormValues>({
@@ -76,6 +80,22 @@ export function ScheduleTimings() {
       });
     }
   }, [currentSchedule, reset]);
+
+  if (isLoadingSchedule) {
+    return (
+      <div className="flex h-full w-full items-center justify-center p-8">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="p-4 text-center text-red-500">
+        Error loading schedule.
+      </div>
+    );
+  }
 
   const onSubmit = (data: ScheduleFormValues) => {
     saveSchedule(data);

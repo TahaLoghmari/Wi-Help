@@ -1,6 +1,6 @@
 import { FindProfessionalFilterbar } from "@/features/patient";
 import { useProfessionals } from "@/features/professional";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui";
+import { Avatar, AvatarFallback, AvatarImage, Spinner } from "@/components/ui";
 import { Calendar, CalendarPlus, MapPin, Star, User } from "lucide-react";
 import { SPECIALIZATIONS } from "@/features/auth";
 import { Link } from "@tanstack/react-router";
@@ -8,7 +8,23 @@ import { useAppNavigation } from "@/hooks";
 
 export function FindProfessionalLayout() {
   const navigate = useAppNavigation();
-  const { data: professionals } = useProfessionals();
+  const { data: professionals, isLoading, isError } = useProfessionals();
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full w-full items-center justify-center p-8">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="p-4 text-center text-red-500">
+        Error loading professionals.
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full w-full flex-col gap-5 overflow-auto bg-[#fafafb] px-8 py-5">
