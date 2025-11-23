@@ -50,7 +50,11 @@ public sealed class GetPatientQueryHandler(
             user.Gender,
             user.Address,
             patient.EmergencyContact,
-            patient.MedicalInfo,
+            new MedicalInfoDto(
+                patient.MedicalInfo.ChronicConditions ?? [],
+                patient.MedicalInfo.Allergies ?? [],
+                patient.MedicalInfo.Medications ?? [],
+                patient.MedicalInfo.MobilityStatus.ToString()),
             patient.Bio,
             user.ProfilePictureUrl);
 
