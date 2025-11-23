@@ -1,3 +1,5 @@
+import { useProfessionalPatients } from "../../hooks";
+
 interface Patient {
   imageUrl: string;
   firstName: string;
@@ -14,6 +16,8 @@ interface Patient {
 }
 
 export function MyPatientsCards() {
+  const { data: patients, isLoading } = useProfessionalPatients();
+
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "active":
@@ -39,71 +43,44 @@ export function MyPatientsCards() {
     }
   };
 
-  const Patients: Patient[] = [
-    {
-      imageUrl:
-        "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&amp;fit=crop&amp;w=200&amp;q=80",
-      firstName: "Jonathan",
-      lastName: "Barnes",
-      age: "45",
-      gender: "M",
-      city: "Boston",
-      state: "MA",
-      id: "003849",
-      phoneNumber: "(617) 555-0142",
-      lastVisit: "04 Nov 2025",
-      status: "Active",
-      careModality: "Hybrid",
-    },
-    {
-      imageUrl:
-        "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/917d6f93-fb36-439a-8c48-884b67b35381_1600w.jpg",
-      firstName: "Maria",
-      lastName: "Gonzalez",
-      age: "62",
-      gender: "F",
-      city: "Cambridge",
-      state: "MA",
-      id: "002174",
-      phoneNumber: "(617) 555-9821",
-      lastVisit: "01 Nov 2025",
-      status: "Inactive",
-      careModality: "In-Person",
-    },
-    {
-      imageUrl:
-        "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/4734259a-bad7-422f-981e-ce01e79184f2_1600w.jpg",
-      firstName: "Priya",
-      lastName: "Desai",
-      age: "29",
-      gender: "F",
-      city: "Somerville",
-      state: "MA",
-      id: "005834",
-      phoneNumber: "(857) 555-4420",
-      lastVisit: "10 Oct 2025",
-      status: "New",
-      careModality: "Telehealth",
-    },
-    {
-      imageUrl:
-        "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/5bab247f-35d9-400d-a82b-fd87cfe913d2_1600w.webp",
-      firstName: "Olivia",
-      lastName: "Chen",
-      age: "36",
-      gender: "F",
-      city: "Quincy",
-      state: "MA",
-      id: "001293",
-      phoneNumber: "(781) 555-3011",
-      lastVisit: "18 Nov 2025",
-      status: "Active",
-      careModality: "Hybrid",
-    },
-  ];
+  const calculateAge = (dob: string) => {
+    if (!dob) return "N/A";
+    const birthDate = new Date(dob);
+    const ageDifMs = Date.now() - birthDate.getTime();
+    const ageDate = new Date(ageDifMs);
+    return Math.abs(ageDate.getUTCFullYear() - 1970).toString();
+  };
+
+  if (isLoading) {
+    return (
+      <div className="p-4 text-center text-slate-500">Loading patients...</div>
+    );
+  }
+
+  if (!patients || patients.length === 0) {
+    return (
+      <div className="p-4 text-center text-slate-500">No patients found.</div>
+    );
+  }
+
+  const mappedPatients: Patient[] = patients.map((p) => ({
+    imageUrl: p.profilePictureUrl || "https://via.placeholder.com/150",
+    firstName: p.firstName,
+    lastName: p.lastName,
+    age: calculateAge(p.dateOfBirth),
+    gender: p.gender === "Male" ? "M" : p.gender === "Female" ? "F" : "O",
+    city: p.address?.city || "Unknown",
+    state: p.address?.state || "Unknown",
+    id: p.id.substring(0, 6).toUpperCase(), // Mocking a short ID
+    phoneNumber: p.phoneNumber,
+    lastVisit: "N/A", // Mocking missing data
+    status: "Active", // Mocking missing data
+    careModality: "Hybrid", // Mocking missing data
+  }));
+
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {Patients.map((patient, index) => (
+      {mappedPatients.map((patient, index) => (
         <article
           key={index}
           className="flex h-45 flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-100 transition-all hover:border-[#3fa6ff]/70 hover:shadow-md hover:shadow-slate-100"

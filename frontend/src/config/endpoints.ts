@@ -28,5 +28,6 @@ export const API_ENDPOINTS = {
   },
   APPOINTMENTS: {
     GET_ALL: "/appointments",
+    MY_PATIENTS: "/appointments/my-patients",
   },
 } as const;
