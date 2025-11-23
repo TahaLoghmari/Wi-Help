@@ -1,11 +1,12 @@
-import { Calendar, Phone } from "lucide-react";
-import { useParams } from "@tanstack/react-router";
+import { Calendar, Phone, ArrowLeft } from "lucide-react";
+import { useParams, useRouter } from "@tanstack/react-router";
 import { getServicesForSpecialization } from "@/features/professional";
 import { COUNTRIES, SPECIALIZATIONS } from "@/features/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui";
 import { useProfessional } from "@/features/professional";
 
 export function ProfessionalProfileView() {
+  const router = useRouter();
   const { professionalId } = useParams({ strict: false });
   const { data: professional, isLoading } = useProfessional(
     professionalId as string,
@@ -21,6 +22,13 @@ export function ProfessionalProfileView() {
 
   return (
     <section className="flex-1 space-y-5 overflow-y-auto px-4 py-5 sm:px-6 lg:px-8">
+      <button
+        onClick={() => router.history.back()}
+        className="group mb-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition-all hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 active:scale-95"
+      >
+        <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+        Back to professionals
+      </button>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
