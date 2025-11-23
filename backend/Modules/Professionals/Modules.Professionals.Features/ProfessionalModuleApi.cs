@@ -1,6 +1,8 @@
 using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Modules.Common.Features.Results;
+using Modules.Professionals.Domain;
 using Modules.Professionals.Infrastructure.Database;
 using Modules.Professionals.PublicApi;
 using Modules.Professionals.PublicApi.Contracts;
@@ -10,6 +12,20 @@ namespace Modules.Professionals.Features;
 public class ProfessionalModuleApi(ProfessionalsDbContext professionalsDbContext, ILogger<ProfessionalModuleApi> logger)
     : IProfessionalModuleApi
 {
+    public async Task<Result<ProfessionalDto>> GetProfessionalByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        var professional = await professionalsDbContext.Professionals
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.UserId == userId, cancellationToken);
+
+        if (professional is null)
+        {
+            return Result<ProfessionalDto>.Failure(ProfessionalErrors.NotFound(userId));
+        }
+
+        return Result<ProfessionalDto>.Success(new ProfessionalDto(professional.Id, professional.UserId));
+    }
+
     public async Task<MonthlyAvailabilityResponse> GetMonthlyAvailability(GetProfessionalAvailabilityByMonthQuery query)
     {
         try
