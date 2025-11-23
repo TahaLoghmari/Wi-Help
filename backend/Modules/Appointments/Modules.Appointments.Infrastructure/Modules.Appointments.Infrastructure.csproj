@@ -4,7 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Modules.Requests.Infrastructure</RootNamespace>
+    <RootNamespace>Modules.Appointments.Infrastructure</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

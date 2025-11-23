@@ -22,6 +22,8 @@ using Modules.Patients.Features;
 using Modules.Patients.Infrastructure;
 using Modules.Professionals.Features;
 using Modules.Professionals.Infrastructure;
+using Modules.Appointments.Features;
+using Modules.Appointments.Infrastructure;
 
 namespace backend.Host;
 
@@ -154,7 +156,8 @@ internal static class DependencyInjection
             AssemblyReference.Assembly,
             Modules.Identity.Features.AssemblyReference.Assembly,
             Modules.Patients.Features.AssemblyReference.Assembly,
-            Modules.Professionals.Features.AssemblyReference.Assembly
+            Modules.Professionals.Features.AssemblyReference.Assembly,
+            Modules.Appointments.Features.AssemblyReference.Assembly
         ];
 
         builder.Services.AddEndpoints(moduleApplicationAssemblies);
@@ -167,6 +170,9 @@ internal static class DependencyInjection
 
         builder.Services.AddProfessionalsModule()
             .AddProfessionalsInfrastructure(builder.Configuration);
+
+        builder.Services.AddAppointmentsModule()
+            .AddAppointmentsInfrastructure(builder.Configuration);
 
         builder.Services.AddCommonModule(moduleApplicationAssemblies)
             .AddCommonInfrastructure(builder.Configuration);
@@ -208,7 +214,7 @@ internal static class DependencyInjection
         return builder;
     }
 
-    public static WebApplicationBuilder AddHangfire(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddHangfire( this WebApplicationBuilder builder)
     {
         builder.Services.AddHangfire(config =>
             config

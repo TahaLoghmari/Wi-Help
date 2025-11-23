@@ -19,6 +19,7 @@
       <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5" />
       <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.5" />
       <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="9.0.7" />
+      <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.5" />
       <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="9.0.6" />
       <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="9.0.6" />
       <PackageVersion Include="Mscc.GenerativeAI.Web" Version="2.8.3" />

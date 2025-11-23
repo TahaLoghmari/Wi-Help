@@ -12,6 +12,7 @@ public class Appointment
     public DateTime EndDate { get; private set; }
     public AppointmentUrgency Urgency { get; private set; }
     public AppointmentStatus Status { get; private set; }
+    public decimal Price { get; private set; }
 
     public DateTime? OfferedAt { get; private set; }
     public DateTime? ConfirmedAt { get; private set; }
@@ -29,7 +30,8 @@ public class Appointment
         string notes,
         DateTime startDate,
         DateTime endDate,
-        AppointmentUrgency urgency)
+        AppointmentUrgency urgency,
+        decimal price)
     {
         Id = Guid.NewGuid();
         PatientId = patientId;
@@ -38,7 +40,8 @@ public class Appointment
         StartDate = startDate;
         EndDate = endDate;
         Urgency = urgency;
-        Status = AppointmentStatus.Requested;
+        Status = AppointmentStatus.Offered;
+        Price = price;
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
     }

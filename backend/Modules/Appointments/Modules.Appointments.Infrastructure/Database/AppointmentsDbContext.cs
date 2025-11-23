@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Modules.Appointments.Domain.Entities;
-using Modules.Requests.Infrastructure.Database;
 
 namespace Modules.Appointments.Infrastructure.Database;
 public sealed class AppointmentsDbContext(DbContextOptions<AppointmentsDbContext> options) : DbContext(options)

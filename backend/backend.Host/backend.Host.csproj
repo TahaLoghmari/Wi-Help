@@ -39,6 +39,8 @@
     <ProjectReference Include="..\Modules\Patients\Modules.Patients.Infrastructure\Modules.Patients.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Professionals\Modules.Professionals.Features\Modules.Professionals.Features.csproj" />
     <ProjectReference Include="..\Modules\Professionals\Modules.Professionals.Infrastructure\Modules.Professionals.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Appointments\Modules.Appointments.Features\Modules.Appointments.Features.csproj" />
+    <ProjectReference Include="..\Modules\Appointments\Modules.Appointments.Infrastructure\Modules.Appointments.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

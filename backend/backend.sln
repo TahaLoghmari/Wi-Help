@@ -46,13 +46,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Professionals.Publi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Appointments", "Appointments", "{DF598FB8-743B-4E42-BB38-74389EED712F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Appointments.Domain", "Modules\Requests\Modules.Appointments.Domain\Modules.Appointments.Domain.csproj", "{6D347FF8-7649-4C86-8AE8-A92F70C2EB68}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Appointments.Domain", "Modules\Appointments\Modules.Appointments.Domain\Modules.Appointments.Domain.csproj", "{6D347FF8-7649-4C86-8AE8-A92F70C2EB68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Appointments.Features", "Modules\Requests\Modules.Appointments.Features\Modules.Appointments.Features.csproj", "{3855A733-6A0E-4059-BBEC-B6A0C8A5F459}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Appointments.Features", "Modules\Appointments\Modules.Appointments.Features\Modules.Appointments.Features.csproj", "{3855A733-6A0E-4059-BBEC-B6A0C8A5F459}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Appointments.Infrastructure", "Modules\Requests\Modules.Appointments.Infrastructure\Modules.Appointments.Infrastructure.csproj", "{E7090068-2AF7-4B22-8E2B-D65A4AC88091}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Appointments.Infrastructure", "Modules\Appointments\Modules.Appointments.Infrastructure\Modules.Appointments.Infrastructure.csproj", "{E7090068-2AF7-4B22-8E2B-D65A4AC88091}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Appointments.PublicApi", "Modules\Requests\Modules.Appointments.PublicApi\Modules.Appointments.PublicApi.csproj", "{F54C6F1F-B17C-47FB-978D-AC03EB623852}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Appointments.PublicApi", "Modules\Appointments\Modules.Appointments.PublicApi\Modules.Appointments.PublicApi.csproj", "{F54C6F1F-B17C-47FB-978D-AC03EB623852}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dispatch", "Dispatch", "{7CA8D125-CA40-447B-BA05-9C4D39CAEF19}"
 EndProject

@@ -50,10 +50,10 @@ COPY Modules/Professionals/Modules.Professionals.Domain/Modules.Professionals.Do
 COPY Modules/Professionals/Modules.Professionals.Features/Modules.Professionals.Features.csproj ./Modules/Professionals/Modules.Professionals.Features/
 COPY Modules/Professionals/Modules.Professionals.Infrastructure/Modules.Professionals.Infrastructure.csproj ./Modules/Professionals/Modules.Professionals.Infrastructure/
 COPY Modules/Professionals/Modules.Professionals.PublicApi/Modules.Professionals.PublicApi.csproj ./Modules/Professionals/Modules.Professionals.PublicApi/
-COPY Modules/Requests/Modules.Requests.Domain/Modules.Requests.Domain.csproj ./Modules/Requests/Modules.Requests.Domain/
-COPY Modules/Requests/Modules.Requests.Features/Modules.Requests.Features.csproj ./Modules/Requests/Modules.Requests.Features/
-COPY Modules/Requests/Modules.Requests.Infrastructure/Modules.Requests.Infrastructure.csproj ./Modules/Requests/Modules.Requests.Infrastructure/
-COPY Modules/Requests/Modules.Requests.PublicApi/Modules.Requests.PublicApi.csproj ./Modules/Requests/Modules.Requests.PublicApi/
+COPY Modules/Appointments/Modules.Appointments.Domain/Modules.Appointments.Domain.csproj ./Modules/Appointments/Modules.Appointments.Domain/
+COPY Modules/Appointments/Modules.Appointments.Features/Modules.Appointments.Features.csproj ./Modules/Appointments/Modules.Appointments.Features/
+COPY Modules/Appointments/Modules.Appointments.Infrastructure/Modules.Appointments.Infrastructure.csproj ./Modules/Appointments/Modules.Appointments.Infrastructure/
+COPY Modules/Appointments/Modules.Appointments.PublicApi/Modules.Appointments.PublicApi.csproj ./Modules/Appointments/Modules.Appointments.PublicApi/
 COPY Modules/Reviews/Modules.Reviews.Domain/Modules.Reviews.Domain.csproj ./Modules/Reviews/Modules.Reviews.Domain/
 COPY Modules/Reviews/Modules.Reviews.Features/Modules.Reviews.Features.csproj ./Modules/Reviews/Modules.Reviews.Features/
 COPY Modules/Reviews/Modules.Reviews.Infrastructure/Modules.Reviews.Infrastructure.csproj ./Modules/Reviews/Modules.Reviews.Infrastructure/

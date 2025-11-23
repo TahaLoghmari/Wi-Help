@@ -22,8 +22,12 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
         
         builder.Property(a => a.Urgency).IsRequired();
         builder.Property(a => a.Status).IsRequired();
+
+        builder.Property(a => a.Price)
+            .HasPrecision(18, 2);
         
         builder.Property(a => a.CreatedAt).IsRequired();
         builder.Property(a => a.UpdatedAt).IsRequired();
     }
 }
+

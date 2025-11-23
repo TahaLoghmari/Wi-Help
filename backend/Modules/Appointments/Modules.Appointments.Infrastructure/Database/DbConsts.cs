@@ -1,4 +1,4 @@
-namespace Modules.Requests.Infrastructure.Database;
+namespace Modules.Appointments.Infrastructure.Database;
 
 public class DbConsts
 {
