@@ -1,4 +1,20 @@
+import { Calendar, Phone } from "lucide-react";
+import {
+  getServicesForSpecialization,
+  useCurrentProfessional,
+} from "@/features/professional";
+import { SPECIALIZATIONS } from "@/features/auth";
+
 export function ProfileLayout() {
+  const { data: professional } = useCurrentProfessional();
+  const practiceAddress = {
+    street: "Heart & Vascular Center, Suite 402",
+    city: "Boston",
+    state: "MA",
+    postalCode: "02114",
+    country: "United States",
+  };
+
   return (
     <section className="flex-1 space-y-5 overflow-y-auto px-4 py-5 sm:px-6 lg:px-8">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -9,10 +25,10 @@ export function ProfileLayout() {
               alt="Doctor Avatar"
               className="h-12 w-12 rounded-full border border-slate-200 object-cover"
             />
-            <div>
+            <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <h2 className="text-sm font-semibold tracking-tight text-[#00394a]">
-                  Dr. Eleanor Shaw
+                  Dr. {professional?.firstName} {professional?.lastName}
                 </h2>
                 <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 text-[10px] text-emerald-700">
                   <svg
@@ -22,9 +38,9 @@ export function ProfileLayout() {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     data-lucide="shield-check"
                     className="lucide lucide-shield-check h-3.5 w-3.5"
                   >
@@ -34,52 +50,48 @@ export function ProfileLayout() {
                   Verified
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500">
-                Cardiologist • NPI 14285739 • Heart &amp; Vascular Center,
-                Boston MA
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 text-[11px] text-slate-700">
-            <div className="flex items-center gap-1">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                data-lucide="star"
-                className="lucide lucide-star h-3.5 w-3.5 text-[#f5a623]"
-              >
-                <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
-              </svg>
-              <span className="font-semibold text-slate-900">4.8</span>
-              <span className="text-slate-500">/ 5 • 234 reviews</span>
-            </div>
-            <span className="h-3 w-px bg-slate-200"></span>
-            <div className="flex items-center gap-1">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                data-lucide="briefcase"
-                className="lucide lucide-briefcase h-3.5 w-3.5 text-slate-500"
-              >
-                <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                <rect width="20" height="14" x="2" y="6" rx="2"></rect>
-              </svg>
-              <span className="font-semibold text-slate-900">312</span>
-              <span className="text-slate-500">missions completed</span>
+              <div className="flex items-center gap-3 text-[11px] text-slate-700">
+                <div className="flex items-center gap-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    data-lucide="star"
+                    className="lucide lucide-star h-3.5 w-3.5 text-[#f5a623]"
+                  >
+                    <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                  </svg>
+                  <span className="font-semibold text-slate-900">4.8</span>
+                  <span className="text-slate-500">/ 5 • 234 reviews</span>
+                </div>
+                <span className="h-3 w-px bg-slate-200"></span>
+                <div className="flex items-center gap-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    data-lucide="briefcase"
+                    className="lucide lucide-briefcase h-3.5 w-3.5 text-slate-500"
+                  >
+                    <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                    <rect width="20" height="14" x="2" y="6" rx="2"></rect>
+                  </svg>
+                  <span className="font-semibold text-slate-900">312</span>
+                  <span className="text-slate-500">missions completed</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -92,11 +104,7 @@ export function ProfileLayout() {
               About &amp; Bio
             </h3>
             <p className="text-xs leading-relaxed text-slate-700">
-              Dr. Shaw is a board-certified cardiologist with over{" "}
-              <span className="font-semibold">12 years of experience</span> in
-              preventive cardiology, complex hypertension, and heart failure
-              management. She focuses on clear communication, shared decision
-              making, and evidence-based care.
+              {professional?.bio}
             </p>
             <div className="mt-3 grid gap-2 text-[11px] text-slate-700 sm:grid-cols-2">
               <div className="flex items-center gap-2">
@@ -107,9 +115,9 @@ export function ProfileLayout() {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   data-lucide="stethoscope"
                   className="lucide lucide-stethoscope h-3.5 w-3.5 text-slate-500"
                 >
@@ -121,7 +129,12 @@ export function ProfileLayout() {
                 </svg>
                 <span>
                   <span className="text-slate-500">Specialization:</span>{" "}
-                  Cardiology
+                  {
+                    SPECIALIZATIONS.find(
+                      (specialization) =>
+                        specialization.value === professional?.specialization,
+                    )?.label
+                  }
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -132,9 +145,9 @@ export function ProfileLayout() {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   data-lucide="briefcase"
                   className="lucide lucide-briefcase h-3.5 w-3.5 text-slate-500"
                 >
@@ -142,7 +155,8 @@ export function ProfileLayout() {
                   <rect width="20" height="14" x="2" y="6" rx="2"></rect>
                 </svg>
                 <span>
-                  <span className="text-slate-500">Experience:</span> 12 years
+                  <span className="text-slate-500">Experience:</span>{" "}
+                  {professional?.experience} years
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -153,9 +167,9 @@ export function ProfileLayout() {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   data-lucide="dollar-sign"
                   className="lucide lucide-dollar-sign h-3.5 w-3.5 text-slate-500"
                 >
@@ -163,8 +177,9 @@ export function ProfileLayout() {
                   <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                 </svg>
                 <span>
-                  <span className="text-slate-500">Hourly rate:</span> $180 /
-                  hour
+                  <span className="text-slate-500">Hourly rate:</span> $
+                  {professional?.startPrice}
+                  {"  "}-{"  "}${professional?.endPrice}
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -175,9 +190,9 @@ export function ProfileLayout() {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   data-lucide="shield-check"
                   className="lucide lucide-shield-check h-3.5 w-3.5 text-emerald-500"
                 >
@@ -199,21 +214,18 @@ export function ProfileLayout() {
               </h3>
             </div>
             <div className="flex flex-wrap gap-1.5 text-[11px]">
-              <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-slate-700">
-                Preventive Cardiology
-              </span>
-              <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-slate-700">
-                Heart Failure Management
-              </span>
-              <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-slate-700">
-                Complex Hypertension
-              </span>
-              <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-slate-700">
-                Geriatric Care
-              </span>
-              <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-slate-700">
-                Post-Op Cardiac Care
-              </span>
+              {professional?.services.map((service, index) => (
+                <span
+                  key={index}
+                  className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-slate-700"
+                >
+                  {
+                    getServicesForSpecialization(
+                      professional.specialization,
+                    ).find((service_) => service_.value === service)?.label
+                  }
+                </span>
+              ))}
             </div>
           </section>
 
@@ -241,34 +253,80 @@ export function ProfileLayout() {
                       </span>
                       <span className="inline-flex items-center gap-0.5 text-[10px] text-[#f5a623]">
                         <svg
-                          data-lucide="star"
-                          className="h-3 w-3"
-                          stroke-width="1.5"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
                           fill="currentColor"
-                        ></svg>
-                        <svg
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                           data-lucide="star"
-                          className="h-3 w-3"
-                          stroke-width="1.5"
-                          fill="currentColor"
-                        ></svg>
+                          className="lucide lucide-star h-3 w-3"
+                        >
+                          <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                        </svg>
                         <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                           data-lucide="star"
-                          className="h-3 w-3"
-                          stroke-width="1.5"
-                          fill="currentColor"
-                        ></svg>
+                          className="lucide lucide-star h-3 w-3"
+                        >
+                          <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                        </svg>
                         <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                           data-lucide="star"
-                          className="h-3 w-3"
-                          stroke-width="1.5"
-                          fill="currentColor"
-                        ></svg>
+                          className="lucide lucide-star h-3 w-3"
+                        >
+                          <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                        </svg>
                         <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          data-lucide="star"
+                          className="lucide lucide-star h-3 w-3"
+                        >
+                          <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                        </svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                           data-lucide="star-half"
-                          className="h-3 w-3"
-                          stroke-width="1.5"
-                        ></svg>
+                          className="lucide lucide-star-half h-3 w-3"
+                        >
+                          <path d="M12 18.338a2.1 2.1 0 0 0-.987.244L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16l2.309-4.679A.53.53 0 0 1 12 2"></path>
+                        </svg>
                       </span>
                     </div>
                     <span className="text-[10px] whitespace-nowrap text-slate-400">
@@ -295,34 +353,65 @@ export function ProfileLayout() {
                       </span>
                       <span className="inline-flex items-center gap-0.5 text-[10px] text-[#f5a623]">
                         <svg
-                          data-lucide="star"
-                          className="h-3 w-3"
-                          stroke-width="1.5"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
                           fill="currentColor"
-                        ></svg>
-                        <svg
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                           data-lucide="star"
-                          className="h-3 w-3"
-                          stroke-width="1.5"
+                          className="lucide lucide-star h-3 w-3"
+                        >
+                          <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                        </svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
                           fill="currentColor"
-                        ></svg>
-                        <svg
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                           data-lucide="star"
-                          className="h-3 w-3"
-                          stroke-width="1.5"
+                          className="lucide lucide-star h-3 w-3"
+                        >
+                          <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                        </svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
                           fill="currentColor"
-                        ></svg>
-                        <svg
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                           data-lucide="star"
-                          className="h-3 w-3"
-                          stroke-width="1.5"
-                          fill="currentColor"
-                        ></svg>
+                          className="lucide lucide-star h-3 w-3"
+                        >
+                          <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                        </svg>
                         <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                           data-lucide="star"
-                          className="h-3 w-3 text-slate-300"
-                          stroke-width="1.5"
-                        ></svg>
+                          className="lucide lucide-star h-3 w-3 text-slate-300"
+                        >
+                          <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                        </svg>
                       </span>
                     </div>
                     <span className="text-[10px] whitespace-nowrap text-slate-400">
@@ -354,9 +443,9 @@ export function ProfileLayout() {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     data-lucide="graduation-cap"
                     className="lucide lucide-graduation-cap h-3.5 w-3.5 text-slate-500"
                   >
@@ -379,9 +468,9 @@ export function ProfileLayout() {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     data-lucide="id-card"
                     className="lucide lucide-id-card h-3.5 w-3.5 text-slate-500"
                   >
@@ -406,9 +495,9 @@ export function ProfileLayout() {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     data-lucide="shield"
                     className="lucide lucide-shield h-3.5 w-3.5 text-slate-500"
                   >
@@ -436,9 +525,9 @@ export function ProfileLayout() {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   data-lucide="home"
                   className="lucide lucide-home mt-0.5 h-3.5 w-3.5 text-slate-500"
                 >
@@ -448,11 +537,12 @@ export function ProfileLayout() {
                 <div>
                   <p className="text-[10px] text-slate-500">Practice address</p>
                   <p className="font-medium tracking-tight text-slate-900">
-                    Heart &amp; Vascular Center, Suite 402
+                    {practiceAddress.street}
                     <br />
-                    Boston, MA 02114
+                    {practiceAddress.city}, {practiceAddress.state}{" "}
+                    {practiceAddress.postalCode}
                     <br />
-                    United States
+                    {practiceAddress.country}
                   </p>
                 </div>
               </div>
@@ -464,16 +554,18 @@ export function ProfileLayout() {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   data-lucide="mail"
                   className="lucide lucide-mail h-3.5 w-3.5 text-slate-500"
                 >
                   <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"></path>
                   <rect x="2" y="4" width="20" height="16" rx="2"></rect>
                 </svg>
-                <span>eleanor.shaw@exampleclinic.com</span>
+                <span className="font-medium tracking-tight text-slate-900">
+                  eleanor.shaw@exampleclinic.com
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <svg
@@ -483,9 +575,9 @@ export function ProfileLayout() {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   data-lucide="id-card"
                   className="lucide lucide-id-card h-3.5 w-3.5 text-slate-500"
                 >
@@ -495,7 +587,30 @@ export function ProfileLayout() {
                   <circle cx="9" cy="11" r="2"></circle>
                   <rect x="2" y="5" width="20" height="14" rx="2"></rect>
                 </svg>
-                <span>Gender: Female • DOB: 1981-06-14</span>
+                <span>
+                  Gender:{" "}
+                  <span className="font-medium tracking-tight text-slate-900">
+                    Female
+                  </span>
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Calendar className="h-3.5 w-3.5 stroke-1 text-slate-500" />
+                <span>
+                  Date Of Birth:{" "}
+                  <span className="font-medium tracking-tight text-slate-900">
+                    1981-06-14
+                  </span>
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Phone className="h-3.5 w-3.5 stroke-1 text-slate-500" />
+                <span>
+                  Phone Number:{" "}
+                  <span className="font-medium tracking-tight text-slate-900">
+                    +216 95 547 046
+                  </span>
+                </span>
               </div>
             </div>
           </section>
@@ -530,7 +645,7 @@ export function ProfileLayout() {
         <svg
           data-lucide="calendar-clock"
           className="h-3.5 w-3.5 text-slate-500"
-          stroke-width="1.5"
+          strokeWidth="1.5"
         ></svg>
         Weekly Availability
       </span>
@@ -561,7 +676,7 @@ export function ProfileLayout() {
         <svg
           data-lucide="map-pin"
           className="h-3.5 w-3.5 text-slate-500"
-          stroke-width="1.5"
+          strokeWidth="1.5"
         ></svg>
         Service area
       </span>
