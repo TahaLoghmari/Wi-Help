@@ -1,5 +1,8 @@
 import { type Address } from "@/features/auth";
-import type { profileAndBioFormSchema, scheduleFormSchema } from "@/features/professional";
+import type {
+  profileAndBioFormSchema,
+  scheduleFormSchema,
+} from "@/features/professional";
 import type z from "zod";
 
 export interface ProfessionalDto {
@@ -22,9 +25,16 @@ export interface ProfessionalDto {
   profilePictureUrl: string;
 }
 
-export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
+export const DAYS = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+] as const;
 export type DayOfWeek = (typeof DAYS)[number];
-
 
 export interface DayAvailabilityDto {
   dayOfWeek: DayOfWeek;
@@ -43,6 +53,12 @@ export interface ScheduleDto {
   days: DayAvailabilityDto[];
 }
 
-
 export type UpdateProfessionalDto = z.infer<typeof profileAndBioFormSchema>;
 export type SetupScheduleDto = z.infer<typeof scheduleFormSchema>;
+
+export interface ProfessionalsQueryParametersDto {
+  search?: string;
+  location?: string;
+  maxPrice?: number;
+  availability?: string;
+}

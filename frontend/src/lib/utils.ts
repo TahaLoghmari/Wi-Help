@@ -39,3 +39,13 @@ export function toFormData(obj: Record<string, any>): FormData {
 
   return formData;
 }
+
+export function toQueryString(params: Record<string, any>): string {
+  const queryObj: Record<string, string> = {};
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      queryObj[key] = String(value);
+    }
+  });
+  return new URLSearchParams(queryObj).toString();
+}

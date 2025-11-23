@@ -21,6 +21,7 @@ export function useUpdateProfessional() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       queryClient.invalidateQueries({ queryKey: ["currentProfessional"] });
+      queryClient.invalidateQueries({ queryKey: ["professionals"] });
       toast.success("Account updated successfully!");
     },
     onError: (error) => handleApiError({ apiError: error }),
