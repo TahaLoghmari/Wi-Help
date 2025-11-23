@@ -16,8 +16,11 @@ import {
   type BookingStep,
   type SessionSlotType,
 } from "@/features/patient/book-appointments/consts";
+import { useNavigate } from "@tanstack/react-router";
+import { ROUTE_PATHS } from "@/config/routes";
 
 export function useBooking({ professionalId }: { professionalId?: string }) {
+  const navigate = useNavigate();
   const bookAppointmentMutation = useBookAppointment();
 
   const form = useForm<BookingHookState>({
@@ -134,7 +137,7 @@ export function useBooking({ professionalId }: { professionalId?: string }) {
         );
 
         resetBooking();
-        setStep("success");
+        navigate({ to: ROUTE_PATHS.PATIENT.BOOK_SUCCESS });
       } catch (error) {
         logger.error("Booking failed:", error);
         toast.error("Failed to book appointment. Please try again.");

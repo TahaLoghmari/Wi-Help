@@ -1,8 +1,24 @@
 import { useCurrentPatient } from "@/features/patient";
 import { PatientProfile } from "./PatientProfile";
+import { Spinner } from "@/components/ui";
 
 export function ProfileLayout() {
-  const { data: patient } = useCurrentPatient();
+  const { data: patient, isLoading, isError } = useCurrentPatient();
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full w-full items-center justify-center p-8">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="p-4 text-center text-red-500">Error loading profile.</div>
+    );
+  }
+
   return <PatientProfile patient={patient} />;
 }
 

@@ -2,22 +2,32 @@ import { Calendar, Phone, ArrowLeft } from "lucide-react";
 import { useParams, useRouter } from "@tanstack/react-router";
 import { getServicesForSpecialization } from "@/features/professional";
 import { COUNTRIES, SPECIALIZATIONS } from "@/features/auth";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui";
+import { Avatar, AvatarFallback, AvatarImage, Spinner } from "@/components/ui";
 import { useProfessional } from "@/features/professional";
 
 export function ProfessionalProfileView() {
   const router = useRouter();
   const { professionalId } = useParams({ strict: false });
-  const { data: professional, isLoading } = useProfessional(
-    professionalId as string,
-  );
+  const {
+    data: professional,
+    isLoading,
+    isError,
+  } = useProfessional(professionalId as string);
 
   if (isLoading) {
-    return <div className="p-8 text-center">Loading profile...</div>;
+    return (
+      <div className="flex h-full w-full items-center justify-center p-8">
+        <Spinner />
+      </div>
+    );
   }
 
-  if (!professional) {
-    return <div className="p-8 text-center">Professional not found.</div>;
+  if (isError || !professional) {
+    return (
+      <div className="p-8 text-center text-red-500">
+        Error loading professional profile.
+      </div>
+    );
   }
 
   return (

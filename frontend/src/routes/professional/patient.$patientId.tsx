@@ -9,14 +9,14 @@ export const Route = createFileRoute("/professional/patient/$patientId")({
 
 function PatientProfileRoute() {
   const { patientId } = Route.useParams();
-  const { data: patient, isLoading } = usePatient(patientId);
+  const { data: patient, isLoading, isError } = usePatient(patientId);
 
   if (isLoading) {
     return <ContentLoading />;
   }
 
-  if (!patient) {
-    return <div>Patient not found</div>;
+  if (isError || !patient) {
+    return <div>Patient not found or error loading patient.</div>;
   }
 
   return <PatientProfile patient={patient} showBackButton />;

@@ -1,8 +1,9 @@
 import { useProfessionalPatients } from "../../hooks";
 import { useNavigate } from "@tanstack/react-router";
+import { Spinner } from "@/components/ui";
 
 export function MyPatientsCards() {
-  const { data: patients, isLoading } = useProfessionalPatients();
+  const { data: patients, isLoading, isError } = useProfessionalPatients();
   console.log(patients);
   const navigate = useNavigate();
 
@@ -16,7 +17,17 @@ export function MyPatientsCards() {
 
   if (isLoading) {
     return (
-      <div className="p-4 text-center text-slate-500">Loading patients...</div>
+      <div className="flex h-full w-full items-center justify-center p-8">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="p-4 text-center text-red-500">
+        Error loading patients.
+      </div>
     );
   }
 

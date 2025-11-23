@@ -4,10 +4,25 @@ import {
   useCurrentProfessional,
 } from "@/features/professional";
 import { COUNTRIES, SPECIALIZATIONS } from "@/features/auth";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui";
+import { Avatar, AvatarFallback, AvatarImage, Spinner } from "@/components/ui";
 
 export function ProfileLayout() {
-  const { data: professional } = useCurrentProfessional();
+  const { data: professional, isLoading, isError } = useCurrentProfessional();
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full w-full items-center justify-center p-8">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="p-4 text-center text-red-500">Error loading profile.</div>
+    );
+  }
+
   return (
     <section className="flex-1 space-y-5 overflow-y-auto px-4 py-5 sm:px-6 lg:px-8">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

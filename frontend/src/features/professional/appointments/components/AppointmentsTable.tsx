@@ -7,7 +7,11 @@ import {
 import { useCurrentProfessional } from "../../hooks";
 
 export function AppointmentsTable() {
-  const { data: currentProfessional } = useCurrentProfessional();
+  const {
+    data: currentProfessional,
+    isLoading: isProfessionalLoading,
+    isError: isProfessionalError,
+  } = useCurrentProfessional();
   const pageSize = 5;
   const {
     data,
@@ -53,7 +57,7 @@ export function AppointmentsTable() {
     setSelectedAppointment(null);
   };
 
-  if (isLoading) {
+  if (isLoading || isProfessionalLoading) {
     return (
       <div className="p-4 text-center text-sm text-slate-500">
         Loading appointments...
@@ -61,7 +65,7 @@ export function AppointmentsTable() {
     );
   }
 
-  if (error) {
+  if (error || isProfessionalError) {
     return (
       <div className="p-4 text-center text-sm text-red-500">
         Error loading appointments

@@ -7,7 +7,11 @@ import { usePatientAppointments } from "../hooks";
 import { useCurrentPatient } from "../../hooks";
 
 export function PatientAppointmentsTable() {
-  const { data: currentPatient } = useCurrentPatient();
+  const {
+    data: currentPatient,
+    isLoading: isPatientLoading,
+    isError: isPatientError,
+  } = useCurrentPatient();
   const pageSize = 5;
   const {
     data,
@@ -35,7 +39,7 @@ export function PatientAppointmentsTable() {
     setViewModalOpen(true);
   };
 
-  if (isLoading) {
+  if (isLoading || isPatientLoading) {
     return (
       <div className="p-4 text-center text-sm text-slate-500">
         Loading appointments...
@@ -43,7 +47,7 @@ export function PatientAppointmentsTable() {
     );
   }
 
-  if (error) {
+  if (error || isPatientError) {
     return (
       <div className="p-4 text-center text-sm text-red-500">
         Error loading appointments

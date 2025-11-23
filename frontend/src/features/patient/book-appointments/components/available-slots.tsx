@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components";
 import type { TimeSlotResponse } from "../../types";
+import { Spinner } from "@/components/ui";
 
 export function AvailableSlots({
   isLoading,
@@ -31,7 +32,9 @@ export function AvailableSlots({
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <p>Loading slots...</p>
+          <div className="flex justify-center p-4">
+            <Spinner />
+          </div>
         ) : availableSlots.length > 0 ? (
           <div className="grid grid-cols-3 gap-2">
             {availableSlots.map((slot, index) => (
