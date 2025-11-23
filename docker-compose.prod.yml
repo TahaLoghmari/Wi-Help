@@ -8,7 +8,7 @@ services:
       # - "8080:8080" # Traefik dashboard
     restart: unless-stopped
     environment:
-    - CF_DNS_API_TOKEN=_mby-s36Aeg6ms7okeUsEtY1JD6zGw_f9_XxagaL
+      - CF_DNS_API_TOKEN=_mby-s36Aeg6ms7okeUsEtY1JD6zGw_f9_XxagaL
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik.yaml:/etc/traefik/traefik.yaml:ro
@@ -62,7 +62,7 @@ services:
 
   db:
     image: postgres:16-alpine
-    restart: always
+    # restart: always
     user: postgres
     volumes:
       - db-data:/var/lib/postgresql/data
@@ -78,7 +78,6 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
-
 
   seq:
     image: datalust/seq:latest
