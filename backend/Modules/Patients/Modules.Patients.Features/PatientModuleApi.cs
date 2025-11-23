@@ -55,9 +55,9 @@ public class PatientModuleApi(
                         p.EmergencyContact.PhoneNumber,
                         p.EmergencyContact.Relationship),
                     new MedicalInfoDto(
-                        p.MedicalInfo.ChronicConditions,
-                        p.MedicalInfo.Allergies,
-                        p.MedicalInfo.Medications,
+                        p.MedicalInfo.ChronicConditions ?? [],
+                        p.MedicalInfo.Allergies ?? [],
+                        p.MedicalInfo.Medications ?? [],
                         p.MedicalInfo.MobilityStatus.ToString()),
                     p.Bio
                 );

@@ -14,6 +14,12 @@ public sealed record PatientProfileDto(
     string Gender,
     Address Address,
     EmergencyContact EmergencyContact,
-    MedicalInfo MedicalInfo,
+    MedicalInfoDto MedicalInfo,
     string Bio,
     string ProfilePictureUrl);
+
+public sealed record MedicalInfoDto(
+    List<string> ChronicConditions,
+    List<string> Allergies,
+    List<string> Medications,
+    string MobilityStatus);
