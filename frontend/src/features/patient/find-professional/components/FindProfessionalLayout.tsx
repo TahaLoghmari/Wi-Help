@@ -48,7 +48,7 @@ export function FindProfessionalLayout() {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {professionals?.map((professional) => (
           <article
             key={professional.id}
@@ -152,7 +152,7 @@ export function FindProfessionalLayout() {
                   params={{ professionalId: professional.id }}
                   className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white px-2 py-1.5 text-[11px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5"
                 >
-                  <User className="h-3.5 w-3.5 text-slate-500" />
+                  <User className="h-3.5 w-fit text-slate-500" />
                   View Profile
                 </Link>
               </div>
