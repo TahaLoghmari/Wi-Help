@@ -13,4 +13,10 @@ public interface IAppointmentsModuleApi
         string timeZoneId = "Africa/Tunis",
         string notes = "",
         CancellationToken cancellationToken = default);
+
+    public Task<Result> RespondToAppointmentAsync(
+        Guid appointmentId,
+        Guid professionalId,
+        bool isAccepted,
+        CancellationToken cancellationToken = default);
 }

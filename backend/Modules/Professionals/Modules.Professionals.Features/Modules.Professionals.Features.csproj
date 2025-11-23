@@ -13,6 +13,8 @@
     <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Features\Modules.Common.Features.csproj" />
     <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Infrastructure\Modules.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Identity\Modules.Identity.PublicApi\Modules.Identity.PublicApi.csproj" />
+    <ProjectReference Include="..\..\Appointments\Modules.Appointments.PublicApi\Modules.Appointments.PublicApi.csproj" />
   </ItemGroup>
+
 
 </Project>

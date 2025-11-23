@@ -42,7 +42,25 @@ public class Appointment
         Urgency = urgency;
         Status = AppointmentStatus.Offered;
         Price = price;
+        OfferedAt = DateTime.UtcNow;
         CreatedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void Confirm()
+    {
+
+        Status = AppointmentStatus.Confirmed;
+        ConfirmedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void Cancel()
+    {
+
+
+        Status = AppointmentStatus.Cancelled;
+        CancelledAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
     }
 }
