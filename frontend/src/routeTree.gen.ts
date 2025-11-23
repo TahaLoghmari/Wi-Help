@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as BookRouteImport } from './routes/book'
 import { Route as ProfessionalRouteRouteImport } from './routes/professional/route'
 import { Route as PatientRouteRouteImport } from './routes/patient/route'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
@@ -24,7 +23,6 @@ import { Route as ProfessionalProfileRouteImport } from './routes/professional/p
 import { Route as ProfessionalMyPatientsRouteImport } from './routes/professional/my-patients'
 import { Route as ProfessionalMessagesRouteImport } from './routes/professional/messages'
 import { Route as ProfessionalInvoicesRouteImport } from './routes/professional/invoices'
-import { Route as ProfessionalBookRouteImport } from './routes/professional/book'
 import { Route as ProfessionalAppointmentsRouteImport } from './routes/professional/appointments'
 import { Route as PatientSettingsRouteImport } from './routes/patient/settings'
 import { Route as PatientProfileRouteImport } from './routes/patient/profile'
@@ -45,11 +43,6 @@ import { Route as ProfessionalPatientPatientIdRouteImport } from './routes/profe
 import { Route as PatientProfessionalProfessionalIdRouteImport } from './routes/patient/professional.$professionalId'
 import { Route as PatientBookProfessionalIdRouteImport } from './routes/patient/book.$professionalId'
 
-const BookRoute = BookRouteImport.update({
-  id: '/book',
-  path: '/book',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProfessionalRouteRoute = ProfessionalRouteRouteImport.update({
   id: '/professional',
   path: '/professional',
@@ -119,11 +112,6 @@ const ProfessionalMessagesRoute = ProfessionalMessagesRouteImport.update({
 const ProfessionalInvoicesRoute = ProfessionalInvoicesRouteImport.update({
   id: '/invoices',
   path: '/invoices',
-  getParentRoute: () => ProfessionalRouteRoute,
-} as any)
-const ProfessionalBookRoute = ProfessionalBookRouteImport.update({
-  id: '/book',
-  path: '/book',
   getParentRoute: () => ProfessionalRouteRoute,
 } as any)
 const ProfessionalAppointmentsRoute =
@@ -231,7 +219,6 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteRouteWithChildren
   '/patient': typeof PatientRouteRouteWithChildren
   '/professional': typeof ProfessionalRouteRouteWithChildren
-  '/book': typeof BookRoute
   '/auth/email-verification': typeof AuthEmailVerificationRoute
   '/auth/email-verified': typeof AuthEmailVerifiedRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -248,7 +235,6 @@ export interface FileRoutesByFullPath {
   '/patient/profile': typeof PatientProfileRoute
   '/patient/settings': typeof PatientSettingsRoute
   '/professional/appointments': typeof ProfessionalAppointmentsRoute
-  '/professional/book': typeof ProfessionalBookRoute
   '/professional/invoices': typeof ProfessionalInvoicesRoute
   '/professional/messages': typeof ProfessionalMessagesRoute
   '/professional/my-patients': typeof ProfessionalMyPatientsRoute
@@ -265,7 +251,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/book': typeof BookRoute
   '/auth/email-verification': typeof AuthEmailVerificationRoute
   '/auth/email-verified': typeof AuthEmailVerifiedRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -282,7 +267,6 @@ export interface FileRoutesByTo {
   '/patient/profile': typeof PatientProfileRoute
   '/patient/settings': typeof PatientSettingsRoute
   '/professional/appointments': typeof ProfessionalAppointmentsRoute
-  '/professional/book': typeof ProfessionalBookRoute
   '/professional/invoices': typeof ProfessionalInvoicesRoute
   '/professional/messages': typeof ProfessionalMessagesRoute
   '/professional/my-patients': typeof ProfessionalMyPatientsRoute
@@ -303,7 +287,6 @@ export interface FileRoutesById {
   '/auth': typeof AuthRouteRouteWithChildren
   '/patient': typeof PatientRouteRouteWithChildren
   '/professional': typeof ProfessionalRouteRouteWithChildren
-  '/book': typeof BookRoute
   '/auth/email-verification': typeof AuthEmailVerificationRoute
   '/auth/email-verified': typeof AuthEmailVerifiedRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -320,7 +303,6 @@ export interface FileRoutesById {
   '/patient/profile': typeof PatientProfileRoute
   '/patient/settings': typeof PatientSettingsRoute
   '/professional/appointments': typeof ProfessionalAppointmentsRoute
-  '/professional/book': typeof ProfessionalBookRoute
   '/professional/invoices': typeof ProfessionalInvoicesRoute
   '/professional/messages': typeof ProfessionalMessagesRoute
   '/professional/my-patients': typeof ProfessionalMyPatientsRoute
@@ -342,7 +324,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/patient'
     | '/professional'
-    | '/book'
     | '/auth/email-verification'
     | '/auth/email-verified'
     | '/auth/forgot-password'
@@ -359,7 +340,6 @@ export interface FileRouteTypes {
     | '/patient/profile'
     | '/patient/settings'
     | '/professional/appointments'
-    | '/professional/book'
     | '/professional/invoices'
     | '/professional/messages'
     | '/professional/my-patients'
@@ -376,7 +356,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/book'
     | '/auth/email-verification'
     | '/auth/email-verified'
     | '/auth/forgot-password'
@@ -393,7 +372,6 @@ export interface FileRouteTypes {
     | '/patient/profile'
     | '/patient/settings'
     | '/professional/appointments'
-    | '/professional/book'
     | '/professional/invoices'
     | '/professional/messages'
     | '/professional/my-patients'
@@ -413,7 +391,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/patient'
     | '/professional'
-    | '/book'
     | '/auth/email-verification'
     | '/auth/email-verified'
     | '/auth/forgot-password'
@@ -430,7 +407,6 @@ export interface FileRouteTypes {
     | '/patient/profile'
     | '/patient/settings'
     | '/professional/appointments'
-    | '/professional/book'
     | '/professional/invoices'
     | '/professional/messages'
     | '/professional/my-patients'
@@ -451,18 +427,10 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   PatientRouteRoute: typeof PatientRouteRouteWithChildren
   ProfessionalRouteRoute: typeof ProfessionalRouteRouteWithChildren
-  BookRoute: typeof BookRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/book': {
-      id: '/book'
-      path: '/book'
-      fullPath: '/book'
-      preLoaderRoute: typeof BookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/professional': {
       id: '/professional'
       path: '/professional'
@@ -559,13 +527,6 @@ declare module '@tanstack/react-router' {
       path: '/invoices'
       fullPath: '/professional/invoices'
       preLoaderRoute: typeof ProfessionalInvoicesRouteImport
-      parentRoute: typeof ProfessionalRouteRoute
-    }
-    '/professional/book': {
-      id: '/professional/book'
-      path: '/book'
-      fullPath: '/professional/book'
-      preLoaderRoute: typeof ProfessionalBookRouteImport
       parentRoute: typeof ProfessionalRouteRoute
     }
     '/professional/appointments': {
@@ -765,7 +726,6 @@ const PatientRouteRouteWithChildren = PatientRouteRoute._addFileChildren(
 
 interface ProfessionalRouteRouteChildren {
   ProfessionalAppointmentsRoute: typeof ProfessionalAppointmentsRoute
-  ProfessionalBookRoute: typeof ProfessionalBookRoute
   ProfessionalInvoicesRoute: typeof ProfessionalInvoicesRoute
   ProfessionalMessagesRoute: typeof ProfessionalMessagesRoute
   ProfessionalMyPatientsRoute: typeof ProfessionalMyPatientsRoute
@@ -779,7 +739,6 @@ interface ProfessionalRouteRouteChildren {
 
 const ProfessionalRouteRouteChildren: ProfessionalRouteRouteChildren = {
   ProfessionalAppointmentsRoute: ProfessionalAppointmentsRoute,
-  ProfessionalBookRoute: ProfessionalBookRoute,
   ProfessionalInvoicesRoute: ProfessionalInvoicesRoute,
   ProfessionalMessagesRoute: ProfessionalMessagesRoute,
   ProfessionalMyPatientsRoute: ProfessionalMyPatientsRoute,
@@ -799,7 +758,6 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   PatientRouteRoute: PatientRouteRouteWithChildren,
   ProfessionalRouteRoute: ProfessionalRouteRouteWithChildren,
-  BookRoute: BookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
