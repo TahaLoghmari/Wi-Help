@@ -11,7 +11,7 @@ public class SetupScheduleCommandValidator : AbstractValidator<SetupScheduleComm
             /*dayAvailability.RuleFor(da => da.DayOfWeek)
                 .IsInEnum().WithMessage("Invalid day of the week.");*/
 
-            dayAvailability.RuleForEach(da => da.AvailabilitySlot).ChildRules(range =>
+            dayAvailability.RuleForEach(da => da.AvailabilitySlots).ChildRules(range =>
             {
                 range.RuleFor(r => r.StartTime)
                     .NotEmpty().WithMessage("Start time is required.")
@@ -34,7 +34,7 @@ public class SetupScheduleCommandValidator : AbstractValidator<SetupScheduleComm
                     .WithMessage("Start time must be earlier than end time.");
             });
 
-            dayAvailability.RuleFor(da => da.AvailabilitySlot)
+            dayAvailability.RuleFor(da => da.AvailabilitySlots)
                 .Must(slots =>
                 {
                     var parsedSlots = slots

@@ -41,7 +41,16 @@ public class SetupScheduleCommandHandler(
             foreach (var dayRequest in command.DayAvailabilities)
             {
                 var availabilityDay = exisitingDayAvailabilities.Find(exD => exD.DayOfWeek == dayRequest.DayOfWeek);
-                if (availabilityDay is null) continue;
+                if (availabilityDay is null)
+                {
+                    availabilityDay = new AvailabilityDay(
+                        professional.Id,
+                        dayRequest.DayOfWeek,
+                        dayRequest.IsActive,
+                        command.TimeZoneId);
+                    
+                    await professionalsDbContext.AvailabilityDays.AddAsync(availabilityDay, cancellationToken);
+                }
 
                 // Update day active status 
                 availabilityDay.SetActiveStatus(dayRequest.IsActive);
@@ -57,7 +66,7 @@ public class SetupScheduleCommandHandler(
                 professionalsDbContext.AvailabilitySlots.RemoveRange(existingAvailabilities);
 
                 // Create new availabilities
-                foreach (var timeSlot in dayRequest.AvailabilitySlot)
+                foreach (var timeSlot in dayRequest.AvailabilitySlots)
                 {
                     if (!TimeOnly.TryParseExact(
                             timeSlot.StartTime,

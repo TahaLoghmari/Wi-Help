@@ -5,9 +5,17 @@ import { toast } from "sonner";
 import { type SetupScheduleDto } from "@/features/professional";
 
 export const setupSchedule = (data: SetupScheduleDto) => {
+    const body = {
+        timeZoneId: data.timeZoneId,
+        dayAvailabilities: data.days.map(day => ({
+            dayOfWeek: day.dayOfWeek,
+            isActive: day.isActive,
+            availabilitySlots: day.availabilitySlots
+        }))
+    }
     return api.post<void>(
         API_ENDPOINTS.PROFESSIONALS.SETUP_SCHEDULE,
-        data,
+        body,
     );
 };
 

@@ -54,7 +54,7 @@ public class GetScheduleQueryHandler(ProfessionalsDbContext professionalsDbConte
                 {
                     DayOfWeek = day.DayOfWeek,
                     IsActive = day.IsActive,
-                    AvailabilitySlot = availabilityRangesDay
+                    AvailabilitySlots = availabilityRangesDay
                 });
         }
 

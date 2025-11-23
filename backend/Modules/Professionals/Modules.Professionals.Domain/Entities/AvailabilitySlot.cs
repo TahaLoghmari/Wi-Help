@@ -12,11 +12,15 @@ public class AvailabilitySlot
     // Navigation property
     public AvailabilityDay Day { get; private set; } = null!;
 
-    public AvailabilitySlot(Guid availabilityDayId, TimeRange timeRange)
+    protected AvailabilitySlot()
+    {
+        // for ef core 
+    }
+    public AvailabilitySlot(Guid availabilityDayId, TimeRange range)
     {
         Id = Guid.NewGuid();
         AvailabilityDayId = availabilityDayId;
-        TimeRange = timeRange;
+        TimeRange = range;
     }
 
     public static AvailabilitySlot Create(Guid availabilityDayId, TimeOnly startTime, TimeOnly endTime)
