@@ -10,7 +10,7 @@ export function DashboardSidebar() {
   const { currentScreenSize } = useCurrentScreenSize();
   return (
     <>
-      {currentScreenSize < 768 ? (
+      {currentScreenSize < 1100 ? (
         <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
           <SheetContent
             side="left"
