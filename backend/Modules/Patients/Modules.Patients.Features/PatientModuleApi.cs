@@ -44,9 +44,22 @@ public class PatientModuleApi(
                     p.UserId,
                     user.FirstName,
                     user.LastName,
+                    user.Email,
+                    user.PhoneNumber,
                     user.ProfilePictureUrl,
                     user.DateOfBirth,
-                    user.Gender
+                    user.Gender,
+                    user.Address,
+                    new EmergencyContactDto(
+                        p.EmergencyContact.FullName,
+                        p.EmergencyContact.PhoneNumber,
+                        p.EmergencyContact.Relationship),
+                    new MedicalInfoDto(
+                        p.MedicalInfo.ChronicConditions,
+                        p.MedicalInfo.Allergies,
+                        p.MedicalInfo.Medications,
+                        p.MedicalInfo.MobilityStatus.ToString()),
+                    p.Bio
                 );
             }
             return null;

@@ -2,6 +2,7 @@ using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Results;
+using Modules.Identity.PublicApi;
 using Modules.Professionals.Domain;
 using Modules.Professionals.Infrastructure.Database;
 using Modules.Professionals.PublicApi;
@@ -9,7 +10,10 @@ using Modules.Professionals.PublicApi.Contracts;
 
 namespace Modules.Professionals.Features;
 
-public class ProfessionalModuleApi(ProfessionalsDbContext professionalsDbContext, ILogger<ProfessionalModuleApi> logger)
+public class ProfessionalModuleApi(
+    ProfessionalsDbContext professionalsDbContext, 
+    IIdentityModuleApi identityApi,
+    ILogger<ProfessionalModuleApi> logger)
     : IProfessionalModuleApi
 {
     public async Task<Result<ProfessionalDto>> GetProfessionalByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
@@ -23,8 +27,64 @@ public class ProfessionalModuleApi(ProfessionalsDbContext professionalsDbContext
             return Result<ProfessionalDto>.Failure(ProfessionalErrors.NotFound(userId));
         }
 
-        return Result<ProfessionalDto>.Success(new ProfessionalDto(professional.Id, professional.UserId));
+        var userResult = await identityApi.GetUserByIdAsync(userId, cancellationToken);
+        if (userResult.IsFailure)
+        {
+             // Fallback if user not found, though unlikely
+             return Result<ProfessionalDto>.Success(new ProfessionalDto(professional.Id, professional.UserId));
+        }
+        
+        var user = userResult.Value;
+
+        return Result<ProfessionalDto>.Success(new ProfessionalDto(
+            professional.Id, 
+            professional.UserId,
+            user.FirstName,
+            user.LastName,
+            user.ProfilePictureUrl
+        ));
     }
+
+    public async Task<Result<List<ProfessionalDto>>> GetProfessionalsByIdsAsync(IEnumerable<Guid> professionalIds, CancellationToken cancellationToken = default)
+    {
+        var professionals = await professionalsDbContext.Professionals
+            .AsNoTracking()
+            .Where(p => professionalIds.Contains(p.Id))
+            .ToListAsync(cancellationToken);
+
+        if (professionals.Count == 0)
+        {
+            return Result<List<ProfessionalDto>>.Success([]);
+        }
+
+        var userIds = professionals.Select(p => p.UserId).Distinct().ToList();
+        var usersResult = await identityApi.GetUsersByIdsAsync(userIds, cancellationToken);
+
+        if (usersResult.IsFailure)
+        {
+            return Result<List<ProfessionalDto>>.Failure(usersResult.Error);
+        }
+
+        var users = usersResult.Value.ToDictionary(u => u.Id);
+
+        var dtos = professionals.Select(p =>
+        {
+            if (users.TryGetValue(p.UserId, out var user))
+            {
+                return new ProfessionalDto(
+                    p.Id,
+                    p.UserId,
+                    user.FirstName,
+                    user.LastName,
+                    user.ProfilePictureUrl
+                );
+            }
+            return new ProfessionalDto(p.Id, p.UserId);
+        }).ToList();
+
+        return Result<List<ProfessionalDto>>.Success(dtos);
+    }
+
 
     public async Task<MonthlyAvailabilityResponse> GetMonthlyAvailability(GetProfessionalAvailabilityByMonthQuery query)
     {
