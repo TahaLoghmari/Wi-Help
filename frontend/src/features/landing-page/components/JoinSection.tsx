@@ -2,29 +2,33 @@ import { ROUTE_PATHS } from "@/config/routes";
 import { Link } from "@tanstack/react-router";
 import JoinSectionImage from "@/assets/JoinSectionImage.jpg";
 
-const BENEFITS: string[] = [
-  "Flexible scheduling and work-life balance",
-  "Secure and instant payments",
-  "Professional liability coverage",
-  "24/7 platform support",
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
+
+const getBenefits = (t: TFunction): string[] => [
+  t("landing.join.benefits.scheduling"),
+  t("landing.join.benefits.payments"),
+  t("landing.join.benefits.liability"),
+  t("landing.join.benefits.support"),
 ];
 
 export function JoinSection() {
+  const { t } = useTranslation();
+  const benefits = getBenefits(t);
   return (
     <div className="my-12 flex flex-col gap-6 md:my-20 md:gap-10 lg:flex-row">
       <div className="flex flex-1 flex-col justify-between gap-6 md:gap-8">
         <div className="flex flex-col gap-6 md:gap-8">
           <div className="flex flex-col gap-4 md:gap-6">
             <p className="text-2xl font-semibold text-white sm:text-3xl md:text-4xl">
-              Join Our Network of Healthcare Professionals
+              {t("landing.join.title")}
             </p>
             <p className="text-accent text-sm md:text-base">
-              Expand your practice, reach more patients, and earn more with
-              Wi-Help's professional platform.
+              {t("landing.join.subtitle")}
             </p>
           </div>
           <div className="flex flex-col gap-2">
-            {BENEFITS.map((benefit, idx) => (
+            {benefits.map((benefit, idx) => (
               <div key={idx} className="flex items-center gap-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -43,7 +47,7 @@ export function JoinSection() {
           to={ROUTE_PATHS.AUTH.REGISTER}
           className="text-primary w-full cursor-pointer rounded-full bg-[#00e984] p-3 text-center text-xs font-bold transition-all duration-300 hover:bg-[#5fd1ab] sm:w-fit md:p-4"
         >
-          Apply as Professional
+          {t("landing.join.applyButton")}
         </Link>
       </div>
       <div className="w-full rounded-md lg:w-[48%]">

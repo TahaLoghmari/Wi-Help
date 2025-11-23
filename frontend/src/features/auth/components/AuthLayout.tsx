@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { useLocation } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import Icon2 from "@/assets/Icon-2.png";
 import { ROUTE_PATHS } from "@/config/routes";
 
@@ -8,6 +9,7 @@ interface AuthLayoutProps {
 }
 
 export function AuthLayout({ children }: AuthLayoutProps) {
+  const { t } = useTranslation();
   const location = useLocation();
   const isRegisterRoute = location.pathname.includes(ROUTE_PATHS.AUTH.REGISTER);
 
@@ -22,7 +24,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
             <div className="flex flex-col">
               <p className="text-xl font-bold">Wi Help</p>
               <p className="text-muted-foreground text-xs">
-                taking care of others is our priority
+                {t("landing.header.slogan")}
               </p>
             </div>
           </div>

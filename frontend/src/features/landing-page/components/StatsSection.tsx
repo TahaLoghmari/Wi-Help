@@ -1,9 +1,12 @@
-import { STATS } from "@/features/landing-page";
+import { getStats } from "@/features/landing-page";
+import { useTranslation } from "react-i18next";
 
 export function StatsSection() {
+  const { t } = useTranslation();
+  const stats = getStats(t);
   return (
     <div className="grid grid-cols-1 gap-4 p-8 py-16 sm:grid-cols-2 md:gap-8 md:p-16 md:py-28 lg:grid-cols-4">
-      {STATS.map((stat, idx) => {
+      {stats.map((stat, idx) => {
         const Icon = stat.icon;
         return (
           <div

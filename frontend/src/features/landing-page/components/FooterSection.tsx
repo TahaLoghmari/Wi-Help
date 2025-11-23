@@ -1,6 +1,9 @@
 import Icon2 from "@/assets/Icon-2.png";
 
+import { useTranslation } from "react-i18next";
+
 export function FooterSection() {
+  const { t } = useTranslation();
   return (
     <div className="my-6 md:my-10">
       <div className="grid grid-cols-1 gap-6 border-b-2 border-gray-400/20 pb-6 sm:grid-cols-2 md:gap-4 md:pb-4 lg:grid-cols-4">
@@ -10,7 +13,7 @@ export function FooterSection() {
             <div className="flex flex-col">
               <p className="text-lg font-bold text-white md:text-xl">Wi Help</p>
               <p className="text-accent text-[10px] md:text-xs">
-                taking care of others is our priority
+                {t("landing.header.slogan")}
               </p>
             </div>
           </div>
@@ -60,62 +63,62 @@ export function FooterSection() {
         </div>
         <div className="flex flex-col gap-2">
           <p className="text-sm font-semibold text-white md:text-base">
-            Services
+            {t("landing.footer.services")}
           </p>
           <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
-            Nursing Care
+            {t("landing.footer.nursingCare")}
           </p>
           <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
-            Physiotherapy
+            {t("landing.footer.physiotherapy")}
           </p>
           <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
-            Personal Care
+            {t("landing.footer.personalCare")}
           </p>
           <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
-            Emergency Care
+            {t("landing.footer.emergencyCare")}
           </p>
         </div>
         <div className="flex flex-col gap-2">
           <p className="text-sm font-semibold text-white md:text-base">
-            Company
+            {t("landing.footer.company")}
           </p>
           <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
-            About Us
+            {t("landing.footer.aboutUs")}
           </p>
           <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
-            Careers
+            {t("landing.footer.careers")}
           </p>
           <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
-            Press
+            {t("landing.footer.press")}
           </p>
           <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
-            Contact
+            {t("landing.footer.contact")}
           </p>
         </div>
         <div className="flex flex-col gap-2">
           <p className="text-sm font-semibold text-white md:text-base">
-            Support
+            {t("landing.footer.support")}
           </p>
           <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
-            Help Center
+            {t("landing.footer.helpCenter")}
           </p>
           <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
-            Safety
+            {t("landing.footer.safety")}
           </p>
           <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
-            Privacy Policy
+            {t("landing.footer.privacyPolicy")}
           </p>
           <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
-            Terms of Service
+            {t("landing.footer.termsOfService")}
           </p>
         </div>
       </div>
       <div className="mt-4 flex flex-col items-center justify-between gap-3 sm:flex-row">
         <p className="text-[10px] text-white md:text-xs">
-          © 2024 Wi-Help. All rights reserved.
+          {t("landing.footer.copyright")}
         </p>
         <div className="flex items-center gap-2">
-          <p className="text-[10px] text-white md:text-xs">Available on:</p>
+          <p className="text-[10px] text-white md:text-xs">{t("landing.footer.availableOn")}</p>
           <div className="flex items-center gap-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"

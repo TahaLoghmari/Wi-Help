@@ -1,18 +1,21 @@
-import { STEPS } from "@/features/landing-page";
+import { getSteps } from "@/features/landing-page";
+import { useTranslation } from "react-i18next";
 
 export function StepsSection() {
+  const { t } = useTranslation();
+  const steps = getSteps(t);
   return (
     <div className="my-12 flex flex-col gap-10 md:my-20 md:gap-16">
       <div className="flex w-full flex-col items-center justify-center gap-3 px-4 md:gap-4">
         <p className="text-center text-2xl font-bold sm:text-3xl md:text-4xl">
-          How Wi Help Works
+          {t("landing.steps.title")}
         </p>
         <p className="text-center text-sm text-gray-600 md:text-base">
-          Simple steps to get professional healthcare at home
+          {t("landing.steps.subtitle")}
         </p>
       </div>
       <div className="grid grid-cols-1 gap-6 px-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
-        {STEPS.map((step, idx) => {
+        {steps.map((step, idx) => {
           return (
             <div
               key={idx}

@@ -6,17 +6,23 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { REVIEWS } from "@/features/landing-page";
+import { getReviews } from "@/features/landing-page";
+import { useTranslation } from "react-i18next";
 
 export function ReviewsSection() {
+  const { t } = useTranslation();
+  const reviews = getReviews(t);
   return (
     <div className="my-12 flex flex-col items-center gap-12 md:my-20 md:gap-28">
       <div className="flex w-full flex-col items-center justify-center gap-3 px-4 md:gap-4">
         <p className="text-center text-2xl font-bold sm:text-3xl md:text-4xl">
-          What Our Patiens Say
+          {t("landing.reviews.titlePrefix")}{" "}
+          <span className="text-[#00e984]">
+            {t("landing.reviews.titleHighlight")}
+          </span>
         </p>
         <p className="text-center text-sm text-gray-600 md:text-lg">
-          Real experiences from people who trust Wi Help
+          {t("landing.reviews.subtitle")}
         </p>
       </div>
       <Carousel
@@ -32,7 +38,7 @@ export function ReviewsSection() {
         className="w-full"
       >
         <CarouselContent>
-          {REVIEWS.map((review, index) => (
+          {reviews.map((review, index) => (
             <CarouselItem
               key={index}
               className="basis-full md:basis-1/2 lg:basis-1/3"

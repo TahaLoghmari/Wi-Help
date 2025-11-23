@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { SERVICES } from "@/features/landing-page";
+import { getServices } from "@/features/landing-page";
+import { useTranslation } from "react-i18next";
 
 const GradientMoveRight = () => (
   <svg
@@ -20,20 +21,20 @@ const GradientMoveRight = () => (
 );
 
 export function ServicesSection() {
+  const { t } = useTranslation();
+  const services = getServices(t);
   return (
     <div className="mb-12 flex flex-col gap-12 md:mb-20 md:gap-28">
       <div className="flex w-full flex-col items-center justify-center gap-3 px-4 md:gap-4">
         <p className="text-center text-2xl font-bold sm:text-3xl md:text-4xl">
-          Our Healthcare Services
+          {t("landing.services.title")}
         </p>
         <p className="text-center text-sm text-gray-600 md:text-base">
-          Professional healthcare services delivered to your home{" "}
-          <br className="hidden sm:block" />
-          by verified medical professionals
+          {t("landing.services.subtitle")}
         </p>
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
-        {SERVICES.map((service, idx) => {
+        {services.map((service, idx) => {
           const Icon = service.icon;
           return (
             <div

@@ -22,7 +22,34 @@
     "and": "et",
     "continue": "Continue",
     "professional": "Professionnel",
-    "patient": "Patient"
+    "patient": "Patient",
+    "streetAddress": "Adresse de rue",
+    "country": "Pays",
+    "state": "État",
+    "city": "Ville",
+    "postalCode": "Code postal",
+    "emergencyContact": "Contact d'urgence",
+    "relationship": "Relation",
+    "fullName": "Nom complet",
+    "selectGender": "Sélectionner le genre",
+    "selectCountry": "Sélectionner le pays",
+    "selectRelationship": "Sélectionner la relation",
+    "enterFirstName": "Entrez le prénom",
+    "enterLastName": "Entrez le nom",
+    "enterEmail": "Entrez l'adresse e-mail",
+    "createPassword": "Créer un mot de passe",
+    "enterPhoneNumber": "Entrez le numéro de téléphone",
+    "enterStreetAddress": "Entrez l'adresse de rue",
+    "enterState": "Entrez l'état",
+    "enterCity": "Entrez la ville",
+    "enterPostalCode": "Entrez le code postal",
+    "enterName": "Entrez le nom",
+    "specialization": "Spécialisation",
+    "selectSpecialization": "Sélectionner la spécialisation",
+    "experience": "Expérience",
+    "enterExperience": "Entrez l'expérience",
+    "back": "Retour",
+    "continueToNextStep": "Continuer à l'étape suivante"
   },
   "auth": {
     "welcomeBack": "Bon retour",
@@ -113,5 +140,77 @@
     "services": "Sevices",
     "functionalities": "Fonctinnalités",
     "personal": "Personnel"
+  },
+  "landing": {
+    "welcome": {
+      "titlePrefix": "Soins de santé",
+      "titleHighlight": "Professionnels",
+      "titleSuffix": "à votre porte",
+      "subtitle": "Connectez-vous avec des infirmiers, kinésithérapeutes et aides-soignants vérifiés en Tunisie. Des soins à domicile de qualité quand vous en avez le plus besoin.",
+      "bookCare": "Réserver un soin",
+      "joinProfessional": "Rejoindre comme professionnel"
+    },
+    "header": {
+      "slogan": "Prendre soin des autres est notre priorité"
+    },
+    "stats": {
+      "professionals": { "title": "500+", "description": "Professionnels vérifiés" },
+      "patients": { "title": "10k+", "description": "Patients servis" },
+      "support": { "title": "24/7", "description": "Support disponible" },
+      "rating": { "title": "4.9", "description": "Note moyenne" }
+    },
+    "services": {
+      "title": "Nos services de santé",
+      "subtitle": "Des services de santé professionnels livrés à votre domicile par des professionnels médicaux vérifiés",
+      "nursing": { "title": "Soins infirmiers", "description": "Services infirmiers professionnels incluant soins des plaies, administration de médicaments et surveillance de la santé." },
+      "physiotherapy": { "title": "Physiothérapie", "description": "Services de rééducation et de thérapie physique pour vous aider à récupérer et maintenir votre mobilité." },
+      "personalCare": { "title": "Soins personnels", "description": "Services de soins compatissants pour les personnes âgées et les patients ayant des besoins spéciaux." }
+    },
+    "steps": {
+      "title": "Comment fonctionne Wi Help",
+      "subtitle": "Des étapes simples pour obtenir des soins de santé professionnels à domicile",
+      "request": { "title": "Demander des soins", "description": "Dites-nous de quel type de soins vous avez besoin et quand. Notre système intelligent trouvera le bon professionnel pour vous." },
+      "match": { "title": "Être jumelé", "description": "Nous vous jumelons instantanément avec des professionnels de santé vérifiés dans votre région en fonction de la disponibilité et de l'expertise." },
+      "receive": { "title": "Recevoir des soins", "description": "Votre professionnel de santé arrive à votre emplacement pour fournir des soins de qualité. Payez en toute sécurité via l'application." }
+    },
+    "reviews": {
+      "titlePrefix": "Ce que disent",
+      "titleHighlight": "Nos Utilisateurs",
+      "subtitle": "Histoires réelles de patients et de professionnels qui font confiance à Wi-Help pour leurs soins et leur pratique.",
+      "sarah": { "review": "Wi-Help a rendu si facile l'obtention de soins infirmiers pour ma mère âgée. L'infirmière était professionnelle, attentionnée et est arrivée exactement à l'heure." },
+      "ahmed": { "review": "Les séances de physiothérapie à domicile m'ont aidé à récupérer beaucoup plus rapidement. L'application a rendu la réservation et le paiement fluides." },
+      "fatima": { "review": "Excellent service ! L'aide-soignant était compatissant et professionnel. Wi-Help comprend vraiment les besoins des patients." },
+      "mohamed": { "review": "Les services de soins à domicile étaient exceptionnels. Le personnel était ponctuel et très attentif à mes besoins. Je recommande vivement Wi-Help !" }
+    },
+    "join": {
+      "title": "Rejoignez notre réseau de professionnels de santé",
+      "subtitle": "Développez votre pratique, atteignez plus de patients et gagnez plus avec la plateforme professionnelle Wi-Help.",
+      "applyButton": "Postuler en tant que professionnel",
+      "benefits": {
+        "scheduling": "Horaires flexibles et équilibre travail-vie personnelle",
+        "payments": "Paiements sécurisés et instantanés",
+        "liability": "Couverture responsabilité professionnelle",
+        "support": "Support plateforme 24/7"
+      }
+    },
+    "footer": {
+      "services": "Services",
+      "company": "Entreprise",
+      "support": "Support",
+      "nursingCare": "Soins infirmiers",
+      "physiotherapy": "Physiothérapie",
+      "personalCare": "Soins personnels",
+      "emergencyCare": "Soins d'urgence",
+      "aboutUs": "À propos de nous",
+      "careers": "Carrières",
+      "press": "Presse",
+      "contact": "Contact",
+      "helpCenter": "Centre d'aide",
+      "safety": "Sécurité",
+      "privacyPolicy": "Politique de confidentialité",
+      "termsOfService": "Conditions d'utilisation",
+      "copyright": "© 2024 Wi-Help. Tous droits réservés.",
+      "availableOn": "Disponible sur :"
+    }
   }
 }

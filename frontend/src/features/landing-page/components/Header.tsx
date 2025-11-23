@@ -32,7 +32,7 @@ export function Header() {
         <div className="flex flex-col">
           <p className="text-base font-bold sm:text-xl">Wi Help</p>
           <p className="text-muted-foreground hidden text-[10px] sm:block sm:text-xs">
-            taking care of others is our priority
+            {t("landing.header.slogan")}
           </p>
         </div>
       </div>

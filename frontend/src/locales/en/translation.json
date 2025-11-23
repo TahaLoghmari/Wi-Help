@@ -22,7 +22,34 @@
     "or": "Or",
     "and": "and",
     "professional": "Professional",
-    "patient": "Patient"
+    "patient": "Patient",
+    "streetAddress": "Street Address",
+    "country": "Country",
+    "state": "State",
+    "city": "City",
+    "postalCode": "Postal Code",
+    "emergencyContact": "Emergency Contact",
+    "relationship": "Relationship",
+    "fullName": "Name",
+    "selectGender": "Select Gender",
+    "selectCountry": "Select Country",
+    "selectRelationship": "Select Relationship",
+    "enterFirstName": "Enter first name",
+    "enterLastName": "Enter last name",
+    "enterEmail": "Enter email address",
+    "createPassword": "Create password",
+    "enterPhoneNumber": "Enter phone number",
+    "enterStreetAddress": "Enter street address",
+    "enterState": "Enter state",
+    "enterCity": "Enter city",
+    "enterPostalCode": "Enter postal code",
+    "enterName": "Enter name",
+    "specialization": "Specialization",
+    "selectSpecialization": "Select specialization",
+    "experience": "Experience",
+    "enterExperience": "Enter experience",
+    "back": "Back",
+    "continueToNextStep": "Continue to Next Step"
   },
   "auth": {
     "welcomeBack": "Welcome back",
@@ -113,5 +140,77 @@
     "services": "Sevices",
     "functionalities": "Functionalities",
     "personal": "Personal"
+  },
+  "landing": {
+    "welcome": {
+      "titlePrefix": "Professional",
+      "titleHighlight": "Healthcare",
+      "titleSuffix": "at Your Doorstep",
+      "subtitle": "Connect with verified nurses, physiotherapists, and caregivers in Tunisia. Quality home care when you need it most.",
+      "bookCare": "Book Care Now",
+      "joinProfessional": "Join as Professional"
+    },
+    "header": {
+      "slogan": "taking care of others is our priority"
+    },
+    "stats": {
+      "professionals": { "title": "500+", "description": "Verified Professionals" },
+      "patients": { "title": "10k+", "description": "Patients Served" },
+      "support": { "title": "24/7", "description": "Available Support" },
+      "rating": { "title": "4.9", "description": "Average Rating" }
+    },
+    "services": {
+      "title": "Our Healthcare Services",
+      "subtitle": "Professional healthcare services delivered to your home by verified medical professionals",
+      "nursing": { "title": "Nursing Care", "description": "Professional nursing services including wound care, medication administration, and health monitoring." },
+      "physiotherapy": { "title": "Physiotherapy", "description": "Rehabilitation and physical therapy services to help you recover and maintain mobility." },
+      "personalCare": { "title": "Personal Care", "description": "Compassionate caregiving services for elderly and patients with special needs." }
+    },
+    "steps": {
+      "title": "How Wi Help Works",
+      "subtitle": "Simple steps to get professional healthcare at home",
+      "request": { "title": "Request Care", "description": "Tell us what type of care you need and when. Our smart system will find the right professional for you." },
+      "match": { "title": "Get Matched", "description": "We instantly match you with verified healthcare professionals in your area based on availability and expertise." },
+      "receive": { "title": "Receive Care", "description": "Your healthcare professional arrives at your location to provide quality care. Pay securely through the app." }
+    },
+    "reviews": {
+      "titlePrefix": "What Our",
+      "titleHighlight": "Users Say",
+      "subtitle": "Real stories from patients and professionals who trust Wi-Help for their care and practice.",
+      "sarah": { "review": "Wi-Help made it so easy to get nursing care for my elderly mother. The nurse was professional, caring, and arrived exactly on time." },
+      "ahmed": { "review": "The physiotherapy sessions at home helped me recover much faster. The app made booking and payment seamless." },
+      "fatima": { "review": "Excellent service! The caregiver was compassionate and professional. Wi-Help truly understands patient needs." },
+      "mohamed": { "review": "The home care services were outstanding. The staff was punctual and very attentive to my needs. Highly recommend Wi-Help!" }
+    },
+    "join": {
+      "title": "Join Our Network of Healthcare Professionals",
+      "subtitle": "Expand your practice, reach more patients, and earn more with Wi-Help's professional platform.",
+      "applyButton": "Apply as Professional",
+      "benefits": {
+        "scheduling": "Flexible scheduling and work-life balance",
+        "payments": "Secure and instant payments",
+        "liability": "Professional liability coverage",
+        "support": "24/7 platform support"
+      }
+    },
+    "footer": {
+      "services": "Services",
+      "company": "Company",
+      "support": "Support",
+      "nursingCare": "Nursing Care",
+      "physiotherapy": "Physiotherapy",
+      "personalCare": "Personal Care",
+      "emergencyCare": "Emergency Care",
+      "aboutUs": "About Us",
+      "careers": "Careers",
+      "press": "Press",
+      "contact": "Contact",
+      "helpCenter": "Help Center",
+      "safety": "Safety",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfService": "Terms of Service",
+      "copyright": "© 2024 Wi-Help. All rights reserved.",
+      "availableOn": "Available on:"
+    }
   }
 }
