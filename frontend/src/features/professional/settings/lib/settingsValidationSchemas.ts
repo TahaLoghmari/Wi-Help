@@ -100,6 +100,6 @@ const dayAvailabilitySchema = z.object({
 });
 
 export const scheduleFormSchema = z.object({
-  timeZoneId: z.string().default("Africa/Tunis"),
+  timeZoneId: z.string(),
   days: z.array(dayAvailabilitySchema),
 });
