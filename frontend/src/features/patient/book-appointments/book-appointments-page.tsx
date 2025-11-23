@@ -57,7 +57,7 @@ export function BookingPage() {
   }
 
   return (
-    <div className="flex w-full flex-col justify-center space-y-6 overflow-auto p-10">
+    <div className="flex h-full w-full flex-col justify-center space-y-6 overflow-y-auto p-10">
       {/* Calendar */}
       <div className="flex w-full flex-col justify-center gap-10 md:flex-row">
         <CalendarCard
