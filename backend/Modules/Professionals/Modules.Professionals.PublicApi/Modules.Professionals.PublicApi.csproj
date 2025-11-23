@@ -8,7 +8,4 @@
     <ItemGroup>
         <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Features\Modules.Common.Features.csproj" />
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Contracts\" />
-    </ItemGroup>
 </Project>
