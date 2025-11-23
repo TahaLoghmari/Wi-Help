@@ -1,5 +1,6 @@
 export * from "./useGetGoogleOAuthUrl";
 export * from "./useLogin";
+export * from "./useLogout";
 export * from "./useRegisterPatient";
 export * from "./useRegisterProfessional";
 export * from "./useForgotPassword";

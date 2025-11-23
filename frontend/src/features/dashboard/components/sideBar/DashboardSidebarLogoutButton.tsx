@@ -1,4 +1,4 @@
-import { useCurrentUser } from "@/features/auth";
+import { useCurrentUser, useLogout } from "@/features/auth";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,7 +14,7 @@ import { useLogoutDialogStore } from "@/features/dashboard";
 export function DashboardSidebarLogoutButton() {
   const { data: user } = useCurrentUser();
   const { isOpen, setIsOpen } = useLogoutDialogStore();
-  // const logoutMutation = useLogout();
+  const logoutMutation = useLogout();
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent>
@@ -26,9 +26,7 @@ export function DashboardSidebarLogoutButton() {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-          //  onClick={() => logoutMutation.mutate()}
-           >
+          <AlertDialogAction onClick={() => logoutMutation.mutate()}>
             Logout
           </AlertDialogAction>
         </AlertDialogFooter>
