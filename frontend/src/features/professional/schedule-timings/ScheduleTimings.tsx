@@ -10,8 +10,7 @@ export const TIME_OPTIONS = Array.from({ length: 24 }, (_, i) => {
     return `${hour}:00`;
 });
 
-export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
-export type DayOfWeek = (typeof DAYS)[number];
+
 export function ScheduleTimings() {
     const { schedule, actions, error } = useFormSchedule(form);
 

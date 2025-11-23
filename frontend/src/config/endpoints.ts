@@ -13,6 +13,8 @@ export const API_ENDPOINTS = {
     REGISTER_PROFESSIONAL: "/professionals/register",
     CURRENT_PROFESSIONAL: "/professionals/me",
     UPDATE_PROFESSIONAL: "/professionals/me",
+    SETUP_SCHEDULE: "/professionals/schedule",
+    GET_SCHEDULE: "/professionals/schedule",
   },
   PATIENTS: {
     REGISTER_PATIENT: "/patients/register",

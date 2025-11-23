@@ -79,6 +79,27 @@ export const profileAndBioFormSchema = z
 
 
 
-export const scheduleFormSchema = z.object({
+const availabilitySlotSchema = z.object({
+  id: z.string().optional().nullable(),
+  startTime: z.string(),
+  endTime: z.string(),
+});
 
+const dayAvailabilitySchema = z.object({
+  dayOfWeek: z.enum([
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ]),
+  isActive: z.boolean(),
+  availabilitySlots: z.array(availabilitySlotSchema),
+});
+
+export const scheduleFormSchema = z.object({
+  timeZoneId: z.string().default("Africa/Tunis"),
+  days: z.array(dayAvailabilitySchema),
 });

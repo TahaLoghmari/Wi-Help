@@ -22,5 +22,27 @@ export interface ProfessionalDto {
   profilePictureUrl: string;
 }
 
+export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
+export type DayOfWeek = (typeof DAYS)[number];
+
+
+export interface DayAvailabilityDto {
+  dayOfWeek: DayOfWeek;
+  isActive: boolean;
+  availabilitySlots: AvailabilitySlotDto[];
+}
+
+export interface AvailabilitySlotDto {
+  id?: string | null;
+  startTime: string;
+  endTime: string;
+}
+
+export interface ScheduleDto {
+  timeZoneId?: string; // Default value "Africa/Tunis" can be applied during object creation
+  days: DayAvailabilityDto[];
+}
+
+
 export type UpdateProfessionalDto = z.infer<typeof profileAndBioFormSchema>;
 export type SetupScheduleDto = z.infer<typeof scheduleFormSchema>;
