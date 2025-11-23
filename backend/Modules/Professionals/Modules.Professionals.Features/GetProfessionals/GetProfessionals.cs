@@ -12,10 +12,11 @@ internal sealed class GetProfessionals : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet(ProfessionalsEndpoints.GetAllProfessionals, async (
+                [AsParameters] ProfessionalsQueryParametersDto parameters,
                 IQueryHandler<GetProfessionalsQuery, List<ProfessionalProfileDto>> handler,
                 CancellationToken cancellationToken) =>
             {
-                var query = new GetProfessionalsQuery();
+                var query = new GetProfessionalsQuery(parameters);
                 Result<List<ProfessionalProfileDto>> result = await handler.Handle(query, cancellationToken);
 
                 return result.Match(Results.Ok, CustomResults.Problem);

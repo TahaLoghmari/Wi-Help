@@ -17,11 +17,39 @@ public sealed class GetProfessionalsQueryHandler(
         GetProfessionalsQuery query,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Retrieving all professionals");
+        logger.LogInformation("Retrieving professionals with filters: {@Query}", query);
 
-        var professionals = await dbContext.Professionals
+        var professionalsQuery = dbContext.Professionals
+            .Include(p => p.AvailabilityDays)
             .AsNoTracking()
-            .ToListAsync(cancellationToken);
+            .AsQueryable();
+
+        // Price Filter
+        if (query.Parameters.MaxPrice.HasValue)
+        {
+            professionalsQuery = professionalsQuery.Where(p => p.EndPrice <= query.Parameters.MaxPrice.Value);
+        }
+
+        // Availability Filter
+        // if (!string.IsNullOrEmpty(query.Parameters.Availability) && query.Parameters.Availability != "Any time")
+        // {
+        //     var today = DateTime.UtcNow.DayOfWeek;
+        //     if (query.Parameters.Availability == "Today")
+        //     {
+        //         professionalsQuery = professionalsQuery.Where(p => p.AvailabilityDays.Any(d => d.DayOfWeek == today && d.IsActive));
+        //     }
+        //     else if (query.Parameters.Availability == "Within 24h")
+        //     {
+        //         var tomorrow = DateTime.UtcNow.AddDays(1).DayOfWeek;
+        //         professionalsQuery = professionalsQuery.Where(p => p.AvailabilityDays.Any(d => (d.DayOfWeek == today || d.DayOfWeek == tomorrow) && d.IsActive));
+        //     }
+        //     else if (query.Parameters.Availability == "This week")
+        //     {
+        //         professionalsQuery = professionalsQuery.Where(p => p.AvailabilityDays.Any(d => d.IsActive));
+        //     }
+        // }
+
+        var professionals = await professionalsQuery.ToListAsync(cancellationToken);
 
         if (professionals.Count == 0)
         {
@@ -44,24 +72,40 @@ public sealed class GetProfessionalsQueryHandler(
         {
             if (users.TryGetValue(professional.UserId, out var user))
             {
-                professionalDtos.Add(new ProfessionalProfileDto(
-                    professional.Id,
-                    professional.UserId,
-                    user.FirstName,
-                    user.LastName,
-                    user.Email,
-                    user.PhoneNumber,
-                    user.DateOfBirth,
-                    user.Gender,
-                    user.Address,
-                    professional.Specialization,
-                    professional.Services.ToList(),
-                    professional.Experience,
-                    professional.StartPrice,
-                    professional.EndPrice,
-                    professional.Bio,
-                    professional.IsVerified,
-                    user.ProfilePictureUrl));
+                bool matchesSearch = string.IsNullOrEmpty(query.Parameters.Search) ||
+                                     (user.FirstName.Contains(query.Parameters.Search, StringComparison.OrdinalIgnoreCase)) ||
+                                     (user.LastName.Contains(query.Parameters.Search, StringComparison.OrdinalIgnoreCase)) ||
+                                     (professional.Specialization.Contains(query.Parameters.Search, StringComparison.OrdinalIgnoreCase));
+
+                bool matchesLocation = string.IsNullOrEmpty(query.Parameters.Location) ||
+                                       (
+                                            user.Address.City.Contains(query.Parameters.Location, StringComparison.OrdinalIgnoreCase) ||
+                                            user.Address.State.Contains(query.Parameters.Location, StringComparison.OrdinalIgnoreCase) ||
+                                            user.Address.Country.Contains(query.Parameters.Location, StringComparison.OrdinalIgnoreCase) ||
+                                            user.Address.Street.Contains(query.Parameters.Location, StringComparison.OrdinalIgnoreCase)
+                                       );
+
+                if (matchesSearch && matchesLocation)
+                {
+                    professionalDtos.Add(new ProfessionalProfileDto(
+                        professional.Id,
+                        professional.UserId,
+                        user.FirstName,
+                        user.LastName,
+                        user.Email,
+                        user.PhoneNumber,
+                        user.DateOfBirth,
+                        user.Gender,
+                        user.Address,
+                        professional.Specialization,
+                        professional.Services.ToList(),
+                        professional.Experience,
+                        professional.StartPrice,
+                        professional.EndPrice,
+                        professional.Bio,
+                        professional.IsVerified,
+                        user.ProfilePictureUrl));
+                }
             }
             else
             {
