@@ -1,4 +1,5 @@
 using Modules.Common.Features.ValueObjects;
+using Modules.Patients.Domain.ValueObjects;
 
 namespace Modules.Patients.Infrastructure.DTOs;
 
@@ -12,4 +13,7 @@ public sealed record PatientProfileDto(
     string DateOfBirth,
     string Gender,
     Address Address,
-    EmergencyContact EmergencyContact);
+    EmergencyContact EmergencyContact,
+    MedicalInfo MedicalInfo,
+    string Bio,
+    string ProfilePictureUrl);

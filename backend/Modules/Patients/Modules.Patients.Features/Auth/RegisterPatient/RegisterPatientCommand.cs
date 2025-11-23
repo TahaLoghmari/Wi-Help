@@ -1,5 +1,6 @@
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.ValueObjects;
+using Modules.Patients.Domain.ValueObjects;
 
 namespace Modules.Patients.Features.Auth.RegisterPatient;
 

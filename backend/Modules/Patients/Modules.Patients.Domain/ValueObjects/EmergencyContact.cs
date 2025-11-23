@@ -1,4 +1,4 @@
-namespace Modules.Common.Features.ValueObjects;
+namespace Modules.Patients.Domain.ValueObjects;
 
 public record EmergencyContact
 {

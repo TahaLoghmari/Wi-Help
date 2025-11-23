@@ -92,5 +92,37 @@ public class UpdatePatientCommandValidator : AbstractValidator<UpdatePatientComm
                 .MaximumLength(50)
                 .WithMessage("Relationship cannot exceed 50 characters");
         });
+
+        When(x => x.MedicalInfo != null, () =>
+        {
+            RuleFor(x => x.MedicalInfo!.MobilityStatus)
+                .IsInEnum()
+                .WithMessage("Invalid mobility status");
+
+            RuleForEach(x => x.MedicalInfo!.ChronicConditions)
+                .NotEmpty()
+                .WithMessage("Chronic condition cannot be empty")
+                .MaximumLength(200)
+                .WithMessage("Chronic condition cannot exceed 200 characters");
+
+            RuleForEach(x => x.MedicalInfo!.Allergies)
+                .NotEmpty()
+                .WithMessage("Allergy cannot be empty")
+                .MaximumLength(200)
+                .WithMessage("Allergy cannot exceed 200 characters");
+
+            RuleForEach(x => x.MedicalInfo!.Medications)
+                .NotEmpty()
+                .WithMessage("Medication cannot be empty")
+                .MaximumLength(200)
+                .WithMessage("Medication cannot exceed 200 characters");
+        });
+
+        When(x => !string.IsNullOrWhiteSpace(x.Bio), () =>
+        {
+            RuleFor(x => x.Bio)
+                .MaximumLength(1000)
+                .WithMessage("Bio cannot exceed 1000 characters");
+        });
     }
 }
