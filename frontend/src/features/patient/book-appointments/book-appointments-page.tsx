@@ -34,7 +34,7 @@ export function BookingPage() {
   return (
     <div className="flex w-full flex-col justify-center space-y-6 p-10">
       {/* Calendar */}
-      <div className="flex w-full flex-col justify-center gap-10 sm:flex-row">
+      <div className="flex w-full flex-col justify-center gap-10 md:flex-row">
         <CalendarCard
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
