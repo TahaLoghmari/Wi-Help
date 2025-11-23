@@ -1,4 +1,4 @@
-import { Calendar, Phone } from "lucide-react";
+import { Calendar, Phone, ArrowLeft } from "lucide-react";
 import {
   ALLERGIES,
   CHRONIC_CONDITIONS,
@@ -7,14 +7,30 @@ import {
 } from "@/features/patient";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui";
 import { COUNTRIES, RELATIONSHIPS } from "@/features/auth";
+import { useRouter } from "@tanstack/react-router";
 
 interface PatientProfileProps {
   patient?: PatientDto;
+  showBackButton?: boolean;
 }
 
-export function PatientProfile({ patient }: PatientProfileProps) {
+export function PatientProfile({
+  patient,
+  showBackButton = false,
+}: PatientProfileProps) {
+  const router = useRouter();
+
   return (
     <section className="flex-1 space-y-5 overflow-y-auto px-4 py-5 sm:px-6 lg:px-8">
+      {showBackButton && (
+        <button
+          onClick={() => router.history.back()}
+          className="group mb-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition-all hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 active:scale-95"
+        >
+          <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+          Back
+        </button>
+      )}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -227,25 +243,25 @@ export function PatientProfile({ patient }: PatientProfileProps) {
                   <div className="flex items-center gap-1">
                     <span className="text-slate-500">Street: </span>
                     <span className="font-medium tracking-tight text-slate-900">
-                      {patient?.address.street}
+                      {patient?.address?.street}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
                     <span className="text-slate-500">City: </span>
                     <span className="font-medium tracking-tight text-slate-900">
-                      {patient?.address.city}
+                      {patient?.address?.city}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
                     <span className="text-slate-500">State: </span>
                     <span className="font-medium tracking-tight text-slate-900">
-                      {patient?.address.state}
+                      {patient?.address?.state}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
                     <span className="text-slate-500">Postal Code: </span>
                     <span className="font-medium tracking-tight text-slate-900">
-                      {patient?.address.postalCode}
+                      {patient?.address?.postalCode}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">

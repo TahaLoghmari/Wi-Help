@@ -30,5 +30,9 @@ export const API_ENDPOINTS = {
   APPOINTMENTS: {
     GET_ALL: "/appointments",
     MY_PATIENTS: "/appointments/my-patients",
+    GET_PROFESSIONAL_APPOINTMENTS: (professionalId: string) =>
+      `/appointments/professional/${professionalId}`,
+    GET_PATIENT_APPOINTMENTS: (patientId: string) =>
+      `/appointments/patient/${patientId}`,
   },
 } as const;

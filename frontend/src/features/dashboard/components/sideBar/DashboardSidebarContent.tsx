@@ -14,16 +14,20 @@ export function DashboardSidebarContent({ className }: { className?: string }) {
   const navigationData = getNavigationData(user!);
   return (
     <div
-      className={`flex h-svh flex-col transition-[width,height,margin,padding] duration-200 focus:outline-none ${isSidebarOpen ? "w-[287px]" : "w-12"} ${className}`}
+      className={`flex h-svh flex-col transition-[width,height,margin,padding] duration-200 focus:outline-none ${isSidebarOpen ? "w-[287px]" : "w-14"} ${className}`}
     >
-      <div className="flex h-16 items-center gap-5 border-b px-6">
+      <div
+        className={`flex h-16 shrink-0 items-center gap-5 border-b ${isSidebarOpen ? "px-6" : "justify-center px-2"}`}
+      >
         <img src={Icon2} alt="Logo" className="h-10" />
-        <div className="flex flex-col">
-          <p className="text-xl font-bold">Wi Help</p>
-          <p className="text-muted-foreground text-xs">
-            taking care of others is our priority
-          </p>
-        </div>
+        {isSidebarOpen && (
+          <div className="flex flex-col">
+            <p className="text-xl font-bold">Wi Help</p>
+            <p className="text-muted-foreground text-xs">
+              taking care of others is our priority
+            </p>
+          </div>
+        )}
       </div>
       <DashboardSidebarNavMain items={navigationData.navMain} />
       <div className="mt-auto">

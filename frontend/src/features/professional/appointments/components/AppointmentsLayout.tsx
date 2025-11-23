@@ -1,9 +1,4 @@
-import {
-  AppointmentsStat,
-  TodayPatientsStat,
-  TotalPatientsStat,
-  AppointmentsTable,
-} from "@/features/professional";
+import { AppointmentsTable } from "@/features/professional";
 
 export function AppointmentsLayout() {
   return (

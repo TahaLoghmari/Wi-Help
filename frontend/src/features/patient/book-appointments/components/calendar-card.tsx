@@ -1,11 +1,4 @@
-import { Calendar as CalendarIcon } from "lucide-react";
-import {
-  Calendar,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components";
+import { Calendar } from "@/components";
 
 export function CalendarCard({
   selectedDate,
