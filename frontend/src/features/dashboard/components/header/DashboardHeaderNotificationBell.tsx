@@ -12,7 +12,7 @@ export function DashboardHeaderNotificationBell() {
   // ).length;
 
   return (
-    <Link to={ROUTE_PATHS.PROFESSIONAL.NOTIFICATIONS}>
+    <Link to={ROUTE_PATHS.PROFESSIONAL.NOTIFICATIONS + "/"}>
       {({ isActive }) => (
         <div
           className={`relative rounded-full border border-slate-200 ${isActive ? "bg-[#fcf4d4]" : "bg-white hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5"} pt-2 pr-2 pb-2 pl-2 transition-colors`}
