@@ -7,6 +7,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddPatientsModule(this IServiceCollection services)
     {
+        services.AddScoped<IPatientsModuleApi, PatientModuleApi>();
         return services;
     }
 }

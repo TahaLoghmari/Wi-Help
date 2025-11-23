@@ -15,6 +15,7 @@
     <ProjectReference Include="..\Modules.Appointments.Domain\Modules.Appointments.Domain.csproj" />
     <ProjectReference Include="..\Modules.Appointments.Infrastructure\Modules.Appointments.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules.Appointments.PublicApi\Modules.Appointments.PublicApi.csproj" />
+    <ProjectReference Include="..\..\Patients\Modules.Patients.PublicApi\Modules.Patients.PublicApi.csproj" />
   </ItemGroup>
 
 </Project>

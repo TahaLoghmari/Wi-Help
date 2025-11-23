@@ -3,6 +3,7 @@ using backend.Host.Extensions;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Modules.Appointments.Infrastructure.Database;
 using Modules.Identity.Infrastructure.Database;
 using Modules.Patients.Infrastructure.Database;
 using Modules.Professionals.Infrastructure.Database;
@@ -44,6 +45,9 @@ using (var scope = app.Services.CreateScope())
     
     var professionalsDbContext = scope.ServiceProvider.GetRequiredService<ProfessionalsDbContext>();
     await professionalsDbContext.Database.MigrateAsync();
+    
+    var appointmentsDbContext = scope.ServiceProvider.GetRequiredService<AppointmentsDbContext>();
+    await appointmentsDbContext.Database.MigrateAsync();
     
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
     await IdentityDataSeeder.SeedRolesAsync(roleManager);
