@@ -2,10 +2,12 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Appointments.PublicApi;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Patients.Infrastructure.Database;
 
 namespace Modules.Patients.Features.Appointments.Book;
 
@@ -60,6 +62,7 @@ public record BookAppointmentCommand(
 
 public class BookAppointmentCommandHandler(
     IAppointmentsModuleApi appointmentsModuleApi,
+    PatientsDbContext patientsDbContext,
     ILogger<BookAppointmentCommandHandler> logger) : ICommandHandler<BookAppointmentCommand>
 {
     public async Task<Result> Handle(BookAppointmentCommand command, CancellationToken cancellationToken)
@@ -70,8 +73,20 @@ public class BookAppointmentCommandHandler(
                 "Booking appointment for patient {PatientId} with professional {ProfessionalId} on {StartDate} - {EndDate}",
                 command.UserId, command.ProfessionalId, command.StartDate, command.EndDate);
 
+            var patientId =
+                await patientsDbContext.Patients.FirstOrDefaultAsync(p => p.UserId == command.UserId,
+                    cancellationToken);
+            if (patientId == null)
+            {
+                logger.LogWarning("Patient with UserId {UserId} not found", command.UserId);
+                return Result.Failure(
+                    Error.Failure(
+                        "BookAppointment.PatientNotFound",
+                        "Patient not found."));
+            }
+
             var result = await appointmentsModuleApi.ScheduleAppointmentAsync(
-                command.UserId,
+                patientId.Id,
                 command.ProfessionalId,
                 command.StartDate,
                 command.EndDate,

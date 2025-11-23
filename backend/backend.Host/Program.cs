@@ -14,7 +14,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder
     .AddApi()
     .AddAuthentication()
-    .AddServices()     
+    .AddServices()
     .AddErrorHandling()
     .AddLogging()
     .AddSwagger()
@@ -29,7 +29,7 @@ builder.Host.UseSerilog((context, configuration) =>
 
 WebApplication app = builder.Build();
 
-if ( app.Environment.IsDevelopment() )
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -39,19 +39,17 @@ using (var scope = app.Services.CreateScope())
 {
     var identityDbContext = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
     await identityDbContext.Database.MigrateAsync();
-    
+
     var appointmentsDbContext = scope.ServiceProvider.GetRequiredService<AppointmentsDbContext>();
     await appointmentsDbContext.Database.MigrateAsync();
-    
+
     var patientsDbContext = scope.ServiceProvider.GetRequiredService<PatientsDbContext>();
     await patientsDbContext.Database.MigrateAsync();
-    
+
     var professionalsDbContext = scope.ServiceProvider.GetRequiredService<ProfessionalsDbContext>();
     await professionalsDbContext.Database.MigrateAsync();
-    
-    var appointmentsDbContext = scope.ServiceProvider.GetRequiredService<AppointmentsDbContext>();
-    await appointmentsDbContext.Database.MigrateAsync();
-    
+
+
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
     await IdentityDataSeeder.SeedRolesAsync(roleManager);
 
@@ -59,19 +57,19 @@ using (var scope = app.Services.CreateScope())
     await supabaseService.InitializeAsync();
 }
 
-app.UseExceptionHandler();           
-app.UseSerilogRequestLogging(); 
-app.UseRateLimiter();         
+app.UseExceptionHandler();
+app.UseSerilogRequestLogging();
+app.UseRateLimiter();
 
-app.MapHealthCheckEndpoints();   
+app.MapHealthCheckEndpoints();
 
-app.UseCors("AllowReactApp");     
-app.UseAuthentication();       
-app.UseAuthorization();       
+app.UseCors("AllowReactApp");
+app.UseAuthentication();
+app.UseAuthorization();
 
-app.UseHangfireDashboard();   
-app.MapEndpoints();            
-app.MapControllers();   
+app.UseHangfireDashboard();
+app.MapEndpoints();
+app.MapControllers();
 
 
 await app.RunAsync();
