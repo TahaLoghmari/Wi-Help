@@ -13,4 +13,8 @@
         <ProjectReference Include="..\Modules.Patients.PublicApi\Modules.Patients.PublicApi.csproj" />
         <ProjectReference Include="..\..\Identity\Modules.Identity.PublicApi\Modules.Identity.PublicApi.csproj" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Appointments\GetAppointments\" />
+      <Folder Include="Appointments\GetProfessionalAvailability\" />
+    </ItemGroup>
 </Project>

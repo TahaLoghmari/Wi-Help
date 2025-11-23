@@ -76,3 +76,30 @@ export const profileAndBioFormSchema = z
       path: ["endPrice"],
     },
   );
+
+
+
+const availabilitySlotSchema = z.object({
+  id: z.string().optional().nullable(),
+  startTime: z.string(),
+  endTime: z.string(),
+});
+
+const dayAvailabilitySchema = z.object({
+  dayOfWeek: z.enum([
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ]),
+  isActive: z.boolean(),
+  availabilitySlots: z.array(availabilitySlotSchema),
+});
+
+export const scheduleFormSchema = z.object({
+  timeZoneId: z.string(),
+  days: z.array(dayAvailabilitySchema),
+});

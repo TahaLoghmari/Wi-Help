@@ -19,7 +19,8 @@ builder
     .AddSwagger()
     .AddRateLimiting()
     .AddCaching()
-    .AddHangfire();
+    .AddHangfire()
+    .AddJsonConfiguration();
 
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
