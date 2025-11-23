@@ -112,7 +112,7 @@ services:
         # - VITE_APP_URL=https://wi-help.com
     container_name: web
     depends_on:
-      web-api:
+      api:
         condition: service_started
     labels:
       - traefik.enable=true
