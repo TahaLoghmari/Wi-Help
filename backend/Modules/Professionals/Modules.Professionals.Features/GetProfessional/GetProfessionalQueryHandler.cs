@@ -1,0 +1,64 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Modules.Common.Features.Abstractions;
+using Modules.Common.Features.Results;
+using Modules.Identity.PublicApi;
+using Modules.Professionals.Domain;
+using Modules.Professionals.Domain.Entities;
+using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Infrastructure.DTOs;
+
+namespace Modules.Professionals.Features.GetProfessional;
+
+public sealed class GetProfessionalQueryHandler(
+    IIdentityModuleApi identityApi,
+    ProfessionalsDbContext dbContext,
+    ILogger<GetProfessionalQueryHandler> logger) : IQueryHandler<GetProfessionalQuery, ProfessionalProfileDto>
+{
+    public async Task<Result<ProfessionalProfileDto>> Handle(
+        GetProfessionalQuery query,
+        CancellationToken cancellationToken)
+    {
+        logger.LogInformation("Retrieving professional profile for ProfessionalId: {ProfessionalId}", query.ProfessionalId);
+
+        var professional = await dbContext.Professionals
+            .FirstOrDefaultAsync(p => p.Id == query.ProfessionalId, cancellationToken);
+
+        if (professional is null)
+        {
+            logger.LogWarning("Professional profile not found for ProfessionalId: {ProfessionalId}", query.ProfessionalId);
+            return Result<ProfessionalProfileDto>.Failure(
+                ProfessionalErrors.NotFound(query.ProfessionalId));
+        }
+
+        var userResult = await identityApi.GetUserByIdAsync(professional.UserId, cancellationToken);
+        if (!userResult.IsSuccess)
+        {
+            logger.LogWarning("Failed to retrieve user for UserId: {UserId}", professional.UserId);
+            return Result<ProfessionalProfileDto>.Failure(userResult.Error);
+        }
+
+        var user = userResult.Value;
+
+        var profileDto = new ProfessionalProfileDto(
+            professional.Id,
+            professional.UserId,
+            user.FirstName,
+            user.LastName,
+            user.Email,
+            user.PhoneNumber,
+            user.DateOfBirth,
+            user.Gender,
+            user.Address,
+            professional.Specialization,
+            professional.Services.ToList(),
+            professional.Experience,
+            professional.StartPrice,
+            professional.EndPrice,
+            professional.Bio,
+            professional.IsVerified,
+            user.ProfilePictureUrl);
+
+        return Result<ProfessionalProfileDto>.Success(profileDto);
+    }
+}
