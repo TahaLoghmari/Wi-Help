@@ -2,19 +2,19 @@ import Icon2 from "@/assets/Icon-2.png";
 
 export function FooterSection() {
   return (
-    <div className="my-10">
-      <div className="grid grid-cols-4 border-b-2 border-gray-400/20 pb-4">
-        <div className="flex flex-col gap-6">
-          <div className="flex items-center gap-5">
-            <img src={Icon2} alt="Logo" className="h-10" />
+    <div className="my-6 md:my-10">
+      <div className="grid grid-cols-1 gap-6 border-b-2 border-gray-400/20 pb-6 sm:grid-cols-2 md:gap-4 md:pb-4 lg:grid-cols-4">
+        <div className="flex flex-col gap-4 md:gap-6">
+          <div className="flex items-center gap-4 md:gap-5">
+            <img src={Icon2} alt="Logo" className="h-8 md:h-10" />
             <div className="flex flex-col">
-              <p className="text-xl font-bold text-white">Wi Help</p>
-              <p className="text-accent text-xs">
+              <p className="text-lg font-bold text-white md:text-xl">Wi Help</p>
+              <p className="text-accent text-[10px] md:text-xs">
                 taking care of others is our priority
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 md:gap-4">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               x="0px"
@@ -59,57 +59,63 @@ export function FooterSection() {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <p className="font-semibold text-white">Services</p>
-          <p className="cursor-pointer text-gray-300 hover:text-[#5ed0ab]">
+          <p className="text-sm font-semibold text-white md:text-base">
+            Services
+          </p>
+          <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
             Nursing Care
           </p>
-          <p className="cursor-pointer text-gray-300 hover:text-[#5ed0ab]">
+          <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
             Physiotherapy
           </p>
-          <p className="cursor-pointer text-gray-300 hover:text-[#5ed0ab]">
+          <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
             Personal Care
           </p>
-          <p className="cursor-pointer text-gray-300 hover:text-[#5ed0ab]">
+          <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
             Emergency Care
           </p>
         </div>
         <div className="flex flex-col gap-2">
-          <p className="font-semibold text-white">Company</p>
-          <p className="cursor-pointer text-gray-300 hover:text-[#5ed0ab]">
+          <p className="text-sm font-semibold text-white md:text-base">
+            Company
+          </p>
+          <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
             About Us
           </p>
-          <p className="cursor-pointer text-gray-300 hover:text-[#5ed0ab]">
+          <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
             Careers
           </p>
-          <p className="cursor-pointer text-gray-300 hover:text-[#5ed0ab]">
+          <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
             Press
           </p>
-          <p className="cursor-pointer text-gray-300 hover:text-[#5ed0ab]">
+          <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
             Contact
           </p>
         </div>
         <div className="flex flex-col gap-2">
-          <p className="font-semibold text-white">Support</p>
-          <p className="cursor-pointer text-gray-300 hover:text-[#5ed0ab]">
+          <p className="text-sm font-semibold text-white md:text-base">
+            Support
+          </p>
+          <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
             Help Center
           </p>
-          <p className="cursor-pointer text-gray-300 hover:text-[#5ed0ab]">
+          <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
             Safety
           </p>
-          <p className="cursor-pointer text-gray-300 hover:text-[#5ed0ab]">
+          <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
             Privacy Policy
           </p>
-          <p className="cursor-pointer text-gray-300 hover:text-[#5ed0ab]">
+          <p className="cursor-pointer text-xs text-gray-300 hover:text-[#5ed0ab] md:text-sm">
             Terms of Service
           </p>
         </div>
       </div>
-      <div className="mt-4 flex items-center justify-between">
-        <p className="text-xs text-white">
+      <div className="mt-4 flex flex-col items-center justify-between gap-3 sm:flex-row">
+        <p className="text-[10px] text-white md:text-xs">
           © 2024 Wi-Help. All rights reserved.
         </p>
         <div className="flex items-center gap-2">
-          <p className="text-xs text-white">Available on:</p>
+          <p className="text-[10px] text-white md:text-xs">Available on:</p>
           <div className="flex items-center gap-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
