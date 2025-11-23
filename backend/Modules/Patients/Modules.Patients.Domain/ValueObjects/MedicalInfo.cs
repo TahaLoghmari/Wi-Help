@@ -4,8 +4,8 @@ namespace Modules.Patients.Domain.ValueObjects;
 
 public class MedicalInfo
 {
-    public List<string> ChronicConditions { get; set; } = new List<string>();
-    public List<string> Allergies { get; set; } = new List<string>();
-    public List<string> Medications { get; set; } = new List<string>();
+    public List<string>? ChronicConditions { get; set; }
+    public List<string>? Allergies { get; set; }
+    public List<string>? Medications { get; set; }
     public MobilityStatus MobilityStatus { get; set; } = MobilityStatus.Normal;
 }    
