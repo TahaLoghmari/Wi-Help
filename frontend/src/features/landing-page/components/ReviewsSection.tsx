@@ -10,10 +10,12 @@ import { REVIEWS } from "@/features/landing-page";
 
 export function ReviewsSection() {
   return (
-    <div className="my-20 flex flex-col items-center gap-28">
-      <div className="flex w-full flex-col items-center justify-center gap-4">
-        <p className="text-4xl font-bold">What Our Patiens Say</p>
-        <p className="text-center text-lg text-gray-600">
+    <div className="my-12 flex flex-col items-center gap-12 md:my-20 md:gap-28">
+      <div className="flex w-full flex-col items-center justify-center gap-3 px-4 md:gap-4">
+        <p className="text-center text-2xl font-bold sm:text-3xl md:text-4xl">
+          What Our Patiens Say
+        </p>
+        <p className="text-center text-sm text-gray-600 md:text-lg">
           Real experiences from people who trust Wi Help
         </p>
       </div>
@@ -31,10 +33,13 @@ export function ReviewsSection() {
       >
         <CarouselContent>
           {REVIEWS.map((review, index) => (
-            <CarouselItem key={index} className="basis-1/3">
-              <div className="mb-5 flex h-50 flex-col gap-4 rounded-md bg-white p-6 shadow-md">
+            <CarouselItem
+              key={index}
+              className="basis-full md:basis-1/2 lg:basis-1/3"
+            >
+              <div className="mb-5 flex h-50 flex-col gap-4 rounded-md bg-white p-5 shadow-md md:p-6">
                 <div className="flex items-center gap-2">
-                  <div className="h-16 w-16 overflow-hidden rounded-full shadow-md ring-2 ring-gray-200">
+                  <div className="h-14 w-14 overflow-hidden rounded-full shadow-md ring-2 ring-gray-200 md:h-16 md:w-16">
                     <img
                       src={review.profilePictureUrl}
                       alt={`${review.name} profile`}
@@ -44,7 +49,9 @@ export function ReviewsSection() {
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <p>{review.name}</p>
+                    <p className="text-sm font-medium md:text-base">
+                      {review.name}
+                    </p>
                     <div className="flex items-center gap-1">
                       {Array.from({ length: review.numberOfStars }).map(
                         (_, index) => (
@@ -67,8 +74,8 @@ export function ReviewsSection() {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
+        <CarouselPrevious className="hidden md:flex" />
+        <CarouselNext className="hidden md:flex" />
       </Carousel>
     </div>
   );

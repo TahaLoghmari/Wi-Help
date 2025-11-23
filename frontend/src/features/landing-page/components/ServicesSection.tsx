@@ -21,21 +21,24 @@ const GradientMoveRight = () => (
 
 export function ServicesSection() {
   return (
-    <div className="mb-20 flex flex-col gap-28">
-      <div className="flex w-full flex-col items-center justify-center gap-4">
-        <p className="text-4xl font-bold">Our Healthcare Services</p>
-        <p className="text-center text-gray-600">
-          Professional healthcare services delivered to your home <br />
+    <div className="mb-12 flex flex-col gap-12 md:mb-20 md:gap-28">
+      <div className="flex w-full flex-col items-center justify-center gap-3 px-4 md:gap-4">
+        <p className="text-center text-2xl font-bold sm:text-3xl md:text-4xl">
+          Our Healthcare Services
+        </p>
+        <p className="text-center text-sm text-gray-600 md:text-base">
+          Professional healthcare services delivered to your home{" "}
+          <br className="hidden sm:block" />
           by verified medical professionals
         </p>
       </div>
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
         {SERVICES.map((service, idx) => {
           const Icon = service.icon;
           return (
             <div
               key={idx}
-              className="flex flex-col gap-4 rounded-md bg-white p-6 shadow-sm"
+              className="flex flex-col gap-4 rounded-md bg-white p-5 shadow-sm md:p-6"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-linear-to-r from-[#3fa6ff] to-[#14d3ac] p-2">
                 <Icon />
