@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.PublicApi;
+using Modules.Professionals.Features.GetProfessional;
 using Modules.Professionals.Infrastructure.Database;
 using Modules.Professionals.Infrastructure.DTOs;
 
@@ -11,20 +12,18 @@ namespace Modules.Professionals.Features.GetProfessionals;
 public sealed class GetProfessionalsQueryHandler(
     IIdentityModuleApi identityApi,
     ProfessionalsDbContext dbContext,
-    ILogger<GetProfessionalsQueryHandler> logger) : IQueryHandler<GetProfessionalsQuery, List<ProfessionalProfileDto>>
+    ILogger<GetProfessionalsQueryHandler> logger) : IQueryHandler<GetProfessionalsQuery, List<GetProfessionalDto>>
 {
-    public async Task<Result<List<ProfessionalProfileDto>>> Handle(
+    public async Task<Result<List<GetProfessionalDto>>> Handle(
         GetProfessionalsQuery query,
         CancellationToken cancellationToken)
     {
         logger.LogInformation("Retrieving professionals with filters: {@Query}", query);
 
         var professionalsQuery = dbContext.Professionals
-            .Include(p => p.AvailabilityDays)
             .AsNoTracking()
             .AsQueryable();
 
-        // Price Filter
         if (query.Parameters.MaxPrice.HasValue)
         {
             professionalsQuery = professionalsQuery.Where(p => p.EndPrice <= query.Parameters.MaxPrice.Value);
@@ -53,7 +52,7 @@ public sealed class GetProfessionalsQueryHandler(
 
         if (professionals.Count == 0)
         {
-            return Result<List<ProfessionalProfileDto>>.Success([]);
+            return Result<List<GetProfessionalDto>>.Success([]);
         }
 
         var userIds = professionals.Select(p => p.UserId).Distinct().ToList();
@@ -62,11 +61,11 @@ public sealed class GetProfessionalsQueryHandler(
         if (!usersResult.IsSuccess)
         {
             logger.LogError("Failed to retrieve users for professionals. Error: {Error}", usersResult.Error);
-            return Result<List<ProfessionalProfileDto>>.Failure(usersResult.Error);
+            return Result<List<GetProfessionalDto>>.Failure(usersResult.Error);
         }
 
         var users = usersResult.Value.ToDictionary(u => u.Id);
-        var professionalDtos = new List<ProfessionalProfileDto>();
+        var professionalDtos = new List<GetProfessionalDto>();
 
         foreach (var professional in professionals)
         {
@@ -87,7 +86,7 @@ public sealed class GetProfessionalsQueryHandler(
 
                 if (matchesSearch && matchesLocation)
                 {
-                    professionalDtos.Add(new ProfessionalProfileDto(
+                    professionalDtos.Add(new GetProfessionalDto(
                         professional.Id,
                         professional.UserId,
                         user.FirstName,
@@ -98,7 +97,7 @@ public sealed class GetProfessionalsQueryHandler(
                         user.Gender,
                         user.Address,
                         professional.Specialization,
-                        professional.Services.ToList(),
+                        professional.Services,
                         professional.Experience,
                         professional.StartPrice,
                         professional.EndPrice,
@@ -115,6 +114,6 @@ public sealed class GetProfessionalsQueryHandler(
 
         logger.LogInformation("Retrieved {Count} professionals", professionalDtos.Count);
 
-        return Result<List<ProfessionalProfileDto>>.Success(professionalDtos);
+        return Result<List<GetProfessionalDto>>.Success(professionalDtos);
     }
 }

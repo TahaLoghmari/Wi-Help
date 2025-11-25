@@ -14,6 +14,8 @@ public class PatientConfiguration : IEntityTypeConfiguration<Patient>
 
         builder.Property(p => p.UserId)
             .IsRequired();
+        
+        builder.Property(p => p.Bio).IsRequired(false);
 
         builder.OwnsOne(p => p.EmergencyContact, contact =>
         {
@@ -24,11 +26,13 @@ public class PatientConfiguration : IEntityTypeConfiguration<Patient>
 
         builder.OwnsOne(p => p.MedicalInfo, medicalInfo =>
         {
-            medicalInfo.Property(m => m.MobilityStatus).IsRequired();
+            medicalInfo.Property(m => m.MobilityStatus).IsRequired(false);
             medicalInfo.Property(m => m.ChronicConditions).IsRequired(false);
             medicalInfo.Property(m => m.Allergies).IsRequired(false);
             medicalInfo.Property(m => m.Medications).IsRequired(false);
         });
+
+        builder.Navigation(p => p.MedicalInfo).IsRequired(false);
 
     }
 }

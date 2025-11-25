@@ -13,11 +13,11 @@ internal sealed class GetProfessional : IEndpoint
     {
         app.MapGet(ProfessionalsEndpoints.GetProfessionalById, async (
                 Guid id,
-                IQueryHandler<GetProfessionalQuery, ProfessionalProfileDto> handler,
+                IQueryHandler<GetProfessionalQuery, GetProfessionalDto> handler,
                 CancellationToken cancellationToken) =>
             {
                 GetProfessionalQuery query = new GetProfessionalQuery(id);
-                Result<ProfessionalProfileDto> result = await handler.Handle(query, cancellationToken);
+                Result<GetProfessionalDto> result = await handler.Handle(query, cancellationToken);
 
                 return result.Match(
                     profileDto => Results.Ok(profileDto),

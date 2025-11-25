@@ -5,16 +5,15 @@ using Modules.Common.Features.Results;
 using Modules.Identity.PublicApi;
 using Modules.Patients.Domain;
 using Modules.Patients.Infrastructure.Database;
-using Modules.Patients.Infrastructure.DTOs;
 
 namespace Modules.Patients.Features.GetPatient;
 
 public sealed class GetPatientQueryHandler(
     IIdentityModuleApi identityApi,
     PatientsDbContext dbContext,
-    ILogger<GetPatientQueryHandler> logger) : IQueryHandler<GetPatientQuery, PatientProfileDto>
+    ILogger<GetPatientQueryHandler> logger) : IQueryHandler<GetPatientQuery, GetPatientDto>
 {
-    public async Task<Result<PatientProfileDto>> Handle(
+    public async Task<Result<GetPatientDto>> Handle(
         GetPatientQuery query,
         CancellationToken cancellationToken)
     {
@@ -26,7 +25,7 @@ public sealed class GetPatientQueryHandler(
         if (patient is null)
         {
             logger.LogWarning("Patient profile not found for PatientId: {PatientId}", query.PatientId);
-            return Result<PatientProfileDto>.Failure(
+            return Result<GetPatientDto>.Failure(
                 PatientErrors.NotFoundByPatientId(query.PatientId));
         }
 
@@ -34,12 +33,12 @@ public sealed class GetPatientQueryHandler(
         if (!userResult.IsSuccess)
         {
             logger.LogWarning("Failed to retrieve user for UserId: {UserId}", patient.UserId);
-            return Result<PatientProfileDto>.Failure(userResult.Error);
+            return Result<GetPatientDto>.Failure(userResult.Error);
         }
 
         var user = userResult.Value;
 
-        var profileDto = new PatientProfileDto(
+        var profileDto = new GetPatientDto(
             patient.Id,
             patient.UserId,
             user.FirstName,
@@ -50,14 +49,10 @@ public sealed class GetPatientQueryHandler(
             user.Gender,
             user.Address,
             patient.EmergencyContact,
-            new MedicalInfoDto(
-                patient.MedicalInfo.ChronicConditions ?? [],
-                patient.MedicalInfo.Allergies ?? [],
-                patient.MedicalInfo.Medications ?? [],
-                patient.MedicalInfo.MobilityStatus.ToString()),
+            patient.MedicalInfo,
             patient.Bio,
             user.ProfilePictureUrl);
 
-        return Result<PatientProfileDto>.Success(profileDto);
+        return Result<GetPatientDto>.Success(profileDto);
     }
 }

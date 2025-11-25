@@ -59,6 +59,13 @@ public sealed class RegisterPatientCommandHandler(
         dbContext.Patients.Add(patient);
         await dbContext.SaveChangesAsync(cancellationToken);
 
+        var addClaimResult = await identityApi.AddClaimAsync(userId, "PatientId", patient.Id.ToString(), cancellationToken);
+        if (!addClaimResult.IsSuccess)
+        {
+            logger.LogWarning("Failed to add PatientId claim for UserId: {UserId}", userId);
+            // Maybe not fail the registration, just log
+        }
+
         logger.LogInformation("Patient registration completed successfully for UserId: {UserId}, PatientId: {PatientId}",
             userId, patient.Id);
 

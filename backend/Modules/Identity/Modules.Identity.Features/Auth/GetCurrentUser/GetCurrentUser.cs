@@ -13,14 +13,14 @@ internal sealed class GetCurrentUser : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet(IdentityEndpoints.GetCurrentUser, async (
-                IQueryHandler<GetCurrentUserQuery, UserDto> handler,
+                IQueryHandler<GetCurrentUserQuery, GetCurrentUserDto> handler,
                 HttpContext httpContext,
                 CancellationToken cancellationToken) =>
             {
                 var userId = httpContext.User.FindFirst("sub")?.Value ?? httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
                 GetCurrentUserQuery query = new GetCurrentUserQuery(userId);
-                Result<UserDto> result = await handler.Handle(query, cancellationToken);
+                Result<GetCurrentUserDto> result = await handler.Handle(query, cancellationToken);
 
                 return result.Match(
                     userDto => Results.Ok(userDto),

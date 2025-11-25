@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Modules.Identity.Domain.Entities;
 using Modules.Identity.Features.DTOs;
+using Modules.Identity.Infrastructure.DTOs;
 using Modules.Identity.Infrastructure.Settings;
 
 namespace Modules.Identity.Infrastructure.Services;
@@ -17,16 +18,18 @@ public sealed class TokenProvider(
     private readonly JwtSettings _jwtAuthSettings = jwtAuthSettings.Value;
     public AccessTokensDto Create(
         TokenRequest tokenRequest,
-        string role )
+        string role,
+        IEnumerable<Claim> additionalClaims)
     {
         return new AccessTokensDto(
-            GenerateAccessToken(tokenRequest,role),
+            GenerateAccessToken(tokenRequest, role, additionalClaims),
             GenerateRefreshToken()
         );
     }
     private string GenerateAccessToken(
         TokenRequest tokenRequest,
-        string role)
+        string role,
+        IEnumerable<Claim> additionalClaims)
     {
         var securityKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_jwtAuthSettings.Key)
@@ -42,6 +45,8 @@ public sealed class TokenProvider(
             new Claim(JwtRegisteredClaimNames.Email, tokenRequest.Email),
             new Claim(ClaimTypes.Role, role)
         };
+
+        claims.AddRange(additionalClaims);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {

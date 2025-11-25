@@ -1,4 +1,5 @@
 using Modules.Common.Features.ValueObjects;
+using Modules.Patients.Domain.ValueObjects;
 
 namespace Modules.Patients.PublicApi.Contracts;
 
@@ -9,11 +10,11 @@ public record PatientDto(
     string LastName,
     string Email,
     string PhoneNumber,
-    string ProfilePictureUrl,
+    string? ProfilePictureUrl,
     string DateOfBirth,
     string Gender,
     Address Address,
-    EmergencyContactDto EmergencyContact,
-    MedicalInfoDto MedicalInfo,
-    string Bio
+    EmergencyContact EmergencyContact,
+    MedicalInfo? MedicalInfo,
+    string? Bio
 );

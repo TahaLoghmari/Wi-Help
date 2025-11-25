@@ -9,15 +9,21 @@ public interface IIdentityModuleApi
         CreateUserRequest request,
         CancellationToken cancellationToken);
     
-    Task<Result<UserResponse>> GetUserByIdAsync(
+    Task<Result<UserDto>> GetUserByIdAsync(
         Guid userId,
         CancellationToken cancellationToken);
 
-    Task<Result<List<UserResponse>>> GetUsersByIdsAsync(
+    Task<Result<List<UserDto>>> GetUsersByIdsAsync(
         IEnumerable<Guid> userIds,
         CancellationToken cancellationToken);
     
     Task<Result> UpdateUserAsync(
         UpdateUserRequest request,
+        CancellationToken cancellationToken);
+    
+    Task<Result> AddClaimAsync(
+        Guid userId,
+        string claimType,
+        string claimValue,
         CancellationToken cancellationToken);
 }

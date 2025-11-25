@@ -6,6 +6,8 @@ using Microsoft.Extensions.Options;
 using Modules.Identity.Features.DTOs;
 using Modules.Identity.Infrastructure.Settings;
 
+namespace Modules.Identity.Infrastructure.Services;
+
 public sealed class CookieService(
     IOptions<JwtSettings> jwtAuthSettings,
     IWebHostEnvironment environment,

@@ -15,7 +15,9 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
         builder.Property(a => a.PatientId).IsRequired();
         builder.Property(a => a.ProfessionalId).IsRequired();
         
-        builder.Property(a => a.Notes).HasMaxLength(1000);
+        builder.Property(a => a.Notes)
+            .HasMaxLength(1000)
+            .IsRequired(false);
         
         builder.Property(a => a.StartDate).IsRequired();
         builder.Property(a => a.EndDate).IsRequired();

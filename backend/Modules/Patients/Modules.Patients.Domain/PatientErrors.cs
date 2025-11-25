@@ -15,4 +15,8 @@ public static class PatientErrors
     public static Error NotFoundByPatientId(Guid id) => Error.NotFound(
         "Patient.NotFound",
         $"Patient with ID {id} was not found.");
+
+    public static Error UserNotFound() => Error.NotFound(
+        "User.NotFound",
+        "User not found.");
 }

@@ -7,6 +7,7 @@ using Modules.Identity.Domain.Entities;
 using Modules.Identity.Domain.Errors;
 using Modules.Identity.Features.DTOs;
 using Modules.Identity.Infrastructure.Database;
+using Modules.Identity.Infrastructure.DTOs;
 using Modules.Identity.Infrastructure.Settings;
 
 namespace Modules.Identity.Infrastructure.Services;
@@ -27,13 +28,16 @@ public sealed class TokenManagementService(
         string email,
         CancellationToken cancellationToken)
     {
+        var user = await userManager.FindByIdAsync(userId.ToString());
+
+        var claims = await userManager.GetClaimsAsync(user!);
 
         var oldRefreshTokens = identityDbContext.RefreshTokens
             .Where(rt => rt.UserId == userId);
         identityDbContext.RefreshTokens.RemoveRange(oldRefreshTokens);
 
         TokenRequest tokenRequest = new TokenRequest(userId, email);
-        AccessTokensDto accessTokens = tokenProvider.Create(tokenRequest,role);
+        AccessTokensDto accessTokens = tokenProvider.Create(tokenRequest, role, claims);
 
         var refreshToken = new RefreshToken
         {
@@ -83,8 +87,10 @@ public sealed class TokenManagementService(
         
         string role = userRoles[0];
 
+        var claims = await userManager.GetClaimsAsync(refreshToken.User);
+
         var tokenRequest = new TokenRequest(refreshToken.User.Id, refreshToken.User.Email!);
-        AccessTokensDto tokens = tokenProvider.Create(tokenRequest,role);
+        AccessTokensDto tokens = tokenProvider.Create(tokenRequest, role, claims);
 
         refreshToken.Token = tokens.RefreshToken;
         refreshToken.ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthSettings.RefreshTokenExpirationDays);

@@ -60,7 +60,7 @@ public class IdentityModuleApi(
         return Result<Guid>.Success(user.Id);
     }
 
-    public async Task<Result<UserResponse>> GetUserByIdAsync(
+    public async Task<Result<UserDto>> GetUserByIdAsync(
         Guid userId,
         CancellationToken cancellationToken)
     {
@@ -70,10 +70,10 @@ public class IdentityModuleApi(
         if (user is null)
         {
             logger.LogWarning("User not found for UserId: {UserId}", userId);
-            return Result<UserResponse>.Failure(Error.NotFound("IdentityApi.UserNotFound", $"User with ID '{userId}' not found."));
+            return Result<UserDto>.Failure(Error.NotFound("IdentityApi.UserNotFound", $"User with ID '{userId}' not found."));
         }
 
-        var userResponse = new UserResponse(
+        var userResponse = new UserDto(
             user.Id,
             user.Email!,
             user.FirstName,
@@ -86,7 +86,7 @@ public class IdentityModuleApi(
 
         logger.LogInformation("User retrieved successfully for UserId: {UserId}", userId);
 
-        return Result<UserResponse>.Success(userResponse);
+        return Result<UserDto>.Success(userResponse);
     }
 
     public async Task<Result> UpdateUserAsync(
@@ -129,7 +129,7 @@ public class IdentityModuleApi(
         return Result.Success();
     }
 
-    public async Task<Result<List<UserResponse>>> GetUsersByIdsAsync(
+    public async Task<Result<List<UserDto>>> GetUsersByIdsAsync(
         IEnumerable<Guid> userIds,
         CancellationToken cancellationToken)
     {
@@ -140,7 +140,7 @@ public class IdentityModuleApi(
             .Where(u => userIds.Contains(u.Id))
             .ToListAsync(cancellationToken);
 
-        var userResponses = users.Select(user => new UserResponse(
+        var userResponses = users.Select(user => new UserDto(
             user.Id,
             user.Email!,
             user.FirstName,
@@ -153,6 +153,33 @@ public class IdentityModuleApi(
 
         logger.LogInformation("Retrieved {Count} users", userResponses.Count);
 
-        return Result<List<UserResponse>>.Success(userResponses);
+        return Result<List<UserDto>>.Success(userResponses);
+    }
+    
+    public async Task<Result> AddClaimAsync(
+        Guid userId,
+        string claimType,
+        string claimValue,
+        CancellationToken cancellationToken)
+    {
+        logger.LogInformation("Adding claim {ClaimType} to user {UserId}", claimType, userId);
+
+        var user = await userManager.FindByIdAsync(userId.ToString());
+        if (user is null)
+        {
+            logger.LogWarning("User not found for UserId: {UserId}", userId);
+            return Result.Failure(Error.NotFound("IdentityApi.UserNotFound", $"User with ID '{userId}' not found."));
+        }
+
+        var result = await userManager.AddClaimAsync(user, new System.Security.Claims.Claim(claimType, claimValue));
+        if (!result.Succeeded)
+        {
+            logger.LogError("Failed to add claim {ClaimType} to user {UserId}. Errors: {Errors}",
+                claimType, userId, string.Join(", ", result.Errors.Select(e => $"{e.Code}: {e.Description}")));
+            return Result.Failure(Error.Failure("IdentityApi.AddClaimFailed", "Failed to add claim."));
+        }
+
+        logger.LogInformation("Claim {ClaimType} added successfully to user {UserId}", claimType, userId);
+        return Result.Success();
     }
 }

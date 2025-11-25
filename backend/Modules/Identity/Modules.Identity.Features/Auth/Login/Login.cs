@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Routing;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.Features.DTOs;
+using Modules.Identity.Infrastructure.Services;
 
 namespace Modules.Identity.Features.Auth.Login;
 

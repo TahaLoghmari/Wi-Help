@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.Extensions.DependencyInjection;
 using Modules.Professionals.Domain.Entities;
 
 namespace Modules.Professionals.Infrastructure.Database.Configurations;
@@ -23,24 +24,26 @@ public class ProfessionalConfiguration : IEntityTypeConfiguration<Professional>
             .IsRequired();
 
         builder.Property(p => p.StartPrice)
-            .IsRequired();
-
+            .IsRequired(false);
+        
         builder.Property(p => p.EndPrice)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(p => p.Bio)
-            .HasMaxLength(2000);
+            .HasMaxLength(2000)
+            .IsRequired(false);
 
         builder.Property(p => p.IsVerified)
             .IsRequired();
 
+        builder.Property(p => p.Services)
+            .IsRequired(false);
+        
         builder.Property(p => p.CreatedAt)
             .IsRequired();
 
         builder.Property(p => p.UpdatedAt)
             .IsRequired();
 
-        builder.Property(p => p.Services)
-            .IsRequired();
     }
 }

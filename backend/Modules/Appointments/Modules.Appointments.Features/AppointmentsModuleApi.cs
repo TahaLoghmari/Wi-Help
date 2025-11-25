@@ -13,54 +13,6 @@ public class AppointmentsModuleApi(
     ILogger<AppointmentsModuleApi> logger)
     : IAppointmentsModuleApi
 {
-    public async Task<Result> ScheduleAppointmentAsync(
-        Guid patientId,
-        Guid professionalId,
-        DateTime startDate,
-        DateTime endDate,
-        decimal price,
-        string timeZoneId,
-        string notes,
-        CancellationToken cancellationToken = default)
-    {
-        logger.LogInformation(
-            "Scheduling appointment for patient {PatientId} with professional {ProfessionalId} on {StartDate} - {EndDate}",
-            patientId, professionalId, startDate, endDate);
-        try
-        {
-            // Here you would add the logic to schedule the appointment in the database
-            // For now, we just log the action
-
-
-            // TODO : Later on Check for conflicting sessions
-
-            // TODO : convert Date, StartTime, EndTime to DateTime with TimeZoneId to the timezone of the doctor : 
-            // 
-            /*var sessionStartDateTimeTimeZoneMentor = TimeConvertion.ConvertInstantToTimeZone(
-                sessionStartDateTimeUtc,
-                product.TimeZoneId == "" ? CommonDefaults.TimeZone : product.TimeZoneId);
-
-            var requestedDayOfWeek = sessionStartDateTimeTimeZoneMentor.DayOfWeek;
-
-            var sessionEndDateTimeTimeZoneMentor = TimeConvertion.ConvertInstantToTimeZone(
-                sessionEndDateTimeUtc,
-                product.TimeZoneId == "" ? CommonDefaults.TimeZone : product.TimeZoneId);*/
-
-            var appointment =
-                new Appointment(patientId, professionalId, notes, startDate, endDate, AppointmentUrgency.Medium,
-                    price);
-            await appointmentsDbContext.Appointments.AddAsync(appointment, cancellationToken);
-            await appointmentsDbContext.SaveChangesAsync(cancellationToken);
-
-
-            return Result.Success();
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, "Scheduling appointment failed");
-            return Result.Failure(Error.Failure("Scheduling.Appointment.Failed", "Scheduling appointment failed"));
-        }
-    }
 
     public async Task<Result> RespondToAppointmentAsync(
         Guid appointmentId,
@@ -71,66 +23,54 @@ public class AppointmentsModuleApi(
         logger.LogInformation(
             "Professional {ProfessionalId} responding to appointment {AppointmentId} with action: {Action}",
             professionalId, appointmentId, isAccepted ? "Accept" : "Reject");
-
-        try
-        {
             var appointment =
                 await appointmentsDbContext.Appointments.FirstOrDefaultAsync(ap => ap.Id == appointmentId,
                     cancellationToken);
-
-            if (appointment == null)
-            {
-                logger.LogWarning("Appointment {AppointmentId} not found", appointmentId);
-                return Result.Failure(
-                    Error.NotFound(
-                        "Appointment.NotFound",
-                        $"Appointment with ID '{appointmentId}' not found."));
-            }
-
-            if (appointment.ProfessionalId != professionalId)
-            {
-                logger.LogWarning(
-                    "Professional {ProfessionalId} attempted to respond to appointment {AppointmentId} belonging to another professional",
-                    professionalId, appointmentId);
-                return Result.Failure(
-                    Error.Forbidden(
-                        "Appointment.NotAuthorized",
-                        "You are not authorized to respond to this appointment."));
-            }
-
-            if (appointment.Status != AppointmentStatus.Offered)
-            {
-                logger.LogWarning(
-                    "Cannot respond to appointment {AppointmentId} in status {Status}",
-                    appointmentId, appointment.Status);
-                return Result.Failure(
-                    Error.Problem(
-                        "Appointment.InvalidStatus",
-                        $"Appointment is in {appointment.Status} status and cannot be responded to."));
-            }
-
-            if (isAccepted)
-            {
-                appointment.Confirm();
-                logger.LogInformation("Appointment {AppointmentId} confirmed", appointmentId);
-            }
-            else
-            {
-                appointment.Cancel();
-                logger.LogInformation("Appointment {AppointmentId} cancelled", appointmentId);
-            }
-
-            await appointmentsDbContext.SaveChangesAsync(cancellationToken);
-
-            return Result.Success();
-        }
-        catch (Exception e)
+            
+        if (appointment == null)
         {
-            logger.LogError(e, "Failed to respond to appointment {AppointmentId}", appointmentId);
+            logger.LogWarning("Appointment {AppointmentId} not found", appointmentId);
             return Result.Failure(
-                Error.Failure(
-                    "Appointment.RespondFailed",
-                    "An error occurred while responding to the appointment."));
+                Error.NotFound(
+                    "Appointment.NotFound",
+                    $"Appointment with ID '{appointmentId}' not found."));
         }
+
+        if (appointment.ProfessionalId != professionalId)
+        {
+            logger.LogWarning(
+                "Professional {ProfessionalId} attempted to respond to appointment {AppointmentId} belonging to another professional",
+                professionalId, appointmentId);
+            return Result.Failure(
+                Error.Forbidden(
+                    "Appointment.NotAuthorized",
+                    "You are not authorized to respond to this appointment."));
+        }
+
+        if (appointment.Status != AppointmentStatus.Offered)
+        {
+            logger.LogWarning(
+                "Cannot respond to appointment {AppointmentId} in status {Status}",
+                appointmentId, appointment.Status);
+            return Result.Failure(
+                Error.Problem(
+                    "Appointment.InvalidStatus",
+                    $"Appointment is in {appointment.Status} status and cannot be responded to."));
+        }
+
+        if (isAccepted)
+        {
+            appointment.Confirm();
+            logger.LogInformation("Appointment {AppointmentId} confirmed", appointmentId);
+        }
+        else
+        {
+            appointment.Cancel();
+            logger.LogInformation("Appointment {AppointmentId} cancelled", appointmentId);
+        }
+
+        await appointmentsDbContext.SaveChangesAsync(cancellationToken);
+
+        return Result.Success();
     }
 }

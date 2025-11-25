@@ -8,7 +8,7 @@ public sealed class User : IdentityUser<Guid>
     public string FirstName { get; private set; } = string.Empty;
     public string LastName { get; private set; } = string.Empty;
     public string Gender { get; private set; } = string.Empty;
-    public string ProfilePictureUrl { get; private set; } = string.Empty;
+    public string? ProfilePictureUrl { get; private set; } 
     public Address Address { get; private set; } = null!;
     public DateTime DateOfBirth { get; private set; } = DateTime.MinValue;
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;

@@ -15,7 +15,7 @@ internal sealed class GetCurrentProfessional : IEndpoint
     {
         app.MapGet(ProfessionalsEndpoints.GetCurrentProfessional, async (
                 HttpContext httpContext,
-                IQueryHandler<GetCurrentProfessionalQuery, ProfessionalProfileDto> handler,
+                IQueryHandler<GetCurrentProfessionalQuery, GetCurrentProfessionalDto> handler,
                 CancellationToken cancellationToken) =>
             {
                 var userIdString = httpContext.User.FindFirst("sub")?.Value ?? 
@@ -27,7 +27,7 @@ internal sealed class GetCurrentProfessional : IEndpoint
                 }
 
                 GetCurrentProfessionalQuery query = new GetCurrentProfessionalQuery(userId);
-                Result<ProfessionalProfileDto> result = await handler.Handle(query, cancellationToken);
+                Result<GetCurrentProfessionalDto> result = await handler.Handle(query, cancellationToken);
 
                 return result.Match(
                     profileDto => Results.Ok(profileDto),

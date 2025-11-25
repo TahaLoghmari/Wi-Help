@@ -7,10 +7,10 @@ public class Appointment
     public Guid Id { get; private set; }
     public Guid PatientId { get; private set; }
     public Guid ProfessionalId { get; private set; }
-    public string Notes { get; private set; } = string.Empty;
+    public string? Notes { get; private set; } 
     public DateTime StartDate { get; private set; }
     public DateTime EndDate { get; private set; }
-    public AppointmentUrgency Urgency { get; private set; } = AppointmentUrgency.Low;
+    public AppointmentUrgency Urgency { get; private set; } 
     public AppointmentStatus Status { get; private set; }
     public decimal Price { get; private set; }
 
@@ -27,21 +27,21 @@ public class Appointment
     public Appointment(
         Guid patientId,
         Guid professionalId,
-        string notes,
         DateTime startDate,
         DateTime endDate,
+        decimal price,
         AppointmentUrgency urgency,
-        decimal price)
+        string? notes)
     {
         Id = Guid.NewGuid();
         PatientId = patientId;
         ProfessionalId = professionalId;
-        Notes = notes;
         StartDate = startDate;
         EndDate = endDate;
         Urgency = urgency;
         Status = AppointmentStatus.Offered;
         Price = price;
+        Notes = notes;
         OfferedAt = DateTime.UtcNow;
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
@@ -49,7 +49,6 @@ public class Appointment
 
     public void Confirm()
     {
-
         Status = AppointmentStatus.Confirmed;
         ConfirmedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
@@ -57,8 +56,6 @@ public class Appointment
 
     public void Cancel()
     {
-
-
         Status = AppointmentStatus.Cancelled;
         CancelledAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;

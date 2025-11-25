@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Patients.Infrastructure.DTOs;
 
 namespace Modules.Patients.Features.Auth.GetCurrentPatient;
 
@@ -15,7 +14,7 @@ internal sealed class GetCurrentPatient : IEndpoint
     {
         app.MapGet(PatientsEndpoints.GetCurrentPatient, async (
                 HttpContext httpContext,
-                IQueryHandler<GetCurrentPatientQuery, PatientProfileDto> handler,
+                IQueryHandler<GetCurrentPatientQuery, GetCurrentPatientDto> handler,
                 CancellationToken cancellationToken) =>
             {
                 var userIdString = httpContext.User.FindFirst("sub")?.Value ?? 
@@ -27,7 +26,7 @@ internal sealed class GetCurrentPatient : IEndpoint
                 }
 
                 GetCurrentPatientQuery query = new GetCurrentPatientQuery(userId);
-                Result<PatientProfileDto> result = await handler.Handle(query, cancellationToken);
+                Result<GetCurrentPatientDto> result = await handler.Handle(query, cancellationToken);
 
                 return result.Match(
                     profileDto => Results.Ok(profileDto),

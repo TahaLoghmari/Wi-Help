@@ -30,8 +30,7 @@ public class ProfessionalModuleApi(
         var userResult = await identityApi.GetUserByIdAsync(userId, cancellationToken);
         if (userResult.IsFailure)
         {
-             // Fallback if user not found, though unlikely
-             return Result<ProfessionalDto>.Success(new ProfessionalDto(professional.Id, professional.UserId));
+             return Result<ProfessionalDto>.Failure(userResult.Error);
         }
         
         var user = userResult.Value;
@@ -41,6 +40,18 @@ public class ProfessionalModuleApi(
             professional.UserId,
             user.FirstName,
             user.LastName,
+            user.Email,
+            user.PhoneNumber,
+            user.DateOfBirth,
+            user.Gender,
+            user.Address,
+            professional.Specialization,
+            professional.Services,
+            professional.Experience,
+            professional.StartPrice,
+            professional.EndPrice,
+            professional.Bio,
+            professional.IsVerified,
             user.ProfilePictureUrl
         ));
     }
@@ -69,18 +80,31 @@ public class ProfessionalModuleApi(
 
         var dtos = professionals.Select(p =>
         {
-            if (users.TryGetValue(p.UserId, out var user))
+            if (!users.TryGetValue(p.UserId, out var user))
             {
-                return new ProfessionalDto(
-                    p.Id,
-                    p.UserId,
-                    user.FirstName,
-                    user.LastName,
-                    user.ProfilePictureUrl
-                );
+                logger.LogWarning("User not found for ProfessionalId: {ProfessionalId}, UserId: {UserId}", p.Id, p.UserId);
+                return null;
             }
-            return new ProfessionalDto(p.Id, p.UserId);
-        }).ToList();
+            return new ProfessionalDto(
+                p.Id,
+                p.UserId,
+                user.FirstName,
+                user.LastName,
+                user.Email,
+                user.PhoneNumber,
+                user.DateOfBirth,
+                user.Gender,
+                user.Address,
+                p.Specialization,
+                p.Services,
+                p.Experience,
+                p.StartPrice,
+                p.EndPrice,
+                p.Bio,
+                p.IsVerified,
+                user.ProfilePictureUrl
+            );
+        }).Where(dto => dto != null).Cast<ProfessionalDto>().ToList();
 
         return Result<List<ProfessionalDto>>.Success(dtos);
     }

@@ -13,9 +13,9 @@ namespace Modules.Professionals.Features.GetProfessional;
 public sealed class GetProfessionalQueryHandler(
     IIdentityModuleApi identityApi,
     ProfessionalsDbContext dbContext,
-    ILogger<GetProfessionalQueryHandler> logger) : IQueryHandler<GetProfessionalQuery, ProfessionalProfileDto>
+    ILogger<GetProfessionalQueryHandler> logger) : IQueryHandler<GetProfessionalQuery, GetProfessionalDto>
 {
-    public async Task<Result<ProfessionalProfileDto>> Handle(
+    public async Task<Result<GetProfessionalDto>> Handle(
         GetProfessionalQuery query,
         CancellationToken cancellationToken)
     {
@@ -27,7 +27,7 @@ public sealed class GetProfessionalQueryHandler(
         if (professional is null)
         {
             logger.LogWarning("Professional profile not found for ProfessionalId: {ProfessionalId}", query.ProfessionalId);
-            return Result<ProfessionalProfileDto>.Failure(
+            return Result<GetProfessionalDto>.Failure(
                 ProfessionalErrors.NotFound(query.ProfessionalId));
         }
 
@@ -35,12 +35,12 @@ public sealed class GetProfessionalQueryHandler(
         if (!userResult.IsSuccess)
         {
             logger.LogWarning("Failed to retrieve user for UserId: {UserId}", professional.UserId);
-            return Result<ProfessionalProfileDto>.Failure(userResult.Error);
+            return Result<GetProfessionalDto>.Failure(userResult.Error);
         }
 
         var user = userResult.Value;
 
-        var profileDto = new ProfessionalProfileDto(
+        var profileDto = new GetProfessionalDto(
             professional.Id,
             professional.UserId,
             user.FirstName,
@@ -51,7 +51,7 @@ public sealed class GetProfessionalQueryHandler(
             user.Gender,
             user.Address,
             professional.Specialization,
-            professional.Services.ToList(),
+            professional.Services,
             professional.Experience,
             professional.StartPrice,
             professional.EndPrice,
@@ -59,6 +59,6 @@ public sealed class GetProfessionalQueryHandler(
             professional.IsVerified,
             user.ProfilePictureUrl);
 
-        return Result<ProfessionalProfileDto>.Success(profileDto);
+        return Result<GetProfessionalDto>.Success(profileDto);
     }
 }

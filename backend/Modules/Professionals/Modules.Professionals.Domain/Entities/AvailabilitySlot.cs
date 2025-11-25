@@ -4,18 +4,12 @@ namespace Modules.Professionals.Domain.Entities;
 
 public class AvailabilitySlot
 {
-    public Guid Id { get; set; }
-    public Guid AvailabilityDayId { get; private set; } // foreign key to Day
-
+    public Guid Id { get; private set; }
+    public Guid AvailabilityDayId { get; private set; } 
     public TimeRange TimeRange { get; private set; } = null!;
-
-    // Navigation property
     public AvailabilityDay Day { get; private set; } = null!;
 
-    protected AvailabilitySlot()
-    {
-        // for ef core 
-    }
+    protected AvailabilitySlot() {}
     public AvailabilitySlot(Guid availabilityDayId, TimeRange range)
     {
         Id = Guid.NewGuid();

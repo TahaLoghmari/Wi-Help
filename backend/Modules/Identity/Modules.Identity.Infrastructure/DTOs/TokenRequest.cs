@@ -1,3 +1,3 @@
-namespace Modules.Identity.Features.DTOs;
+namespace Modules.Identity.Infrastructure.DTOs;
 
 public sealed record TokenRequest( Guid UserId , string Email );

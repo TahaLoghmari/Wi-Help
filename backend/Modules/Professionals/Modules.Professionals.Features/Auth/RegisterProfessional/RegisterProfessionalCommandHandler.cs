@@ -61,6 +61,13 @@ public sealed class RegisterProfessionalCommandHandler(
         dbContext.Professionals.Add(professional);
         await dbContext.SaveChangesAsync(cancellationToken);
 
+        var addClaimResult = await identityApi.AddClaimAsync(userId, "ProfessionalId", professional.Id.ToString(), cancellationToken);
+        if (!addClaimResult.IsSuccess)
+        {
+            logger.LogWarning("Failed to add ProfessionalId claim for UserId: {UserId}", userId);
+            // Maybe not fail the registration, just log
+        }
+
         logger.LogInformation("Professional registration completed successfully for UserId: {UserId}, ProfessionalId: {ProfessionalId}",
             userId, professional.Id);
 

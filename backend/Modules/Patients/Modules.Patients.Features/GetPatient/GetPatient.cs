@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Patients.Infrastructure.DTOs;
 
 namespace Modules.Patients.Features.GetPatient;
 
@@ -13,11 +12,11 @@ internal sealed class GetPatient : IEndpoint
     {
         app.MapGet(PatientsEndpoints.GetPatient, async (
                 Guid patientId,
-                IQueryHandler<GetPatientQuery, PatientProfileDto> handler,
+                IQueryHandler<GetPatientQuery, GetPatientDto> handler,
                 CancellationToken cancellationToken) =>
             {
                 GetPatientQuery query = new GetPatientQuery(patientId);
-                Result<PatientProfileDto> result = await handler.Handle(query, cancellationToken);
+                Result<GetPatientDto> result = await handler.Handle(query, cancellationToken);
 
                 return result.Match(
                     profileDto => Results.Ok(profileDto),

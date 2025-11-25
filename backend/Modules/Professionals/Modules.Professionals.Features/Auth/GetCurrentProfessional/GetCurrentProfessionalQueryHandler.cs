@@ -12,9 +12,9 @@ namespace Modules.Professionals.Features.Auth.GetCurrentProfessional;
 public sealed class GetCurrentProfessionalQueryHandler(
     IIdentityModuleApi identityApi,
     ProfessionalsDbContext dbContext,
-    ILogger<GetCurrentProfessionalQueryHandler> logger) : IQueryHandler<GetCurrentProfessionalQuery, ProfessionalProfileDto>
+    ILogger<GetCurrentProfessionalQueryHandler> logger) : IQueryHandler<GetCurrentProfessionalQuery, GetCurrentProfessionalDto>
 {
-    public async Task<Result<ProfessionalProfileDto>> Handle(
+    public async Task<Result<GetCurrentProfessionalDto>> Handle(
         GetCurrentProfessionalQuery query,
         CancellationToken cancellationToken)
     {
@@ -24,7 +24,7 @@ public sealed class GetCurrentProfessionalQueryHandler(
         if (!userResult.IsSuccess)
         {
             logger.LogWarning("Failed to retrieve user for UserId: {UserId}", query.UserId);
-            return Result<ProfessionalProfileDto>.Failure(userResult.Error);
+            return Result<GetCurrentProfessionalDto>.Failure(userResult.Error);
         }
 
         var user = userResult.Value;
@@ -35,11 +35,11 @@ public sealed class GetCurrentProfessionalQueryHandler(
         if (professional is null)
         {
             logger.LogWarning("Professional profile not found for UserId: {UserId}", query.UserId);
-            return Result<ProfessionalProfileDto>.Failure(
+            return Result<GetCurrentProfessionalDto>.Failure(
                 ProfessionalErrors.NotFound(query.UserId));
         }
 
-        var profileDto = new ProfessionalProfileDto(
+        var profileDto = new GetCurrentProfessionalDto(
             professional.Id,
             professional.UserId,
             user.FirstName,
@@ -50,7 +50,7 @@ public sealed class GetCurrentProfessionalQueryHandler(
             user.Gender,
             user.Address,
             professional.Specialization,
-            professional.Services.ToList(),
+            professional.Services,
             professional.Experience,
             professional.StartPrice,
             professional.EndPrice,
@@ -60,6 +60,6 @@ public sealed class GetCurrentProfessionalQueryHandler(
 
         logger.LogInformation("Professional profile retrieved successfully for UserId: {UserId}", query.UserId);
 
-        return Result<ProfessionalProfileDto>.Success(profileDto);
+        return Result<GetCurrentProfessionalDto>.Success(profileDto);
     }
 }

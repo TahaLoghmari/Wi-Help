@@ -5,16 +5,15 @@ using Modules.Common.Features.Results;
 using Modules.Identity.PublicApi;
 using Modules.Patients.Domain;
 using Modules.Patients.Infrastructure.Database;
-using Modules.Patients.Infrastructure.DTOs;
 
 namespace Modules.Patients.Features.Auth.GetCurrentPatient;
 
 public sealed class GetCurrentPatientQueryHandler(
     IIdentityModuleApi identityApi,
     PatientsDbContext dbContext,
-    ILogger<GetCurrentPatientQueryHandler> logger) : IQueryHandler<GetCurrentPatientQuery, PatientProfileDto>
+    ILogger<GetCurrentPatientQueryHandler> logger) : IQueryHandler<GetCurrentPatientQuery, GetCurrentPatientDto>
 {
-    public async Task<Result<PatientProfileDto>> Handle(
+    public async Task<Result<GetCurrentPatientDto>> Handle(
         GetCurrentPatientQuery query,
         CancellationToken cancellationToken)
     {
@@ -24,7 +23,7 @@ public sealed class GetCurrentPatientQueryHandler(
         if (!userResult.IsSuccess)
         {
             logger.LogWarning("Failed to retrieve user for UserId: {UserId}", query.UserId);
-            return Result<PatientProfileDto>.Failure(userResult.Error);
+            return Result<GetCurrentPatientDto>.Failure(userResult.Error);
         }
 
         var user = userResult.Value;
@@ -35,11 +34,11 @@ public sealed class GetCurrentPatientQueryHandler(
         if (patient is null)
         {
             logger.LogWarning("Patient profile not found for UserId: {UserId}", query.UserId);
-            return Result<PatientProfileDto>.Failure(
+            return Result<GetCurrentPatientDto>.Failure(
                 PatientErrors.NotFound(query.UserId));
         }
 
-        var profileDto = new PatientProfileDto(
+        var profileDto = new GetCurrentPatientDto(
             patient.Id,
             patient.UserId,
             user.FirstName,
@@ -50,16 +49,12 @@ public sealed class GetCurrentPatientQueryHandler(
             user.Gender,
             user.Address,
             patient.EmergencyContact,
-            new MedicalInfoDto(
-                patient.MedicalInfo.ChronicConditions ?? [],
-                patient.MedicalInfo.Allergies ?? [],
-                patient.MedicalInfo.Medications ?? [],
-                patient.MedicalInfo.MobilityStatus.ToString()),
+            patient.MedicalInfo,
             patient.Bio,
             user.ProfilePictureUrl);
 
         logger.LogInformation("Patient profile retrieved successfully for UserId: {UserId}", query.UserId);
 
-        return Result<PatientProfileDto>.Success(profileDto);
+        return Result<GetCurrentPatientDto>.Success(profileDto);
     }
 }

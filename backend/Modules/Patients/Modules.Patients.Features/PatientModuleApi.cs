@@ -3,6 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 using Modules.Common.Features.Results;
 using Modules.Identity.PublicApi;
+using Modules.Patients.Domain;
 using Modules.Patients.Infrastructure.Database;
 using Modules.Patients.PublicApi;
 using Modules.Patients.PublicApi.Contracts;
@@ -50,15 +51,8 @@ public class PatientModuleApi(
                     user.DateOfBirth,
                     user.Gender,
                     user.Address,
-                    new EmergencyContactDto(
-                        p.EmergencyContact.FullName,
-                        p.EmergencyContact.PhoneNumber,
-                        p.EmergencyContact.Relationship),
-                    new MedicalInfoDto(
-                        p.MedicalInfo.ChronicConditions ?? [],
-                        p.MedicalInfo.Allergies ?? [],
-                        p.MedicalInfo.Medications ?? [],
-                        p.MedicalInfo.MobilityStatus.ToString()),
+                    p.EmergencyContact,
+                    p.MedicalInfo,
                     p.Bio
                 );
             }
@@ -69,5 +63,44 @@ public class PatientModuleApi(
         .ToList();
 
         return Result<List<PatientDto>>.Success(patientDtos);
+    }
+
+    public async Task<Result<PatientDto>> GetPatientByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        var patient = await dbContext.Patients
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.UserId == userId, cancellationToken);
+
+        if (patient is null)
+        {
+            return Result<PatientDto>.Failure(PatientErrors.NotFound(userId));
+        }
+
+        var usersResult = await identityApi.GetUserByIdAsync(userId, cancellationToken);
+
+        if (usersResult.IsFailure)
+        {
+            return Result<PatientDto>.Failure(usersResult.Error);
+        }
+
+        var user = usersResult.Value;
+
+        var patientDto = new PatientDto(
+            patient.Id,
+            patient.UserId,
+            user.FirstName,
+            user.LastName,
+            user.Email,
+            user.PhoneNumber,
+            user.ProfilePictureUrl,
+            user.DateOfBirth,
+            user.Gender,
+            user.Address,
+            patient.EmergencyContact,
+            patient.MedicalInfo,
+            patient.Bio
+        );
+
+        return Result<PatientDto>.Success(patientDto);
     }
 }

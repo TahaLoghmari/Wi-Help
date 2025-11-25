@@ -1,76 +1,64 @@
 using Microsoft.EntityFrameworkCore;
-using Modules.Appointments.Features.DTOs;
+using Modules.Appointments.Domain.Entities;
 using Modules.Appointments.Infrastructure.Database;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Common.Infrastructure.DTOs;
 using Modules.Patients.PublicApi;
+using Modules.Patients.PublicApi.Contracts;
+using Modules.Professionals.PublicApi;
 
 namespace Modules.Appointments.Features.GetProfessionalAppointments;
 
 public sealed class GetProfessionalAppointmentsQueryHandler(
     AppointmentsDbContext dbContext,
-    IPatientsModuleApi patientsApi)
-    : IQueryHandler<GetProfessionalAppointmentsQuery, PagedResponse<AppointmentDto>>
+    IPatientsModuleApi patientsApi,
+    IProfessionalModuleApi professionalApi)
+    : IQueryHandler<GetProfessionalAppointmentsQuery, PaginationResultDto<GetProfessionalAppointmentsDto>>
 {
-    public async Task<Result<PagedResponse<AppointmentDto>>> Handle(
+    public async Task<Result<PaginationResultDto<GetProfessionalAppointmentsDto>>> Handle(
         GetProfessionalAppointmentsQuery query,
         CancellationToken cancellationToken)
     {
-        var baseQuery = dbContext.Appointments
+        // Get professionalId from userId
+        var professionalResult = await professionalApi.GetProfessionalByUserIdAsync(query.UserId, cancellationToken);
+        if (professionalResult.IsFailure)
+        {
+            return Result<PaginationResultDto<GetProfessionalAppointmentsDto>>.Failure(professionalResult.Error);
+        }
+
+        var professionalId = professionalResult.Value.Id;
+
+        IQueryable<Appointment> baseQuery = dbContext.Appointments
             .AsNoTracking()
-            .Where(a => a.ProfessionalId == query.ProfessionalId);
+            .Where(a => a.ProfessionalId == professionalId)
+            .OrderByDescending(a => a.StartDate);
+        
+        // Pagination
+        PaginationResultDto<Appointment> paginatedAppointments = await PaginationResultDto<Appointment>.CreateAsync(
+            baseQuery, query.Page, query.PageSize, cancellationToken);
 
-        var totalCount = await baseQuery.CountAsync(cancellationToken);
-
-        var appointments = await baseQuery
-            .OrderByDescending(a => a.StartDate)
-            .Skip((query.Page - 1) * query.PageSize)
-            .Take(query.PageSize)
-            .ToListAsync(cancellationToken);
-
-        var patientIds = appointments.Select(a => a.PatientId).Distinct().ToList();
+        // get all patientIds from current professional's appointments
+        var patientIds = paginatedAppointments.Items.Select(a => a.PatientId).Distinct().ToList();
+        
+        // get all patient data from current professional's appointments using patientIds
         var patientsResult = await patientsApi.GetPatientsByIdsAsync(patientIds, cancellationToken);
-        var patientsMap = patientsResult.IsSuccess 
-            ? patientsResult.Value.ToDictionary(p => p.Id) 
-            : [];
+        if (!patientsResult.IsSuccess)
+        {
+            return Result<PaginationResultDto<GetProfessionalAppointmentsDto>>.Failure(patientsResult.Error);
+        }
 
-        var dtos = appointments.Select(a => {
-            var patientName = $"Patient {a.PatientId.ToString().Substring(0, 8)}";
-            string? patientAvatar = null;
-            DateTime? patientDob = null;
+        // Every PatientDto that has an appointment with this professional
+        Dictionary<Guid, PatientDto> patientsMap = patientsResult.Value.ToDictionary(p => p.Id);
+        
+        var dtos = paginatedAppointments.Items.Select(a => a.ToDto(patientsMap)).ToList();
 
-            if (patientsMap.TryGetValue(a.PatientId, out var patient))
-            {
-                patientName = $"{patient.FirstName} {patient.LastName}";
-                patientAvatar = patient.ProfilePictureUrl;
-                if (DateTime.TryParse(patient.DateOfBirth, out var dob))
-                {
-                    patientDob = dob;
-                }
-            }
-
-            return new AppointmentDto(
-                a.Id,
-                a.PatientId,
-                a.ProfessionalId,
-                a.Notes,
-                a.StartDate,
-                a.EndDate,
-                a.Urgency,
-                a.Status,
-                a.Price,
-                a.OfferedAt,
-                a.ConfirmedAt,
-                a.CompletedAt,
-                a.CancelledAt,
-                a.CreatedAt,
-                a.UpdatedAt,
-                patientName,
-                patientAvatar,
-                patientDob
-            );
-        }).ToList();
-
-        return Result<PagedResponse<AppointmentDto>>.Success(new PagedResponse<AppointmentDto>(dtos, totalCount, query.Page, query.PageSize));
+        return Result<PaginationResultDto<GetProfessionalAppointmentsDto>>.Success(new PaginationResultDto<GetProfessionalAppointmentsDto>
+        {
+            Items = dtos,
+            Page = paginatedAppointments.Page,
+            PageSize = paginatedAppointments.PageSize,
+            TotalCount = paginatedAppointments.TotalCount
+        });
     }
 }
