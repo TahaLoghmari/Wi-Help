@@ -1,4 +1,4 @@
-namespace Modules.Professionals.PublicApi.Contracts;
+namespace Modules.Professionals.Features.GetProfessionalAvailability;
 
 public sealed record MonthlyAvailabilityResponse(
     int Year,
@@ -22,3 +22,5 @@ public sealed record TimeSlotResponse(
     string EndTime,
     bool IsBooked,
     bool IsAvailable);
+    
+public record ScheduledAtWithDuration(DateTime ScheduledAt, int Minutes);

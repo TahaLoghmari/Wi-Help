@@ -15,6 +15,7 @@ public record PatientDto(
     string Gender,
     Address Address,
     EmergencyContact EmergencyContact,
-    MedicalInfo? MedicalInfo,
+    MedicalInfo MedicalInfo,
     string? Bio
 );
+

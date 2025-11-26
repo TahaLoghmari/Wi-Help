@@ -9,14 +9,4 @@ public interface IProfessionalModuleApi
     Task<Result<ProfessionalDto>> GetProfessionalByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
 
     Task<Result<List<ProfessionalDto>>> GetProfessionalsByIdsAsync(IEnumerable<Guid> professionalIds, CancellationToken cancellationToken = default);
-
-    Task<MonthlyAvailabilityResponse> GetMonthlyAvailability(GetProfessionalAvailabilityByMonthQuery query);
 }
-
-public sealed record GetProfessionalAvailabilityByMonthQuery(
-    Guid ProfessionalId,
-    int Year,
-    int Month,
-    string TimeZoneId = "Africa/Tunis",
-    bool IncludePastDays = false,
-    bool IncludeBookedSlots = true) : IQuery<MonthlyAvailabilityResponse>;

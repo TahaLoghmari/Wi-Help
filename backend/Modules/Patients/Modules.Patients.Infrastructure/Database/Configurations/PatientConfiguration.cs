@@ -32,7 +32,7 @@ public class PatientConfiguration : IEntityTypeConfiguration<Patient>
             medicalInfo.Property(m => m.Medications).IsRequired(false);
         });
 
-        builder.Navigation(p => p.MedicalInfo).IsRequired(false);
+        builder.Navigation(p => p.MedicalInfo).IsRequired(true);
 
     }
 }

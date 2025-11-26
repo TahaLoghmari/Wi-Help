@@ -7,7 +7,7 @@ public class Patient
     public Guid Id { get; private set; }
     public Guid UserId { get; private set; }
     public EmergencyContact EmergencyContact { get; private set; } = null!;
-    public MedicalInfo? MedicalInfo { get; private set; } 
+    public MedicalInfo MedicalInfo { get; private set; } = null!; 
     public string? Bio { get; private set; } 
 
     private Patient() { } 
@@ -19,6 +19,7 @@ public class Patient
         Id = Guid.NewGuid();
         UserId = userId;
         EmergencyContact = contact;
+        MedicalInfo = new MedicalInfo(null, null, null, null);
     }
     
     public void Update(

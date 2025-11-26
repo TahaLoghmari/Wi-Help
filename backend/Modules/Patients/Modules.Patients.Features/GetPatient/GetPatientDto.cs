@@ -14,6 +14,6 @@ public sealed record GetPatientDto(
     string Gender,
     Address Address,
     EmergencyContact EmergencyContact,
-    MedicalInfo? MedicalInfo,
+    MedicalInfo MedicalInfo,
     string? Bio,
     string? ProfilePictureUrl);
