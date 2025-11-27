@@ -182,12 +182,12 @@ export function AppointmentsTable() {
                       />
                     ) : (
                       <div className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
-                        {appointment.patient?.firstName?.charAt(0) || '?'}
+                        {appointment.patient?.firstName?.charAt(0) || "?"}
                       </div>
                     )}
                     <div className="">
                       <div className="text-xs font-medium tracking-tight text-slate-900">
-                        {appointment.patient?.firstName || 'Unknown Patient'}
+                        {appointment.patient?.firstName || "Unknown Patient"}
                       </div>
                       <div className="text-[11px] text-slate-500">
                         {appointment.patient?.dateOfBirth ? (
@@ -316,12 +316,13 @@ export function AppointmentsTable() {
                     />
                   ) : (
                     <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-sm font-medium text-slate-500">
-                      {selectedAppointment.patient?.firstName?.charAt(0) || '?'}
+                      {selectedAppointment.patient?.firstName?.charAt(0) || "?"}
                     </div>
                   )}
                   <div>
                     <div className="text-sm font-medium text-slate-900">
-                      {selectedAppointment.patient?.firstName || 'Unknown Patient'}
+                      {selectedAppointment.patient?.firstName ||
+                        "Unknown Patient"}
                     </div>
                     <div className="text-xs text-slate-500">
                       {selectedAppointment.patient?.dateOfBirth
@@ -471,12 +472,13 @@ export function AppointmentsTable() {
                     />
                   ) : (
                     <div className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-medium text-slate-500">
-                      {selectedAppointment.patient?.firstName?.charAt(0) || '?'}
+                      {selectedAppointment.patient?.firstName?.charAt(0) || "?"}
                     </div>
                   )}
                   <div className="flex-1">
                     <div className="text-sm font-medium text-slate-900">
-                      {selectedAppointment.patient?.firstName || 'Unknown Patient'}
+                      {selectedAppointment.patient?.firstName ||
+                        "Unknown Patient"}
                     </div>
                     <div className="text-xs text-slate-500">
                       {new Date(
