@@ -14,7 +14,7 @@ internal sealed class GetProfessionalPatients : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet(AppointmentsEndpoints.GetMyAppointments, async (
+        app.MapGet(AppointmentsEndpoints.GetMyPatients, async (
                 [AsParameters] Request request,
                 HttpContext httpContext,
                 IQueryHandler<GetProfessionalPatientsQuery, PaginationResultDto<PatientDto>> handler,

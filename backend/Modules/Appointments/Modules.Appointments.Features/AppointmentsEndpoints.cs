@@ -2,8 +2,11 @@ namespace Modules.Appointments.Features;
 
 public static class AppointmentsEndpoints
 {
-    // Patient's or Professional's own appointments
-    public const string GetMyAppointments = "appointments/me";
+    // Patient's appointments (current signed-in patient)
+    public const string GetPatientAppointments = "appointments/patient/me";
+    
+    // Professional's appointments (current signed-in professional)
+    public const string GetProfessionalAppointments = "appointments/professional/me";
     
     // Book appointment (patient booking with a professional)
     public const string BookAppointment = "appointments";
