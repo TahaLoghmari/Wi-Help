@@ -1,4 +1,5 @@
 using Modules.Patients.Domain.ValueObjects;
+using Modules.Patients.Domain.Enums;
 
 namespace Modules.Patients.Domain.Entities;
 
@@ -19,7 +20,8 @@ public class Patient
         Id = Guid.NewGuid();
         UserId = userId;
         EmergencyContact = contact;
-        MedicalInfo = new MedicalInfo(null, null, null, null);
+        MedicalInfo = new MedicalInfo(new List<string>(), new List<string>(), new List<string>(), MobilityStatus.Normal);
+        Bio = "";
     }
     
     public void Update(
@@ -35,3 +37,4 @@ public class Patient
             Bio = bio;
     }
 }
+

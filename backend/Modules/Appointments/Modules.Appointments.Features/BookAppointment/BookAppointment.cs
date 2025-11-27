@@ -35,7 +35,7 @@ public class BookAppointment : IEndpoint
                 return result.Match(() => Results.Ok(), CustomResults.Problem);
             })
             .WithTags(Tags.Appointments)
-            .RequireAuthorization(new AuthorizeAttribute { Roles = "Patient" });
+            .RequireAuthorization();
     }
 
     private sealed record Request(

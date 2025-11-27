@@ -12,11 +12,11 @@ internal sealed class GetProfessional : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet(ProfessionalsEndpoints.GetProfessionalById, async (
-                Guid id,
+                [AsParameters] Request request,
                 IQueryHandler<GetProfessionalQuery, GetProfessionalDto> handler,
                 CancellationToken cancellationToken) =>
             {
-                GetProfessionalQuery query = new GetProfessionalQuery(id);
+                GetProfessionalQuery query = new GetProfessionalQuery(request.ProfessionalId);
                 Result<GetProfessionalDto> result = await handler.Handle(query, cancellationToken);
 
                 return result.Match(
@@ -25,5 +25,9 @@ internal sealed class GetProfessional : IEndpoint
             })
             .WithTags(Tags.Professionals)
             .RequireAuthorization();
+    }
+    private class Request
+    {
+        public Guid ProfessionalId { get; set; }
     }
 }
