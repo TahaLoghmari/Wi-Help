@@ -6,3 +6,4 @@ export * from "./useRegisterPatient";
 export * from "./useRegisterProfessional";
 export * from "./useResetPassword";
 export * from "./useSendConfirmationEmail";
+export * from "./useLogout";

@@ -30,9 +30,10 @@ export function BookAppointmentsLayout() {
     null,
   );
   const bookAppointmentMutation = useBookAppointment();
-  const { data: professional } = GetProfessional({
-    professionalId: professionalId || "",
-  });
+  const { data: professional, isPending: isProfessionalPending } =
+    GetProfessional({
+      professionalId: professionalId || "",
+    });
   // this gives us each day slots of current selected month and year
   const { data, isLoading } = GetProfessionalAvailability({
     professionalId: professionalId || "",
@@ -40,6 +41,7 @@ export function BookAppointmentsLayout() {
     month: (selectedDate?.getMonth() || new Date().getMonth()) + 1,
   });
 
+  if (isProfessionalPending || isLoading) return <div>Loading..</div>;
   // from the above data we get just the selected day
   const selectedDayData: DailyAvailabilityResponse | undefined =
     selectedDate && data
@@ -78,9 +80,11 @@ export function BookAppointmentsLayout() {
       const endDateTime = new Date(`${dateStr}T${slot.endTime}`);
       setValue("startDate", startDateTime.toISOString());
       setValue("endDate", endDateTime.toISOString());
+      setValue("price", price);
     } else {
       setValue("startDate", "");
       setValue("endDate", "");
+      setValue("price", 0);
     }
   };
   const price = (professional!.startPrice + professional!.endPrice) / 2;
@@ -93,65 +97,65 @@ export function BookAppointmentsLayout() {
       startDate: credentials.startDate,
       endDate: credentials.endDate,
       price: price,
+      urgency: "Medium",
       notes: credentials.notes || "",
     });
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex h-full w-full flex-col justify-center space-y-6 overflow-y-auto p-10">
-          <div className="flex w-full flex-col justify-center gap-10 md:flex-row">
-            <div className="border-border flex w-full flex-1 flex-col items-center justify-center rounded-xl border shadow-xs">
-              <Calendar
-                mode="single"
-                className="rounded-xl border-0"
-                captionLayout="label"
-                defaultMonth={selectedDate}
-                onSelect={handleDateSelect}
-                selected={selectedDate}
-                disabled={(date) => {
-                  const today = new Date();
-                  today.setHours(0, 0, 0, 0);
-                  return date < today;
-                }}
-                showOutsideDays={false}
-              />
-            </div>
-            <AvailableSlots
-              isLoading={isLoading}
-              availableSlots={availableSlots}
-              setSelectedSlot={handleSlotSelect}
-              selectedSlot={selectedSlot}
+      <div className="flex h-full w-full flex-col justify-center space-y-6 overflow-auto p-10">
+        <div className="flex w-full flex-col justify-center gap-10 md:flex-row">
+          <div className="border-border flex w-full flex-1 flex-col items-center justify-center rounded-xl border shadow-xs">
+            <Calendar
+              mode="single"
+              className="rounded-xl border-0"
+              captionLayout="label"
+              defaultMonth={selectedDate}
+              onSelect={handleDateSelect}
+              selected={selectedDate}
+              disabled={(date) => {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                return date < today;
+              }}
+              showOutsideDays={false}
             />
           </div>
-          {professional && (
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">
-                  Session Price:
-                </span>
-                <span className="text-lg font-semibold text-[#00394a]">
-                  {price} TND
-                </span>
-              </div>
-              <p className="mt-1 text-xs text-gray-500">
-                Professional's price range: {professional.startPrice} -{" "}
-                {professional.endPrice} TND
-              </p>
-            </div>
-          )}
-          <AppointmentNotes control={form.control} />
-          <button
-            type="submit"
-            className="w-full rounded-lg bg-[#00394a] px-4 py-2 text-white disabled:bg-gray-300"
-          >
-            {bookAppointmentMutation.isPending
-              ? "Booking..."
-              : "Book Appointment"}
-          </button>
+          <AvailableSlots
+            isLoading={isLoading}
+            availableSlots={availableSlots}
+            setSelectedSlot={handleSlotSelect}
+            selectedSlot={selectedSlot}
+          />
         </div>
-      </form>
+        {professional && (
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-700">
+                Session Price:
+              </span>
+              <span className="text-lg font-semibold text-[#00394a]">
+                {price} TND
+              </span>
+            </div>
+            <p className="mt-1 text-xs text-gray-500">
+              Professional's price range: {professional.startPrice} -{" "}
+              {professional.endPrice} TND
+            </p>
+          </div>
+        )}
+        <AppointmentNotes control={form.control} />
+        <button
+          onClick={form.handleSubmit(onSubmit)}
+          disabled={!selectedSlot || bookAppointmentMutation.isPending}
+          className="w-full rounded-lg bg-[#00394a] px-4 py-2 text-white disabled:bg-gray-300"
+        >
+          {bookAppointmentMutation.isPending
+            ? "Booking..."
+            : "Book Appointment"}
+        </button>
+      </div>
     </Form>
   );
 }

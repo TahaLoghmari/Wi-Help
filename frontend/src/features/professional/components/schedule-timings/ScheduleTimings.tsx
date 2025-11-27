@@ -24,7 +24,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { scheduleFormSchema } from "../../lib/settingsValidationSchemas";
 import type { z } from "zod";
 
-export const TIME_OPTIONS = Array.from({ length: 24 }, (_, i) => {
+const TIME_OPTIONS = Array.from({ length: 24 }, (_, i) => {
   const hour = i.toString().padStart(2, "0");
   return `${hour}:00`;
 });

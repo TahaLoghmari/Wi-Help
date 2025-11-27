@@ -10,7 +10,6 @@ import { toQueryString } from "@/lib/utils";
 
 const getPatientAppointments = (request: GetPatientAppointmentsRequest) => {
   const queryString = toQueryString(request);
-
   return api.get<PaginationResultDto<GetPatientAppointmentsDto>>(
     `${API_ENDPOINTS.APPOINTMENTS.GET_PATIENT_APPOINTMENTS}?${queryString}`,
   );

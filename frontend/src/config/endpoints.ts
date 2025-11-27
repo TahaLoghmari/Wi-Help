@@ -28,8 +28,8 @@ export const API_ENDPOINTS = {
     UPDATE_PATIENT: "/patients/me",
   },
   APPOINTMENTS: {
-    GET_PATIENT_APPOINTMENTS: "appointments/patient/me",
-    GET_PROFESSIONAL_APPOINTMENTS: "appointments/professional/me",
+    GET_PATIENT_APPOINTMENTS: "/appointments/patient/me",
+    GET_PROFESSIONAL_APPOINTMENTS: "/appointments/professional/me",
     BOOK_APPOINTMENT: "/appointments",
     GET_MY_PATIENTS: "/appointments/me/patients",
     RESPOND_TO_APPOINTMENT: (appointmentId: string) =>

@@ -18,6 +18,8 @@ export function AppointmentsTable() {
   const appointments = data?.pages.flatMap((page) => page.items) || [];
   const totalCount = data?.pages[0]?.totalCount || 0;
 
+  console.log(appointments);
+
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [acceptModalOpen, setAcceptModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] =
@@ -172,7 +174,7 @@ export function AppointmentsTable() {
               <tr key={appointment.id} className="hover:bg-slate-50/70">
                 <td className="pt-3.5 pr-4 pb-3.5 pl-4 whitespace-nowrap sm:px-5">
                   <div className="flex items-center gap-3">
-                    {appointment.patient.profilePictureUrl ? (
+                    {appointment.patient?.profilePictureUrl ? (
                       <img
                         src={appointment.patient.profilePictureUrl}
                         alt={appointment.patient.firstName}
@@ -180,15 +182,15 @@ export function AppointmentsTable() {
                       />
                     ) : (
                       <div className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
-                        {appointment.patient.firstName.charAt(0)}
+                        {appointment.patient?.firstName?.charAt(0) || '?'}
                       </div>
                     )}
                     <div className="">
                       <div className="text-xs font-medium tracking-tight text-slate-900">
-                        {appointment.patient.firstName}
+                        {appointment.patient?.firstName || 'Unknown Patient'}
                       </div>
                       <div className="text-[11px] text-slate-500">
-                        {appointment.patient.dateOfBirth ? (
+                        {appointment.patient?.dateOfBirth ? (
                           <span>
                             DOB:{" "}
                             {new Date(
@@ -306,7 +308,7 @@ export function AppointmentsTable() {
                   Patient
                 </label>
                 <div className="mt-2 flex items-center gap-3">
-                  {selectedAppointment.patient.profilePictureUrl ? (
+                  {selectedAppointment.patient?.profilePictureUrl ? (
                     <img
                       src={selectedAppointment.patient.profilePictureUrl}
                       alt={selectedAppointment.patient.firstName}
@@ -314,15 +316,15 @@ export function AppointmentsTable() {
                     />
                   ) : (
                     <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-sm font-medium text-slate-500">
-                      {selectedAppointment.patient.firstName.charAt(0)}
+                      {selectedAppointment.patient?.firstName?.charAt(0) || '?'}
                     </div>
                   )}
                   <div>
                     <div className="text-sm font-medium text-slate-900">
-                      {selectedAppointment.patient.firstName}
+                      {selectedAppointment.patient?.firstName || 'Unknown Patient'}
                     </div>
                     <div className="text-xs text-slate-500">
-                      {selectedAppointment.patient.dateOfBirth
+                      {selectedAppointment.patient?.dateOfBirth
                         ? `DOB: ${new Date(selectedAppointment.patient.dateOfBirth).toLocaleDateString()}`
                         : `Patient ID: ${selectedAppointment.patientId.substring(0, 8)}`}
                     </div>
@@ -461,7 +463,7 @@ export function AppointmentsTable() {
             <div className="space-y-4 px-6 py-5">
               <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-4">
                 <div className="flex items-center gap-3">
-                  {selectedAppointment.patient.profilePictureUrl ? (
+                  {selectedAppointment.patient?.profilePictureUrl ? (
                     <img
                       src={selectedAppointment.patient.profilePictureUrl}
                       alt={selectedAppointment.patient.firstName}
@@ -469,12 +471,12 @@ export function AppointmentsTable() {
                     />
                   ) : (
                     <div className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-medium text-slate-500">
-                      {selectedAppointment.patient.firstName.charAt(0)}
+                      {selectedAppointment.patient?.firstName?.charAt(0) || '?'}
                     </div>
                   )}
                   <div className="flex-1">
                     <div className="text-sm font-medium text-slate-900">
-                      {selectedAppointment.patient.firstName}
+                      {selectedAppointment.patient?.firstName || 'Unknown Patient'}
                     </div>
                     <div className="text-xs text-slate-500">
                       {new Date(

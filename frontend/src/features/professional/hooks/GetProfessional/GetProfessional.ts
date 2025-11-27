@@ -8,7 +8,7 @@ import type {
 
 const getProfessional = (request: GetProfessionalRequest) => {
   return api.get<GetProfessionalDto>(
-    `${API_ENDPOINTS.PROFESSIONALS.GET_PROFESSIONAL_BY_ID}/${request.professionalId}`,
+    `${API_ENDPOINTS.PROFESSIONALS.GET_PROFESSIONAL_BY_ID(request.professionalId)}`,
   );
 };
 

@@ -16,6 +16,8 @@ export function ProfessionalProfileView() {
     isError,
   } = GetProfessional({ professionalId: professionalId! });
 
+  console.log(professional);
+
   if (isLoading) {
     return (
       <div className="flex h-full w-full items-center justify-center p-8">
@@ -24,7 +26,7 @@ export function ProfessionalProfileView() {
     );
   }
 
-  if (isError || !professional) {
+  if (isError) {
     return (
       <div className="p-8 text-center text-red-500">
         Error loading professional profile.

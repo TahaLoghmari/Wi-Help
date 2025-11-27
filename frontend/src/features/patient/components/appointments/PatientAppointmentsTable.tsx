@@ -38,6 +38,7 @@ export function PatientAppointmentsTable() {
   }
 
   if (error) {
+    console.log("Error loading appointments:", error);
     return (
       <div className="p-4 text-center text-sm text-red-500">
         Error loading appointments
