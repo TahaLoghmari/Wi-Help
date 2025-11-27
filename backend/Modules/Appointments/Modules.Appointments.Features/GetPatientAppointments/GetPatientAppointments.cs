@@ -13,7 +13,7 @@ internal sealed class GetPatientAppointments : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet(AppointmentsEndpoints.GetPatientAppointments, async (
+        app.MapGet(AppointmentsEndpoints.GetMyAppointments, async (
                 [AsParameters] Request request,
                 HttpContext httpContext,
                 IQueryHandler<GetPatientAppointmentsQuery, PaginationResultDto<GetPatientAppointmentsDto>> handler,
@@ -36,7 +36,6 @@ internal sealed class GetPatientAppointments : IEndpoint
             .WithTags(Tags.Appointments)
             .RequireAuthorization(new AuthorizeAttribute { Roles = "Patient" });
     }
-
     private sealed record Request
     {
         public int Page { get; init; } = 1;

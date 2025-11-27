@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Common.Infrastructure.DTOs;
 using Modules.Identity.PublicApi;
 using Modules.Professionals.Features.GetProfessional;
 using Modules.Professionals.Infrastructure.Database;
@@ -12,9 +13,9 @@ namespace Modules.Professionals.Features.GetProfessionals;
 public sealed class GetProfessionalsQueryHandler(
     IIdentityModuleApi identityApi,
     ProfessionalsDbContext dbContext,
-    ILogger<GetProfessionalsQueryHandler> logger) : IQueryHandler<GetProfessionalsQuery, List<GetProfessionalDto>>
+    ILogger<GetProfessionalsQueryHandler> logger) : IQueryHandler<GetProfessionalsQuery, PaginationResultDto<GetProfessionalDto>>
 {
-    public async Task<Result<List<GetProfessionalDto>>> Handle(
+    public async Task<Result<PaginationResultDto<GetProfessionalDto>>> Handle(
         GetProfessionalsQuery query,
         CancellationToken cancellationToken)
     {
@@ -24,25 +25,25 @@ public sealed class GetProfessionalsQueryHandler(
             .AsNoTracking()
             .AsQueryable();
 
-        if (query.Parameters.MaxPrice.HasValue)
+        if (query.MaxPrice.HasValue)
         {
-            professionalsQuery = professionalsQuery.Where(p => p.EndPrice <= query.Parameters.MaxPrice.Value);
+            professionalsQuery = professionalsQuery.Where(p => p.EndPrice <= query.MaxPrice.Value);
         }
 
         // Availability Filter
-        // if (!string.IsNullOrEmpty(query.Parameters.Availability) && query.Parameters.Availability != "Any time")
+        // if (!string.IsNullOrEmpty(query.Availability) && query.Availability != "Any time")
         // {
         //     var today = DateTime.UtcNow.DayOfWeek;
-        //     if (query.Parameters.Availability == "Today")
+        //     if (query.Availability == "Today")
         //     {
         //         professionalsQuery = professionalsQuery.Where(p => p.AvailabilityDays.Any(d => d.DayOfWeek == today && d.IsActive));
         //     }
-        //     else if (query.Parameters.Availability == "Within 24h")
+        //     else if (query.Availability == "Within 24h")
         //     {
         //         var tomorrow = DateTime.UtcNow.AddDays(1).DayOfWeek;
         //         professionalsQuery = professionalsQuery.Where(p => p.AvailabilityDays.Any(d => (d.DayOfWeek == today || d.DayOfWeek == tomorrow) && d.IsActive));
         //     }
-        //     else if (query.Parameters.Availability == "This week")
+        //     else if (query.Availability == "This week")
         //     {
         //         professionalsQuery = professionalsQuery.Where(p => p.AvailabilityDays.Any(d => d.IsActive));
         //     }
@@ -52,7 +53,13 @@ public sealed class GetProfessionalsQueryHandler(
 
         if (professionals.Count == 0)
         {
-            return Result<List<GetProfessionalDto>>.Success([]);
+            return Result<PaginationResultDto<GetProfessionalDto>>.Success(new PaginationResultDto<GetProfessionalDto>
+            {
+                Items = [],
+                Page = query.Page,
+                PageSize = query.PageSize,
+                TotalCount = 0
+            });
         }
 
         var userIds = professionals.Select(p => p.UserId).Distinct().ToList();
@@ -61,7 +68,7 @@ public sealed class GetProfessionalsQueryHandler(
         if (!usersResult.IsSuccess)
         {
             logger.LogError("Failed to retrieve users for professionals. Error: {Error}", usersResult.Error);
-            return Result<List<GetProfessionalDto>>.Failure(usersResult.Error);
+            return Result<PaginationResultDto<GetProfessionalDto>>.Failure(usersResult.Error);
         }
 
         var users = usersResult.Value.ToDictionary(u => u.Id);
@@ -71,17 +78,17 @@ public sealed class GetProfessionalsQueryHandler(
         {
             if (users.TryGetValue(professional.UserId, out var user))
             {
-                bool matchesSearch = string.IsNullOrEmpty(query.Parameters.Search) ||
-                                     (user.FirstName.Contains(query.Parameters.Search, StringComparison.OrdinalIgnoreCase)) ||
-                                     (user.LastName.Contains(query.Parameters.Search, StringComparison.OrdinalIgnoreCase)) ||
-                                     (professional.Specialization.Contains(query.Parameters.Search, StringComparison.OrdinalIgnoreCase));
+                bool matchesSearch = string.IsNullOrEmpty(query.Search) ||
+                                     (user.FirstName.Contains(query.Search, StringComparison.OrdinalIgnoreCase)) ||
+                                     (user.LastName.Contains(query.Search, StringComparison.OrdinalIgnoreCase)) ||
+                                     (professional.Specialization.Contains(query.Search, StringComparison.OrdinalIgnoreCase));
 
-                bool matchesLocation = string.IsNullOrEmpty(query.Parameters.Location) ||
+                bool matchesLocation = string.IsNullOrEmpty(query.Location) ||
                                        (
-                                            user.Address.City.Contains(query.Parameters.Location, StringComparison.OrdinalIgnoreCase) ||
-                                            user.Address.State.Contains(query.Parameters.Location, StringComparison.OrdinalIgnoreCase) ||
-                                            user.Address.Country.Contains(query.Parameters.Location, StringComparison.OrdinalIgnoreCase) ||
-                                            user.Address.Street.Contains(query.Parameters.Location, StringComparison.OrdinalIgnoreCase)
+                                            user.Address.City.Contains(query.Location, StringComparison.OrdinalIgnoreCase) ||
+                                            user.Address.State.Contains(query.Location, StringComparison.OrdinalIgnoreCase) ||
+                                            user.Address.Country.Contains(query.Location, StringComparison.OrdinalIgnoreCase) ||
+                                            user.Address.Street.Contains(query.Location, StringComparison.OrdinalIgnoreCase)
                                        );
 
                 if (matchesSearch && matchesLocation)
@@ -114,6 +121,15 @@ public sealed class GetProfessionalsQueryHandler(
 
         logger.LogInformation("Retrieved {Count} professionals", professionalDtos.Count);
 
-        return Result<List<GetProfessionalDto>>.Success(professionalDtos);
+        var totalCount = professionalDtos.Count;
+        var items = professionalDtos.Skip((query.Page - 1) * query.PageSize).Take(query.PageSize).ToList();
+
+        return Result<PaginationResultDto<GetProfessionalDto>>.Success(new PaginationResultDto<GetProfessionalDto>
+        {
+            Items = items,
+            Page = query.Page,
+            PageSize = query.PageSize,
+            TotalCount = totalCount
+        });
     }
 }

@@ -11,11 +11,11 @@ internal sealed class GetPatient : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet(PatientsEndpoints.GetPatient, async (
-                Guid patientId,
+                [AsParameters] Request request,
                 IQueryHandler<GetPatientQuery, GetPatientDto> handler,
                 CancellationToken cancellationToken) =>
             {
-                GetPatientQuery query = new GetPatientQuery(patientId);
+                GetPatientQuery query = new GetPatientQuery(request.PatientId);
                 Result<GetPatientDto> result = await handler.Handle(query, cancellationToken);
 
                 return result.Match(
@@ -24,5 +24,10 @@ internal sealed class GetPatient : IEndpoint
             })
             .WithTags(Tags.Patients)
             .RequireAuthorization();
+    }
+
+    private record Request
+    {
+        public Guid PatientId { get; }
     }
 }

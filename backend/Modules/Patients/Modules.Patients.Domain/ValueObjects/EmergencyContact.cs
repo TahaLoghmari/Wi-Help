@@ -1,5 +1,4 @@
 namespace Modules.Patients.Domain.ValueObjects;
-
 public record EmergencyContact
 {
     public string FullName { get; } = string.Empty;

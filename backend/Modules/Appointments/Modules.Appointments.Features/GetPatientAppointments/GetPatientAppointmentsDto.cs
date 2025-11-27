@@ -1,4 +1,5 @@
 using Modules.Appointments.Domain.Enums;
+using Modules.Professionals.PublicApi.Contracts;
 
 namespace Modules.Appointments.Features.GetPatientAppointments;
 
@@ -18,6 +19,4 @@ public record GetPatientAppointmentsDto(
     DateTime? CancelledAt,
     DateTime CreatedAt,
     DateTime UpdatedAt,
-    string ProfessionalName,
-    string? ProfessionalAvatar,
-    string? ProfessionalDateOfBirth);
+    ProfessionalDto Professional);

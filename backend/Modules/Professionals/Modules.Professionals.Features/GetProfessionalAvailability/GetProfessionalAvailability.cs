@@ -32,12 +32,10 @@ public class GetProfessionalAvailability : IEndpoint
             .WithTags("Professionals");
     }
 
-    public record Request
+    private record Request
     {
         public Guid ProfessionalId { get; init; }
-        [FromQuery]
         public int Year { get; init; }
-        [FromQuery]
         public int Month { get; init; }
     }
 }

@@ -7,19 +7,7 @@ public static class GetProfessionalAppointmentsMapping
 {
     public static GetProfessionalAppointmentsDto ToDto(this Appointment appointment, Dictionary<Guid, PatientDto> patientsMap)
     {
-        var patientName = $"Patient {appointment.PatientId.ToString().Substring(0, 8)}";
-        string? patientAvatar = null;
-        DateTime? patientDateOfBirth = null;
-
-        if (patientsMap.TryGetValue(appointment.PatientId, out var patient))
-        {
-            patientName = $"{patient.FirstName} {patient.LastName}";
-            patientAvatar = patient.ProfilePictureUrl;
-            if (DateTime.TryParse(patient.DateOfBirth, out var dob))
-            {
-                patientDateOfBirth = dob;
-            }
-        }
+        patientsMap.TryGetValue(appointment.PatientId, out var patient);
 
         return new GetProfessionalAppointmentsDto(
             appointment.Id,
@@ -37,9 +25,7 @@ public static class GetProfessionalAppointmentsMapping
             appointment.CancelledAt,
             appointment.CreatedAt,
             appointment.UpdatedAt,
-            patientName,
-            patientAvatar,
-            patientDateOfBirth
+            patient!
         );
     }
 }

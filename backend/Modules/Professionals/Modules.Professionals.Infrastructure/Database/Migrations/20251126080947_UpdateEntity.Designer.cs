@@ -47,11 +47,6 @@ namespace Modules.Professionals.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("professional_id");
 
-                    b.Property<string>("TimeZone")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("time_zone");
-
                     b.HasKey("Id")
                         .HasName("pk_availability_days");
 

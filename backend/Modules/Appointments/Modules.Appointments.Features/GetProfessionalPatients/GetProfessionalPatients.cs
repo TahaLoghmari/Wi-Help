@@ -14,21 +14,20 @@ internal sealed class GetProfessionalPatients : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet(AppointmentsEndpoints.GetProfessionalPatients, async (
+        app.MapGet(AppointmentsEndpoints.GetMyAppointments, async (
                 [AsParameters] Request request,
                 HttpContext httpContext,
                 IQueryHandler<GetProfessionalPatientsQuery, PaginationResultDto<PatientDto>> handler,
                 CancellationToken cancellationToken) =>
             {
-                var userIdString = httpContext.User.FindFirst("sub")?.Value ?? 
-                                   httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var professionalIdString = httpContext.User.FindFirst("ProfessionalId")?.Value;
 
-                if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
+                if (string.IsNullOrEmpty(professionalIdString) || !Guid.TryParse(professionalIdString, out var professionalId))
                 {
                     return Results.Unauthorized();
                 }
 
-                var query = new GetProfessionalPatientsQuery(userId, request.Page, request.PageSize);
+                var query = new GetProfessionalPatientsQuery(professionalId, request.Page, request.PageSize);
                 Result<PaginationResultDto<PatientDto>> result = await handler.Handle(query, cancellationToken);
 
                 return result.Match(Results.Ok, CustomResults.Problem);

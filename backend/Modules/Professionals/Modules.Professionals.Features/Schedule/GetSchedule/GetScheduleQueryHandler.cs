@@ -22,13 +22,11 @@ public class GetScheduleQueryHandler(ProfessionalsDbContext professionalsDbConte
             .Where(ad => ad.ProfessionalId == query.ProfessionalId).AsNoTracking().ToListAsync(cancellationToken);
 
         var dayAvailabilitiesResult = new List<AvailabilityDayDto>();
-        
-        string timeZoneId = "Africa/Tunis"; // Default time zone
+    
         
         foreach (var day in dayAvailabilities)
         {
             var availabilityRangesDay = new List<AvailabilitySlotDto>();
-            timeZoneId = day.TimeZone; // Assuming all days have the same time zone
             foreach (var av in day.AvailabilitySlots)
                 availabilityRangesDay.Add(
                     new AvailabilitySlotDto
@@ -49,7 +47,6 @@ public class GetScheduleQueryHandler(ProfessionalsDbContext professionalsDbConte
         var scheduleDto = new GetScheduleDto
         {
             Days = dayAvailabilitiesResult,
-            TimeZoneId = timeZoneId
         };
 
         return Result<GetScheduleDto>.Success(scheduleDto);

@@ -33,15 +33,13 @@ public class SetupScheduleCommandHandler(
                 availabilityDay = new AvailabilityDay(
                     command.ProfessionalId,
                     dayRequest.DayOfWeek,
-                    dayRequest.IsActive,
-                    command.TimeZoneId);
+                    dayRequest.IsActive);
                 
                 await professionalsDbContext.AvailabilityDays.AddAsync(availabilityDay, cancellationToken);
             }
 
             // Update day active status 
             availabilityDay.SetActiveStatus(dayRequest.IsActive);
-            availabilityDay.SetTimeZone(command.TimeZoneId);
             
             // Skip creating time slots for inactive days
             if (!dayRequest.IsActive) continue;

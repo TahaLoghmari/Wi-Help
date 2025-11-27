@@ -31,8 +31,7 @@ public class SetupSchedule : IEndpoint
 
                 var command = new SetupScheduleCommand(
                     request.DayAvailabilities ?? [],
-                    professionalIdGuid,
-                    request.TimeZoneId);
+                    professionalIdGuid);
 
                 var result = await handler.Handle(command, cancellationToken);
                 return result.Match(() => Results.Ok(), CustomResults.Problem);
@@ -43,7 +42,6 @@ public class SetupSchedule : IEndpoint
     
     private record Request
     {
-        public string TimeZoneId { get; init; } = "Africa/Tunis";
         public List<AvailabilityDayDto>? DayAvailabilities { get; init; }
     }
 }
