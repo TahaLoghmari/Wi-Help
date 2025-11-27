@@ -1,7 +1,7 @@
 import { useAppNavigation } from "@/hooks";
 import { useCurrentUser } from "@/features/auth";
-import { useCurrentPatient } from "@/features/patient";
-import { Spinner } from "@/components/ui/spinner";
+import { GetCurrentPatient } from "@/features/patient";
+import { Spinner } from "@/components/ui";
 import { useEffect } from "react";
 
 export interface PatientGuardProps {
@@ -16,7 +16,7 @@ export function PatientGuard({ children }: PatientGuardProps) {
     data: patient,
     isLoading: isPatientLoading,
     isError,
-  } = useCurrentPatient(!!user && isPatient);
+  } = GetCurrentPatient();
 
   const { goToLogin, goToProfessionalApp } = useAppNavigation();
 

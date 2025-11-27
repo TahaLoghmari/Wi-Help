@@ -1,2 +1,2 @@
 export * from "./dashboardConstants";
-export * from "./dashboardUtils"
+export * from "./dashboardUtils";

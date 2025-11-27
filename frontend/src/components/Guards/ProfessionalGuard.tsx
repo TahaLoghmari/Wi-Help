@@ -1,7 +1,7 @@
 import { useAppNavigation } from "@/hooks";
 import { useCurrentUser } from "@/features/auth";
-import { useCurrentProfessional } from "@/features/professional";
-import { Spinner } from "@/components/ui/spinner";
+import { GetCurrentProfessional } from "@/features/professional";
+import { Spinner } from "@/components/ui";
 import { useEffect } from "react";
 
 export interface ProfessionalGuardProps {
@@ -16,7 +16,7 @@ export function ProfessionalGuard({ children }: ProfessionalGuardProps) {
     data: professional,
     isLoading: isProfessionalLoading,
     isError,
-  } = useCurrentProfessional(!!user && isProfessional);
+  } = GetCurrentProfessional();
 
   const { goToLogin, goToPatientApp } = useAppNavigation();
 

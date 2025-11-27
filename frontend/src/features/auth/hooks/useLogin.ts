@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { type LoginUserDto } from "@/features/auth";
-import { type ProblemDetailsDto } from "@/types/api.types";
+import { type ProblemDetailsDto } from "@/types/enums.types";
 import { API_ENDPOINTS } from "@/config/endpoints";
 import { api, handleApiError } from "@/index";
 import { toast } from "sonner";

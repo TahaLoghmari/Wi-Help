@@ -7,14 +7,14 @@ import {
   Home,
   ArrowLeft,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+  Button,
+} from "@/components/ui";
 import { useAppNavigation } from "@/hooks";
 
 interface ErrorComponenetProps {

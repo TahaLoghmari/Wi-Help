@@ -1,4 +1,4 @@
-import type { ProblemDetailsDto } from "@/types/api.types";
+import type { ProblemDetailsDto } from "@/types";
 import { Link } from "@tanstack/react-router";
 import { ROUTE_PATHS } from "@/config/routes";
 import { toast } from "sonner";

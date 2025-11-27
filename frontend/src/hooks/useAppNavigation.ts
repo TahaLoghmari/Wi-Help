@@ -1,5 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
-import { ROUTE_PATHS } from "@/config/routes";
+import { ROUTE_PATHS } from "@/config";
 
 export function useAppNavigation() {
   const navigate = useNavigate();

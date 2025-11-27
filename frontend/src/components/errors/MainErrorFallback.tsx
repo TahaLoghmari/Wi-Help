@@ -1,22 +1,22 @@
 import type { ErrorComponentProps } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+  Button,
+} from "@/components/ui";
 import { AlertCircle, Home, RefreshCw } from "lucide-react";
 import { useAppNavigation } from "@/hooks";
-import { env } from "@/config/env";
+import { env } from "@/config";
 
 export const MainErrorFallback = ({ error, reset }: ErrorComponentProps) => {
   const { goToHome } = useAppNavigation();
   const isDev = env.isDevelopment;
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4 bg-gray-50">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
       <Card className="w-full max-w-2xl border-red-200">
         <CardHeader className="text-center">
           <div className="mb-4 flex justify-center">
@@ -33,11 +33,11 @@ export const MainErrorFallback = ({ error, reset }: ErrorComponentProps) => {
 
         {isDev && error && (
           <div className="px-6 pb-4">
-            <div className="rounded-lg bg-red-50 border border-red-200 p-4">
-              <p className="text-sm font-semibold text-red-800 mb-2">
+            <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+              <p className="mb-2 text-sm font-semibold text-red-800">
                 Error Details (Development Only):
               </p>
-              <pre className="text-xs text-red-700 overflow-auto max-h-64 whitespace-pre-wrap wrap-break-word">
+              <pre className="max-h-64 overflow-auto text-xs wrap-break-word whitespace-pre-wrap text-red-700">
                 {error.message}
                 {error.stack && `\n\n${error.stack}`}
               </pre>
@@ -45,7 +45,7 @@ export const MainErrorFallback = ({ error, reset }: ErrorComponentProps) => {
           </div>
         )}
 
-        <CardFooter className="flex gap-2 justify-center">
+        <CardFooter className="flex justify-center gap-2">
           <Button variant="outline" onClick={reset}>
             <RefreshCw className="mr-2 h-4 w-4" />
             Try Again

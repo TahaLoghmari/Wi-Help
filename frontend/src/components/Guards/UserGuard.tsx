@@ -1,6 +1,6 @@
 import { useAppNavigation } from "@/hooks";
 import { useCurrentUser } from "@/features/auth";
-import { Spinner } from "@/components/ui/spinner";
+import { Spinner } from "@/components/ui";
 import { useEffect } from "react";
 
 export interface UserGuardProps {

@@ -1,4 +1,4 @@
-import type { ProblemDetailsDto } from "@/types/api.types";
+import type { ProblemDetailsDto } from "@/types/enums.types";
 import { env } from "@/config/env";
 import { API_ENDPOINTS } from "@/config/endpoints";
 

@@ -1,1 +1,1 @@
-export * from "./landingPageConstants"
+export * from "./landingPageConstants";
