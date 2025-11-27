@@ -65,7 +65,25 @@ export function ProfileAndBio() {
   const onSubmit = async (
     credentials: z.infer<typeof profileAndBioFormSchema>,
   ) => {
-    updateProfessionalMutation.mutate(credentials);
+    const cleanedCredentials = {
+      ...credentials,
+      address:
+        credentials.address &&
+        credentials.address.street &&
+        credentials.address.city &&
+        credentials.address.state &&
+        credentials.address.postalCode &&
+        credentials.address.country
+          ? (credentials.address as {
+              street: string;
+              city: string;
+              state: string;
+              postalCode: string;
+              country: string;
+            })
+          : undefined,
+    };
+    updateProfessionalMutation.mutate(cleanedCredentials);
   };
   return (
     <Form {...form}>

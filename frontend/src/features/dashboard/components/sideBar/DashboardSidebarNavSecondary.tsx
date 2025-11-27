@@ -23,7 +23,7 @@ export function DashboardSidebarNavSecondary({
     <div className="flex flex-col gap-1 px-3 py-4">
       {items.map((item) => (
         <Link to={item.url} key={item.title}>
-          {({ isActive }) => {
+          {({ isActive }: { isActive: boolean }) => {
             useEffect(() => {
               if (isActive) {
                 setActiveNavigationPage(item.title + " Overview");

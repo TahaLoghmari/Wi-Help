@@ -58,6 +58,10 @@ export function useAppNavigation() {
       navigate({ to: ROUTE_PATHS.PATIENT.ROOT });
     },
 
+    goToBookingSuccess: () => {
+      navigate({ to: ROUTE_PATHS.PATIENT.BOOK_SUCCESS });
+    },
+    
     goBack: () => {
       window.history.back();
     },

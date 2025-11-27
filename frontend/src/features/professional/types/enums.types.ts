@@ -72,7 +72,6 @@ export const AppointmentUrgency = {
   Low: "Low",
   Medium: "Medium",
   High: "High",
-  Critical: "Critical",
 } as const;
 
 export type AppointmentUrgency =

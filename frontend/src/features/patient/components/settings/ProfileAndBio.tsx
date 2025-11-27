@@ -87,7 +87,25 @@ export function ProfileAndBio() {
     credentials: z.infer<typeof profileAndBioFormSchema>,
   ) => {
     console.log(credentials);
-    updatePatientMutation.mutate(credentials);
+    const cleanedCredentials = {
+      ...credentials,
+      address:
+        credentials.address &&
+        credentials.address.street &&
+        credentials.address.city &&
+        credentials.address.state &&
+        credentials.address.postalCode &&
+        credentials.address.country
+          ? (credentials.address as {
+              street: string;
+              city: string;
+              state: string;
+              postalCode: string;
+              country: string;
+            })
+          : undefined,
+    };
+    updatePatientMutation.mutate(cleanedCredentials);
   };
 
   return (

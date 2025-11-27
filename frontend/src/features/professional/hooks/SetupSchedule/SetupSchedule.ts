@@ -15,7 +15,7 @@ export const setupSchedule = (request: SetupScheduleRequest) => {
   return api.post<void>(API_ENDPOINTS.PROFESSIONALS.SETUP_SCHEDULE, body);
 };
 
-export function useSetupSchedule() {
+export function SetupSchedule() {
   const queryClient = useQueryClient();
   return useMutation<void, ProblemDetailsDto, SetupScheduleRequest>({
     mutationFn: setupSchedule,

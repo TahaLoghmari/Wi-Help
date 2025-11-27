@@ -17,7 +17,7 @@ import {
   AlertTitle,
 } from "@/components";
 import { GenerateIdCrypto } from "@/lib";
-import { DAYS, GetSchedule, setupSchedule } from "@/features/professional";
+import { DAYS, GetSchedule, SetupSchedule } from "@/features/professional";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,7 +37,7 @@ export function ScheduleTimings() {
     isLoading: isLoadingSchedule,
     isError,
   } = GetSchedule();
-  const { mutate: saveSchedule, isPending: isSaving } = setupSchedule();
+  const { mutate: saveSchedule, isPending: isSaving } = SetupSchedule();
 
   const form = useForm<ScheduleFormValues>({
     resolver: zodResolver(scheduleFormSchema),

@@ -1,5 +1,5 @@
 import { GetCurrentPatient } from "@/features/patient";
-import { PatientProfile } from "../PatientProfile";
+import { PatientProfile } from "@/features/patient";
 import { Spinner } from "@/components/ui";
 
 export function ProfileLayout() {

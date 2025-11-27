@@ -3,7 +3,18 @@ import { useNavigate } from "@tanstack/react-router";
 import { Spinner } from "@/components";
 
 export function MyPatientsCards() {
-  const { data: patients, isLoading, isError } = GetProfessionalPatients();
+  const {
+    data,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = GetProfessionalPatients();
+
+  const patients = data?.pages.flatMap((page) => page.items) || [];
+  const totalCount = data?.pages[0]?.totalCount || 0;
+
   console.log(patients);
   const navigate = useNavigate();
 
@@ -162,6 +173,32 @@ export function MyPatientsCards() {
           </div>
         </article>
       ))}
+
+      <div className="col-span-full mt-4 flex items-center justify-between">
+        <div className="text-[11px] text-slate-500">
+          Showing
+          <span className="font-medium text-slate-700">
+            {" "}
+            {patients.length}{" "}
+          </span>
+          of
+          <span className="font-medium text-slate-700"> {totalCount} </span>
+          patients.
+        </div>
+        <div className="flex items-center gap-1.5 text-[11px]">
+          <button
+            onClick={() => fetchNextPage()}
+            disabled={!hasNextPage || isFetchingNextPage}
+            className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-slate-600 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isFetchingNextPage
+              ? "Loading more..."
+              : hasNextPage
+                ? "Load More"
+                : "No more patients"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

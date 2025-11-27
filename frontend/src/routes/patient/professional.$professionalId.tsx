@@ -1,5 +1,5 @@
 import { ROUTE_PATHS } from "@/config/routes";
-import { ProfessionalProfileView } from "@/features/patient/find-professional/components";
+import { ProfessionalProfileView } from "@/features/patient";
 import { ContentLoading } from "@/components/ui";
 import { createFileRoute } from "@tanstack/react-router";
 

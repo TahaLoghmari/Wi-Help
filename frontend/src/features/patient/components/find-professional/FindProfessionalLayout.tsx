@@ -8,7 +8,17 @@ import { useAppNavigation } from "@/hooks";
 
 export function FindProfessionalLayout() {
   const navigate = useAppNavigation();
-  const { data: professionals, isLoading, isError } = GetProfessionals();
+  const {
+    data,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = GetProfessionals();
+
+  const professionals = data?.pages.flatMap((page) => page.items) || [];
+  const totalCount = data?.pages[0]?.totalCount || 0;
 
   return (
     <div className="flex h-full w-full flex-col gap-5 overflow-auto bg-[#fafafb] px-8 py-5">
@@ -173,6 +183,32 @@ export function FindProfessionalLayout() {
                 </div>
               </article>
             ))}
+          </div>
+
+          <div className="flex items-center justify-between pt-4">
+            <div className="text-[11px] text-slate-500">
+              Showing
+              <span className="font-medium text-slate-700">
+                {" "}
+                {professionals.length}{" "}
+              </span>
+              of
+              <span className="font-medium text-slate-700"> {totalCount} </span>
+              professionals.
+            </div>
+            <div className="flex items-center gap-1.5 text-[11px]">
+              <button
+                onClick={() => fetchNextPage()}
+                disabled={!hasNextPage || isFetchingNextPage}
+                className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-slate-600 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isFetchingNextPage
+                  ? "Loading more..."
+                  : hasNextPage
+                    ? "Load More"
+                    : "No more professionals"}
+              </button>
+            </div>
           </div>
         </>
       )}

@@ -14,7 +14,7 @@ export function ProfessionalProfileView() {
     data: professional,
     isLoading,
     isError,
-  } = GetProfessional({ professionalId });
+  } = GetProfessional({ professionalId: professionalId! });
 
   if (isLoading) {
     return (
