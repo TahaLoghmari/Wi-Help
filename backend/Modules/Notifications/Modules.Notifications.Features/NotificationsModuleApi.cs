@@ -15,9 +15,9 @@ public class NotificationsModuleApi(
     NotificationsService notificationsService,
     ILogger<NotificationsModuleApi> logger) : INotificationsModuleApi
 {
-    public async Task AddNotificationAsync(string userId, string title, string message, NotificationType type, CancellationToken cancellationToken)
+    public async Task AddNotificationAsync(string userId, string role, string title, string message, NotificationType type, CancellationToken cancellationToken)
     {
-        var notification = new Notification(userId, title, message, type);
+        var notification = new Notification(userId, role, title, message, type);
 
         dbContext.Notifications.Add(notification);
 
@@ -30,6 +30,7 @@ public class NotificationsModuleApi(
             notification.Title,
             notification.Message,
             notification.Type,
+            notification.Role,
             notification.IsRead,
             notification.CreatedAt);
 

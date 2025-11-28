@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Modules.Notifications.Infrastructure.Migrations
+namespace Modules.Notifications.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(NotificationsDbContext))]
     partial class NotificationsDbContextModelSnapshot : ModelSnapshot
@@ -44,6 +44,11 @@ namespace Modules.Notifications.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("message");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("role");
 
                     b.Property<string>("Title")
                         .IsRequired()

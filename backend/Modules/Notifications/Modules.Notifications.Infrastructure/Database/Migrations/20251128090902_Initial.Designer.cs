@@ -9,10 +9,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Modules.Notifications.Infrastructure.Migrations
+namespace Modules.Notifications.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(NotificationsDbContext))]
-    [Migration("20251128084229_Initial")]
+    [Migration("20251128090902_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -47,6 +47,11 @@ namespace Modules.Notifications.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("message");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("role");
 
                     b.Property<string>("Title")
                         .IsRequired()

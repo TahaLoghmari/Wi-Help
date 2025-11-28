@@ -7,5 +7,7 @@ public sealed record NotificationDto(
     string Title,
     string Message,
     NotificationType Type,
+    string Role,
     bool IsRead,
     DateTime CreatedAt);
+

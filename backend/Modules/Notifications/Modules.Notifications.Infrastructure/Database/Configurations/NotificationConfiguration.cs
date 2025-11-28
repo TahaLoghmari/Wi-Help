@@ -10,7 +10,7 @@ public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
     {
         builder.HasKey(n => n.Id);
         
-        builder.Property(a => a.UserId)
+        builder.Property(n => n.Role)
             .IsRequired();
 
         builder.Property(n => n.Title)

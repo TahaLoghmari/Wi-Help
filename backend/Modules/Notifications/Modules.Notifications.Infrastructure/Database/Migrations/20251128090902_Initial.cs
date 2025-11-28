@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Modules.Notifications.Infrastructure.Migrations
+namespace Modules.Notifications.Infrastructure.Database.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -21,6 +21,7 @@ namespace Modules.Notifications.Infrastructure.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     user_id = table.Column<string>(type: "text", nullable: false),
+                    role = table.Column<string>(type: "text", nullable: false),
                     title = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     message = table.Column<string>(type: "text", nullable: false),
                     type = table.Column<string>(type: "text", nullable: false),

@@ -6,6 +6,7 @@ public class Notification
 {
     public Guid Id { get; private set; }
     public string UserId { get; private set; } = string.Empty;
+    public string Role { get; private set; } = string.Empty;
     public string Title { get; private set; } = string.Empty;
     public string Message { get; private set; } = string.Empty;
     public NotificationType Type { get; private set; }  
@@ -14,10 +15,11 @@ public class Notification
 
     private Notification() { } // EF Core
 
-    public Notification(string userId, string title, string message, NotificationType type)
+    public Notification(string userId, string role, string title, string message, NotificationType type)
     {
         Id = Guid.NewGuid();
         UserId = userId;
+        Role = role;
         Title = title;
         Message = message;
         Type = type;
