@@ -15,8 +15,6 @@ public class SetupScheduleCommandHandler(
 {
     public async Task<Result> Handle(SetupScheduleCommand command, CancellationToken cancellationToken)
     {
-
-
         logger.LogInformation("Setting schedule for professional {ProfessionalId}", command.ProfessionalId);
 
         // fetch all professional's days with available slots

@@ -28,6 +28,6 @@ internal sealed class GetPatient : IEndpoint
 
     private record Request
     {
-        public Guid PatientId { get; }
+        public Guid PatientId { get; init; }
     }
 }

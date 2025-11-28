@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
@@ -13,7 +14,8 @@ public class RespondToAppointment : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost(AppointmentsEndpoints.RespondToAppointment, async (
-                Request request,
+                [FromRoute] Guid appointmentId,
+                [FromBody] Request request,
                 HttpContext httpContext,
                 ICommandHandler<RespondToAppointmentCommand> handler,
                 CancellationToken cancellationToken) =>
@@ -25,7 +27,7 @@ public class RespondToAppointment : IEndpoint
                 }
 
                 var command = new RespondToAppointmentCommand(
-                    request.AppointmentId,
+                    appointmentId,
                     professionalId,
                     request.IsAccepted
                 );
@@ -37,8 +39,8 @@ public class RespondToAppointment : IEndpoint
             .WithTags(Tags.Appointments)
             .RequireAuthorization(new AuthorizeAttribute { Roles = "Professional" });
     }
-
-    private sealed record Request(
-        Guid AppointmentId,
-        bool IsAccepted);
+    private class Request
+    {
+        public bool IsAccepted { get; init; }
+    }
 }
