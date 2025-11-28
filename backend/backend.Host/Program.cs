@@ -2,9 +2,12 @@ using backend.Host;
 using backend.Host.Extensions;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Modules.Appointments.Infrastructure.Database;
 using Modules.Identity.Infrastructure.Database;
+using Modules.Notifications.Infrastructure;
+using Modules.Notifications.Infrastructure.Database;
 using Modules.Patients.Infrastructure.Database;
 using Modules.Professionals.Infrastructure.Database;
 using Modules.Common.Infrastructure.Services;
@@ -49,6 +52,9 @@ using (var scope = app.Services.CreateScope())
     var professionalsDbContext = scope.ServiceProvider.GetRequiredService<ProfessionalsDbContext>();
     await professionalsDbContext.Database.MigrateAsync();
 
+    var notificationsDbContext = scope.ServiceProvider.GetRequiredService<NotificationsDbContext>();
+    await notificationsDbContext.Database.MigrateAsync();
+
 
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
     await IdentityDataSeeder.SeedRolesAsync(roleManager);
@@ -70,6 +76,6 @@ app.UseAuthorization();
 app.UseHangfireDashboard();
 app.MapEndpoints();
 app.MapControllers();
-
+app.MapHub<NotificationHub>("/hubs/notifications");
 
 await app.RunAsync();

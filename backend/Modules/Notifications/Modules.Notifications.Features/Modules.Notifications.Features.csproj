@@ -4,6 +4,21 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <RootNamespace>Modules.Notifications.Features</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Modules.Notifications.Domain\Modules.Notifications.Domain.csproj" />
+    <ProjectReference Include="..\Modules.Notifications.Infrastructure\Modules.Notifications.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules.Notifications.PublicApi\Modules.Notifications.PublicApi.csproj" />
+    <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Features\Modules.Common.Features.csproj" />
+    <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Infrastructure\Modules.Common.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
 </Project>

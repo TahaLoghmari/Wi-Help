@@ -7,7 +7,6 @@ public sealed class ProfessionalsDbContext(DbContextOptions<ProfessionalsDbConte
     public DbSet<Professional> Professionals { get; set; }
     public DbSet<AvailabilityDay> AvailabilityDays { get; set; }
     public DbSet<AvailabilitySlot> AvailabilitySlots { get; set; }
-
     
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {

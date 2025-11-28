@@ -8,6 +8,8 @@ using backend.Host.Middlewares;
 using FluentValidation;
 using Hangfire;
 using Hangfire.PostgreSql;
+using Modules.Notifications.Features;
+using Modules.Notifications.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.IdentityModel.Tokens;
@@ -157,7 +159,8 @@ internal static class DependencyInjection
             Modules.Identity.Features.AssemblyReference.Assembly,
             Modules.Patients.Features.AssemblyReference.Assembly,
             Modules.Professionals.Features.AssemblyReference.Assembly,
-            Modules.Appointments.Features.AssemblyReference.Assembly
+            Modules.Appointments.Features.AssemblyReference.Assembly,
+            Modules.Notifications.Features.AssemblyReference.Assembly
         ];
 
         builder.Services.AddEndpoints(moduleApplicationAssemblies);
@@ -173,6 +176,9 @@ internal static class DependencyInjection
 
         builder.Services.AddAppointmentsModule()
             .AddAppointmentsInfrastructure(builder.Configuration);
+
+        builder.Services.AddNotificationsModule()
+            .AddNotificationsInfrastructure(builder.Configuration);
 
         builder.Services.AddCommonModule(moduleApplicationAssemblies)
             .AddCommonInfrastructure(builder.Configuration);
