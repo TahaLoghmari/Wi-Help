@@ -18,7 +18,10 @@ export function useBookAppointment() {
     mutationFn: bookAppointment,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["professionalAvailability"] });
-      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      queryClient.invalidateQueries({ queryKey: ["patient-appointments"] });
+      queryClient.invalidateQueries({
+        queryKey: ["professional-appointments"],
+      });
       toast.success(`Appointment booked successfully!`);
       goToBookingSuccess();
     },

@@ -1,6 +1,6 @@
 import { ContentLoading } from "@/components";
 import { PatientProfile, GetPatient } from "@/features/patient";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useParams } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/professional/patient/$patientId")({
   component: PatientProfileRoute,
@@ -8,7 +8,8 @@ export const Route = createFileRoute("/professional/patient/$patientId")({
 });
 
 function PatientProfileRoute() {
-  const { patientId } = Route.useParams();
+  const { patientId } = useParams({ strict: false });
+  console.log(patientId);
   const {
     data: patient,
     isLoading,
@@ -19,7 +20,7 @@ function PatientProfileRoute() {
     return <ContentLoading />;
   }
 
-  if (isError || !patient) {
+  if (isError) {
     return <div>Patient not found or error loading patient.</div>;
   }
 

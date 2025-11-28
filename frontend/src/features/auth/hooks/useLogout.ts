@@ -15,8 +15,10 @@ export function useLogout() {
   return useMutation<void, ProblemDetailsDto, void>({
     mutationFn: logout,
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-      toast.success("You have successfully logged out.");
+      queryClient.clear();
+      toast.success("Logged out successfully", {
+        description: "You have been logged out of your account.",
+      });
       goToLogin();
     },
     onError: (error) => handleApiError({ apiError: error }),

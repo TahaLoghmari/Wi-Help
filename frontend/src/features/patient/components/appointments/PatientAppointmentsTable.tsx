@@ -24,6 +24,10 @@ export function PatientAppointmentsTable() {
   const [selectedAppointment, setSelectedAppointment] =
     useState<GetPatientAppointmentsDto | null>(null);
 
+  const [activeTab, setActiveTab] = useState<"offered" | "confirmed">(
+    "offered",
+  );
+
   const handleView = (appointment: GetPatientAppointmentsDto) => {
     setSelectedAppointment(appointment);
     setViewModalOpen(true);
@@ -110,18 +114,36 @@ export function PatientAppointmentsTable() {
 
         <div className="flex items-center gap-1 pb-1 text-xs">
           <button
-            id="appt-tab-upcoming"
-            className="relative inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 font-medium text-[#00394a]"
+            id="appt-tab-offered"
+            onClick={() => setActiveTab("offered")}
+            className={`relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-medium transition-colors ${
+              activeTab === "offered"
+                ? "border-slate-200 bg-white text-[#00394a]"
+                : "border-transparent text-slate-500 hover:border-slate-200 hover:bg-white"
+            }`}
           >
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#3fa6ff]"></span>
-            Upcoming
+            <span
+              className={`inline-block h-1.5 w-1.5 rounded-full ${
+                activeTab === "offered" ? "bg-[#3fa6ff]" : "bg-slate-300"
+              }`}
+            ></span>
+            Offered
           </button>
           <button
-            id="appt-tab-today"
-            className="relative inline-flex items-center gap-1.5 rounded-full border border-transparent px-3 py-1.5 text-slate-500 transition-colors hover:border-slate-200 hover:bg-white"
+            id="appt-tab-confirmed"
+            onClick={() => setActiveTab("confirmed")}
+            className={`relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 transition-colors ${
+              activeTab === "confirmed"
+                ? "border-slate-200 bg-white font-medium text-[#00394a]"
+                : "border-transparent text-slate-500 hover:border-slate-200 hover:bg-white"
+            }`}
           >
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-slate-300"></span>
-            Today
+            <span
+              className={`inline-block h-1.5 w-1.5 rounded-full ${
+                activeTab === "confirmed" ? "bg-[#3fa6ff]" : "bg-slate-300"
+              }`}
+            ></span>
+            Confirmed
           </button>
         </div>
       </div>
@@ -151,82 +173,89 @@ export function PatientAppointmentsTable() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {appointments.map((appointment) => (
-              <tr key={appointment.id} className="hover:bg-slate-50/70">
-                <td className="pt-3.5 pr-4 pb-3.5 pl-4 whitespace-nowrap sm:px-5">
-                  <div className="flex items-center gap-3">
-                    {appointment.professional.profilePictureUrl ? (
-                      <img
-                        src={appointment.professional.profilePictureUrl}
-                        alt={
-                          appointment.professional.firstName +
-                          " " +
-                          appointment.professional.lastName
-                        }
-                        className="h-8 w-8 rounded-full border border-slate-200 object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
-                        {appointment.professional.firstName.charAt(0)}
-                      </div>
-                    )}
-                    <div className="">
-                      <div className="text-xs font-medium tracking-tight text-slate-900">
-                        {appointment.professional.firstName}
-                      </div>
-                      <div className="text-[11px] text-slate-500">
-                        {/* Professional ID or Specialization if available */}
-                        <span>
-                          ID: {appointment.professionalId.substring(0, 6)}
-                        </span>
+            {appointments
+              .filter((appointment) =>
+                activeTab === "offered"
+                  ? appointment.status === "Offered"
+                  : appointment.status === "Confirmed",
+              )
+              .map((appointment) => (
+                <tr key={appointment.id} className="hover:bg-slate-50/70">
+                  <td className="pt-3.5 pr-4 pb-3.5 pl-4 whitespace-nowrap sm:px-5">
+                    <div className="flex items-center gap-3">
+                      {appointment.professional?.profilePictureUrl ? (
+                        <img
+                          src={appointment.professional.profilePictureUrl}
+                          alt={
+                            appointment.professional?.firstName +
+                            " " +
+                            appointment.professional?.lastName
+                          }
+                          className="h-8 w-8 rounded-full border border-slate-200 object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
+                          {appointment.professional?.firstName?.charAt(0) ||
+                            "?"}
+                        </div>
+                      )}
+                      <div className="">
+                        <div className="text-xs font-medium tracking-tight text-slate-900">
+                          {appointment.professional?.firstName || "Unknown"}
+                        </div>
+                        <div className="text-[11px] text-slate-500">
+                          {/* Professional ID or Specialization if available */}
+                          <span>
+                            ID: {appointment.professionalId.substring(0, 6)}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </td>
-                <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-700 sm:px-5">
-                  {new Date(appointment.startDate).toLocaleDateString()} •{" "}
-                  {new Date(appointment.startDate).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </td>
-                <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
-                  {appointment.notes || (
-                    <span className="text-slate-400 italic">
-                      No purpose specified
-                    </span>
-                  )}
-                </td>
-                <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
-                  <span
-                    className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] ${
-                      appointment.urgency === AppointmentUrgency.High
-                        ? "border-red-200 bg-red-50 text-red-700"
-                        : appointment.urgency === AppointmentUrgency.Medium
-                          ? "border-yellow-200 bg-yellow-50 text-yellow-700"
-                          : "border-[#3fa6ff]/40 bg-[#3fa6ff]/10 text-[#00394a]"
-                    }`}
-                  >
-                    {appointment.urgency}
-                  </span>
-                </td>
-                <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-800 sm:px-5">
-                  ${appointment.price.toFixed(2)}
-                </td>
-                <td className="px-4 py-3.5 text-right whitespace-nowrap sm:px-5">
-                  <div className="flex items-center justify-end gap-1.5">
-                    <button
-                      onClick={() => handleView(appointment)}
-                      className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5"
+                  </td>
+                  <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-700 sm:px-5">
+                    {new Date(appointment.startDate).toLocaleDateString()} •{" "}
+                    {new Date(appointment.startDate).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </td>
+                  <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
+                    {appointment.notes || (
+                      <span className="text-slate-400 italic">
+                        No purpose specified
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
+                    <span
+                      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] ${
+                        appointment.urgency === AppointmentUrgency.High
+                          ? "border-red-200 bg-red-50 text-red-700"
+                          : appointment.urgency === AppointmentUrgency.Medium
+                            ? "border-yellow-200 bg-yellow-50 text-yellow-700"
+                            : "border-[#3fa6ff]/40 bg-[#3fa6ff]/10 text-[#00394a]"
+                      }`}
                     >
-                      View
-                    </button>
-                    {/* Removed Accept button for patients as it might not be relevant, or keep it if requested "same UI" */}
-                    {/* Keeping it but maybe it should be "Cancel" */}
-                  </div>
-                </td>
-              </tr>
-            ))}
+                      {appointment.urgency}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-800 sm:px-5">
+                    ${appointment.price.toFixed(2)}
+                  </td>
+                  <td className="px-4 py-3.5 text-right whitespace-nowrap sm:px-5">
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button
+                        onClick={() => handleView(appointment)}
+                        className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5"
+                      >
+                        View
+                      </button>
+                      {/* Removed Accept button for patients as it might not be relevant, or keep it if requested "same UI" */}
+                      {/* Keeping it but maybe it should be "Cancel" */}
+                    </div>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
@@ -281,20 +310,21 @@ export function PatientAppointmentsTable() {
                   Professional
                 </label>
                 <div className="mt-2 flex items-center gap-3">
-                  {selectedAppointment.professional.profilePictureUrl ? (
+                  {selectedAppointment.professional?.profilePictureUrl ? (
                     <img
                       src={selectedAppointment.professional.profilePictureUrl}
-                      alt={selectedAppointment.professional.firstName}
+                      alt={selectedAppointment.professional?.firstName}
                       className="h-12 w-12 rounded-full border border-slate-200 object-cover"
                     />
                   ) : (
                     <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-sm font-medium text-slate-500">
-                      {selectedAppointment.professional.firstName.charAt(0)}
+                      {selectedAppointment.professional?.firstName?.charAt(0) ||
+                        "?"}
                     </div>
                   )}
                   <div>
                     <div className="text-sm font-medium text-slate-900">
-                      {selectedAppointment.professional.firstName}
+                      {selectedAppointment.professional?.firstName || "Unknown"}
                     </div>
                     <div className="text-xs text-slate-500">
                       ID: {selectedAppointment.professionalId.substring(0, 8)}

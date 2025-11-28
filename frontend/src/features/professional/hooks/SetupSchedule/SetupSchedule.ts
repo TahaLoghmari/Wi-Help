@@ -12,6 +12,7 @@ export const setupSchedule = (request: SetupScheduleRequest) => {
       availabilitySlots: day.availabilitySlots,
     })),
   };
+  console.log(body);
   return api.post<void>(API_ENDPOINTS.PROFESSIONALS.SETUP_SCHEDULE, body);
 };
 
@@ -21,6 +22,7 @@ export function SetupSchedule() {
     mutationFn: setupSchedule,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["schedule"] });
+      queryClient.invalidateQueries({ queryKey: ["professionalAvailability"] });
       toast.success("Schedule setup successfully!");
     },
     onError: (error) => handleApiError({ apiError: error }),

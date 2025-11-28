@@ -3,6 +3,7 @@ import {
   AppointmentUrgency,
   GetProfessionalAppointments,
   type GetProfessionalAppointmentsDto,
+  RespondToAppointment,
 } from "@/features/professional";
 
 export function AppointmentsTable() {
@@ -15,10 +16,16 @@ export function AppointmentsTable() {
     isFetchingNextPage,
   } = GetProfessionalAppointments();
 
+  const respondToAppointmentMutation = RespondToAppointment();
+
   const appointments = data?.pages.flatMap((page) => page.items) || [];
   const totalCount = data?.pages[0]?.totalCount || 0;
 
   console.log(appointments);
+
+  const [activeTab, setActiveTab] = useState<"offered" | "confirmed">(
+    "offered",
+  );
 
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [acceptModalOpen, setAcceptModalOpen] = useState(false);
@@ -36,17 +43,25 @@ export function AppointmentsTable() {
   };
 
   const handleConfirmAppointment = () => {
-    // TODO: Call backend API to accept the appointment
-    console.log("Accepting appointment:", selectedAppointment?.id);
-    setAcceptModalOpen(false);
-    setSelectedAppointment(null);
+    if (selectedAppointment) {
+      respondToAppointmentMutation.mutate({
+        appointmentId: selectedAppointment.id,
+        isAccepted: true,
+      });
+      setAcceptModalOpen(false);
+      setSelectedAppointment(null);
+    }
   };
 
   const handleRejectAppointment = () => {
-    // TODO: Call backend API to reject the appointment
-    console.log("Rejecting appointment:", selectedAppointment?.id);
-    setAcceptModalOpen(false);
-    setSelectedAppointment(null);
+    if (selectedAppointment) {
+      respondToAppointmentMutation.mutate({
+        appointmentId: selectedAppointment.id,
+        isAccepted: false,
+      });
+      setAcceptModalOpen(false);
+      setSelectedAppointment(null);
+    }
   };
 
   if (isLoading) {
@@ -129,18 +144,36 @@ export function AppointmentsTable() {
 
         <div className="flex items-center gap-1 pb-1 text-xs">
           <button
-            id="appt-tab-upcoming"
-            className="relative inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 font-medium text-[#00394a]"
+            id="appt-tab-offered"
+            onClick={() => setActiveTab("offered")}
+            className={`relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-medium transition-colors ${
+              activeTab === "offered"
+                ? "border-slate-200 bg-white text-[#00394a]"
+                : "border-transparent text-slate-500 hover:border-slate-200 hover:bg-white"
+            }`}
           >
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#3fa6ff]"></span>
-            Upcoming
+            <span
+              className={`inline-block h-1.5 w-1.5 rounded-full ${
+                activeTab === "offered" ? "bg-[#3fa6ff]" : "bg-slate-300"
+              }`}
+            ></span>
+            Offered
           </button>
           <button
-            id="appt-tab-today"
-            className="relative inline-flex items-center gap-1.5 rounded-full border border-transparent px-3 py-1.5 text-slate-500 transition-colors hover:border-slate-200 hover:bg-white"
+            id="appt-tab-confirmed"
+            onClick={() => setActiveTab("confirmed")}
+            className={`relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 transition-colors ${
+              activeTab === "confirmed"
+                ? "border-slate-200 bg-white font-medium text-[#00394a]"
+                : "border-transparent text-slate-500 hover:border-slate-200 hover:bg-white"
+            }`}
           >
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-slate-300"></span>
-            Today
+            <span
+              className={`inline-block h-1.5 w-1.5 rounded-full ${
+                activeTab === "confirmed" ? "bg-[#3fa6ff]" : "bg-slate-300"
+              }`}
+            ></span>
+            Confirmed
           </button>
         </div>
       </div>
@@ -170,90 +203,97 @@ export function AppointmentsTable() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {appointments.map((appointment) => (
-              <tr key={appointment.id} className="hover:bg-slate-50/70">
-                <td className="pt-3.5 pr-4 pb-3.5 pl-4 whitespace-nowrap sm:px-5">
-                  <div className="flex items-center gap-3">
-                    {appointment.patient?.profilePictureUrl ? (
-                      <img
-                        src={appointment.patient.profilePictureUrl}
-                        alt={appointment.patient.firstName}
-                        className="h-8 w-8 rounded-full border border-slate-200 object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
-                        {appointment.patient?.firstName?.charAt(0) || "?"}
-                      </div>
-                    )}
-                    <div className="">
-                      <div className="text-xs font-medium tracking-tight text-slate-900">
-                        {appointment.patient?.firstName || "Unknown Patient"}
-                      </div>
-                      <div className="text-[11px] text-slate-500">
-                        {appointment.patient?.dateOfBirth ? (
-                          <span>
-                            DOB:{" "}
-                            {new Date(
-                              appointment.patient.dateOfBirth,
-                            ).toLocaleDateString()}
-                          </span>
-                        ) : (
-                          <span>
-                            Patient ID: {appointment.patientId.substring(0, 6)}
-                          </span>
-                        )}
+            {appointments
+              .filter((appointment) =>
+                activeTab === "offered"
+                  ? appointment.status === "Offered"
+                  : appointment.status === "Confirmed",
+              )
+              .map((appointment) => (
+                <tr key={appointment.id} className="hover:bg-slate-50/70">
+                  <td className="pt-3.5 pr-4 pb-3.5 pl-4 whitespace-nowrap sm:px-5">
+                    <div className="flex items-center gap-3">
+                      {appointment.patient?.profilePictureUrl ? (
+                        <img
+                          src={appointment.patient.profilePictureUrl}
+                          alt={appointment.patient.firstName}
+                          className="h-8 w-8 rounded-full border border-slate-200 object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
+                          {appointment.patient?.firstName?.charAt(0) || "?"}
+                        </div>
+                      )}
+                      <div className="">
+                        <div className="text-xs font-medium tracking-tight text-slate-900">
+                          {appointment.patient?.firstName || "Unknown Patient"}
+                        </div>
+                        <div className="text-[11px] text-slate-500">
+                          {appointment.patient?.dateOfBirth ? (
+                            <span>
+                              DOB:{" "}
+                              {new Date(
+                                appointment.patient.dateOfBirth,
+                              ).toLocaleDateString()}
+                            </span>
+                          ) : (
+                            <span>
+                              Patient ID:{" "}
+                              {appointment.patientId.substring(0, 6)}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </td>
-                <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-700 sm:px-5">
-                  {new Date(appointment.startDate).toLocaleDateString()} •{" "}
-                  {new Date(appointment.startDate).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </td>
-                <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
-                  {appointment.notes || (
-                    <span className="text-slate-400 italic">
-                      No purpose specified
+                  </td>
+                  <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-700 sm:px-5">
+                    {new Date(appointment.startDate).toLocaleDateString()} •{" "}
+                    {new Date(appointment.startDate).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </td>
+                  <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
+                    {appointment.notes || (
+                      <span className="text-slate-400 italic">
+                        No purpose specified
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
+                    <span
+                      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] ${
+                        appointment.urgency === "High"
+                          ? "border-red-200 bg-red-50 text-red-700"
+                          : appointment.urgency === AppointmentUrgency.Medium
+                            ? "border-yellow-200 bg-yellow-50 text-yellow-700"
+                            : "border-[#3fa6ff]/40 bg-[#3fa6ff]/10 text-[#00394a]"
+                      }`}
+                    >
+                      {appointment.urgency}
                     </span>
-                  )}
-                </td>
-                <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
-                  <span
-                    className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] ${
-                      appointment.urgency === "High"
-                        ? "border-red-200 bg-red-50 text-red-700"
-                        : appointment.urgency === AppointmentUrgency.Medium
-                          ? "border-yellow-200 bg-yellow-50 text-yellow-700"
-                          : "border-[#3fa6ff]/40 bg-[#3fa6ff]/10 text-[#00394a]"
-                    }`}
-                  >
-                    {appointment.urgency}
-                  </span>
-                </td>
-                <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-800 sm:px-5">
-                  ${appointment.price.toFixed(2)}
-                </td>
-                <td className="px-4 py-3.5 text-right whitespace-nowrap sm:px-5">
-                  <div className="flex items-center justify-end gap-1.5">
-                    <button
-                      onClick={() => handleView(appointment)}
-                      className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5"
-                    >
-                      View
-                    </button>
-                    <button
-                      onClick={() => handleAccept(appointment)}
-                      className="inline-flex items-center rounded-full border border-[#00394a] bg-[#00394a] px-2 py-1 text-[11px] text-white transition-colors hover:bg-[#00546e]"
-                    >
-                      Accept
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-800 sm:px-5">
+                    ${appointment.price.toFixed(2)}
+                  </td>
+                  <td className="px-4 py-3.5 text-right whitespace-nowrap sm:px-5">
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button
+                        onClick={() => handleView(appointment)}
+                        className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5"
+                      >
+                        View
+                      </button>
+                      <button
+                        onClick={() => handleAccept(appointment)}
+                        className="inline-flex items-center rounded-full border border-[#00394a] bg-[#00394a] px-2 py-1 text-[11px] text-white transition-colors hover:bg-[#00546e]"
+                      >
+                        Accept
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

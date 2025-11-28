@@ -14,10 +14,9 @@ export function useAppNavigation() {
       });
     },
 
-    goToLogin: (message?: string) => {
+    goToLogin: () => {
       navigate({
         to: ROUTE_PATHS.AUTH.LOGIN,
-        search: { message: message || undefined },
       });
     },
 
@@ -61,7 +60,7 @@ export function useAppNavigation() {
     goToBookingSuccess: () => {
       navigate({ to: ROUTE_PATHS.PATIENT.BOOK_SUCCESS });
     },
-    
+
     goBack: () => {
       window.history.back();
     },
