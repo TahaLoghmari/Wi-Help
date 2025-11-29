@@ -5,9 +5,11 @@ import {
 } from "@/features/professional";
 import { COUNTRIES, SPECIALIZATIONS } from "@/features/auth";
 import { Avatar, AvatarFallback, AvatarImage, Spinner } from "@/components";
+import { ReviewsList, GetProfessionalReviewStats, StarRating } from "@/features/reviews";
 
 export function ProfileLayout() {
   const { data: professional, isLoading, isError } = GetCurrentProfessional();
+  const { data: reviewStats } = GetProfessionalReviewStats(professional?.id ?? "");
 
   if (isLoading) {
     return (
@@ -68,23 +70,16 @@ export function ProfileLayout() {
               </div>
               <div className="flex items-center gap-3 text-[11px] text-slate-700">
                 <div className="flex items-center gap-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    data-lucide="star"
-                    className="lucide lucide-star h-3.5 w-3.5 text-[#f5a623]"
-                  >
-                    <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
-                  </svg>
-                  <span className="font-semibold text-slate-900">4.8</span>
-                  <span className="text-slate-500">/ 5 • 234 reviews</span>
+                  <StarRating
+                    rating={reviewStats?.averageRating ?? 0}
+                    size="sm"
+                  />
+                  <span className="font-semibold text-slate-900">
+                    {reviewStats?.averageRating.toFixed(1) ?? "0.0"}
+                  </span>
+                  <span className="text-slate-500">
+                    / 5 • {reviewStats?.totalCount ?? 0} reviews
+                  </span>
                 </div>
                 <span className="h-3 w-px bg-slate-200"></span>
                 <div className="flex items-center gap-1">
@@ -244,201 +239,7 @@ export function ProfileLayout() {
           </section>
 
           <section className="rounded-2xl border border-slate-200 bg-white p-4 text-xs shadow-sm shadow-slate-100 sm:p-5">
-            <div className="mb-2 flex items-center justify-between">
-              <h3 className="text-xs font-semibold tracking-tight text-[#00394a]">
-                Patient Reviews
-              </h3>
-              <span className="text-[11px] text-slate-500">
-                Scrollable • Most recent
-              </span>
-            </div>
-            <div className="max-h-64 space-y-3 overflow-y-auto pr-1">
-              <article className="flex gap-3 rounded-xl border border-slate-200/70 p-3">
-                <img
-                  src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&amp;fit=crop&amp;w=200&amp;q=80"
-                  className="h-7 w-7 rounded-full border border-slate-200 object-cover"
-                  alt="Patient"
-                />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-medium tracking-tight text-slate-900">
-                        Jonathan Barnes
-                      </span>
-                      <span className="inline-flex items-center gap-0.5 text-[10px] text-[#f5a623]">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          data-lucide="star"
-                          className="lucide lucide-star h-3 w-3"
-                        >
-                          <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
-                        </svg>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          data-lucide="star"
-                          className="lucide lucide-star h-3 w-3"
-                        >
-                          <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
-                        </svg>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          data-lucide="star"
-                          className="lucide lucide-star h-3 w-3"
-                        >
-                          <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
-                        </svg>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          data-lucide="star"
-                          className="lucide lucide-star h-3 w-3"
-                        >
-                          <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
-                        </svg>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          data-lucide="star-half"
-                          className="lucide lucide-star-half h-3 w-3"
-                        >
-                          <path d="M12 18.338a2.1 2.1 0 0 0-.987.244L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16l2.309-4.679A.53.53 0 0 1 12 2"></path>
-                        </svg>
-                      </span>
-                    </div>
-                    <span className="text-[10px] whitespace-nowrap text-slate-400">
-                      2h ago
-                    </span>
-                  </div>
-                  <p className="mt-0.5 text-[11px] leading-snug text-slate-700">
-                    Very clear explanations and I felt involved in all decisions
-                    about my treatment.
-                  </p>
-                </div>
-              </article>
-              <article className="flex gap-3 rounded-xl border border-slate-200/70 p-3">
-                <img
-                  src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/5bab247f-35d9-400d-a82b-fd87cfe913d2_1600w.webp"
-                  className="h-7 w-7 rounded-full border border-slate-200 object-cover"
-                  alt="Patient"
-                />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-medium tracking-tight text-slate-900">
-                        Olivia Chen
-                      </span>
-                      <span className="inline-flex items-center gap-0.5 text-[10px] text-[#f5a623]">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          data-lucide="star"
-                          className="lucide lucide-star h-3 w-3"
-                        >
-                          <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
-                        </svg>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          data-lucide="star"
-                          className="lucide lucide-star h-3 w-3"
-                        >
-                          <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
-                        </svg>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          data-lucide="star"
-                          className="lucide lucide-star h-3 w-3"
-                        >
-                          <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
-                        </svg>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          data-lucide="star"
-                          className="lucide lucide-star h-3 w-3 text-slate-300"
-                        >
-                          <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
-                        </svg>
-                      </span>
-                    </div>
-                    <span className="text-[10px] whitespace-nowrap text-slate-400">
-                      5d ago
-                    </span>
-                  </div>
-                  <p className="mt-0.5 text-[11px] leading-snug text-slate-700">
-                    Efficient visit and thoughtful follow-up plan. I felt in
-                    good hands.
-                  </p>
-                </div>
-              </article>
-            </div>
+            {professional?.id && <ReviewsList professionalId={professional.id} />}
           </section>
         </div>
 

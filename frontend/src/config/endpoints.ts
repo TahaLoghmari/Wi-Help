@@ -56,4 +56,14 @@ export const API_ENDPOINTS = {
     DELETE_MESSAGE: (messageId: string) => `/messaging/messages/${messageId}`,
     CREATE_CONVERSATION: "/messaging/conversations",
   },
+  REVIEWS: {
+    SUBMIT_REVIEW: "/reviews",
+    GET_PROFESSIONAL_REVIEWS: (professionalId: string) =>
+      `/reviews/professional/${professionalId}`,
+    GET_PROFESSIONAL_REVIEW_STATS: (professionalId: string) =>
+      `/reviews/professional/${professionalId}/stats`,
+    LIKE_REVIEW: (reviewId: string) => `/reviews/${reviewId}/like`,
+    UNLIKE_REVIEW: (reviewId: string) => `/reviews/${reviewId}/like`,
+    REPLY_TO_REVIEW: (reviewId: string) => `/reviews/${reviewId}/reply`,
+  },
 } as const;
