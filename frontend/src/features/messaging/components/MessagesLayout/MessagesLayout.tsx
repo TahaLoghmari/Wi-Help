@@ -3,7 +3,7 @@ import { ConversationList } from "../ConversationList";
 import { ChatWindow } from "../ChatWindow";
 import { GetConversations, GetMessages } from "@/features/messaging";
 import { useCurrentUser } from "@/features/auth";
-import type { ConversationDto } from "@/features/messaging";
+import type { ConversationDto, MessagesResponseDto } from "@/features/messaging";
 
 export function MessagesLayout() {
   const [selectedConversation, setSelectedConversation] =
@@ -23,7 +23,7 @@ export function MessagesLayout() {
     pageSize: 50,
   });
 
-  const allMessages = messagesData?.pages.flatMap((page) => page.messages) || [];
+  const allMessages = messagesData?.pages.flatMap((page: MessagesResponseDto) => page.messages) || [];
 
   const handleSelectConversation = (conversation: ConversationDto) => {
     setSelectedConversation(conversation);

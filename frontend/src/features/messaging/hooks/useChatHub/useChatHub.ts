@@ -3,7 +3,7 @@ import {
   HubConnection,
   HubConnectionState,
 } from "@microsoft/signalr";
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import { queryClient } from "@/providers/react-query";
 import { env } from "@/config/env";
 import type { MessageDto } from "@/features/messaging";
@@ -15,6 +15,10 @@ interface UseChatHubOptions {
   onUserStoppedTyping?: (userId: string) => void;
   onUserOnline?: (userId: string) => void;
   onUserOffline?: (userId: string) => void;
+  onMessagesRead?: (data: { conversationId: string; readBy: string }) => void;
+  onMessagesDelivered?: (data: { conversationId: string; deliveredBy: string }) => void;
+  onMessageDeleted?: (data: { messageId: string; conversationId: string }) => void;
+  onNewMessageNotification?: (data: { conversationId: string; senderId: string; preview: string }) => void;
 }
 
 // Global connection to avoid multiple instances
@@ -29,10 +33,18 @@ export function useChatHub(options: UseChatHubOptions = {}) {
     onUserStoppedTyping,
     onUserOnline,
     onUserOffline,
+    onMessagesRead,
+    onMessagesDelivered,
+    onMessageDeleted,
+    onNewMessageNotification,
   } = options;
 
   const connectionRef = useRef<HubConnection | null>(null);
   const callbacksRef = useRef(options);
+  const [connectionError, setConnectionError] = useState<Error | null>(null);
+  const [connectionState, setConnectionState] = useState<HubConnectionState>(
+    HubConnectionState.Disconnected
+  );
 
   // Update callbacks ref without triggering re-renders
   useEffect(() => {
@@ -43,6 +55,10 @@ export function useChatHub(options: UseChatHubOptions = {}) {
       onUserStoppedTyping,
       onUserOnline,
       onUserOffline,
+      onMessagesRead,
+      onMessagesDelivered,
+      onMessageDeleted,
+      onNewMessageNotification,
     };
   }, [
     conversationId,
@@ -51,6 +67,10 @@ export function useChatHub(options: UseChatHubOptions = {}) {
     onUserStoppedTyping,
     onUserOnline,
     onUserOffline,
+    onMessagesRead,
+    onMessagesDelivered,
+    onMessageDeleted,
+    onNewMessageNotification,
   ]);
 
   // Note: Messages are sent via HTTP API, not SignalR
@@ -130,10 +150,14 @@ export function useChatHub(options: UseChatHubOptions = {}) {
         // Handle connection events
         connection.onreconnecting((error) => {
           console.warn("ChatHub reconnecting...", error);
+          setConnectionState(HubConnectionState.Reconnecting);
+          if (error) setConnectionError(error);
         });
 
         connection.onreconnected((connectionId) => {
           console.log("ChatHub reconnected. ConnectionId:", connectionId);
+          setConnectionState(HubConnectionState.Connected);
+          setConnectionError(null);
           // Rejoin conversation if we have one
           if (conversationId) {
             connection.invoke("JoinConversation", conversationId);
@@ -142,6 +166,8 @@ export function useChatHub(options: UseChatHubOptions = {}) {
 
         connection.onclose((error) => {
           console.error("ChatHub connection closed", error);
+          setConnectionState(HubConnectionState.Disconnected);
+          if (error) setConnectionError(error);
         });
 
         // Handle real-time events - use refs to access latest callbacks
@@ -209,12 +235,73 @@ export function useChatHub(options: UseChatHubOptions = {}) {
           }
         });
 
+        // Handle MessagesRead event
+        connection.on(
+          "MessagesRead",
+          (data: { conversationId: string; readBy: string }) => {
+            if (callbacksRef.current.onMessagesRead) {
+              callbacksRef.current.onMessagesRead(data);
+            }
+            // Invalidate messages query to update read status
+            queryClient.invalidateQueries({
+              queryKey: ["messages", data.conversationId],
+            });
+          }
+        );
+
+        // Handle MessagesDelivered event
+        connection.on(
+          "MessagesDelivered",
+          (data: { conversationId: string; deliveredBy: string }) => {
+            if (callbacksRef.current.onMessagesDelivered) {
+              callbacksRef.current.onMessagesDelivered(data);
+            }
+            // Invalidate messages query to update delivery status
+            queryClient.invalidateQueries({
+              queryKey: ["messages", data.conversationId],
+            });
+          }
+        );
+
+        // Handle MessageDeleted event
+        connection.on(
+          "MessageDeleted",
+          (data: { messageId: string; conversationId: string }) => {
+            if (callbacksRef.current.onMessageDeleted) {
+              callbacksRef.current.onMessageDeleted(data);
+            }
+            // Invalidate messages query to remove deleted message
+            queryClient.invalidateQueries({
+              queryKey: ["messages", data.conversationId],
+            });
+            queryClient.invalidateQueries({
+              queryKey: ["conversations"],
+            });
+          }
+        );
+
+        // Handle NewMessageNotification event
+        connection.on(
+          "NewMessageNotification",
+          (data: { conversationId: string; senderId: string; preview: string }) => {
+            if (callbacksRef.current.onNewMessageNotification) {
+              callbacksRef.current.onNewMessageNotification(data);
+            }
+            // Invalidate conversations to show new message preview
+            queryClient.invalidateQueries({
+              queryKey: ["conversations"],
+            });
+          }
+        );
+
         try {
           await connection.start();
           console.log(
             "ChatHub connected successfully. ConnectionId:",
             connection.connectionId,
           );
+          setConnectionState(HubConnectionState.Connected);
+          setConnectionError(null);
 
           // Join conversation if we have one
           if (conversationId) {
@@ -224,6 +311,8 @@ export function useChatHub(options: UseChatHubOptions = {}) {
           }
         } catch (err) {
           console.error("ChatHub connection failed:", err);
+          setConnectionError(err as Error);
+          setConnectionState(HubConnectionState.Disconnected);
           // Clean up on failure
           globalConnection = null;
           connectionUsers = 0;
@@ -287,5 +376,7 @@ export function useChatHub(options: UseChatHubOptions = {}) {
     startTyping,
     stopTyping,
     isConnected: connectionRef.current?.state === HubConnectionState.Connected,
+    connectionError,
+    connectionState,
   };
 }

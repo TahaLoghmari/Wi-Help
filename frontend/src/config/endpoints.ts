@@ -51,6 +51,9 @@ export const API_ENDPOINTS = {
       `/messaging/conversations/${conversationId}/messages`,
     MARK_MESSAGES_AS_READ: (conversationId: string) =>
       `/messaging/conversations/${conversationId}/messages/read`,
+    MARK_MESSAGES_AS_DELIVERED: (conversationId: string) =>
+      `/messaging/conversations/${conversationId}/messages/delivered`,
+    DELETE_MESSAGE: (messageId: string) => `/messaging/messages/${messageId}`,
     CREATE_CONVERSATION: "/messaging/conversations",
   },
 } as const;
