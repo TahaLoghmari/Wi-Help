@@ -54,15 +54,24 @@ public class MarkMessagesAsReadCommandHandler(
                 unreadMessages.Count, command.ConversationId, command.UserId);
 
             // Notify sender that messages were read
-            var senderIds = unreadMessages.Select(m => m.SenderId).Distinct().ToList();
-            foreach (var senderId in senderIds)
+            try
             {
-                await hubContext.Clients.Group($"user_{senderId}")
-                    .SendAsync("MessagesRead", new
-                    {
-                        ConversationId = command.ConversationId,
-                        ReadBy = command.UserId
-                    }, cancellationToken);
+                var senderIds = unreadMessages.Select(m => m.SenderId).Distinct().ToList();
+                foreach (var senderId in senderIds)
+                {
+                    await hubContext.Clients.Group($"user_{senderId}")
+                        .SendAsync("MessagesRead", new
+                        {
+                            ConversationId = command.ConversationId,
+                            ReadBy = command.UserId
+                        }, cancellationToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Failed to send SignalR notification for messages read in conversation {ConversationId}", 
+                    command.ConversationId);
+                // Don't fail the operation - messages were marked as read successfully
             }
         }
 

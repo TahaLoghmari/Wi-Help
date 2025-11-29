@@ -5,10 +5,12 @@ using Modules.Appointments.Infrastructure.Database;
 using Modules.Appointments.PublicApi;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Messaging.PublicApi;
 using Modules.Notifications.Domain.Enums;
 using Modules.Notifications.PublicApi;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
+using Modules.Professionals.PublicApi.Contracts;
 
 namespace Modules.Appointments.Features.RespondToAppointment;
 
@@ -17,7 +19,8 @@ public class RespondToAppointmentCommandHandler(
     ILogger<RespondToAppointmentCommandHandler> logger,
     INotificationsModuleApi notificationsModuleApi,
     IPatientsModuleApi patientsModuleApi,
-    IProfessionalModuleApi professionalModuleApi) : ICommandHandler<RespondToAppointmentCommand>
+    IProfessionalModuleApi professionalModuleApi,
+    IMessagingModuleApi messagingModuleApi) : ICommandHandler<RespondToAppointmentCommand>
 {
     public async Task<Result> Handle(RespondToAppointmentCommand command, CancellationToken cancellationToken)
     {
@@ -61,9 +64,10 @@ public class RespondToAppointmentCommandHandler(
         // Get professional information for notification message
         var professionalResult = await professionalModuleApi.GetProfessionalsByIdsAsync([command.ProfessionalId], cancellationToken);
         var professionalName = "Your professional";
+        ProfessionalDto? professional = null;
         if (professionalResult.IsSuccess && professionalResult.Value.Any())
         {
-            var professional = professionalResult.Value.First();
+            professional = professionalResult.Value.First();
             professionalName = $"{professional.FirstName} {professional.LastName}";
         }
 
@@ -80,6 +84,24 @@ public class RespondToAppointmentCommandHandler(
                 $"{professionalName} has accepted your appointment request.",
                 NotificationType.appointmentAccepted,
                 cancellationToken);
+
+            // Create conversation between patient and professional
+            if (professional != null)
+            {
+                var conversationResult = await messagingModuleApi.CreateConversationAsync(
+                    patient.UserId,
+                    professional.UserId,
+                    cancellationToken);
+                if (!conversationResult.IsSuccess)
+                {
+                    logger.LogError("Failed to create conversation for appointment {AppointmentId}: {Error}", command.AppointmentId, conversationResult.Error);
+                    // Note: We don't fail the appointment acceptance if conversation creation fails
+                }
+                else
+                {
+                    logger.LogInformation("Conversation {ConversationId} created for appointment {AppointmentId}", conversationResult.Value, command.AppointmentId);
+                }
+            }
         }
         else
         {
@@ -101,3 +123,5 @@ public class RespondToAppointmentCommandHandler(
         return Result.Success();
     }
 }
+
+

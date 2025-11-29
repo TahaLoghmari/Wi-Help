@@ -25,10 +25,15 @@ public class MessageConfiguration : IEntityTypeConfiguration<Message>
         builder.Property(m => m.DeletedAt).IsRequired(false);
 
         // Indexes for efficient querying
+        builder.HasOne(m => m.Conversation)
+            .WithMany(c => c.Messages)
+            .HasForeignKey(m => m.ConversationId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Indexes for performance
         builder.HasIndex(m => m.ConversationId);
         builder.HasIndex(m => m.SenderId);
-        builder.HasIndex(m => m.CreatedAt);
         builder.HasIndex(m => new { m.ConversationId, m.CreatedAt });
+        builder.HasIndex(m => new { m.ConversationId, m.Status });
     }
 }
-

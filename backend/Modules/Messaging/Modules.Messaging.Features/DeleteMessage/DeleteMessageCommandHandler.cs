@@ -39,12 +39,20 @@ public class DeleteMessageCommandHandler(
         logger.LogInformation("Message {MessageId} deleted by user {UserId}", command.MessageId, command.UserId);
 
         // Notify all participants in the conversation
-        await hubContext.Clients.Group($"conversation_{message.ConversationId}")
-            .SendAsync("MessageDeleted", new
-            {
-                MessageId = message.Id,
-                ConversationId = message.ConversationId
-            }, cancellationToken);
+        try
+        {
+            await hubContext.Clients.Group($"conversation_{message.ConversationId}")
+                .SendAsync("MessageDeleted", new
+                {
+                    MessageId = message.Id,
+                    ConversationId = message.ConversationId
+                }, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Failed to send SignalR notification for message deletion {MessageId}", message.Id);
+            // Don't fail the operation - message was deleted successfully
+        }
 
         return Result.Success();
     }

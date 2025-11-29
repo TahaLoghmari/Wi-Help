@@ -46,26 +46,34 @@ public class SendMessageCommandHandler(
             message.Id, command.ConversationId, command.SenderId);
 
         // Notify all participants in the conversation via SignalR
-        var recipientId = conversation.GetOtherParticipant(command.SenderId);
-        await hubContext.Clients.Group($"conversation_{command.ConversationId}")
-            .SendAsync("MessageReceived", new
-            {
-                MessageId = message.Id,
-                ConversationId = message.ConversationId,
-                SenderId = message.SenderId,
-                Content = message.Content,
-                Status = message.Status.ToString(),
-                CreatedAt = message.CreatedAt
-            }, cancellationToken);
+        try
+        {
+            var recipientId = conversation.GetOtherParticipant(command.SenderId);
+            await hubContext.Clients.Group($"conversation_{command.ConversationId}")
+                .SendAsync("MessageReceived", new
+                {
+                    MessageId = message.Id,
+                    ConversationId = message.ConversationId,
+                    SenderId = message.SenderId,
+                    Content = message.Content,
+                    Status = message.Status.ToString(),
+                    CreatedAt = message.CreatedAt
+                }, cancellationToken);
 
-        // Also notify the recipient's personal group
-        await hubContext.Clients.Group($"user_{recipientId}")
-            .SendAsync("NewMessageNotification", new
-            {
-                ConversationId = conversation.Id,
-                SenderId = command.SenderId,
-                Preview = command.Content.Length > 50 ? command.Content.Substring(0, 50) + "..." : command.Content
-            }, cancellationToken);
+            // Also notify the recipient's personal group
+            await hubContext.Clients.Group($"user_{recipientId}")
+                .SendAsync("NewMessageNotification", new
+                {
+                    ConversationId = conversation.Id,
+                    SenderId = command.SenderId,
+                    Preview = command.Content.Length > 50 ? command.Content.Substring(0, 50) + "..." : command.Content
+                }, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Failed to send SignalR notification for message {MessageId}", message.Id);
+            // Don't fail the operation - message was saved successfully
+        }
 
         return Result<Guid>.Success(message.Id);
     }

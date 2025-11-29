@@ -14,11 +14,14 @@ public sealed class MessagingDbContext(DbContextOptions<MessagingDbContext> opti
             .HaveConversion<string>();
     }
 
-    protected override void OnModelCreating(ModelBuilder builder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(builder);
-        builder.HasDefaultSchema(DbConsts.MessagingSchemaName);
-        builder.ApplyConfigurationsFromAssembly(typeof(MessagingDbContext).Assembly);
+        modelBuilder.HasDefaultSchema(DbConsts.MessagingSchemaName);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(MessagingDbContext).Assembly);
+        
+        // Global query filter for soft deletes
+        modelBuilder.Entity<Message>().HasQueryFilter(m => !m.IsDeleted);
+        
+        base.OnModelCreating(modelBuilder);
     }
 }
-

@@ -54,15 +54,24 @@ public class MarkMessagesAsDeliveredCommandHandler(
                 sentMessages.Count, command.ConversationId, command.UserId);
 
             // Notify sender that messages were delivered
-            var senderIds = sentMessages.Select(m => m.SenderId).Distinct().ToList();
-            foreach (var senderId in senderIds)
+            try
             {
-                await hubContext.Clients.Group($"user_{senderId}")
-                    .SendAsync("MessagesDelivered", new
-                    {
-                        ConversationId = command.ConversationId,
-                        DeliveredBy = command.UserId
-                    }, cancellationToken);
+                var senderIds = sentMessages.Select(m => m.SenderId).Distinct().ToList();
+                foreach (var senderId in senderIds)
+                {
+                    await hubContext.Clients.Group($"user_{senderId}")
+                        .SendAsync("MessagesDelivered", new
+                        {
+                            ConversationId = command.ConversationId,
+                            DeliveredBy = command.UserId
+                        }, cancellationToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Failed to send SignalR notification for messages delivered in conversation {ConversationId}", 
+                    command.ConversationId);
+                // Don't fail the operation - messages were marked as delivered successfully
             }
         }
 
