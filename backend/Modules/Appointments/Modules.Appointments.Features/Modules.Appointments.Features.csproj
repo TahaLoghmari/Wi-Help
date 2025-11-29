@@ -18,6 +18,7 @@
     <ProjectReference Include="..\Modules.Appointments.PublicApi\Modules.Appointments.PublicApi.csproj" />
     <ProjectReference Include="..\..\Patients\Modules.Patients.PublicApi\Modules.Patients.PublicApi.csproj" />
     <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Infrastructure\Modules.Common.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Notifications\Modules.Notifications.PublicApi\Modules.Notifications.PublicApi.csproj" />
   </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

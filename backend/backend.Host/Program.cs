@@ -7,9 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using Modules.Appointments.Infrastructure.Database;
 using Modules.Identity.Infrastructure.Database;
 using Modules.Notifications.Infrastructure;
+using Modules.Messaging.Infrastructure;
 using Modules.Notifications.Infrastructure.Database;
 using Modules.Patients.Infrastructure.Database;
 using Modules.Professionals.Infrastructure.Database;
+using Modules.Messaging.Infrastructure.Database;
 using Modules.Common.Infrastructure.Services;
 using Serilog;
 
@@ -55,6 +57,8 @@ using (var scope = app.Services.CreateScope())
     var notificationsDbContext = scope.ServiceProvider.GetRequiredService<NotificationsDbContext>();
     await notificationsDbContext.Database.MigrateAsync();
 
+    var messagingDbContext = scope.ServiceProvider.GetRequiredService<MessagingDbContext>();
+    await messagingDbContext.Database.MigrateAsync();
 
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
     await IdentityDataSeeder.SeedRolesAsync(roleManager);
@@ -77,5 +81,6 @@ app.UseHangfireDashboard();
 app.MapEndpoints();
 app.MapControllers();
 app.MapHub<NotificationHub>("/hubs/notifications");
+app.MapHub<ChatHub>("/hubs/chat");
 
 await app.RunAsync();

@@ -26,6 +26,8 @@ using Modules.Professionals.Features;
 using Modules.Professionals.Infrastructure;
 using Modules.Appointments.Features;
 using Modules.Appointments.Infrastructure;
+using Modules.Messaging.Features;
+using Modules.Messaging.Infrastructure;
 
 namespace backend.Host;
 
@@ -118,9 +120,15 @@ internal static class DependencyInjection
                 {
                     OnMessageReceived = context =>
                     {
+                        // Support JWT token from cookies (for HTTP requests)
                         if (context.Request.Cookies.ContainsKey("accessToken"))
                         {
                             context.Token = context.Request.Cookies["accessToken"];
+                        }
+                        // Support JWT token from query string (for SignalR WebSocket connections)
+                        else if (context.Request.Query.TryGetValue("access_token", out var accessToken))
+                        {
+                            context.Token = accessToken;
                         }
 
                         return Task.CompletedTask;
@@ -160,7 +168,8 @@ internal static class DependencyInjection
             Modules.Patients.Features.AssemblyReference.Assembly,
             Modules.Professionals.Features.AssemblyReference.Assembly,
             Modules.Appointments.Features.AssemblyReference.Assembly,
-            Modules.Notifications.Features.AssemblyReference.Assembly
+            Modules.Notifications.Features.AssemblyReference.Assembly,
+            Modules.Messaging.Features.AssemblyReference.Assembly
         ];
 
         builder.Services.AddEndpoints(moduleApplicationAssemblies);
@@ -179,6 +188,9 @@ internal static class DependencyInjection
 
         builder.Services.AddNotificationsModule()
             .AddNotificationsInfrastructure(builder.Configuration);
+
+        builder.Services.AddMessagingModule()
+            .AddMessagingInfrastructure(builder.Configuration);
 
         builder.Services.AddCommonModule(moduleApplicationAssemblies)
             .AddCommonInfrastructure(builder.Configuration);

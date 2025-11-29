@@ -43,6 +43,8 @@
     <ProjectReference Include="..\Modules\Appointments\Modules.Appointments.Infrastructure\Modules.Appointments.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Notifications\Modules.Notifications.Features\Modules.Notifications.Features.csproj" />
     <ProjectReference Include="..\Modules\Notifications\Modules.Notifications.Infrastructure\Modules.Notifications.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Messaging\Modules.Messaging.Features\Modules.Messaging.Features.csproj" />
+    <ProjectReference Include="..\Modules\Messaging\Modules.Messaging.Infrastructure\Modules.Messaging.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
