@@ -12,7 +12,10 @@ interface SubmitReviewFormProps {
 
 const MAX_COMMENT_LENGTH = 2000;
 
-export function SubmitReviewForm({ professionalId, onSuccess }: SubmitReviewFormProps) {
+export function SubmitReviewForm({
+  professionalId,
+  onSuccess,
+}: SubmitReviewFormProps) {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
@@ -75,7 +78,10 @@ export function SubmitReviewForm({ professionalId, onSuccess }: SubmitReviewForm
       </div>
 
       <div className="space-y-1.5">
-        <label htmlFor="comment" className="block text-[11px] font-medium text-slate-700">
+        <label
+          htmlFor="comment"
+          className="block text-[11px] font-medium text-slate-700"
+        >
           Your review
         </label>
         <Textarea
@@ -103,14 +109,14 @@ export function SubmitReviewForm({ professionalId, onSuccess }: SubmitReviewForm
         />
         <label
           htmlFor="terms"
-          className="text-[11px] leading-relaxed text-slate-700 cursor-pointer"
+          className="cursor-pointer text-[11px] leading-relaxed text-slate-700"
         >
           I have read and accept{" "}
           <a
             href="/terms"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#3fa6ff] hover:underline font-medium"
+            className="font-medium text-[#3fa6ff] hover:underline"
           >
             Terms & Conditions
           </a>
@@ -119,8 +125,10 @@ export function SubmitReviewForm({ professionalId, onSuccess }: SubmitReviewForm
 
       <Button
         type="submit"
-        disabled={isPending || rating === 0 || !comment.trim() || !acceptedTerms}
-        className="w-full bg-[#00394a] text-white hover:bg-[#00546e] text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={
+          isPending || rating === 0 || !comment.trim() || !acceptedTerms
+        }
+        className="w-full bg-[#00394a] text-xs font-medium text-white hover:bg-[#00546e] disabled:cursor-not-allowed disabled:opacity-50"
         size="sm"
       >
         {isPending ? "Submitting..." : "Submit Review"}
@@ -128,4 +136,3 @@ export function SubmitReviewForm({ professionalId, onSuccess }: SubmitReviewForm
     </form>
   );
 }
-
