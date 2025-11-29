@@ -31,11 +31,11 @@ export function FooterSection() {
               fill="currentColor"
               className="h-5 w-5 cursor-pointer text-[#5ed0ab] hover:text-[#5ed0ab]/80"
             >
-              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
               <g
                 id="SVGRepo_tracerCarrier"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               ></g>
               <g id="SVGRepo_iconCarrier">
                 {" "}

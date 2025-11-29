@@ -14,9 +14,9 @@ export function DashboardHeaderDate() {
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         data-lucide="calendar"
         className="lucide lucide-calendar h-3.5 w-3.5 text-slate-500"
       >

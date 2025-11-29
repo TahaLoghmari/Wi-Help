@@ -29,9 +29,9 @@ export function SettingsLayout() {
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               data-lucide="user"
               className={`lucide lucide-user h-3.5 w-3.5 ${tab === "Profile & Bio" ? "text-white" : "text-slate-500"}`}
             >
@@ -51,9 +51,9 @@ export function SettingsLayout() {
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               data-lucide="shield"
               className={`lucide lucide-shield h-3.5 w-3.5 ${tab === "Security" ? "text-white" : "text-slate-500"}`}
             >

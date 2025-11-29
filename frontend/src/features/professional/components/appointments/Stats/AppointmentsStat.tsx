@@ -13,9 +13,9 @@ export function AppointmentsStat() {
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             data-lucide="plus"
             className="lucide lucide-plus h-3.5 w-3.5 text-white"
           >
