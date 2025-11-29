@@ -21,6 +21,10 @@ export function useBookAppointment() {
       queryClient.invalidateQueries({
         queryKey: ["professional-appointments"],
       });
+      // Invalidate notifications since a notification is sent to the professional
+      queryClient.invalidateQueries({
+        queryKey: ["notifications"],
+      });
       toast.success(`Appointment booked successfully!`);
       goToBookingSuccess();
     },

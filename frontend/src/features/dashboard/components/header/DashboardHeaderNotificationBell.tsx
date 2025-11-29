@@ -14,8 +14,6 @@ export function DashboardHeaderNotificationBell() {
     (n) => n.isRead === false,
   ).length;
 
-  console.log(user);
-
   const notificationsPath =
     user?.role === "Professional"
       ? ROUTE_PATHS.PROFESSIONAL.NOTIFICATIONS

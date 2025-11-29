@@ -18,13 +18,23 @@ export function RespondToAppointment() {
   const queryClient = useQueryClient();
   return useMutation<void, ProblemDetailsDto, RespondToAppointmentRequest>({
     mutationFn: respondToAppointment,
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       toast.success("Appointment status updated successfully!");
       queryClient.invalidateQueries({
         queryKey: ["professional-appointments"],
       });
       queryClient.invalidateQueries({
         queryKey: ["patient-appointments"],
+      });
+      // When accepting an appointment, a conversation is created
+      if (variables.isAccepted) {
+        queryClient.invalidateQueries({
+          queryKey: ["conversations"],
+        });
+      }
+      // Invalidate notifications since a notification is sent
+      queryClient.invalidateQueries({
+        queryKey: ["notifications"],
       });
     },
     onError: (error) => handleApiError({ apiError: error }),

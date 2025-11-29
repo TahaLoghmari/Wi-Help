@@ -5,7 +5,11 @@ import { MessageBubble } from "../MessageBubble";
 import { MessageInput } from "../MessageInput";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import type { ConversationDto, MessageDto } from "@/features/messaging";
-import { useSendMessage, useMarkMessagesAsRead } from "@/features/messaging";
+import {
+  useSendMessage,
+  useMarkMessagesAsRead,
+  useMarkMessagesAsDelivered,
+} from "@/features/messaging";
 import { useChatHub } from "@/features/messaging/hooks/useChatHub";
 
 interface ChatWindowProps {
@@ -29,8 +33,10 @@ export function ChatWindow({
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [isTyping, setIsTyping] = useState(false);
   const [typingUserId, setTypingUserId] = useState<string | null>(null);
+  const [isOtherUserOnline, setIsOtherUserOnline] = useState(false);
   const sendMessageMutation = useSendMessage();
   const markAsReadMutation = useMarkMessagesAsRead();
+  const markAsDeliveredMutation = useMarkMessagesAsDelivered();
   const typingTimeoutRef = useRef<number | null>(null);
 
   // Group messages by date
@@ -65,10 +71,15 @@ export function ChatWindow({
     }
   }, [messages]);
 
-  // Mark messages as read when conversation is selected
+  // Mark messages as delivered and read when conversation is selected
   useEffect(() => {
-    if (conversation && conversation.unreadCount > 0) {
-      markAsReadMutation.mutate(conversation.id);
+    if (conversation) {
+      // Mark as delivered first (for sent messages)
+      markAsDeliveredMutation.mutate(conversation.id);
+      // Then mark as read (for unread messages)
+      if (conversation.unreadCount > 0) {
+        markAsReadMutation.mutate(conversation.id);
+      }
     }
   }, [conversation?.id]);
 
@@ -99,6 +110,16 @@ export function ChatWindow({
         if (typingTimeoutRef.current) {
           clearTimeout(typingTimeoutRef.current);
         }
+      }
+    },
+    onUserOnline: (userId) => {
+      if (conversation && userId === conversation.otherParticipantId) {
+        setIsOtherUserOnline(true);
+      }
+    },
+    onUserOffline: (userId) => {
+      if (conversation && userId === conversation.otherParticipantId) {
+        setIsOtherUserOnline(false);
       }
     },
   });
@@ -168,10 +189,17 @@ export function ChatWindow({
               <span className="text-xs font-medium tracking-tight text-slate-900">
                 {otherParticipantName}
               </span>
-              <span className="inline-flex items-center gap-1 rounded-full border border-[#14d3ac]/40 bg-[#14d3ac]/10 px-1.5 py-0.5 text-[10px] text-[#00546e]">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#14d3ac]"></span>
-                Online
-              </span>
+              {isOtherUserOnline ? (
+                <span className="inline-flex items-center gap-1 rounded-full border border-[#14d3ac]/40 bg-[#14d3ac]/10 px-1.5 py-0.5 text-[10px] text-[#00546e]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#14d3ac]"></span>
+                  Online
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 rounded-full border border-slate-300/40 bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-600">
+                  <span className="h-1.5 w-1.5 rounded-full bg-slate-400"></span>
+                  Offline
+                </span>
+              )}
             </div>
             <div className="text-[11px] text-slate-500">
               {/* Additional info can be added here */}
@@ -218,6 +246,7 @@ export function ChatWindow({
                     message={message}
                     isOwnMessage={isOwnMessage}
                     senderName={senderName}
+                    conversationId={conversation.id}
                   />
                 );
               })}

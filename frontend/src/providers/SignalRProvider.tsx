@@ -59,6 +59,7 @@ export const SignalRProvider = ({
 
       // Handle notifications
       connection.on("NotificationReceived", (notification: NotificationDto) => {
+        queryClient.invalidateQueries({ queryKey: ["notifications"] });
         console.log("Notification received:", notification);
 
         toast.info(notification.title, {
@@ -73,6 +74,9 @@ export const SignalRProvider = ({
         } else if (notification.role === "Patient") {
           queryClient.invalidateQueries({
             queryKey: ["patient-appointments"],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["conversations"],
           });
         }
       });

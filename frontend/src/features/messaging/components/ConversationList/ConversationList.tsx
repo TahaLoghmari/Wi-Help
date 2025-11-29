@@ -120,8 +120,8 @@ export function ConversationList({
                           )}
                         </AvatarFallback>
                       </Avatar>
-                      {/* Online status indicator - can be enhanced with real online status */}
-                      <span className="absolute right-0 bottom-0 h-2 w-2 rounded-full border border-white bg-[#14d3ac]"></span>
+                      {/* Online status indicator - status is tracked in ChatWindow */}
+                      <span className="absolute right-0 bottom-0 h-2 w-2 rounded-full border border-white bg-slate-400"></span>
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between">

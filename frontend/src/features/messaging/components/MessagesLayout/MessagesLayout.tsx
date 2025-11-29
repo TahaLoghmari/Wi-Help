@@ -3,7 +3,10 @@ import { ConversationList } from "../ConversationList";
 import { ChatWindow } from "../ChatWindow";
 import { GetConversations, GetMessages } from "@/features/messaging";
 import { useCurrentUser } from "@/features/auth";
-import type { ConversationDto, MessagesResponseDto } from "@/features/messaging";
+import type {
+  ConversationDto,
+  MessagesResponseDto,
+} from "@/features/messaging";
 
 export function MessagesLayout() {
   const [selectedConversation, setSelectedConversation] =
@@ -23,7 +26,9 @@ export function MessagesLayout() {
     pageSize: 50,
   });
 
-  const allMessages = messagesData?.pages.flatMap((page: MessagesResponseDto) => page.messages) || [];
+  const allMessages =
+    messagesData?.pages.flatMap((page: MessagesResponseDto) => page.messages) ||
+    [];
 
   const handleSelectConversation = (conversation: ConversationDto) => {
     setSelectedConversation(conversation);
@@ -42,7 +47,7 @@ export function MessagesLayout() {
   return (
     <section
       id="page-messages"
-      className="flex-1 px-0 sm:px-0 lg:px-0 py-0 overflow-hidden"
+      className="flex-1 overflow-hidden px-0 py-0 sm:px-0 lg:px-0"
     >
       <div className="flex h-[calc(100vh-4rem)]">
         <ConversationList
@@ -65,4 +70,3 @@ export function MessagesLayout() {
     </section>
   );
 }
-

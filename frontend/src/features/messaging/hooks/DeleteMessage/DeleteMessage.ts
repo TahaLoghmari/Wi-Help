@@ -4,7 +4,12 @@ import { API_ENDPOINTS } from "@/config/endpoints";
 import { handleApiError } from "@/hooks";
 import { toast } from "sonner";
 
-const deleteMessage = (messageId: string) => {
+interface DeleteMessageParams {
+  messageId: string;
+  conversationId: string;
+}
+
+const deleteMessage = ({ messageId }: DeleteMessageParams) => {
   return api.delete<void>(API_ENDPOINTS.MESSAGING.DELETE_MESSAGE(messageId));
 };
 
@@ -13,11 +18,12 @@ export function useDeleteMessage() {
 
   return useMutation({
     mutationFn: deleteMessage,
-    onSuccess: () => {
-      // Invalidate all messages and conversations queries
+    onSuccess: (_, variables) => {
+      // Invalidate messages for the specific conversation
       queryClient.invalidateQueries({
-        queryKey: ["messages"],
+        queryKey: ["messages", variables.conversationId],
       });
+      // Invalidate conversations to update last message
       queryClient.invalidateQueries({
         queryKey: ["conversations"],
       });

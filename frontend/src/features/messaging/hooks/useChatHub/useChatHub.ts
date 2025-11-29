@@ -6,6 +6,7 @@ import {
 import { useEffect, useRef, useCallback, useState } from "react";
 import { queryClient } from "@/providers/react-query";
 import { env } from "@/config/env";
+import { toast } from "sonner";
 import type { MessageDto } from "@/features/messaging";
 
 interface UseChatHubOptions {
@@ -16,9 +17,19 @@ interface UseChatHubOptions {
   onUserOnline?: (userId: string) => void;
   onUserOffline?: (userId: string) => void;
   onMessagesRead?: (data: { conversationId: string; readBy: string }) => void;
-  onMessagesDelivered?: (data: { conversationId: string; deliveredBy: string }) => void;
-  onMessageDeleted?: (data: { messageId: string; conversationId: string }) => void;
-  onNewMessageNotification?: (data: { conversationId: string; senderId: string; preview: string }) => void;
+  onMessagesDelivered?: (data: {
+    conversationId: string;
+    deliveredBy: string;
+  }) => void;
+  onMessageDeleted?: (data: {
+    messageId: string;
+    conversationId: string;
+  }) => void;
+  onNewMessageNotification?: (data: {
+    conversationId: string;
+    senderId: string;
+    preview: string;
+  }) => void;
 }
 
 // Global connection to avoid multiple instances
@@ -43,7 +54,7 @@ export function useChatHub(options: UseChatHubOptions = {}) {
   const callbacksRef = useRef(options);
   const [connectionError, setConnectionError] = useState<Error | null>(null);
   const [connectionState, setConnectionState] = useState<HubConnectionState>(
-    HubConnectionState.Disconnected
+    HubConnectionState.Disconnected,
   );
 
   // Update callbacks ref without triggering re-renders
@@ -152,22 +163,31 @@ export function useChatHub(options: UseChatHubOptions = {}) {
           console.warn("ChatHub reconnecting...", error);
           setConnectionState(HubConnectionState.Reconnecting);
           if (error) setConnectionError(error);
+          // Don't show toast for reconnection attempts - it's expected behavior
         });
 
         connection.onreconnected((connectionId) => {
           console.log("ChatHub reconnected. ConnectionId:", connectionId);
           setConnectionState(HubConnectionState.Connected);
           setConnectionError(null);
+          toast.success("Reconnected to chat");
           // Rejoin conversation if we have one
           if (conversationId) {
-            connection.invoke("JoinConversation", conversationId);
+            connection
+              .invoke("JoinConversation", conversationId)
+              .catch((err) => {
+                console.error("Failed to rejoin conversation:", err);
+              });
           }
         });
 
         connection.onclose((error) => {
           console.error("ChatHub connection closed", error);
           setConnectionState(HubConnectionState.Disconnected);
-          if (error) setConnectionError(error);
+          if (error) {
+            setConnectionError(error);
+            toast.error("Chat connection lost. Attempting to reconnect...");
+          }
         });
 
         // Handle real-time events - use refs to access latest callbacks
@@ -246,7 +266,11 @@ export function useChatHub(options: UseChatHubOptions = {}) {
             queryClient.invalidateQueries({
               queryKey: ["messages", data.conversationId],
             });
-          }
+            // Invalidate conversations to update unread count
+            queryClient.invalidateQueries({
+              queryKey: ["conversations"],
+            });
+          },
         );
 
         // Handle MessagesDelivered event
@@ -260,7 +284,11 @@ export function useChatHub(options: UseChatHubOptions = {}) {
             queryClient.invalidateQueries({
               queryKey: ["messages", data.conversationId],
             });
-          }
+            // Invalidate conversations to update UI
+            queryClient.invalidateQueries({
+              queryKey: ["conversations"],
+            });
+          },
         );
 
         // Handle MessageDeleted event
@@ -277,13 +305,17 @@ export function useChatHub(options: UseChatHubOptions = {}) {
             queryClient.invalidateQueries({
               queryKey: ["conversations"],
             });
-          }
+          },
         );
 
         // Handle NewMessageNotification event
         connection.on(
           "NewMessageNotification",
-          (data: { conversationId: string; senderId: string; preview: string }) => {
+          (data: {
+            conversationId: string;
+            senderId: string;
+            preview: string;
+          }) => {
             if (callbacksRef.current.onNewMessageNotification) {
               callbacksRef.current.onNewMessageNotification(data);
             }
@@ -291,7 +323,7 @@ export function useChatHub(options: UseChatHubOptions = {}) {
             queryClient.invalidateQueries({
               queryKey: ["conversations"],
             });
-          }
+          },
         );
 
         try {
@@ -307,12 +339,16 @@ export function useChatHub(options: UseChatHubOptions = {}) {
           if (conversationId) {
             await connection
               .invoke("JoinConversation", conversationId)
-              .catch(console.error);
+              .catch((err) => {
+                console.error("Failed to join conversation:", err);
+                toast.error("Failed to join conversation");
+              });
           }
         } catch (err) {
           console.error("ChatHub connection failed:", err);
           setConnectionError(err as Error);
           setConnectionState(HubConnectionState.Disconnected);
+          toast.error("Failed to connect to chat. Please refresh the page.");
           // Clean up on failure
           globalConnection = null;
           connectionUsers = 0;
@@ -350,7 +386,10 @@ export function useChatHub(options: UseChatHubOptions = {}) {
 
       connectionRef.current = null;
     };
-  }, [conversationId]);
+    // Note: conversationId is intentionally not in dependencies
+    // Connection management is separate from conversation joining/leaving
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Join/leave conversation when it changes (only if connection exists)
   useEffect(() => {
