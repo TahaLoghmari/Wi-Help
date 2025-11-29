@@ -19,8 +19,9 @@ public class SendMessage : IEndpoint
                 ICommandHandler<SendMessageCommand, Guid> handler,
                 CancellationToken cancellationToken) =>
             {
-                var currentUserIdString = httpContext.User.FindFirst("sub")?.Value;
-                if (!Guid.TryParse(currentUserIdString, out Guid currentUserId))
+                var currentUserIdString = httpContext.User.FindFirst("sub")?.Value ?? 
+                                         httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrWhiteSpace(currentUserIdString) || !Guid.TryParse(currentUserIdString, out Guid currentUserId))
                 {
                     return Results.Unauthorized();
                 }

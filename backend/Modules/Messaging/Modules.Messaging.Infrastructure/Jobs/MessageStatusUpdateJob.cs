@@ -43,7 +43,7 @@ public class MessageStatusUpdateJob
             .Include(m => m.Conversation)
             .Where(m =>
                 m.Status == MessageStatus.Sent &&
-                !m.IsDeleted &&
+                m.DeletedAt == null &&
                 onlineUserIds.Contains(m.Conversation.Participant1Id == m.SenderId
                     ? m.Conversation.Participant2Id
                     : m.Conversation.Participant1Id))

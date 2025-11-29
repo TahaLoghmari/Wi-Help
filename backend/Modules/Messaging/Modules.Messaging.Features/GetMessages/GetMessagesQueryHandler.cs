@@ -30,11 +30,12 @@ public class GetMessagesQueryHandler(
             return Result<MessagesResponseDto>.Failure(Error.Forbidden("Messaging.NotParticipant", "You are not a participant in this conversation."));
         }
 
+        // DeletedAt filter is handled by global query filter in MessagingDbContext
         var totalCount = await messagingDbContext.Messages
-            .CountAsync(m => m.ConversationId == query.ConversationId && !m.IsDeleted, cancellationToken);
+            .CountAsync(m => m.ConversationId == query.ConversationId, cancellationToken);
 
         var messages = await messagingDbContext.Messages
-            .Where(m => m.ConversationId == query.ConversationId && !m.IsDeleted)
+            .Where(m => m.ConversationId == query.ConversationId)
             .OrderByDescending(m => m.CreatedAt)
             .Skip((query.PageNumber - 1) * query.PageSize)
             .Take(query.PageSize)

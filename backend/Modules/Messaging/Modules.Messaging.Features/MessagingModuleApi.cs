@@ -66,8 +66,9 @@ public class MessagingModuleApi(
 
             var otherParticipant = userResult.Value;
 
+            // DeletedAt filter is handled by global query filter in MessagingDbContext
             var lastMessage = await messagingDbContext.Messages
-                .Where(m => m.ConversationId == conversation.Id && !m.IsDeleted)
+                .Where(m => m.ConversationId == conversation.Id)
                 .OrderByDescending(m => m.CreatedAt)
                 .FirstOrDefaultAsync(cancellationToken);
 
@@ -75,8 +76,7 @@ public class MessagingModuleApi(
                 .CountAsync(m =>
                     m.ConversationId == conversation.Id &&
                     m.SenderId != userId &&
-                    m.Status != Domain.Enums.MessageStatus.Read &&
-                    !m.IsDeleted,
+                    m.Status != Domain.Enums.MessageStatus.Read,
                     cancellationToken);
 
             conversationDtos.Add(new ConversationDto(
@@ -123,11 +123,12 @@ public class MessagingModuleApi(
                 Modules.Common.Features.Results.Error.Forbidden("Messaging.NotParticipant", "You are not a participant in this conversation."));
         }
 
+        // DeletedAt filter is handled by global query filter in MessagingDbContext
         var totalCount = await messagingDbContext.Messages
-            .CountAsync(m => m.ConversationId == conversationId && !m.IsDeleted, cancellationToken);
+            .CountAsync(m => m.ConversationId == conversationId, cancellationToken);
 
         var messages = await messagingDbContext.Messages
-            .Where(m => m.ConversationId == conversationId && !m.IsDeleted)
+            .Where(m => m.ConversationId == conversationId)
             .OrderByDescending(m => m.CreatedAt)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)

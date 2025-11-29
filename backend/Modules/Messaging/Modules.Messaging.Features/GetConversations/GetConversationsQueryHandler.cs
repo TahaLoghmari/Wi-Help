@@ -20,6 +20,8 @@ public class GetConversationsQueryHandler(
             .OrderByDescending(c => c.LastMessageAt ?? c.CreatedAt)
             .ToListAsync(cancellationToken);
 
+        logger.LogInformation("Found {Count} conversations for user {UserId}", conversations.Count, query.UserId);
+
         var conversationDtos = new List<ConversationDto>();
 
         foreach (var conversation in conversations)
@@ -37,19 +39,18 @@ public class GetConversationsQueryHandler(
 
             var otherParticipant = userResult.Value;
 
-            // Get last message
+            // Get last message (DeletedAt filter is handled by global query filter)
             var lastMessage = await messagingDbContext.Messages
-                .Where(m => m.ConversationId == conversation.Id && !m.IsDeleted)
+                .Where(m => m.ConversationId == conversation.Id)
                 .OrderByDescending(m => m.CreatedAt)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            // Get unread count
+            // Get unread count (DeletedAt filter is handled by global query filter)
             var unreadCount = await messagingDbContext.Messages
                 .CountAsync(m =>
                     m.ConversationId == conversation.Id &&
                     m.SenderId != query.UserId &&
-                    m.Status != Domain.Enums.MessageStatus.Read &&
-                    !m.IsDeleted,
+                    m.Status != Domain.Enums.MessageStatus.Read,
                     cancellationToken);
 
             conversationDtos.Add(new ConversationDto(
@@ -70,6 +71,8 @@ public class GetConversationsQueryHandler(
                 conversation.LastMessageAt ?? conversation.CreatedAt
             ));
         }
+
+        logger.LogInformation("Returning {Count} conversation DTOs for user {UserId}", conversationDtos.Count, query.UserId);
 
         return Result<List<ConversationDto>>.Success(conversationDtos);
     }

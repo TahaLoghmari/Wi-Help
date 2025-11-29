@@ -20,7 +20,7 @@ public sealed class MessagingDbContext(DbContextOptions<MessagingDbContext> opti
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(MessagingDbContext).Assembly);
         
         // Global query filter for soft deletes
-        modelBuilder.Entity<Message>().HasQueryFilter(m => !m.IsDeleted);
+        modelBuilder.Entity<Message>().HasQueryFilter(m => m.DeletedAt == null);
         
         base.OnModelCreating(modelBuilder);
     }

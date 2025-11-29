@@ -12,6 +12,7 @@ using Modules.Notifications.Infrastructure.Database;
 using Modules.Patients.Infrastructure.Database;
 using Modules.Professionals.Infrastructure.Database;
 using Modules.Messaging.Infrastructure.Database;
+using Modules.Messaging.Infrastructure.Jobs;
 using Modules.Common.Infrastructure.Services;
 using Serilog;
 
@@ -82,5 +83,11 @@ app.MapEndpoints();
 app.MapControllers();
 app.MapHub<NotificationHub>("/hubs/notifications");
 app.MapHub<ChatHub>("/hubs/chat");
+
+// Schedule recurring jobs
+RecurringJob.AddOrUpdate<MessageStatusUpdateJob>(
+    "mark-messages-delivered",
+    job => job.MarkMessagesAsDeliveredForOnlineUsers(default),
+    Cron.Minutely);
 
 await app.RunAsync();

@@ -34,12 +34,12 @@ public class MarkMessagesAsDeliveredCommandHandler(
         }
 
         // Mark all sent messages from other participants as delivered
+        // DeletedAt filter is handled by global query filter in MessagingDbContext
         var sentMessages = await messagingDbContext.Messages
             .Where(m =>
                 m.ConversationId == command.ConversationId &&
                 m.SenderId != command.UserId &&
-                m.Status == MessageStatus.Sent &&
-                !m.IsDeleted)
+                m.Status == MessageStatus.Sent)
             .ToListAsync(cancellationToken);
 
         foreach (var message in sentMessages)

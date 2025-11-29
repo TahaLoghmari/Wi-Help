@@ -12,6 +12,7 @@ using Modules.Notifications.Features;
 using Modules.Notifications.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Modules.Common.Features;
@@ -115,6 +116,9 @@ internal static class DependencyInjection
 
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAuthOptions.Key)),
+                    
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromMinutes(5), // Allow 5 minutes clock skew for token validation
                 };
                 options.Events = new JwtBearerEvents
                 {
@@ -131,6 +135,19 @@ internal static class DependencyInjection
                             context.Token = accessToken;
                         }
 
+                        return Task.CompletedTask;
+                    },
+                    OnAuthenticationFailed = context =>
+                    {
+                        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<JwtBearerEvents>>();
+                        logger.LogWarning("JWT authentication failed: {Error}", context.Exception?.Message);
+                        return Task.CompletedTask;
+                    },
+                    OnChallenge = context =>
+                    {
+                        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<JwtBearerEvents>>();
+                        logger.LogWarning("JWT authentication challenge: {Error}, {ErrorDescription}", 
+                            context.Error, context.ErrorDescription);
                         return Task.CompletedTask;
                     }
                 };

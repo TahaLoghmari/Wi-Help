@@ -34,12 +34,12 @@ public class MarkMessagesAsReadCommandHandler(
         }
 
         // Mark all unread messages from other participants as read
+        // DeletedAt filter is handled by global query filter in MessagingDbContext
         var unreadMessages = await messagingDbContext.Messages
             .Where(m =>
                 m.ConversationId == command.ConversationId &&
                 m.SenderId != command.UserId &&
-                m.Status != MessageStatus.Read &&
-                !m.IsDeleted)
+                m.Status != MessageStatus.Read)
             .ToListAsync(cancellationToken);
 
         foreach (var message in unreadMessages)

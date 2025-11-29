@@ -88,6 +88,9 @@ public class RespondToAppointmentCommandHandler(
             // Create conversation between patient and professional
             if (professional != null)
             {
+                logger.LogInformation("Creating conversation for appointment {AppointmentId}. Patient UserId: {PatientUserId}, Professional UserId: {ProfessionalUserId}",
+                    command.AppointmentId, patient.UserId, professional.UserId);
+                
                 var conversationResult = await messagingModuleApi.CreateConversationAsync(
                     patient.UserId,
                     professional.UserId,
