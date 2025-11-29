@@ -1,18 +1,28 @@
-// import { useGetNotifications } from "#/notifications";
+import { GetNotifications } from "@/features/notifications";
 import { ROUTE_PATHS } from "@/config/routes";
 import { Link } from "@tanstack/react-router";
+import { useCurrentUser } from "@/features/auth";
 
 export function DashboardHeaderNotificationBell() {
-  // const { data: notifications } = useGetNotifications();
+  const { data: user } = useCurrentUser();
 
-  // const allNotifications =
-  //   notifications?.pages.flatMap((page) => page.items) ?? [];
-  // const totalUnreadNotifications = allNotifications.filter(
-  //   (n) => n.isRead === false,
-  // ).length;
+  const { data: notifications } = GetNotifications();
+
+  const allNotifications =
+    notifications?.pages.flatMap((page) => page.items) ?? [];
+  const totalUnreadNotifications = allNotifications.filter(
+    (n) => n.isRead === false,
+  ).length;
+
+  console.log(user);
+
+  const notificationsPath =
+    user?.role === "Professional"
+      ? ROUTE_PATHS.PROFESSIONAL.NOTIFICATIONS
+      : ROUTE_PATHS.PATIENT.NOTIFICATIONS;
 
   return (
-    <Link to={ROUTE_PATHS.PROFESSIONAL.NOTIFICATIONS}>
+    <Link to={notificationsPath}>
       {({ isActive }) => (
         <div
           className={`relative rounded-full border border-slate-200 ${isActive ? "bg-[#fcf4d4]" : "bg-white hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5"} pt-2 pr-2 pb-2 pl-2 transition-colors`}
@@ -36,7 +46,9 @@ export function DashboardHeaderNotificationBell() {
               <path d="M320 64C306.7 64 296 74.7 296 88L296 97.7C214.6 109.3 152 179.4 152 264L152 278.5C152 316.2 142 353.2 123 385.8L101.1 423.2C97.8 429 96 435.5 96 442.2C96 463.1 112.9 480 133.8 480L506.2 480C527.1 480 544 463.1 544 442.2C544 435.5 542.2 428.9 538.9 423.2L517 385.7C498 353.1 488 316.1 488 278.4L488 263.9C488 179.3 425.4 109.2 344 97.6L344 87.9C344 74.6 333.3 63.9 320 63.9zM488.4 432L151.5 432L164.4 409.9C187.7 370 200 324.6 200 278.5L200 264C200 197.7 253.7 144 320 144C386.3 144 440 197.7 440 264L440 278.5C440 324.7 452.3 370 475.5 409.9L488.4 432zM252.1 528C262 556 288.7 576 320 576C351.3 576 378 556 387.9 528L252.1 528z" />
             </svg>
           )}
-          <span className="absolute top-1.5 right-1.5 inline-flex h-1.5 w-1.5 rounded-full bg-[#14d3ac]"></span>
+          {totalUnreadNotifications > 0 && (
+            <span className="absolute top-1.5 right-1.5 inline-flex h-1.5 w-1.5 rounded-full bg-[#14d3ac]"></span>
+          )}
         </div>
       )}
     </Link>

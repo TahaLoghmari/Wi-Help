@@ -6,7 +6,7 @@ import {
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { queryClient } from "@/providers/react-query";
-import type { NotificationDto } from "@/types/notifications.types";
+import type { NotificationDto } from "@/features/notifications";
 
 export const SignalRProvider = ({
   children,
@@ -108,4 +108,3 @@ export const SignalRProvider = ({
 
   return <>{children}</>;
 };
-
