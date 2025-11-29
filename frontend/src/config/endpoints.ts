@@ -43,4 +43,14 @@ export const API_ENDPOINTS = {
       `/notifications/${notificationId}/mark-as-read`,
     MARK_NOTIFICATIONS_AS_READ: "/notifications/mark-as-read",
   },
+  MESSAGING: {
+    GET_CONVERSATIONS: "/messaging/conversations",
+    GET_MESSAGES: (conversationId: string) =>
+      `/messaging/conversations/${conversationId}/messages`,
+    SEND_MESSAGE: (conversationId: string) =>
+      `/messaging/conversations/${conversationId}/messages`,
+    MARK_MESSAGES_AS_READ: (conversationId: string) =>
+      `/messaging/conversations/${conversationId}/messages/read`,
+    CREATE_CONVERSATION: "/messaging/conversations",
+  },
 } as const;

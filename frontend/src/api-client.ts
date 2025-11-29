@@ -4,10 +4,13 @@ import { API_ENDPOINTS } from "@/config/endpoints";
 
 let isRefreshing = false;
 let refreshPromise: Promise<boolean> | null = null;
+let refreshAttempts = 0;
+const MAX_REFRESH_ATTEMPTS = 1;
 
 export async function request<T>(
   endpoint: string,
   options: RequestInit = {},
+  retryCount = 0,
 ): Promise<T> {
   const headers: Record<string, string> = {};
 
@@ -38,17 +41,30 @@ export async function request<T>(
     response.status === 401 &&
     !endpoint.includes(API_ENDPOINTS.AUTH.REFRESH) &&
     !endpoint.includes(API_ENDPOINTS.AUTH.LOGIN) &&
-    !isRefreshing
+    !isRefreshing &&
+    refreshAttempts < MAX_REFRESH_ATTEMPTS &&
+    retryCount === 0
   ) {
     // Prevent multiple simultaneous refresh attempts
     if (!refreshPromise) {
       refreshPromise = fetch(`${env.apiUrl}${API_ENDPOINTS.AUTH.REFRESH}`, {
         credentials: "include",
         method: "POST",
-      }).then((res) => {
-        refreshPromise = null;
-        return res.ok;
-      });
+      })
+        .then((res) => {
+          refreshPromise = null;
+          if (res.ok) {
+            refreshAttempts = 0; // Reset on success
+          } else {
+            refreshAttempts++;
+          }
+          return res.ok;
+        })
+        .catch(() => {
+          refreshPromise = null;
+          refreshAttempts++;
+          return false;
+        });
     }
 
     isRefreshing = true;
@@ -56,13 +72,25 @@ export async function request<T>(
     isRefreshing = false;
 
     if (refreshSuccess) {
-      return request(endpoint, options);
+      // Retry the original request once
+      return request(endpoint, options, retryCount + 1);
     }
   }
 
   if (!response.ok) {
-    const problemDetails: ProblemDetailsDto = await response.json();
-    throw problemDetails;
+    // Only try to parse JSON if there's content
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      try {
+        const problemDetails: ProblemDetailsDto = await response.json();
+        throw problemDetails;
+      } catch (e) {
+        // If JSON parsing fails, throw a generic error
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+    } else {
+      throw new Error(`Request failed with status ${response.status}`);
+    }
   }
 
   const text = await response.text();

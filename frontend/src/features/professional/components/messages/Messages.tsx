@@ -1,5 +1,1 @@
-import { ComingSoon } from "@/components";
-
-export function Messages() {
-  return <ComingSoon />;
-}
+export { MessagesLayout as Messages } from "@/features/messaging";
