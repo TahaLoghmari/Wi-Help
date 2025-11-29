@@ -25,8 +25,7 @@ export function useMarkMessagesAsRead() {
       });
     },
     onError: (error) => {
-      handleApiError(error);
+      handleApiError({ apiError: error as any });
     },
   });
 }
-

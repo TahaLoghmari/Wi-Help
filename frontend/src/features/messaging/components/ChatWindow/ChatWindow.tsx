@@ -31,18 +31,21 @@ export function ChatWindow({
   const [typingUserId, setTypingUserId] = useState<string | null>(null);
   const sendMessageMutation = useSendMessage();
   const markAsReadMutation = useMarkMessagesAsRead();
-  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const typingTimeoutRef = useRef<number | null>(null);
 
   // Group messages by date
-  const groupedMessages = messages?.reduce((groups, message) => {
-    const date = new Date(message.createdAt);
-    const dateKey = format(date, "yyyy-MM-dd");
-    if (!groups[dateKey]) {
-      groups[dateKey] = [];
-    }
-    groups[dateKey].push(message);
-    return groups;
-  }, {} as Record<string, MessageDto[]>);
+  const groupedMessages = messages?.reduce(
+    (groups, message) => {
+      const date = new Date(message.createdAt);
+      const dateKey = format(date, "yyyy-MM-dd");
+      if (!groups[dateKey]) {
+        groups[dateKey] = [];
+      }
+      groups[dateKey].push(message);
+      return groups;
+    },
+    {} as Record<string, MessageDto[]>,
+  );
 
   const formatDateHeader = (dateKey: string) => {
     const date = new Date(dateKey);
@@ -72,7 +75,7 @@ export function ChatWindow({
   // Set up SignalR connection for real-time updates
   const { startTyping, stopTyping } = useChatHub({
     conversationId: conversation?.id,
-    onMessageReceived: (message) => {
+    onMessageReceived: (_message) => {
       // Message will be added via query invalidation
     },
     onUserTyping: (userId) => {
@@ -128,9 +131,11 @@ export function ChatWindow({
 
   if (!conversation) {
     return (
-      <section className="flex-1 flex flex-col bg-[#fbfbfb] items-center justify-center">
+      <section className="flex flex-1 flex-col items-center justify-center bg-[#fbfbfb]">
         <div className="text-center">
-          <p className="text-sm text-slate-500">Select a conversation to start messaging</p>
+          <p className="text-sm text-slate-500">
+            Select a conversation to start messaging
+          </p>
         </div>
       </section>
     );
@@ -142,9 +147,9 @@ export function ChatWindow({
   };
 
   return (
-    <section className="flex-1 flex flex-col bg-[#fbfbfb]">
+    <section className="flex flex-1 flex-col bg-[#fbfbfb]">
       {/* Chat Header */}
-      <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-slate-200 bg-white">
+      <div className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 sm:px-6">
         <div className="flex items-center gap-3">
           <Avatar className="h-9 w-9">
             <AvatarImage
@@ -160,10 +165,10 @@ export function ChatWindow({
           </Avatar>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-slate-900 tracking-tight">
+              <span className="text-xs font-medium tracking-tight text-slate-900">
                 {otherParticipantName}
               </span>
-              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-[#14d3ac]/10 border border-[#14d3ac]/40 text-[10px] text-[#00546e]">
+              <span className="inline-flex items-center gap-1 rounded-full border border-[#14d3ac]/40 bg-[#14d3ac]/10 px-1.5 py-0.5 text-[10px] text-[#00546e]">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#14d3ac]"></span>
                 Online
               </span>
@@ -179,7 +184,7 @@ export function ChatWindow({
       <div
         ref={messagesContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-4"
+        className="flex-1 space-y-4 overflow-y-auto px-4 py-4 sm:px-6"
       >
         {isLoadingMessages && messages && messages.length === 0 && (
           <div className="flex items-center justify-center py-10">
@@ -192,8 +197,8 @@ export function ChatWindow({
           Object.entries(groupedMessages).map(([dateKey, dateMessages]) => (
             <div key={dateKey}>
               {/* Day divider */}
-              <div className="flex items-center justify-center mb-4">
-                <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-slate-100 text-[11px] text-slate-500">
+              <div className="mb-4 flex items-center justify-center">
+                <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-0.5 text-[11px] text-slate-500">
                   <span className="h-px w-4 bg-slate-300"></span>
                   {formatDateHeader(dateKey)}
                   <span className="h-px w-4 bg-slate-300"></span>
@@ -220,19 +225,19 @@ export function ChatWindow({
           ))}
 
         {isTyping && typingUserId && (
-          <div className="flex flex-col items-start gap-1 max-w-md">
-            <div className="text-[10px] text-slate-400 mb-0.5">
+          <div className="flex max-w-md flex-col items-start gap-1">
+            <div className="mb-0.5 text-[10px] text-slate-400">
               {conversation.otherParticipantFirstName} is typing...
             </div>
-            <div className="rounded-2xl rounded-tl-sm bg-white border border-slate-200 px-3 py-2 text-xs text-slate-800 shadow-sm shadow-slate-100">
+            <div className="rounded-2xl rounded-tl-sm border border-slate-200 bg-white px-3 py-2 text-xs text-slate-800 shadow-sm shadow-slate-100">
               <div className="flex gap-1">
-                <span className="h-2 w-2 bg-slate-400 rounded-full animate-bounce"></span>
+                <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400"></span>
                 <span
-                  className="h-2 w-2 bg-slate-400 rounded-full animate-bounce"
+                  className="h-2 w-2 animate-bounce rounded-full bg-slate-400"
                   style={{ animationDelay: "0.1s" }}
                 ></span>
                 <span
-                  className="h-2 w-2 bg-slate-400 rounded-full animate-bounce"
+                  className="h-2 w-2 animate-bounce rounded-full bg-slate-400"
                   style={{ animationDelay: "0.2s" }}
                 ></span>
               </div>
@@ -258,4 +263,3 @@ export function ChatWindow({
     </section>
   );
 }
-

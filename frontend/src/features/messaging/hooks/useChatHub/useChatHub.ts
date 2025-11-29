@@ -3,7 +3,7 @@ import {
   HubConnection,
   HubConnectionState,
 } from "@microsoft/signalr";
-import { useEffect, useRef, useCallback, useMemo } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { queryClient } from "@/providers/react-query";
 import { env } from "@/config/env";
 import type { MessageDto } from "@/features/messaging";
@@ -56,7 +56,7 @@ export function useChatHub(options: UseChatHubOptions = {}) {
   // Note: Messages are sent via HTTP API, not SignalR
   // This function is kept for potential future use
   const sendMessage = useCallback(
-    async (conversationId: string, message: MessageDto) => {
+    async (_conversationId: string, _message: MessageDto) => {
       // Messages are sent via HTTP API endpoint
       // SignalR is only used for receiving real-time updates
     },

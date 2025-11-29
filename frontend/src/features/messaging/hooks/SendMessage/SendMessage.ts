@@ -33,9 +33,8 @@ export function useSendMessage() {
       });
     },
     onError: (error) => {
-      handleApiError(error);
+      handleApiError({ apiError: error as any });
       toast.error("Failed to send message");
     },
   });
 }
-

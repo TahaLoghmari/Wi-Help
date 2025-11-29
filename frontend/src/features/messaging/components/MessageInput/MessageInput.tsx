@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect, KeyboardEvent } from "react";
+import { useState, useRef, useEffect } from "react";
+import type { KeyboardEvent } from "react";
 import { Send } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -15,7 +16,7 @@ export function MessageInput({
 }: MessageInputProps) {
   const [message, setMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const typingTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -72,9 +73,9 @@ export function MessageInput({
   }, []);
 
   return (
-    <div className="border-t border-slate-200 bg-white px-4 sm:px-6 py-3">
+    <div className="border-t border-slate-200 bg-white px-4 py-3 sm:px-6">
       <div className="flex items-end gap-2">
-        <div className="flex-1 flex items-center gap-2 rounded-2xl border border-slate-200 bg-[#fbfbfb] px-3 py-1.5">
+        <div className="flex flex-1 items-center gap-2 rounded-2xl border border-slate-200 bg-[#fbfbfb] px-3 py-1.5">
           <textarea
             ref={textareaRef}
             rows={1}
@@ -82,19 +83,19 @@ export function MessageInput({
             onChange={(e) => handleChange(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Type a message... (Shift+Enter for new line)"
-            className="flex-1 bg-transparent outline-none resize-none text-xs text-slate-800 placeholder:text-slate-400 max-h-32 overflow-y-auto"
+            className="max-h-32 flex-1 resize-none overflow-y-auto bg-transparent text-xs text-slate-800 outline-none placeholder:text-slate-400"
             disabled={isSending}
           />
         </div>
         <button
           onClick={handleSend}
           disabled={!message.trim() || isSending}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#00394a] text-[11px] text-white hover:bg-[#00546e] disabled:opacity-50 disabled:cursor-not-allowed"
+          className="inline-flex items-center gap-1.5 rounded-full bg-[#00394a] px-3 py-1.5 text-[11px] text-white hover:bg-[#00546e] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isSending ? (
             <Spinner className="h-3.5 w-3.5" />
           ) : (
-            <Send className="w-3.5 h-3.5 text-white" strokeWidth={1.5} />
+            <Send className="h-3.5 w-3.5 text-white" strokeWidth={1.5} />
           )}
           Send
         </button>
@@ -102,4 +103,3 @@ export function MessageInput({
     </div>
   );
 }
-
