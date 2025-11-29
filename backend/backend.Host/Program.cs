@@ -13,6 +13,7 @@ using Modules.Patients.Infrastructure.Database;
 using Modules.Professionals.Infrastructure.Database;
 using Modules.Messaging.Infrastructure.Database;
 using Modules.Messaging.Infrastructure.Jobs;
+using Modules.Reviews.Infrastructure.Database;
 using Modules.Common.Infrastructure.Services;
 using Serilog;
 
@@ -60,6 +61,9 @@ using (var scope = app.Services.CreateScope())
 
     var messagingDbContext = scope.ServiceProvider.GetRequiredService<MessagingDbContext>();
     await messagingDbContext.Database.MigrateAsync();
+
+    var reviewsDbContext = scope.ServiceProvider.GetRequiredService<ReviewsDbContext>();
+    await reviewsDbContext.Database.MigrateAsync();
 
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
     await IdentityDataSeeder.SeedRolesAsync(roleManager);

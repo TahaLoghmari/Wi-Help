@@ -37,6 +37,11 @@ public record Error
         return new Error(code, description, ErrorType.Conflict);
     }
 
+    public static Error Validation(string code, string description)
+    {
+        return new Error(code, description, ErrorType.Validation);
+    }
+
     public static Error Unauthorized(string code, string description)
     {
         return new Error(code, description, ErrorType.Unauthorized);
