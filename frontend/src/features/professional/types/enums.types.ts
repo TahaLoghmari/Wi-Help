@@ -76,26 +76,3 @@ export const AppointmentUrgency = {
 
 export type AppointmentUrgency =
   (typeof AppointmentUrgency)[keyof typeof AppointmentUrgency];
-
-export interface AppointmentDto {
-  id: string;
-  patientId: string;
-  professionalId: string;
-  notes: string;
-  startDate: string;
-  endDate: string;
-  urgency: AppointmentUrgency;
-  status: AppointmentStatus;
-  price: number;
-  offeredAt?: string;
-  confirmedAt?: string;
-  completedAt?: string;
-  cancelledAt?: string;
-  createdAt: string;
-  updatedAt: string;
-
-  // Expanded properties for UI
-  patientName: string;
-  patientAvatar?: string;
-  patientDateOfBirth?: string;
-}

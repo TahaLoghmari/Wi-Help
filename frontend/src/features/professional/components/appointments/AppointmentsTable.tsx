@@ -21,8 +21,6 @@ export function AppointmentsTable() {
   const appointments = data?.pages.flatMap((page) => page.items) || [];
   const totalCount = data?.pages[0]?.totalCount || 0;
 
-  console.log(appointments);
-
   const [activeTab, setActiveTab] = useState<"offered" | "confirmed">(
     "offered",
   );

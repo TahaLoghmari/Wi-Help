@@ -14,8 +14,7 @@ public class GetNotifications : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet(NotificationsEndpoints.GetNotifications, async (
-                int? page,
-                int? pageSize,
+                [AsParameters] Request request,
                 HttpContext httpContext,
                 IQueryHandler<GetNotificationsQuery, PaginationResultDto<GetNotificationsDto>> handler,
                 CancellationToken cancellationToken) =>
@@ -26,7 +25,7 @@ public class GetNotifications : IEndpoint
                     return Results.Unauthorized();
                 }
 
-                var query = new GetNotificationsQuery(userId, page ?? 1, pageSize ?? 8);
+                var query = new GetNotificationsQuery(userId, request.Page , request.PageSize);
 
                 var result = await handler.Handle(query, cancellationToken);
 
@@ -36,5 +35,11 @@ public class GetNotifications : IEndpoint
             })
             .WithTags(Tags.Notifications)
             .RequireAuthorization();
+    }
+
+    private class Request
+    {
+        public int Page { get; init; } = 1;
+        public int PageSize { get; init; } = 10;
     }
 }

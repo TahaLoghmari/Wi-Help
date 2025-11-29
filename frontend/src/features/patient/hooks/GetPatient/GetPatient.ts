@@ -4,7 +4,6 @@ import { api } from "@/api-client";
 import type { GetPatientDto, GetPatientRequest } from "@/features/patient";
 
 const getPatient = (request: GetPatientRequest) => {
-  console.log(request);
   return api.get<GetPatientDto>(
     API_ENDPOINTS.PATIENTS.GET_PATIENT_BY_ID(request.patientId),
   );

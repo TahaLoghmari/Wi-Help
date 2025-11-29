@@ -8,7 +8,6 @@ export const respondToAppointment = (request: RespondToAppointmentRequest) => {
   const body = {
     isAccepted: request.isAccepted,
   };
-  console.log(body);
   return api.post<void>(
     API_ENDPOINTS.APPOINTMENTS.RESPOND_TO_APPOINTMENT(request.appointmentId),
     body,

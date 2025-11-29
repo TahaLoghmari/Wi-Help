@@ -16,7 +16,6 @@ export function ProfessionalProfileView() {
     isError,
   } = GetProfessional({ professionalId: professionalId! });
 
-  console.log(professional);
 
   if (isLoading) {
     return (

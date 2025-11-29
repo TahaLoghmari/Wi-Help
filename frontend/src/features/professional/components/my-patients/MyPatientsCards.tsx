@@ -14,8 +14,6 @@ export function MyPatientsCards() {
 
   const patients = data?.pages.flatMap((page) => page.items) || [];
   const totalCount = data?.pages[0]?.totalCount || 0;
-
-  console.log(patients);
   const navigate = useNavigate();
 
   const calculateAge = (dob: string) => {

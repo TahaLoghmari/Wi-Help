@@ -18,8 +18,6 @@ export function PatientAppointmentsTable() {
   const appointments = data?.pages.flatMap((page) => page.items) || [];
   const totalCount = data?.pages[0]?.totalCount || 0;
 
-  console.log(appointments);
-
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] =
     useState<GetPatientAppointmentsDto | null>(null);
@@ -42,7 +40,6 @@ export function PatientAppointmentsTable() {
   }
 
   if (error) {
-    console.log("Error loading appointments:", error);
     return (
       <div className="p-4 text-center text-sm text-red-500">
         Error loading appointments

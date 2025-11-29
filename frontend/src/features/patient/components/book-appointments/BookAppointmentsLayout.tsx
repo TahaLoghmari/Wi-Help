@@ -91,7 +91,6 @@ export function BookAppointmentsLayout() {
   const onSubmit = async (
     credentials: z.infer<typeof bookAppointmentFormSchema>,
   ) => {
-    console.log(credentials);
     bookAppointmentMutation.mutate({
       professionalId: professional!.id,
       startDate: credentials.startDate,

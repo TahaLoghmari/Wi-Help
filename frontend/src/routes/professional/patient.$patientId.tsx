@@ -1,15 +1,15 @@
 import { ContentLoading } from "@/components";
+import { ROUTE_PATHS } from "@/config";
 import { PatientProfile, GetPatient } from "@/features/patient";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/professional/patient/$patientId")({
+export const Route = createFileRoute(ROUTE_PATHS.PROFESSIONAL.PATIENT_PROFILE)({
   component: PatientProfileRoute,
   pendingComponent: ContentLoading,
 });
 
 function PatientProfileRoute() {
   const { patientId } = useParams({ strict: false });
-  console.log(patientId);
   const {
     data: patient,
     isLoading,

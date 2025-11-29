@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,7 +19,14 @@ public static class DependencyInjection
             .UseSnakeCaseNamingConvention()
         );
 
-        services.AddSignalR();
+        services.AddSignalR(options =>
+        {
+            // Enable detailed error messages in development
+            options.EnableDetailedErrors = configuration.GetValue<bool>("EnableSignalRDetailedErrors", false);
+        });
+
+        // Register custom user ID provider to map JWT 'sub' claim to SignalR user identifier
+        services.AddSingleton<IUserIdProvider, UserIdProvider>();
 
         services.AddScoped<NotificationsService>();
 

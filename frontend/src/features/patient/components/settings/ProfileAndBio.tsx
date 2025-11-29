@@ -86,7 +86,6 @@ export function ProfileAndBio() {
   const onSubmit = async (
     credentials: z.infer<typeof profileAndBioFormSchema>,
   ) => {
-    console.log(credentials);
     const cleanedCredentials = {
       ...credentials,
       address:

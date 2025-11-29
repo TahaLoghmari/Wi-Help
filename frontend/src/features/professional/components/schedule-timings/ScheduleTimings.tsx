@@ -21,7 +21,7 @@ import { DAYS, GetSchedule, SetupSchedule } from "@/features/professional";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { scheduleFormSchema } from "../../lib/settingsValidationSchemas";
+import { scheduleFormSchema } from "../../lib/professionalValidationSchemas";
 import type { z } from "zod";
 
 const TIME_OPTIONS = Array.from({ length: 24 }, (_, i) => {

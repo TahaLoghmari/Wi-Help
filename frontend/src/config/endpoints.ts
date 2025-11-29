@@ -37,4 +37,10 @@ export const API_ENDPOINTS = {
     GET_APPOINTMENT_BY_ID: (appointmentId: string) =>
       `/appointments/${appointmentId}`,
   },
+  NOTIFICATIONS: {
+    GET_NOTIFICATIONS: "/notifications",
+    MARK_NOTIFICATION_AS_READ: (notificationId: string) =>
+      `/notifications/${notificationId}/mark-as-read`,
+    MARK_NOTIFICATIONS_AS_READ: "/notifications/mark-as-read",
+  },
 } as const;

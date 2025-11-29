@@ -6,12 +6,15 @@ import { Toaster } from "sonner";
 import { env } from "@/config/env";
 import { RouterProvider } from "@tanstack/react-router";
 import { router } from "./react-router";
+import { SignalRProvider } from "./SignalRProvider";
 
 export const AppProvider = () => {
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <SignalRProvider>
+          <RouterProvider router={router} />
+        </SignalRProvider>
         {env.isDevelopment && <ReactQueryDevtools />}
         <Toaster />
       </QueryClientProvider>

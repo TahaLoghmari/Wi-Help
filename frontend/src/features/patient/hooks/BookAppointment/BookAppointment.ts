@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { handleApiError, useAppNavigation } from "@/hooks";
 
 const bookAppointment = (request: BookAppointmentRequest) => {
-  console.log(request);
   return api.post<void>(API_ENDPOINTS.APPOINTMENTS.BOOK_APPOINTMENT, request);
 };
 

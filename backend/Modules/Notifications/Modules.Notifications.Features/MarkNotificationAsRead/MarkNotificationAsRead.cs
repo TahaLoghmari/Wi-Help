@@ -13,7 +13,7 @@ public class MarkNotificationAsRead : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost(NotificationsEndpoints.MarkNotificationAsRead, async (
-                Guid id,
+                Guid notificationId,
                 HttpContext httpContext,
                 ICommandHandler<MarkNotificationAsReadCommand> handler,
                 CancellationToken cancellationToken) =>
@@ -24,7 +24,7 @@ public class MarkNotificationAsRead : IEndpoint
                     return Results.Unauthorized();
                 }
 
-                var command = new MarkNotificationAsReadCommand(id, userId);
+                var command = new MarkNotificationAsReadCommand(notificationId, userId);
 
                 var result = await handler.Handle(command, cancellationToken);
 

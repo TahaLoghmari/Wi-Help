@@ -12,7 +12,6 @@ export const setupSchedule = (request: SetupScheduleRequest) => {
       availabilitySlots: day.availabilitySlots,
     })),
   };
-  console.log(body);
   return api.post<void>(API_ENDPOINTS.PROFESSIONALS.SETUP_SCHEDULE, body);
 };
 

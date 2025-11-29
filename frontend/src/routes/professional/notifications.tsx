@@ -1,10 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ComingSoon } from "@/components";
+import { Notifications } from "@/features/notifications";
 
 export const Route = createFileRoute("/professional/notifications")({
-  component: NotificationsPage,
+  component: Notifications,
 });
-
-function NotificationsPage() {
-  return <ComingSoon />;
-}
