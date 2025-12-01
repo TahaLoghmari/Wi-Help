@@ -23,6 +23,9 @@ public class ConversationConfiguration : IEntityTypeConfiguration<Conversation>
         // Index for efficient querying by participants
         builder.HasIndex(c => new { c.Participant1Id, c.Participant2Id });
         builder.HasIndex(c => new { c.Participant2Id, c.Participant1Id });
+        
+        // Index for ordering by last message time (commonly used query)
+        builder.HasIndex(c => c.LastMessageAt);
 
         // Relationship with messages
         builder.HasMany(c => c.Messages)

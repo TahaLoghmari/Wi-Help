@@ -35,5 +35,10 @@ public class MessageConfiguration : IEntityTypeConfiguration<Message>
         builder.HasIndex(m => m.SenderId);
         builder.HasIndex(m => new { m.ConversationId, m.CreatedAt });
         builder.HasIndex(m => new { m.ConversationId, m.Status });
+        
+        // Index for soft delete filter (used by global query filter)
+        builder.HasIndex(m => m.DeletedAt)
+            .HasFilter("deleted_at IS NULL");
     }
 }
+
