@@ -15,60 +15,68 @@ public class GetConversationsQueryHandler(
 {
     public async Task<Result<List<ConversationDto>>> Handle(GetConversationsQuery query, CancellationToken cancellationToken)
     {
-        var conversations = await messagingDbContext.Conversations
+        // Fetch conversations with last message and unread count in optimized queries
+        var conversationsWithData = await messagingDbContext.Conversations
             .Where(c => c.Participant1Id == query.UserId || c.Participant2Id == query.UserId)
-            .OrderByDescending(c => c.LastMessageAt ?? c.CreatedAt)
+            .Select(c => new
+            {
+                Conversation = c,
+                LastMessage = c.Messages
+                    .OrderByDescending(m => m.CreatedAt)
+                    .FirstOrDefault(),
+                UnreadCount = c.Messages
+                    .Count(m => m.SenderId != query.UserId && m.Status != Domain.Enums.MessageStatus.Read)
+            })
+            .OrderByDescending(x => x.Conversation.LastMessageAt ?? x.Conversation.CreatedAt)
             .ToListAsync(cancellationToken);
 
-        logger.LogInformation("Found {Count} conversations for user {UserId}", conversations.Count, query.UserId);
+        logger.LogInformation("Found {Count} conversations for user {UserId}", conversationsWithData.Count, query.UserId);
+
+        // Collect all other participant IDs for batch user lookup
+        var otherParticipantIds = conversationsWithData
+            .Select(x => x.Conversation.GetOtherParticipant(query.UserId))
+            .Distinct()
+            .ToList();
+
+        // Batch fetch all users at once
+        var userResults = await Task.WhenAll(
+            otherParticipantIds.Select(id => identityApi.GetUserByIdAsync(id, cancellationToken))
+        );
+
+        var userLookup = otherParticipantIds
+            .Zip(userResults, (id, result) => (Id: id, Result: result))
+            .Where(x => x.Result.IsSuccess)
+            .ToDictionary(x => x.Id, x => x.Result.Value);
 
         var conversationDtos = new List<ConversationDto>();
 
-        foreach (var conversation in conversations)
+        foreach (var data in conversationsWithData)
         {
-            var otherParticipantId = conversation.GetOtherParticipant(query.UserId);
+            var otherParticipantId = data.Conversation.GetOtherParticipant(query.UserId);
 
-            // Get other participant's user info
-            var userResult = await identityApi.GetUserByIdAsync(otherParticipantId, cancellationToken);
-            if (userResult.IsFailure)
+            if (!userLookup.TryGetValue(otherParticipantId, out var otherParticipant))
             {
                 logger.LogWarning("Failed to get user {UserId} for conversation {ConversationId}",
-                    otherParticipantId, conversation.Id);
+                    otherParticipantId, data.Conversation.Id);
                 continue;
             }
 
-            var otherParticipant = userResult.Value;
-
-            // Get last message (DeletedAt filter is handled by global query filter)
-            var lastMessage = await messagingDbContext.Messages
-                .Where(m => m.ConversationId == conversation.Id)
-                .OrderByDescending(m => m.CreatedAt)
-                .FirstOrDefaultAsync(cancellationToken);
-
-            // Get unread count (DeletedAt filter is handled by global query filter)
-            var unreadCount = await messagingDbContext.Messages
-                .CountAsync(m =>
-                    m.ConversationId == conversation.Id &&
-                    m.SenderId != query.UserId &&
-                    m.Status != Domain.Enums.MessageStatus.Read,
-                    cancellationToken);
-
             conversationDtos.Add(new ConversationDto(
-                conversation.Id,
+                data.Conversation.Id,
                 otherParticipantId,
                 otherParticipant.FirstName,
                 otherParticipant.LastName,
                 otherParticipant.ProfilePictureUrl,
-                lastMessage != null ? new MessageDto(
-                    lastMessage.Id,
-                    lastMessage.SenderId,
-                    lastMessage.Content,
-                    lastMessage.Status.ToString(),
-                    lastMessage.CreatedAt,
-                    lastMessage.DeliveredAt,
-                    lastMessage.ReadAt) : null,
-                unreadCount,
-                conversation.LastMessageAt ?? conversation.CreatedAt
+                data.LastMessage != null ? new MessageDto(
+                    data.LastMessage.Id,
+                    data.LastMessage.SenderId,
+                    data.LastMessage.Content,
+                    data.LastMessage.Status.ToString(),
+                    data.LastMessage.CreatedAt,
+                    data.LastMessage.DeliveredAt,
+                    data.LastMessage.ReadAt) : null,
+                data.UnreadCount,
+                data.Conversation.LastMessageAt ?? data.Conversation.CreatedAt
             ));
         }
 

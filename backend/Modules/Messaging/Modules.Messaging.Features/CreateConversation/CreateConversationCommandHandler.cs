@@ -16,7 +16,6 @@ public class CreateConversationCommandHandler(
 {
     public async Task<Result<Guid>> Handle(CreateConversationCommand command, CancellationToken cancellationToken)
     {
-        // Validate participants exist
         var participant1Result = await identityApi.GetUserByIdAsync(command.Participant1Id, cancellationToken);
         if (participant1Result.IsFailure)
         {
