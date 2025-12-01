@@ -14,8 +14,7 @@ public class Message
     public DateTime? ReadAt { get; private set; }
     public DateTime? DeletedAt { get; private set; }
     public bool IsDeleted => DeletedAt.HasValue;
-
-    // Navigation properties
+    
     public Conversation Conversation { get; private set; } = null!;
 
     private Message() { }
@@ -28,7 +27,7 @@ public class Message
         Id = Guid.NewGuid();
         ConversationId = conversationId;
         SenderId = senderId;
-        Content = content;
+        Content = content.Trim(); // Sanitize input by trimming whitespace
         Status = MessageStatus.Sent;
         CreatedAt = DateTime.UtcNow;
     }
