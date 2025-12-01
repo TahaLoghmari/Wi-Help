@@ -1,13 +1,8 @@
-import {
-  HubConnectionBuilder,
-  HubConnection,
-  HubConnectionState,
-} from "@microsoft/signalr";
-import { useEffect, useRef, useCallback, useState } from "react";
+import { HubConnectionState } from "@microsoft/signalr";
+import { useEffect, useRef, useCallback } from "react";
 import { queryClient } from "@/providers/react-query";
-import { env } from "@/config/env";
-import { toast } from "sonner";
 import type { MessageDto } from "@/features/messaging";
+import { useChatContext } from "@/features/messaging";
 
 interface UseChatHubOptions {
   conversationId?: string;
@@ -32,10 +27,6 @@ interface UseChatHubOptions {
   }) => void;
 }
 
-// Global connection to avoid multiple instances
-let globalConnection: HubConnection | null = null;
-let connectionUsers = 0;
-
 export function useChatHub(options: UseChatHubOptions = {}) {
   const {
     conversationId,
@@ -50,12 +41,8 @@ export function useChatHub(options: UseChatHubOptions = {}) {
     onNewMessageNotification,
   } = options;
 
-  const connectionRef = useRef<HubConnection | null>(null);
   const callbacksRef = useRef(options);
-  const [connectionError, setConnectionError] = useState<Error | null>(null);
-  const [connectionState, setConnectionState] = useState<HubConnectionState>(
-    HubConnectionState.Disconnected,
-  );
+  const { connection, connectionState, connectionError } = useChatContext();
 
   // Update callbacks ref without triggering re-renders
   useEffect(() => {
@@ -85,336 +72,241 @@ export function useChatHub(options: UseChatHubOptions = {}) {
   ]);
 
   // Note: Messages are sent via HTTP API, not SignalR
-  // This function is kept for potential future use
-  const sendMessage = useCallback(
-    async (_conversationId: string, _message: MessageDto) => {
-      // Messages are sent via HTTP API endpoint
-      // SignalR is only used for receiving real-time updates
+  // SignalR is only used for receiving real-time updates
+
+  const startTyping = useCallback(
+    async (convId: string) => {
+      if (connection?.state === HubConnectionState.Connected && convId) {
+        try {
+          await connection.invoke("StartTyping", convId);
+        } catch (error) {
+          console.error("Failed to send start typing:", error);
+        }
+      }
     },
-    [],
+    [connection],
   );
 
-  const startTyping = useCallback(async (conversationId: string) => {
-    if (
-      connectionRef.current?.state === HubConnectionState.Connected &&
-      conversationId
-    ) {
-      await connectionRef.current.invoke("StartTyping", conversationId);
-    }
-  }, []);
-
-  const stopTyping = useCallback(async (conversationId: string) => {
-    if (
-      connectionRef.current?.state === HubConnectionState.Connected &&
-      conversationId
-    ) {
-      await connectionRef.current.invoke("StopTyping", conversationId);
-    }
-  }, []);
-
-  useEffect(() => {
-    const startConnection = async () => {
-      // Use global connection if it exists and is connected/connecting
-      if (globalConnection) {
-        const state = globalConnection.state;
-        if (
-          state === HubConnectionState.Connected ||
-          state === HubConnectionState.Connecting ||
-          state === HubConnectionState.Reconnecting
-        ) {
-          connectionRef.current = globalConnection;
-          connectionUsers++;
-          // Join conversation if we have one and connection is ready
-          if (conversationId && state === HubConnectionState.Connected) {
-            await globalConnection
-              .invoke("JoinConversation", conversationId)
-              .catch(console.error);
-          }
-          return;
-        } else {
-          // Connection exists but is disconnected, clean it up
-          globalConnection = null;
-          connectionUsers = 0;
+  const stopTyping = useCallback(
+    async (convId: string) => {
+      if (connection?.state === HubConnectionState.Connected && convId) {
+        try {
+          await connection.invoke("StopTyping", convId);
+        } catch (error) {
+          console.error("Failed to send stop typing:", error);
         }
       }
+    },
+    [connection],
+  );
 
-      // Create new connection only if global doesn't exist
-      if (!globalConnection) {
-        const connection = new HubConnectionBuilder()
-          .withUrl(`${env.apiUrl}/hubs/chat`, {
-            withCredentials: true,
-          })
-          .withAutomaticReconnect({
-            nextRetryDelayInMilliseconds: (retryContext) => {
-              if (retryContext.previousRetryCount === 0) return 0;
-              if (retryContext.previousRetryCount === 1) return 2000;
-              if (retryContext.previousRetryCount === 2) return 10000;
-              return 30000;
-            },
-          })
-          .build();
+  useEffect(() => {
+    if (!connection) return;
 
-        globalConnection = connection;
-        connectionUsers = 1;
-        connectionRef.current = connection;
+    const handleMessageReceived = (messageData: {
+      messageId: string;
+      conversationId: string;
+      senderId: string;
+      content: string;
+      status: string;
+      createdAt: string;
+    }) => {
+      const message: MessageDto = {
+        id: messageData.messageId,
+        senderId: messageData.senderId,
+        content: messageData.content,
+        status: messageData.status,
+        createdAt: messageData.createdAt,
+        deliveredAt: null,
+        readAt: null,
+      };
 
-        // Handle connection events
-        connection.onreconnecting((error) => {
-          console.warn("ChatHub reconnecting...", error);
-          setConnectionState(HubConnectionState.Reconnecting);
-          if (error) setConnectionError(error);
-          // Don't show toast for reconnection attempts - it's expected behavior
-        });
+      if (callbacksRef.current.onMessageReceived) {
+        callbacksRef.current.onMessageReceived(message);
+      }
 
-        connection.onreconnected((connectionId) => {
-          console.log("ChatHub reconnected. ConnectionId:", connectionId);
-          setConnectionState(HubConnectionState.Connected);
-          setConnectionError(null);
-          toast.success("Reconnected to chat");
-          // Rejoin conversation if we have one
-          if (conversationId) {
-            connection
-              .invoke("JoinConversation", conversationId)
-              .catch((err) => {
-                console.error("Failed to rejoin conversation:", err);
-              });
-          }
-        });
+      queryClient.invalidateQueries({
+        queryKey: ["messages", messageData.conversationId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["conversations"],
+      });
+    };
 
-        connection.onclose((error) => {
-          console.error("ChatHub connection closed", error);
-          setConnectionState(HubConnectionState.Disconnected);
-          if (error) {
-            setConnectionError(error);
-            toast.error("Chat connection lost. Attempting to reconnect...");
-          }
-        });
-
-        // Handle real-time events - use refs to access latest callbacks
-        connection.on(
-          "MessageReceived",
-          (messageData: {
-            messageId: string;
-            conversationId: string;
-            senderId: string;
-            content: string;
-            status: string;
-            createdAt: string;
-          }) => {
-            // Map backend format to frontend MessageDto format
-            const message: MessageDto = {
-              id: messageData.messageId,
-              senderId: messageData.senderId,
-              content: messageData.content,
-              status: messageData.status,
-              createdAt: messageData.createdAt,
-              deliveredAt: null,
-              readAt: null,
-            };
-
-            if (callbacksRef.current.onMessageReceived) {
-              callbacksRef.current.onMessageReceived(message);
-            }
-            // Invalidate messages query for the conversation
-            queryClient.invalidateQueries({
-              queryKey: ["messages", messageData.conversationId],
-            });
-            queryClient.invalidateQueries({
-              queryKey: ["conversations"],
-            });
-          },
-        );
-
-        connection.on("UserTyping", (convId: string, userId: string) => {
-          // Check if this is for our conversation
-          const currentConvId = callbacksRef.current.conversationId;
-          if (convId === currentConvId && callbacksRef.current.onUserTyping) {
-            callbacksRef.current.onUserTyping(userId);
-          }
-        });
-
-        connection.on("UserStoppedTyping", (convId: string, userId: string) => {
-          const currentConvId = callbacksRef.current.conversationId;
-          if (
-            convId === currentConvId &&
-            callbacksRef.current.onUserStoppedTyping
-          ) {
-            callbacksRef.current.onUserStoppedTyping(userId);
-          }
-        });
-
-        connection.on("UserOnline", (userId: string) => {
-          if (callbacksRef.current.onUserOnline) {
-            callbacksRef.current.onUserOnline(userId);
-          }
-        });
-
-        connection.on("UserOffline", (userId: string) => {
-          if (callbacksRef.current.onUserOffline) {
-            callbacksRef.current.onUserOffline(userId);
-          }
-        });
-
-        // Handle MessagesRead event
-        connection.on(
-          "MessagesRead",
-          (data: { conversationId: string; readBy: string }) => {
-            if (callbacksRef.current.onMessagesRead) {
-              callbacksRef.current.onMessagesRead(data);
-            }
-            // Invalidate messages query to update read status
-            queryClient.invalidateQueries({
-              queryKey: ["messages", data.conversationId],
-            });
-            // Invalidate conversations to update unread count
-            queryClient.invalidateQueries({
-              queryKey: ["conversations"],
-            });
-          },
-        );
-
-        // Handle MessagesDelivered event
-        connection.on(
-          "MessagesDelivered",
-          (data: { conversationId: string; deliveredBy: string }) => {
-            if (callbacksRef.current.onMessagesDelivered) {
-              callbacksRef.current.onMessagesDelivered(data);
-            }
-            // Invalidate messages query to update delivery status
-            queryClient.invalidateQueries({
-              queryKey: ["messages", data.conversationId],
-            });
-            // Invalidate conversations to update UI
-            queryClient.invalidateQueries({
-              queryKey: ["conversations"],
-            });
-          },
-        );
-
-        // Handle MessageDeleted event
-        connection.on(
-          "MessageDeleted",
-          (data: { messageId: string; conversationId: string }) => {
-            if (callbacksRef.current.onMessageDeleted) {
-              callbacksRef.current.onMessageDeleted(data);
-            }
-            // Invalidate messages query to remove deleted message
-            queryClient.invalidateQueries({
-              queryKey: ["messages", data.conversationId],
-            });
-            queryClient.invalidateQueries({
-              queryKey: ["conversations"],
-            });
-          },
-        );
-
-        // Handle NewMessageNotification event
-        connection.on(
-          "NewMessageNotification",
-          (data: {
-            conversationId: string;
-            senderId: string;
-            preview: string;
-          }) => {
-            if (callbacksRef.current.onNewMessageNotification) {
-              callbacksRef.current.onNewMessageNotification(data);
-            }
-            // Invalidate conversations to show new message preview
-            queryClient.invalidateQueries({
-              queryKey: ["conversations"],
-            });
-          },
-        );
-
-        try {
-          await connection.start();
-          console.log(
-            "ChatHub connected successfully. ConnectionId:",
-            connection.connectionId,
-          );
-          setConnectionState(HubConnectionState.Connected);
-          setConnectionError(null);
-
-          // Join conversation if we have one
-          if (conversationId) {
-            await connection
-              .invoke("JoinConversation", conversationId)
-              .catch((err) => {
-                console.error("Failed to join conversation:", err);
-                toast.error("Failed to join conversation");
-              });
-          }
-        } catch (err) {
-          console.error("ChatHub connection failed:", err);
-          setConnectionError(err as Error);
-          setConnectionState(HubConnectionState.Disconnected);
-          toast.error("Failed to connect to chat. Please refresh the page.");
-          // Clean up on failure
-          globalConnection = null;
-          connectionUsers = 0;
-        }
+    const handleUserTyping = (convId: string, userId: string) => {
+      const currentConvId = callbacksRef.current.conversationId;
+      if (convId === currentConvId && callbacksRef.current.onUserTyping) {
+        callbacksRef.current.onUserTyping(userId);
       }
     };
 
-    startConnection();
+    const handleUserStoppedTyping = (convId: string, userId: string) => {
+      const currentConvId = callbacksRef.current.conversationId;
+      if (
+        convId === currentConvId &&
+        callbacksRef.current.onUserStoppedTyping
+      ) {
+        callbacksRef.current.onUserStoppedTyping(userId);
+      }
+    };
+
+    const handleUserOnline = (userId: string) => {
+      if (callbacksRef.current.onUserOnline) {
+        callbacksRef.current.onUserOnline(userId);
+      }
+    };
+
+    const handleUserOffline = (userId: string) => {
+      if (callbacksRef.current.onUserOffline) {
+        callbacksRef.current.onUserOffline(userId);
+      }
+    };
+
+    const handleMessagesRead = (data: {
+      conversationId: string;
+      readBy: string;
+    }) => {
+      if (callbacksRef.current.onMessagesRead) {
+        callbacksRef.current.onMessagesRead(data);
+      }
+      queryClient.invalidateQueries({
+        queryKey: ["messages", data.conversationId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["conversations"],
+      });
+    };
+
+    const handleMessagesDelivered = (data: {
+      conversationId: string;
+      deliveredBy: string;
+    }) => {
+      if (callbacksRef.current.onMessagesDelivered) {
+        callbacksRef.current.onMessagesDelivered(data);
+      }
+      queryClient.invalidateQueries({
+        queryKey: ["messages", data.conversationId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["conversations"],
+      });
+    };
+
+    const handleMessageDeleted = (data: {
+      messageId: string;
+      conversationId: string;
+    }) => {
+      if (callbacksRef.current.onMessageDeleted) {
+        callbacksRef.current.onMessageDeleted(data);
+      }
+      queryClient.invalidateQueries({
+        queryKey: ["messages", data.conversationId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["conversations"],
+      });
+    };
+
+    const handleNewMessageNotification = (data: {
+      conversationId: string;
+      senderId: string;
+      preview: string;
+    }) => {
+      if (callbacksRef.current.onNewMessageNotification) {
+        callbacksRef.current.onNewMessageNotification(data);
+      }
+      queryClient.invalidateQueries({
+        queryKey: ["conversations"],
+      });
+    };
+
+    connection.on("MessageReceived", handleMessageReceived);
+    connection.on("UserTyping", handleUserTyping);
+    connection.on("UserStoppedTyping", handleUserStoppedTyping);
+    connection.on("UserOnline", handleUserOnline);
+    connection.on("UserOffline", handleUserOffline);
+    connection.on("MessagesRead", handleMessagesRead);
+    connection.on("MessagesDelivered", handleMessagesDelivered);
+    connection.on("MessageDeleted", handleMessageDeleted);
+    connection.on("NewMessageNotification", handleNewMessageNotification);
 
     return () => {
-      connectionUsers--;
-
-      // Leave conversation
-      if (conversationId && globalConnection) {
-        globalConnection
-          .invoke("LeaveConversation", conversationId)
-          .catch(console.error);
-      }
-
-      // Only stop connection if no other users
-      if (connectionUsers <= 0 && globalConnection) {
-        globalConnection
-          .stop()
-          .then(() => {
-            console.log("ChatHub connection stopped");
-            globalConnection = null;
-            connectionUsers = 0;
-          })
-          .catch((err) => {
-            console.error("Error stopping ChatHub connection:", err);
-            globalConnection = null;
-            connectionUsers = 0;
-          });
-      }
-
-      connectionRef.current = null;
+      connection.off("MessageReceived", handleMessageReceived);
+      connection.off("UserTyping", handleUserTyping);
+      connection.off("UserStoppedTyping", handleUserStoppedTyping);
+      connection.off("UserOnline", handleUserOnline);
+      connection.off("UserOffline", handleUserOffline);
+      connection.off("MessagesRead", handleMessagesRead);
+      connection.off("MessagesDelivered", handleMessagesDelivered);
+      connection.off("MessageDeleted", handleMessageDeleted);
+      connection.off("NewMessageNotification", handleNewMessageNotification);
     };
-    // Note: conversationId is intentionally not in dependencies
-    // Connection management is separate from conversation joining/leaving
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [connection]);
 
-  // Join/leave conversation when it changes (only if connection exists)
+  // Track joined conversation to handle reconnection
+  const joinedConversationRef = useRef<string | null>(null);
+
   useEffect(() => {
-    if (!globalConnection || !conversationId) return;
-
-    if (globalConnection.state === HubConnectionState.Connected) {
-      globalConnection
-        .invoke("JoinConversation", conversationId)
-        .catch(console.error);
-      return () => {
-        if (globalConnection) {
-          globalConnection
-            .invoke("LeaveConversation", conversationId)
-            .catch(console.error);
-        }
-      };
+    if (
+      !connection ||
+      !conversationId ||
+      connectionState !== HubConnectionState.Connected
+    ) {
+      return;
     }
-  }, [conversationId]);
+
+    const activeConnection = connection;
+
+    // Join conversation
+    activeConnection
+      .invoke("JoinConversation", conversationId)
+      .then(() => {
+        joinedConversationRef.current = conversationId;
+      })
+      .catch((err) => {
+        console.error("Failed to join conversation:", err);
+      });
+
+    return () => {
+      // Only leave if we successfully joined
+      if (joinedConversationRef.current === conversationId) {
+        activeConnection
+          .invoke("LeaveConversation", conversationId)
+          .catch((err) => {
+            // Only log if connection is still active
+            if (activeConnection.state === HubConnectionState.Connected) {
+              console.error("Failed to leave conversation:", err);
+            }
+          });
+        joinedConversationRef.current = null;
+      }
+    };
+  }, [connection, conversationId, connectionState]);
+
+  // Re-join conversation after reconnection
+  useEffect(() => {
+    if (
+      connection &&
+      connectionState === HubConnectionState.Connected &&
+      conversationId &&
+      joinedConversationRef.current !== conversationId
+    ) {
+      connection
+        .invoke("JoinConversation", conversationId)
+        .then(() => {
+          joinedConversationRef.current = conversationId;
+        })
+        .catch((err) => {
+          console.error("Failed to re-join conversation after reconnect:", err);
+        });
+    }
+  }, [connection, connectionState, conversationId]);
 
   return {
-    connection: connectionRef.current,
-    sendMessage,
+    connection,
     startTyping,
     stopTyping,
-    isConnected: connectionRef.current?.state === HubConnectionState.Connected,
+    isConnected: connectionState === HubConnectionState.Connected,
     connectionError,
     connectionState,
   };

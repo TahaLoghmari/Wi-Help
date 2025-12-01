@@ -1,7 +1,10 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { api } from "@/api-client";
 import { API_ENDPOINTS } from "@/config/endpoints";
-import type { MessagesResponseDto, GetMessagesRequest } from "@/features/messaging";
+import type {
+  MessagesResponseDto,
+  GetMessagesRequest,
+} from "@/features/messaging";
 
 const getMessages = (request: GetMessagesRequest) => {
   const { conversationId, pageNumber = 1, pageSize = 50 } = request;
@@ -24,6 +27,6 @@ export function GetMessages(request: GetMessagesRequest) {
         : undefined;
     },
     enabled: !!request.conversationId,
+    staleTime: 10_000, // Consider data fresh for 10 seconds
   });
 }
-

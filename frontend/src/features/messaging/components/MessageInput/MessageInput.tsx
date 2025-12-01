@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import type { KeyboardEvent } from "react";
 import { Send } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
@@ -9,6 +9,9 @@ interface MessageInputProps {
   onTyping?: (isTyping: boolean) => void;
 }
 
+const TYPING_DEBOUNCE_MS = 500;
+const TYPING_TIMEOUT_MS = 2000;
+
 export function MessageInput({
   onSend,
   isSending = false,
@@ -17,6 +20,8 @@ export function MessageInput({
   const [message, setMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typingTimeoutRef = useRef<number | null>(null);
+  const debounceTimeoutRef = useRef<number | null>(null);
+  const isTypingRef = useRef(false);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -24,6 +29,36 @@ export function MessageInput({
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [message]);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      // Ensure we send stop typing on unmount if typing
+      if (isTypingRef.current && onTyping) {
+        onTyping(false);
+      }
+    };
+  }, [onTyping]);
+
+  const sendStopTyping = useCallback(() => {
+    if (isTypingRef.current && onTyping) {
+      isTypingRef.current = false;
+      onTyping(false);
+    }
+  }, [onTyping]);
+
+  const sendStartTyping = useCallback(() => {
+    if (!isTypingRef.current && onTyping) {
+      isTypingRef.current = true;
+      onTyping(true);
+    }
+  }, [onTyping]);
 
   const handleSend = () => {
     const trimmedMessage = message.trim();
@@ -33,12 +68,16 @@ export function MessageInput({
       if (textareaRef.current) {
         textareaRef.current.style.height = "auto";
       }
-      if (onTyping) {
-        onTyping(false);
-      }
+      // Clear all timeouts and send stop typing
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = null;
       }
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+        debounceTimeoutRef.current = null;
+      }
+      sendStopTyping();
     }
   };
 
@@ -51,26 +90,37 @@ export function MessageInput({
 
   const handleChange = (value: string) => {
     setMessage(value);
-    if (onTyping) {
+
+    if (!onTyping) return;
+
+    // Clear existing debounce timeout
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current);
+    }
+
+    // If there's content, start/continue typing indicator
+    if (value.trim()) {
+      // Debounce the start typing signal to avoid rapid fire
+      debounceTimeoutRef.current = window.setTimeout(() => {
+        sendStartTyping();
+      }, TYPING_DEBOUNCE_MS);
+
+      // Reset the auto-stop timeout
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
       }
-      onTyping(true);
-      typingTimeoutRef.current = setTimeout(() => {
-        if (onTyping) {
-          onTyping(false);
-        }
-      }, 1000);
+      typingTimeoutRef.current = window.setTimeout(() => {
+        sendStopTyping();
+      }, TYPING_TIMEOUT_MS);
+    } else {
+      // No content, stop typing immediately
+      sendStopTyping();
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = null;
+      }
     }
   };
-
-  useEffect(() => {
-    return () => {
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
-    };
-  }, []);
 
   return (
     <div className="border-t border-slate-200 bg-white px-4 py-3 sm:px-6">

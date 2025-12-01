@@ -3,6 +3,16 @@ import { useState } from "react";
 import { Trash2, Check, CheckCheck } from "lucide-react";
 import type { MessageDto } from "@/features/messaging";
 import { useDeleteMessage } from "@/features/messaging";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface MessageBubbleProps {
   message: MessageDto;
@@ -19,6 +29,7 @@ export function MessageBubble({
 }: MessageBubbleProps) {
   const formattedTime = format(new Date(message.createdAt), "HH:mm");
   const [showDelete, setShowDelete] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const deleteMessageMutation = useDeleteMessage();
 
   const getStatusIcon = () => {
@@ -34,12 +45,21 @@ export function MessageBubble({
   };
 
   const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this message?")) {
-      deleteMessageMutation.mutate({
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDelete = () => {
+    deleteMessageMutation.mutate(
+      {
         messageId: message.id,
         conversationId,
-      });
-    }
+      },
+      {
+        onSuccess: () => {
+          setShowDeleteDialog(false);
+        },
+      },
+    );
   };
 
   return (
@@ -70,13 +90,35 @@ export function MessageBubble({
           <button
             onClick={handleDelete}
             disabled={deleteMessageMutation.isPending}
-            className="absolute top-1/2 -right-8 -translate-y-1/2 rounded p-1 transition-colors hover:bg-slate-100"
+            className="absolute top-1/2 -left-8 -translate-y-1/2 rounded p-1 transition-colors hover:bg-slate-100"
             title="Delete message"
           >
             <Trash2 className="h-3.5 w-3.5 text-slate-500" />
           </button>
         )}
       </div>
+
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Message</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this message? This action cannot
+              be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              disabled={deleteMessageMutation.isPending}
+              className="bg-[#00394a] text-white hover:bg-[#00394a]/90"
+            >
+              {deleteMessageMutation.isPending ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

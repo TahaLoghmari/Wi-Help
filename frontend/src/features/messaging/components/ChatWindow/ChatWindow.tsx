@@ -9,6 +9,7 @@ import {
   useSendMessage,
   useMarkMessagesAsRead,
   useMarkMessagesAsDelivered,
+  useChatContext,
 } from "@/features/messaging";
 import { useChatHub } from "@/features/messaging/hooks/useChatHub";
 
@@ -33,11 +34,11 @@ export function ChatWindow({
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [isTyping, setIsTyping] = useState(false);
   const [typingUserId, setTypingUserId] = useState<string | null>(null);
-  const [isOtherUserOnline, setIsOtherUserOnline] = useState(false);
   const sendMessageMutation = useSendMessage();
   const markAsReadMutation = useMarkMessagesAsRead();
   const markAsDeliveredMutation = useMarkMessagesAsDelivered();
   const typingTimeoutRef = useRef<number | null>(null);
+  const { onlineUserIds } = useChatContext();
 
   // Group messages by date
   const groupedMessages = messages?.reduce(
@@ -81,6 +82,7 @@ export function ChatWindow({
         markAsReadMutation.mutate(conversation.id);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversation?.id]);
 
   // Set up SignalR connection for real-time updates
@@ -110,16 +112,6 @@ export function ChatWindow({
         if (typingTimeoutRef.current) {
           clearTimeout(typingTimeoutRef.current);
         }
-      }
-    },
-    onUserOnline: (userId) => {
-      if (conversation && userId === conversation.otherParticipantId) {
-        setIsOtherUserOnline(true);
-      }
-    },
-    onUserOffline: (userId) => {
-      if (conversation && userId === conversation.otherParticipantId) {
-        setIsOtherUserOnline(false);
       }
     },
   });
@@ -166,6 +158,7 @@ export function ChatWindow({
   const getInitials = (firstName: string, lastName: string) => {
     return `${firstName[0]}${lastName[0]}`.toUpperCase();
   };
+  const isOtherUserOnline = onlineUserIds.has(conversation.otherParticipantId);
 
   return (
     <section className="flex flex-1 flex-col bg-[#fbfbfb]">

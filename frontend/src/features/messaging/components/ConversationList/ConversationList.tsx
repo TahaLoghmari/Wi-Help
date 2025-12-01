@@ -3,6 +3,7 @@ import { format, isToday, isYesterday } from "date-fns";
 import { Spinner } from "@/components/ui/spinner";
 import type { ConversationDto } from "@/features/messaging";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useChatContext } from "@/features/messaging";
 
 interface ConversationListProps {
   conversations: ConversationDto[] | undefined;
@@ -21,6 +22,7 @@ export function ConversationList({
   searchQuery,
   onSearchChange,
 }: ConversationListProps) {
+  const { onlineUserIds } = useChatContext();
   const formatLastActivity = (date: string) => {
     const activityDate = new Date(date);
     if (isToday(activityDate)) {
@@ -120,8 +122,13 @@ export function ConversationList({
                           )}
                         </AvatarFallback>
                       </Avatar>
-                      {/* Online status indicator - status is tracked in ChatWindow */}
-                      <span className="absolute right-0 bottom-0 h-2 w-2 rounded-full border border-white bg-slate-400"></span>
+                      <span
+                        className={`absolute right-0 bottom-0 h-2 w-2 rounded-full border border-white ${
+                          onlineUserIds.has(conversation.otherParticipantId)
+                            ? "bg-[#14d3ac]"
+                            : "bg-slate-400"
+                        }`}
+                      ></span>
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between">

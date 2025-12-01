@@ -7,13 +7,16 @@ import { env } from "@/config/env";
 import { RouterProvider } from "@tanstack/react-router";
 import { router } from "./react-router";
 import { SignalRProvider } from "./SignalRProvider";
+import { ChatProvider } from "@/features/messaging";
 
 export const AppProvider = () => {
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <SignalRProvider>
-          <RouterProvider router={router} />
+          <ChatProvider>
+            <RouterProvider router={router} />
+          </ChatProvider>
         </SignalRProvider>
         {env.isDevelopment && <ReactQueryDevtools />}
         <Toaster />
