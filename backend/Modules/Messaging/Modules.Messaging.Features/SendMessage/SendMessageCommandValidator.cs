@@ -8,7 +8,9 @@ public class SendMessageCommandValidator : AbstractValidator<SendMessageCommand>
     {
         RuleFor(x => x.Content)
             .NotEmpty().WithMessage("Message content cannot be empty")
-            .MaximumLength(5000).WithMessage("Message content cannot exceed 5000 characters");
+            .MaximumLength(5000).WithMessage("Message content cannot exceed 5000 characters")
+            .Must(content => !string.IsNullOrWhiteSpace(content))
+            .WithMessage("Message content cannot be only whitespace");
             
         RuleFor(x => x.ConversationId)
             .NotEmpty().WithMessage("Conversation ID is required");
