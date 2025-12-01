@@ -1,64 +1,60 @@
+using System.Collections.Concurrent;
+
 namespace Modules.Messaging.Infrastructure.Services;
 
 /// <summary>
-/// Tracks online users and their SignalR connection IDs
+/// Tracks online users and their SignalR connection IDs.
+/// Thread-safe implementation using ConcurrentDictionary.
 /// </summary>
 public class ConnectionTracker
 {
-    private readonly Dictionary<string, HashSet<string>> _userConnections = new();
-    private readonly object _lock = new();
+    private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> _userConnections = new();
 
     public void AddConnection(string userId, string connectionId)
     {
-        lock (_lock)
-        {
-            if (!_userConnections.ContainsKey(userId))
-            {
-                _userConnections[userId] = new HashSet<string>();
-            }
-            _userConnections[userId].Add(connectionId);
-        }
+        var connections = _userConnections.GetOrAdd(userId, _ => new ConcurrentDictionary<string, byte>());
+        connections.TryAdd(connectionId, 0);
     }
 
     public void RemoveConnection(string userId, string connectionId)
     {
-        lock (_lock)
+        if (_userConnections.TryGetValue(userId, out var connections))
         {
-            if (_userConnections.TryGetValue(userId, out var connections))
+            connections.TryRemove(connectionId, out _);
+            
+            // Clean up empty user entries
+            if (connections.IsEmpty)
             {
-                connections.Remove(connectionId);
-                if (connections.Count == 0)
-                {
-                    _userConnections.Remove(userId);
-                }
+                _userConnections.TryRemove(userId, out _);
             }
         }
     }
 
     public bool IsUserOnline(string userId)
     {
-        lock (_lock)
-        {
-            return _userConnections.ContainsKey(userId) && _userConnections[userId].Count > 0;
-        }
+        return _userConnections.TryGetValue(userId, out var connections) && !connections.IsEmpty;
     }
 
-    public HashSet<string> GetUserConnections(string userId)
+    public IReadOnlyList<string> GetUserConnections(string userId)
     {
-        lock (_lock)
+        if (_userConnections.TryGetValue(userId, out var connections))
         {
-            return _userConnections.TryGetValue(userId, out var connections)
-                ? new HashSet<string>(connections)
-                : new HashSet<string>();
+            return connections.Keys.ToList();
         }
+        return Array.Empty<string>();
     }
 
     public IReadOnlyList<string> GetOnlineUserIds()
     {
-        lock (_lock)
-        {
-            return _userConnections.Keys.ToList();
-        }
+        return _userConnections
+            .Where(kvp => !kvp.Value.IsEmpty)
+            .Select(kvp => kvp.Key)
+            .ToList();
+    }
+
+    public int GetOnlineUserCount()
+    {
+        return _userConnections.Count(kvp => !kvp.Value.IsEmpty);
     }
 }
 
