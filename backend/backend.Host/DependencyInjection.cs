@@ -126,15 +126,22 @@ internal static class DependencyInjection
                 {
                     OnMessageReceived = context =>
                     {
-                        // Support JWT token from cookies (for HTTP requests)
-                        if (context.Request.Cookies.ContainsKey("accessToken"))
-                        {
-                            context.Token = context.Request.Cookies["accessToken"];
-                        }
+                        // For SignalR hub requests, check the path
+                        var path = context.HttpContext.Request.Path;
+                        var isHubRequest = path.StartsWithSegments("/hubs");
+                        
                         // Support JWT token from query string (for SignalR WebSocket connections)
-                        else if (context.Request.Query.TryGetValue("access_token", out var accessToken))
+                        // Check query string first for SignalR as it's the most reliable for WebSocket
+                        if (context.Request.Query.TryGetValue("access_token", out var accessToken) 
+                            && !string.IsNullOrEmpty(accessToken))
                         {
                             context.Token = accessToken;
+                        }
+                        // Support JWT token from cookies (for HTTP requests)
+                        else if (context.Request.Cookies.TryGetValue("accessToken", out var cookieToken)
+                            && !string.IsNullOrEmpty(cookieToken))
+                        {
+                            context.Token = cookieToken;
                         }
 
                         return Task.CompletedTask;
