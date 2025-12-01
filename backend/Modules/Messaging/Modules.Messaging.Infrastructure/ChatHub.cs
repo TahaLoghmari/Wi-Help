@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Modules.Messaging.Infrastructure.Services;
+using Modules.Messaging.PublicApi;
 
 namespace Modules.Messaging.Infrastructure;
 
@@ -10,11 +11,16 @@ public class ChatHub : Hub
 {
     private readonly ILogger<ChatHub> _logger;
     private readonly ConnectionTracker _connectionTracker;
+    private readonly IConversationAccessService _conversationAccessService;
 
-    public ChatHub(ILogger<ChatHub> logger, ConnectionTracker connectionTracker)
+    public ChatHub(
+        ILogger<ChatHub> logger, 
+        ConnectionTracker connectionTracker,
+        IConversationAccessService conversationAccessService)
     {
         _logger = logger;
         _connectionTracker = connectionTracker;
+        _conversationAccessService = conversationAccessService;
     }
 
     public override async Task OnConnectedAsync()
@@ -27,6 +33,9 @@ public class ChatHub : Hub
             return;
         }
 
+        // Check if this is the user's first connection (they were offline before)
+        var wasOffline = !_connectionTracker.IsUserOnline(userId);
+        
         _connectionTracker.AddConnection(userId, Context.ConnectionId);
         
         _logger.LogInformation("ChatHub client connected. UserId: {UserId}, ConnectionId: {ConnectionId}", 
@@ -35,8 +44,15 @@ public class ChatHub : Hub
         // Join user's personal group for direct notifications
         await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
 
-        // Notify others that this user is now online
-        await Clients.Others.SendAsync("UserOnline", userId);
+        // Send the current list of online users to the newly connected client
+        var onlineUserIds = _connectionTracker.GetOnlineUserIds();
+        await Clients.Caller.SendAsync("OnlineUsers", onlineUserIds);
+
+        // Notify others that this user is now online (only if they were offline before)
+        if (wasOffline)
+        {
+            await Clients.Others.SendAsync("UserOnline", userId);
+        }
 
         await base.OnConnectedAsync();
     }
@@ -83,6 +99,25 @@ public class ChatHub : Hub
             return;
         }
 
+        if (!Guid.TryParse(conversationId, out var conversationGuid))
+        {
+            await Clients.Caller.SendAsync("Error", "Invalid conversation ID");
+            return;
+        }
+
+        // Verify user is a participant in this conversation
+        var isParticipant = await _conversationAccessService.IsUserParticipantAsync(
+            conversationGuid, 
+            Guid.Parse(userId));
+
+        if (!isParticipant)
+        {
+            _logger.LogWarning("User {UserId} attempted to join conversation {ConversationId} they are not a participant of",
+                userId, conversationId);
+            await Clients.Caller.SendAsync("Error", "Access denied");
+            return;
+        }
+
         await Groups.AddToGroupAsync(Context.ConnectionId, $"conversation_{conversationId}");
         _logger.LogInformation("User {UserId} joined conversation {ConversationId}", userId, conversationId);
     }
@@ -108,6 +143,23 @@ public class ChatHub : Hub
             return;
         }
 
+        if (!Guid.TryParse(conversationId, out var conversationGuid))
+        {
+            return;
+        }
+
+        // Verify user is a participant (prevents spoofing typing indicators)
+        var isParticipant = await _conversationAccessService.IsUserParticipantAsync(
+            conversationGuid, 
+            Guid.Parse(userId));
+
+        if (!isParticipant)
+        {
+            _logger.LogWarning("User {UserId} attempted to send typing indicator to conversation {ConversationId} they are not a participant of",
+                userId, conversationId);
+            return;
+        }
+
         // Notify all other participants in the conversation
         await Clients.GroupExcept($"conversation_{conversationId}", Context.ConnectionId)
             .SendAsync("UserTyping", conversationId, userId);
@@ -124,8 +176,39 @@ public class ChatHub : Hub
             return;
         }
 
+        if (!Guid.TryParse(conversationId, out var conversationGuid))
+        {
+            return;
+        }
+
+        // Verify user is a participant (prevents spoofing typing indicators)
+        var isParticipant = await _conversationAccessService.IsUserParticipantAsync(
+            conversationGuid, 
+            Guid.Parse(userId));
+
+        if (!isParticipant)
+        {
+            return;
+        }
+
         await Clients.GroupExcept($"conversation_{conversationId}", Context.ConnectionId)
             .SendAsync("UserStoppedTyping", conversationId, userId);
+    }
+
+    /// <summary>
+    /// Get the list of currently online users.
+    /// Useful for syncing state after reconnection.
+    /// </summary>
+    public async Task GetOnlineUsers()
+    {
+        var userId = Context.UserIdentifier;
+        if (string.IsNullOrEmpty(userId))
+        {
+            return;
+        }
+
+        var onlineUserIds = _connectionTracker.GetOnlineUserIds();
+        await Clients.Caller.SendAsync("OnlineUsers", onlineUserIds);
     }
 }
 

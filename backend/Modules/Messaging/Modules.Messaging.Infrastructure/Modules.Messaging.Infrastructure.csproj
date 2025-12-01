@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Modules.Messaging.Domain\Modules.Messaging.Domain.csproj" />
+    <ProjectReference Include="..\Modules.Messaging.PublicApi\Modules.Messaging.PublicApi.csproj" />
   </ItemGroup>
 
 </Project>
