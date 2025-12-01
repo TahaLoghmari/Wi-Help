@@ -12,7 +12,6 @@ public class Conversation
     public DateTime UpdatedAt { get; private set; }
     public DateTime? LastMessageAt { get; private set; }
     
-    // Navigation properties
     public ICollection<Message> Messages { get; private set; } = new List<Message>();
 
     private Conversation() { }
