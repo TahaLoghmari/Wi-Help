@@ -47,5 +47,9 @@ public static class ReviewErrors
     public static Error ReplyNotFound(Guid replyId) => Error.NotFound(
         "Review.ReplyNotFound",
         $"Reply with ID {replyId} was not found.");
+
+    public static Error NotOwner(Guid reviewId, Guid patientId) => Error.Forbidden(
+        "Review.NotOwner",
+        $"Patient {patientId} is not the owner of review {reviewId}.");
 }
 

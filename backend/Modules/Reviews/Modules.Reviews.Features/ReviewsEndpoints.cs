@@ -17,5 +17,11 @@ public static class ReviewsEndpoints
 
     // Reply to a review
     public const string ReplyToReview = "reviews/{reviewId}/reply";
+
+    // Edit a review (patient can edit their own review)
+    public const string EditReview = "reviews/{reviewId}";
+
+    // Delete a review (patient can delete their own review)
+    public const string DeleteReview = "reviews/{reviewId}";
 }
 
