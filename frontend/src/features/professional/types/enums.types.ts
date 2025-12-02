@@ -76,3 +76,35 @@ export const AppointmentUrgency = {
 
 export type AppointmentUrgency =
   (typeof AppointmentUrgency)[keyof typeof AppointmentUrgency];
+
+export const DocumentType = {
+  Diploma: "Diploma",
+  ProfessionalLicense: "ProfessionalLicense",
+  Id: "Id",
+  Insurance: "Insurance",
+} as const;
+
+export type DocumentType = (typeof DocumentType)[keyof typeof DocumentType];
+
+export const DocumentStatus = {
+  Pending: "Pending",
+  Verified: "Verified",
+  Rejected: "Rejected",
+} as const;
+
+export type DocumentStatus =
+  (typeof DocumentStatus)[keyof typeof DocumentStatus];
+
+export interface VerificationDocumentDto {
+  id: string;
+  type: DocumentType;
+  documentUrl: string;
+  status: DocumentStatus;
+  uploadedAt: string;
+  reviewedAt: string | null;
+}
+
+export interface UploadVerificationDocumentRequest {
+  documentType: DocumentType;
+  document: File;
+}

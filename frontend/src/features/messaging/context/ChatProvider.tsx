@@ -232,10 +232,23 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+// Default context value for when provider is not available (e.g., during HMR)
+const defaultContextValue: ChatContextValue = {
+  connection: null,
+  connectionState: HubConnectionState.Disconnected,
+  connectionError: null,
+  onlineUserIds: new Set(),
+};
+
 export const useChatContext = () => {
   const ctx = useContext(ChatContext);
+  // Return default value instead of throwing during HMR or error recovery
+  // This prevents cascading errors when the component tree is being rebuilt
   if (!ctx) {
-    throw new Error("useChatContext must be used within a ChatProvider");
+    console.warn(
+      "useChatContext called outside of ChatProvider. This can happen during HMR. Returning default context.",
+    );
+    return defaultContextValue;
   }
   return ctx;
 };

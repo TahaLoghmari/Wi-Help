@@ -10,16 +10,43 @@ import { queryClient } from "@/providers/react-query";
 import type { NotificationDto } from "@/features/notifications";
 import { API_ENDPOINTS } from "@/config/endpoints";
 import { env } from "@/config/env";
+import { useCurrentUser } from "@/features/auth";
 
 export const SignalRProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
+  const { data: currentUser, isLoading: isUserLoading } = useCurrentUser();
   const connectionRef = useRef<HubConnection | null>(null);
   const isStoppingRef = useRef(false);
 
   useEffect(() => {
+    // Wait for user loading to complete before deciding
+    if (isUserLoading) {
+      return;
+    }
+
+    // No authenticated user -> make sure connection is stopped
+    if (!currentUser) {
+      if (connectionRef.current) {
+        isStoppingRef.current = true;
+        connectionRef.current
+          .stop()
+          .then(() => {
+            console.log("SignalR connection stopped (no user)");
+          })
+          .catch((err) => {
+            console.error("Error stopping SignalR connection:", err);
+          })
+          .finally(() => {
+            isStoppingRef.current = false;
+            connectionRef.current = null;
+          });
+      }
+      return;
+    }
+
     const startConnection = async () => {
       // Don't create a new connection if one already exists and is connected/connecting
       if (
@@ -168,7 +195,7 @@ export const SignalRProvider = ({
         connectionRef.current = null;
       }
     };
-  }, []);
+  }, [currentUser?.id, isUserLoading]);
 
   return <>{children}</>;
 };

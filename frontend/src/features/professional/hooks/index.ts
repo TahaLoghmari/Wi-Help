@@ -8,3 +8,4 @@ export * from "./GetSchedule";
 export * from "./SetupSchedule";
 export * from "./UpdateProfessional";
 export * from "./RespondToAppointment";
+export * from "./VerificationDocuments";

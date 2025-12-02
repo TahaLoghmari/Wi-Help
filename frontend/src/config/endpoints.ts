@@ -20,6 +20,8 @@ export const API_ENDPOINTS = {
     GET_ALL_PROFESSIONALS: "/professionals",
     GET_PROFESSIONAL_AVAILABILITY: (professionalId: string) =>
       `/professionals/${professionalId}/availability`,
+    UPLOAD_VERIFICATION_DOCUMENT: "/professionals/me/documents",
+    GET_VERIFICATION_DOCUMENTS: "/professionals/me/documents",
   },
   PATIENTS: {
     REGISTER_PATIENT: "/patients/register",
