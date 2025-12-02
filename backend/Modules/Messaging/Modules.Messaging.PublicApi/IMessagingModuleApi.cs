@@ -1,24 +1,19 @@
 using Modules.Common.Features.Results;
-using Modules.Messaging.PublicApi.Contracts;
 
 namespace Modules.Messaging.PublicApi;
 
+/// <summary>
+/// Public API for inter-module communication with the Messaging module.
+/// Used by other modules to create conversations programmatically (e.g., after appointment acceptance).
+/// </summary>
 public interface IMessagingModuleApi
 {
+    /// <summary>
+    /// Creates a conversation between two participants. Returns existing conversation ID if one already exists.
+    /// </summary>
     Task<Result<Guid>> CreateConversationAsync(
         Guid participant1Id,
         Guid participant2Id,
-        CancellationToken cancellationToken = default);
-
-    Task<Result<List<ConversationDto>>> GetConversationsByUserIdAsync(
-        Guid userId,
-        CancellationToken cancellationToken = default);
-
-    Task<Result<MessagesResponseDto>> GetMessagesByConversationIdAsync(
-        Guid conversationId,
-        Guid userId,
-        int pageNumber = 1,
-        int pageSize = 50,
         CancellationToken cancellationToken = default);
 }
 
