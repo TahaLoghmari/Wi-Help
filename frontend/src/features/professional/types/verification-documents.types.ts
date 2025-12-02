@@ -3,7 +3,7 @@ import type {
   DocumentStatus,
   DocumentType,
   VerificationDocumentDto,
-} from "@/features/professional";
+} from "./enums.types";
 
 export type StatusKey = DocumentStatus | "NotUploaded";
 

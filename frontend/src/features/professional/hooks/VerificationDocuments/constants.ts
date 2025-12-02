@@ -1,10 +1,9 @@
 import { FileBadge, GraduationCap, IdCard, Shield } from "lucide-react";
-import {
-  DocumentStatus,
-  DocumentType,
-  type DocumentDefinition,
-  type StatusKey,
-} from "@/features/professional";
+import { DocumentStatus, DocumentType } from "../../types/enums.types";
+import type {
+  DocumentDefinition,
+  StatusKey,
+} from "../../types/verification-documents.types";
 
 export const DOCUMENT_DEFINITIONS: DocumentDefinition[] = [
   {
