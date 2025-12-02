@@ -54,7 +54,6 @@ export const API_ENDPOINTS = {
     MARK_MESSAGES_AS_DELIVERED: (conversationId: string) =>
       `/messaging/conversations/${conversationId}/messages/delivered`,
     DELETE_MESSAGE: (messageId: string) => `/messaging/messages/${messageId}`,
-    CREATE_CONVERSATION: "/messaging/conversations",
   },
   REVIEWS: {
     SUBMIT_REVIEW: "/reviews",
