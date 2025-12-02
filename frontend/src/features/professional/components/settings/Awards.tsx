@@ -1,4 +1,264 @@
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type z from "zod";
+import { Plus, Pencil, Trash2, Save, X, Medal, Calendar } from "lucide-react";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Spinner,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components";
+import {
+  awardFormSchema,
+  useGetAwards,
+  useCreateAward,
+  useUpdateAward,
+  useDeleteAward,
+  type AwardDto,
+} from "@/features/professional";
+
+type AwardFormValues = z.infer<typeof awardFormSchema>;
+
+interface AwardFormProps {
+  award?: AwardDto;
+  onCancel: () => void;
+  isEditing?: boolean;
+}
+
+function AwardForm({ award, onCancel, isEditing = false }: AwardFormProps) {
+  const createAwardMutation = useCreateAward();
+  const updateAwardMutation = useUpdateAward();
+
+  const form = useForm<AwardFormValues>({
+    resolver: zodResolver(awardFormSchema),
+    defaultValues: {
+      title: award?.title ?? "",
+      issuer: award?.issuer ?? "",
+      description: award?.description ?? "",
+      yearReceived: award?.yearReceived ?? "",
+    },
+  });
+
+  const onSubmit = async (values: AwardFormValues) => {
+    if (isEditing && award) {
+      updateAwardMutation.mutate(
+        {
+          awardId: award.id,
+          request: values,
+        },
+        { onSuccess: () => onCancel() },
+      );
+    } else {
+      createAwardMutation.mutate(values, { onSuccess: () => onCancel() });
+    }
+  };
+
+  const isPending =
+    createAwardMutation.isPending || updateAwardMutation.isPending;
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem className="flex flex-col gap-1">
+                <FormLabel className="block text-[10px] font-medium text-slate-600">
+                  Title *
+                </FormLabel>
+                <FormControl>
+                  <input
+                    type="text"
+                    className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                    placeholder="e.g., Excellence in Patient Care Award"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="text-[10px]" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="yearReceived"
+            render={({ field }) => (
+              <FormItem className="flex flex-col gap-1">
+                <FormLabel className="block text-[10px] font-medium text-slate-600">
+                  Year Received *
+                </FormLabel>
+                <FormControl>
+                  <input
+                    type="text"
+                    className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                    placeholder="e.g., 2023"
+                    maxLength={4}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="text-[10px]" />
+              </FormItem>
+            )}
+          />
+        </div>
+        <FormField
+          control={form.control}
+          name="issuer"
+          render={({ field }) => (
+            <FormItem className="flex flex-col gap-1">
+              <FormLabel className="block text-[10px] font-medium text-slate-600">
+                Issuing Organization
+              </FormLabel>
+              <FormControl>
+                <input
+                  type="text"
+                  className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                  placeholder="e.g., Heart & Vascular Center"
+                  {...field}
+                  value={field.value ?? ""}
+                />
+              </FormControl>
+              <FormMessage className="text-[10px]" />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem className="flex flex-col gap-1">
+              <FormLabel className="block text-[10px] font-medium text-slate-600">
+                Description
+              </FormLabel>
+              <FormControl>
+                <textarea
+                  className="placeholder:text-muted-foreground w-full resize-none rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                  rows={3}
+                  placeholder="Describe the award and why you received it..."
+                  {...field}
+                  value={field.value ?? ""}
+                />
+              </FormControl>
+              <FormMessage className="text-[10px]" />
+            </FormItem>
+          )}
+        />
+        <div className="flex items-center justify-end gap-2 pt-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] text-slate-600 transition-colors hover:bg-slate-50"
+          >
+            <X className="h-3.5 w-3.5" />
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={isPending}
+            className="inline-flex items-center gap-1.5 rounded-full bg-[#00394a] px-3 py-1.5 text-[11px] text-white transition-colors hover:bg-[#00546e] disabled:opacity-50"
+          >
+            {isPending ? (
+              <Spinner className="h-3.5 w-3.5 border-2 border-white/30 border-t-white" />
+            ) : (
+              <Save className="h-3.5 w-3.5" />
+            )}
+            {isEditing ? "Update" : "Save"}
+          </button>
+        </div>
+      </form>
+    </Form>
+  );
+}
+
+interface AwardCardProps {
+  award: AwardDto;
+  onEdit: () => void;
+  onDelete: () => void;
+}
+
+function AwardCard({ award, onEdit, onDelete }: AwardCardProps) {
+  return (
+    <article className="space-y-2 rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+      <div className="flex items-start justify-between">
+        <div className="flex items-start gap-2">
+          <span className="mt-0.5 inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white">
+            <Medal className="h-3.5 w-3.5 text-amber-500" />
+          </span>
+          <div className="text-[11px] text-slate-800">
+            <p className="font-medium tracking-tight">{award.title}</p>
+            {award.issuer && (
+              <p className="text-[10px] text-slate-500">{award.issuer}</p>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="inline-flex items-center gap-1 text-[10px] text-slate-500">
+            <Calendar className="h-3 w-3" />
+            {award.yearReceived}
+          </span>
+          <button
+            type="button"
+            onClick={onEdit}
+            className="inline-flex items-center rounded-full border border-slate-200 bg-white p-1.5 text-slate-600 transition-colors hover:bg-slate-100"
+            aria-label="Edit award"
+          >
+            <Pencil className="h-3 w-3" />
+          </button>
+          <button
+            type="button"
+            onClick={onDelete}
+            className="inline-flex items-center rounded-full border border-rose-100 bg-white p-1.5 text-rose-500 transition-colors hover:bg-rose-50"
+            aria-label="Delete award"
+          >
+            <Trash2 className="h-3 w-3" />
+          </button>
+        </div>
+      </div>
+      {award.description && (
+        <p className="pl-9 text-[10px] leading-relaxed text-slate-600">
+          {award.description}
+        </p>
+      )}
+    </article>
+  );
+}
+
 export function Awards() {
+  const { data: awards, isLoading } = useGetAwards();
+  const deleteAwardMutation = useDeleteAward();
+  const [isAddingNew, setIsAddingNew] = useState(false);
+  const [editingAwardId, setEditingAwardId] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+
+  const handleDelete = () => {
+    if (deleteConfirmId) {
+      deleteAwardMutation.mutate(deleteConfirmId, {
+        onSuccess: () => setDeleteConfirmId(null),
+      });
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex w-full items-center justify-center py-8">
+        <Spinner className="h-6 w-6 border-2 border-[#00394a] border-t-transparent" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-3">
       <div className="mb-1 border-b border-slate-200 pb-3">
@@ -9,104 +269,97 @@ export function Awards() {
           Showcase professional awards and recognitions.
         </p>
       </div>
-      <section className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-4 mt-6">
-        <div className="section-body space-y-2">
-          <article className="space-y-2 rounded-xl border border-slate-200 bg-slate-50/70 p-3">
-            <div className="flex items-center justify-between">
-              <div className="text-[11px] text-slate-800">
-                <p className="font-medium tracking-tight">
-                  Excellence in Patient Care Award
-                </p>
-                <p className="text-[10px] text-slate-500">
-                  Heart &amp; Vascular Center
-                </p>
-              </div>
-              <div className="flex items-center gap-1.5 text-[10px] text-slate-500">
-                <span>2023-05-12</span>
-                <button
-                  type="button"
-                  className="rounded-full p-1 text-slate-500 hover:bg-slate-100"
-                  aria-label="Edit award"
+      <div className="mt-6 flex items-center justify-start">
+        <button
+          type="button"
+          onClick={() => setIsAddingNew(true)}
+          disabled={isAddingNew}
+          className="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-slate-50/80 px-2.5 py-1.5 text-[11px] text-[#00394a] transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/10 disabled:opacity-50"
+        >
+          <Plus className="h-3.5 w-3.5" />
+          Add award
+        </button>
+      </div>
+      <section className="flex flex-col gap-3 bg-white p-3 sm:p-4">
+        <div className="space-y-3">
+          {isAddingNew && (
+            <div className="rounded-xl border border-[#3fa6ff]/30 bg-[#3fa6ff]/5 p-3">
+              <p className="mb-3 text-[11px] font-medium text-[#00394a]">
+                Add New Award
+              </p>
+              <AwardForm onCancel={() => setIsAddingNew(false)} />
+            </div>
+          )}
+
+          {awards && awards.length > 0 ? (
+            awards.map((award) =>
+              editingAwardId === award.id ? (
+                <div
+                  key={award.id}
+                  className="rounded-xl border border-[#3fa6ff]/30 bg-[#3fa6ff]/5 p-3"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    data-lucide="pencil"
-                    className="lucide lucide-pencil h-3.5 w-3.5"
-                  >
-                    <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
-                    <path d="m15 5 4 4"></path>
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  className="rounded-full p-1 text-rose-500 hover:bg-rose-50"
-                  aria-label="Delete award"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    data-lucide="trash-2"
-                    className="lucide lucide-trash-2 h-3.5 w-3.5"
-                  >
-                    <path d="M10 11v6"></path>
-                    <path d="M14 11v6"></path>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
-                    <path d="M3 6h18"></path>
-                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div className="grid gap-2 text-[11px] text-slate-700 sm:grid-cols-2">
-              <div className="space-y-1">
-                <label className="block text-[10px] text-slate-500">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  className="w-full rounded-lg border border-slate-200 px-2 py-1 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
-                  value="Excellence in Patient Care Award"
+                  <p className="mb-3 text-[11px] font-medium text-[#00394a]">
+                    Edit Award
+                  </p>
+                  <AwardForm
+                    award={award}
+                    isEditing
+                    onCancel={() => setEditingAwardId(null)}
+                  />
+                </div>
+              ) : (
+                <AwardCard
+                  key={award.id}
+                  award={award}
+                  onEdit={() => setEditingAwardId(award.id)}
+                  onDelete={() => setDeleteConfirmId(award.id)}
                 />
-              </div>
-              <div className="space-y-1">
-                <label className="block text-[10px] text-slate-500">Date</label>
-                <input
-                  type="date"
-                  className="w-full rounded-lg border border-slate-200 px-2 py-1 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
-                  value="2023-05-12"
-                />
-              </div>
+              ),
+            )
+          ) : !isAddingNew ? (
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-slate-200 p-16 text-center">
+              <Medal className="mb-2 h-8 w-8 text-slate-300" />
+              <p className="text-[11px] text-slate-500">
+                No awards added yet. Click "Add award" to get started.
+              </p>
             </div>
-            <div className="space-y-1 text-[11px] text-slate-700">
-              <label className="block text-[10px] text-slate-500">
-                Description
-              </label>
-              <textarea className="w-full resize-none rounded-lg border border-slate-200 px-2 py-1 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none">
-                Recognized for outstanding patient-centered care and
-                interdisciplinary collaboration.
-              </textarea>
-            </div>
-          </article>
-          <p className="text-[10px] text-slate-400">
-            Use Add to include additional awards or recognitions.
-          </p>
+          ) : null}
         </div>
+
+        {awards && awards.length > 0 && (
+          <p className="mt-2 text-[10px] text-slate-400">
+            Use the Add button to include additional awards or recognitions.
+          </p>
+        )}
       </section>
+
+      <AlertDialog
+        open={!!deleteConfirmId}
+        onOpenChange={() => setDeleteConfirmId(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Award</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this award? This action cannot be
+              undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-rose-500 hover:bg-rose-600"
+            >
+              {deleteAwardMutation.isPending ? (
+                <Spinner className="h-4 w-4 border-2 border-white/30 border-t-white" />
+              ) : (
+                "Delete"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

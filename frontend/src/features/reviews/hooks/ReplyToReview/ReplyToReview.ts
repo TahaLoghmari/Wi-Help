@@ -7,16 +7,19 @@ import { toast } from "sonner";
 import { handleApiError } from "@/hooks";
 
 const replyToReview = (request: ReplyToReviewRequest) => {
-  return api.post<void>(API_ENDPOINTS.REVIEWS.REPLY_TO_REVIEW(request.reviewId), {
-    comment: request.comment,
-  });
+  return api.post<void>(
+    API_ENDPOINTS.REVIEWS.REPLY_TO_REVIEW(request.reviewId),
+    {
+      comment: request.comment,
+    },
+  );
 };
 
 export function useReplyToReview() {
   const queryClient = useQueryClient();
   return useMutation<void, ProblemDetailsDto, ReplyToReviewRequest>({
     mutationFn: replyToReview,
-    onSuccess: (_, variables) => {
+    onSuccess: () => {
       // Invalidate all professional reviews queries to refresh the data
       queryClient.invalidateQueries({
         queryKey: ["professional-reviews"],
@@ -30,4 +33,3 @@ export function useReplyToReview() {
     onError: (error) => handleApiError({ apiError: error }),
   });
 }
-

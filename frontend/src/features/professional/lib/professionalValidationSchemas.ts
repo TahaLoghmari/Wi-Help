@@ -77,7 +77,94 @@ export const profileAndBioFormSchema = z
     },
   );
 
+// Award validation schema
+export const awardFormSchema = z.object({
+  title: z
+    .string()
+    .min(1, { message: "Title is required." })
+    .max(200, { message: "Title must be at most 200 characters." }),
+  issuer: z
+    .string()
+    .max(200, { message: "Issuer must be at most 200 characters." })
+    .optional()
+    .nullable(),
+  description: z
+    .string()
+    .max(1000, { message: "Description must be at most 1000 characters." })
+    .optional()
+    .nullable(),
+  yearReceived: z
+    .string()
+    .min(1, { message: "Year received is required." })
+    .regex(/^\d{4}$/, { message: "Year must be a 4-digit number." })
+    .refine((year) => parseInt(year) <= new Date().getFullYear(), {
+      message: "Year received cannot be in the future.",
+    }),
+});
 
+// Education validation schema
+export const educationFormSchema = z.object({
+  institution: z
+    .string()
+    .min(1, { message: "Institution is required." })
+    .max(300, { message: "Institution must be at most 300 characters." }),
+  degree: z
+    .string()
+    .min(1, { message: "Degree is required." })
+    .max(200, { message: "Degree must be at most 200 characters." }),
+  fieldOfStudy: z
+    .string()
+    .max(200, { message: "Field of study must be at most 200 characters." })
+    .optional()
+    .nullable(),
+  country: z
+    .string()
+    .max(100, { message: "Country must be at most 100 characters." })
+    .optional()
+    .nullable(),
+  startYear: z
+    .string()
+    .min(1, { message: "Start year is required." })
+    .max(10, { message: "Start year must be at most 10 characters." }),
+  endYear: z
+    .string()
+    .max(10, { message: "End year must be at most 10 characters." })
+    .optional()
+    .nullable(),
+  isCurrentlyStudying: z.boolean(),
+});
+
+// Experience validation schema
+export const experienceFormSchema = z.object({
+  title: z
+    .string()
+    .min(1, { message: "Title is required." })
+    .max(200, { message: "Title must be at most 200 characters." }),
+  organization: z
+    .string()
+    .min(1, { message: "Organization is required." })
+    .max(300, { message: "Organization must be at most 300 characters." }),
+  location: z
+    .string()
+    .max(200, { message: "Location must be at most 200 characters." })
+    .optional()
+    .nullable(),
+  description: z
+    .string()
+    .max(1000, { message: "Description must be at most 1000 characters." })
+    .optional()
+    .nullable(),
+  startYear: z
+    .string()
+    .min(1, { message: "Start year is required." })
+    .max(10, { message: "Start year must be at most 10 characters." }),
+  endYear: z
+    .string()
+    .max(10, { message: "End year must be at most 10 characters." })
+    .optional()
+    .nullable(),
+  isCurrentPosition: z.boolean(),
+});
 
 const availabilitySlotSchema = z.object({
   id: z.string().optional().nullable(),

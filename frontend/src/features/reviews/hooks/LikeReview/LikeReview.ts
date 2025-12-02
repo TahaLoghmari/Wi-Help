@@ -14,7 +14,7 @@ export function useLikeReview() {
   const queryClient = useQueryClient();
   return useMutation<void, ProblemDetailsDto, LikeReviewRequest>({
     mutationFn: likeReview,
-    onSuccess: (_, variables) => {
+    onSuccess: () => {
       // Invalidate all professional reviews queries to refresh the data
       queryClient.invalidateQueries({
         queryKey: ["professional-reviews"],
@@ -28,4 +28,3 @@ export function useLikeReview() {
     onError: (error) => handleApiError({ apiError: error }),
   });
 }
-

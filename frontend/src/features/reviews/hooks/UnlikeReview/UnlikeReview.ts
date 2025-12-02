@@ -7,14 +7,16 @@ import { toast } from "sonner";
 import { handleApiError } from "@/hooks";
 
 const unlikeReview = (request: UnlikeReviewRequest) => {
-  return api.delete<void>(API_ENDPOINTS.REVIEWS.UNLIKE_REVIEW(request.reviewId));
+  return api.delete<void>(
+    API_ENDPOINTS.REVIEWS.UNLIKE_REVIEW(request.reviewId),
+  );
 };
 
 export function useUnlikeReview() {
   const queryClient = useQueryClient();
   return useMutation<void, ProblemDetailsDto, UnlikeReviewRequest>({
     mutationFn: unlikeReview,
-    onSuccess: (_, variables) => {
+    onSuccess: () => {
       // Invalidate all professional reviews queries to refresh the data
       queryClient.invalidateQueries({
         queryKey: ["professional-reviews"],
@@ -28,4 +30,3 @@ export function useUnlikeReview() {
     onError: (error) => handleApiError({ apiError: error }),
   });
 }
-

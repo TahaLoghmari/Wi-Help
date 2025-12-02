@@ -1,4 +1,364 @@
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type z from "zod";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  Save,
+  X,
+  GraduationCap,
+  Calendar,
+} from "lucide-react";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Spinner,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  Checkbox,
+} from "@/components";
+import {
+  educationFormSchema,
+  useGetEducations,
+  useCreateEducation,
+  useUpdateEducation,
+  useDeleteEducation,
+  type EducationDto,
+} from "@/features/professional";
+
+type EducationFormValues = z.infer<typeof educationFormSchema>;
+
+interface EducationFormProps {
+  education?: EducationDto;
+  onCancel: () => void;
+  isEditing?: boolean;
+}
+
+function EducationForm({
+  education,
+  onCancel,
+  isEditing = false,
+}: EducationFormProps) {
+  const createEducationMutation = useCreateEducation();
+  const updateEducationMutation = useUpdateEducation();
+
+  const form = useForm<EducationFormValues>({
+    resolver: zodResolver(educationFormSchema),
+    defaultValues: {
+      institution: education?.institution ?? "",
+      degree: education?.degree ?? "",
+      fieldOfStudy: education?.fieldOfStudy ?? "",
+      country: education?.country ?? "",
+      startYear: education?.startYear ?? "",
+      endYear: education?.endYear ?? "",
+      isCurrentlyStudying: education?.isCurrentlyStudying ?? false,
+    },
+  });
+
+  const isCurrentlyStudying = form.watch("isCurrentlyStudying");
+
+  const onSubmit = async (values: EducationFormValues) => {
+    const data = {
+      ...values,
+      endYear: values.isCurrentlyStudying ? null : values.endYear,
+    };
+
+    if (isEditing && education) {
+      updateEducationMutation.mutate(
+        {
+          educationId: education.id,
+          request: data,
+        },
+        { onSuccess: () => onCancel() },
+      );
+    } else {
+      createEducationMutation.mutate(data, { onSuccess: () => onCancel() });
+    }
+  };
+
+  const isPending =
+    createEducationMutation.isPending || updateEducationMutation.isPending;
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="institution"
+            render={({ field }) => (
+              <FormItem className="flex flex-col gap-1">
+                <FormLabel className="block text-[10px] font-medium text-slate-600">
+                  Institution *
+                </FormLabel>
+                <FormControl>
+                  <input
+                    type="text"
+                    className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                    placeholder="e.g., Harvard Medical School"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="text-[10px]" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="degree"
+            render={({ field }) => (
+              <FormItem className="flex flex-col gap-1">
+                <FormLabel className="block text-[10px] font-medium text-slate-600">
+                  Degree *
+                </FormLabel>
+                <FormControl>
+                  <input
+                    type="text"
+                    className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                    placeholder="e.g., MD, PhD, Bachelor's"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="text-[10px]" />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="fieldOfStudy"
+            render={({ field }) => (
+              <FormItem className="flex flex-col gap-1">
+                <FormLabel className="block text-[10px] font-medium text-slate-600">
+                  Field of Study
+                </FormLabel>
+                <FormControl>
+                  <input
+                    type="text"
+                    className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                    placeholder="e.g., Medicine, Cardiology"
+                    {...field}
+                    value={field.value ?? ""}
+                  />
+                </FormControl>
+                <FormMessage className="text-[10px]" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="country"
+            render={({ field }) => (
+              <FormItem className="flex flex-col gap-1">
+                <FormLabel className="block text-[10px] font-medium text-slate-600">
+                  Country
+                </FormLabel>
+                <FormControl>
+                  <input
+                    type="text"
+                    className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                    placeholder="e.g., United States"
+                    {...field}
+                    value={field.value ?? ""}
+                  />
+                </FormControl>
+                <FormMessage className="text-[10px]" />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="grid gap-3 sm:grid-cols-3">
+          <FormField
+            control={form.control}
+            name="startYear"
+            render={({ field }) => (
+              <FormItem className="flex flex-col gap-1">
+                <FormLabel className="block text-[10px] font-medium text-slate-600">
+                  Start Year *
+                </FormLabel>
+                <FormControl>
+                  <input
+                    type="text"
+                    className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                    placeholder="e.g., 2018"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="text-[10px]" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="endYear"
+            render={({ field }) => (
+              <FormItem className="flex flex-col gap-1">
+                <FormLabel className="block text-[10px] font-medium text-slate-600">
+                  End Year
+                </FormLabel>
+                <FormControl>
+                  <input
+                    type="text"
+                    className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none disabled:bg-slate-100 disabled:text-slate-400"
+                    placeholder="e.g., 2022"
+                    disabled={isCurrentlyStudying}
+                    {...field}
+                    value={isCurrentlyStudying ? "" : (field.value ?? "")}
+                  />
+                </FormControl>
+                <FormMessage className="text-[10px]" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="isCurrentlyStudying"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2 pt-5">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    className="h-4 w-4"
+                  />
+                </FormControl>
+                <FormLabel className="cursor-pointer text-[10px] font-normal text-slate-600">
+                  Currently studying
+                </FormLabel>
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="flex items-center justify-end gap-2 pt-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] text-slate-600 transition-colors hover:bg-slate-50"
+          >
+            <X className="h-3.5 w-3.5" />
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={isPending}
+            className="inline-flex items-center gap-1.5 rounded-full bg-[#00394a] px-3 py-1.5 text-[11px] text-white transition-colors hover:bg-[#00546e] disabled:opacity-50"
+          >
+            {isPending ? (
+              <Spinner className="h-3.5 w-3.5 border-2 border-white/30 border-t-white" />
+            ) : (
+              <Save className="h-3.5 w-3.5" />
+            )}
+            {isEditing ? "Update" : "Save"}
+          </button>
+        </div>
+      </form>
+    </Form>
+  );
+}
+
+interface EducationCardProps {
+  education: EducationDto;
+  onEdit: () => void;
+  onDelete: () => void;
+}
+
+function EducationCard({ education, onEdit, onDelete }: EducationCardProps) {
+  const dateRange = education.isCurrentlyStudying
+    ? `${education.startYear} – Present`
+    : education.endYear
+      ? `${education.startYear} – ${education.endYear}`
+      : education.startYear;
+
+  return (
+    <article className="space-y-2 rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex min-w-0 flex-1 items-start gap-2">
+          <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white">
+            <GraduationCap className="h-3.5 w-3.5 text-blue-500" />
+          </span>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+              <span className="truncate font-medium tracking-tight text-slate-900">
+                {education.institution}
+              </span>
+              <span className="hidden text-slate-300 sm:inline">•</span>
+              <span className="truncate text-slate-500">
+                {education.degree}
+                {education.country && `, ${education.country}`}
+              </span>
+            </div>
+            {education.fieldOfStudy && (
+              <p className="mt-0.5 text-[10px] text-slate-500">
+                {education.fieldOfStudy}
+              </p>
+            )}
+            <div className="mt-1 inline-flex items-center gap-1 rounded-full bg-slate-100/80 px-2 py-0.5 text-[10px] text-slate-600">
+              <Calendar className="h-3 w-3" />
+              <span>{dateRange}</span>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center justify-end gap-1.5">
+          <button
+            type="button"
+            onClick={onEdit}
+            className="inline-flex items-center rounded-full border border-slate-200 bg-white p-1.5 text-slate-600 transition-colors hover:bg-slate-100"
+            aria-label="Edit education"
+          >
+            <Pencil className="h-3 w-3" />
+          </button>
+          <button
+            type="button"
+            onClick={onDelete}
+            className="inline-flex items-center rounded-full border border-rose-100 bg-white p-1.5 text-rose-500 transition-colors hover:bg-rose-50"
+            aria-label="Delete education"
+          >
+            <Trash2 className="h-3 w-3" />
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 export function Education() {
+  const { data: educations, isLoading } = useGetEducations();
+  const deleteEducationMutation = useDeleteEducation();
+  const [isAddingNew, setIsAddingNew] = useState(false);
+  const [editingEducationId, setEditingEducationId] = useState<string | null>(
+    null,
+  );
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+
+  const handleDelete = () => {
+    if (deleteConfirmId) {
+      deleteEducationMutation.mutate(deleteConfirmId, {
+        onSuccess: () => setDeleteConfirmId(null),
+      });
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex w-full items-center justify-center py-8">
+        <Spinner className="h-6 w-6 border-2 border-[#00394a] border-t-transparent" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-3">
       <div className="mb-1 border-b border-slate-200 pb-3">
@@ -9,205 +369,98 @@ export function Education() {
           Add your medical education and training history.
         </p>
       </div>
-      <section className="mt-6 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-3 sm:p-4">
-        <div className="flex flex-col gap-2 gap-x-2 gap-y-2 sm:flex-row sm:items-center sm:justify-end">
-          <button
-            type="button"
-            className="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-slate-50/80 px-2.5 py-1.5 text-[11px] text-[#00394a] transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/10"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              data-lucide="plus"
-              className="lucide lucide-plus h-3.5 w-3.5"
-            >
-              <path d="M5 12h14"></path>
-              <path d="M12 5v14"></path>
-            </svg>
-            Add education
-          </button>
-        </div>
-        <div className="section-body space-y-2">
-          <article className="space-y-2 rounded-xl border border-slate-200 bg-slate-50/70 pt-3 pr-3 pb-3 pl-3 sm:p-3.5">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
-                  <span className="truncate font-medium tracking-tight text-slate-900">
-                    Harvard Medical School
-                  </span>
-                  <span className="hidden text-slate-300 sm:inline">•</span>
-                  <span className="truncate text-slate-500">
-                    MD, United States
-                  </span>
-                </div>
-                <div className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-slate-100/80 px-2 py-0.5 text-[10px] text-slate-600">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    data-lucide="calendar"
-                    className="lucide lucide-calendar h-3 w-3"
-                  >
-                    <path d="M8 2v2"></path>
-                    <path d="M16 2v2"></path>
-                    <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-                    <path d="M3 10h18"></path>
-                  </svg>
-                  <span>2008 – 2012</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-end gap-1.5 text-[10px] text-slate-500">
-                <button
-                  type="button"
-                  className="inline-flex items-center rounded-full border border-slate-200 bg-white px-1.5 py-1 text-slate-600 transition-colors hover:bg-slate-100/80"
-                  aria-label="Edit education"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    data-lucide="pencil"
-                    className="lucide lucide-pencil h-3 w-3"
-                  >
-                    <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
-                    <path d="m15 5 4 4"></path>
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  className="inline-flex items-center rounded-full border border-rose-100 bg-white px-1.5 py-1 text-rose-500 transition-colors hover:bg-rose-50"
-                  aria-label="Delete education"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    data-lucide="trash-2"
-                    className="lucide lucide-trash-2 h-3 w-3"
-                  >
-                    <path d="M10 11v6"></path>
-                    <path d="M14 11v6"></path>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
-                    <path d="M3 6h18"></path>
-                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                  </svg>
-                </button>
-              </div>
+      <div className="mt-6 flex items-center justify-start">
+        <button
+          type="button"
+          onClick={() => setIsAddingNew(true)}
+          disabled={isAddingNew}
+          className="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-slate-50/80 px-2.5 py-1.5 text-[11px] text-[#00394a] transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/10 disabled:opacity-50"
+        >
+          <Plus className="h-3.5 w-3.5" />
+          Add education
+        </button>
+      </div>
+      <section className="flex flex-col gap-3 bg-white p-3 sm:p-4">
+        <div className="space-y-3">
+          {isAddingNew && (
+            <div className="rounded-xl border border-[#3fa6ff]/30 bg-[#3fa6ff]/5 p-3">
+              <p className="mb-3 text-[11px] font-medium text-[#00394a]">
+                Add New Education
+              </p>
+              <EducationForm onCancel={() => setIsAddingNew(false)} />
             </div>
+          )}
 
-            <div className="grid gap-2 text-[11px] text-slate-700 sm:grid-cols-2">
-              <div className="space-y-1">
-                <label className="block text-[10px] text-slate-500">
-                  University name
-                </label>
-                <input
-                  type="text"
-                  className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
-                  value="Harvard Medical School"
+          {educations && educations.length > 0 ? (
+            educations.map((education) =>
+              editingEducationId === education.id ? (
+                <div
+                  key={education.id}
+                  className="rounded-xl border border-[#3fa6ff]/30 bg-[#3fa6ff]/5 p-3"
+                >
+                  <p className="mb-3 text-[11px] font-medium text-[#00394a]">
+                    Edit Education
+                  </p>
+                  <EducationForm
+                    education={education}
+                    isEditing
+                    onCancel={() => setEditingEducationId(null)}
+                  />
+                </div>
+              ) : (
+                <EducationCard
+                  key={education.id}
+                  education={education}
+                  onEdit={() => setEditingEducationId(education.id)}
+                  onDelete={() => setDeleteConfirmId(education.id)}
                 />
-              </div>
-              <div className="space-y-1">
-                <label className="block text-[10px] text-slate-500">
-                  Degree
-                </label>
-                <input
-                  type="text"
-                  className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
-                  value="MD"
-                />
-              </div>
+              ),
+            )
+          ) : !isAddingNew ? (
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-slate-200 p-16 text-center">
+              <GraduationCap className="mb-2 h-8 w-8 text-slate-300" />
+              <p className="text-[11px] text-slate-500">
+                No education added yet. Click "Add education" to get started.
+              </p>
             </div>
-            <div className="grid gap-2 text-[11px] text-slate-700 sm:grid-cols-3">
-              <div className="space-y-1">
-                <label className="block text-[10px] text-slate-500">
-                  Country
-                </label>
-                <input
-                  type="text"
-                  className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
-                  value="United States"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="block text-[10px] text-slate-500">
-                  Start date
-                </label>
-                <input
-                  type="text"
-                  className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
-                  placeholder="YYYY or MM/YYYY"
-                  value="2008"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="block text-[10px] text-slate-500">
-                  End date
-                </label>
-                <input
-                  type="text"
-                  className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
-                  placeholder="YYYY or MM/YYYY"
-                  value="2012"
-                />
-              </div>
-            </div>
-          </article>
-          <div className="flex w-full items-center justify-between mt-6">
-            <p className="text-[10px] text-slate-400">
-              Use the Add button to include additional degrees or training
-              programs.
-            </p>
-            <button
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#00394a] px-3 py-1.5 text-[11px] text-white transition-colors hover:bg-[#00546e]"
-              type="submit"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                data-lucide="save"
-                className="lucide lucide-save h-3.5 w-3.5 text-white"
-              >
-                <path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path>
-                <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"></path>
-                <path d="M7 3v4a1 1 0 0 0 1 1h7"></path>
-              </svg>
-              Save changes
-            </button>
-          </div>
+          ) : null}
         </div>
+
+        {educations && educations.length > 0 && (
+          <p className="mt-2 text-[10px] text-slate-400">
+            Use the Add button to include additional degrees or training
+            programs.
+          </p>
+        )}
       </section>
+
+      <AlertDialog
+        open={!!deleteConfirmId}
+        onOpenChange={() => setDeleteConfirmId(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Education</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this education entry? This action
+              cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-rose-500 hover:bg-rose-600"
+            >
+              {deleteEducationMutation.isPending ? (
+                <Spinner className="h-4 w-4 border-2 border-white/30 border-t-white" />
+              ) : (
+                "Delete"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

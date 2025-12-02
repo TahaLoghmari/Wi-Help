@@ -4,16 +4,23 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui";
 import { StarRating } from "@/features/reviews";
 import type { GetProfessionalReviewsDto } from "@/features/reviews";
 import { formatDistanceToNow } from "date-fns";
-import { useLikeReview, useUnlikeReview, useReplyToReview } from "@/features/reviews";
+import {
+  useLikeReview,
+  useUnlikeReview,
+  useReplyToReview,
+} from "@/features/reviews";
 import { useCurrentUser } from "@/features/auth";
 
 interface ReviewCardProps {
   review: GetProfessionalReviewsDto;
-  professionalId: string;
+  professionalId?: string;
   showReplyInput?: boolean;
 }
 
-export function ReviewCard({ review, professionalId, showReplyInput = false }: ReviewCardProps) {
+export function ReviewCard({
+  review,
+  showReplyInput = false,
+}: ReviewCardProps) {
   const { data: currentUser } = useCurrentUser();
   const isProfessional = currentUser?.role?.toLowerCase() === "professional";
   const isPatient = currentUser?.role?.toLowerCase() === "patient";
@@ -31,7 +38,9 @@ export function ReviewCard({ review, professionalId, showReplyInput = false }: R
       ? `${patient.firstName.charAt(0).toUpperCase()}${patient.lastName.charAt(0).toUpperCase()}`
       : "U";
 
-  const timeAgo = formatDistanceToNow(new Date(review.createdAt), { addSuffix: true });
+  const timeAgo = formatDistanceToNow(new Date(review.createdAt), {
+    addSuffix: true,
+  });
 
   const handleLike = () => {
     if (review.isLiked) {
@@ -58,7 +67,7 @@ export function ReviewCard({ review, professionalId, showReplyInput = false }: R
   const canLike = isPatient || isProfessional;
 
   return (
-    <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-100 space-y-3">
+    <article className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-100">
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
@@ -68,17 +77,24 @@ export function ReviewCard({ review, professionalId, showReplyInput = false }: R
               src={patient.profilePictureUrl}
               alt={patient.firstName}
             />
-            <AvatarFallback className="text-[10px]">{patientInitials}</AvatarFallback>
+            <AvatarFallback className="text-[10px]">
+              {patientInitials}
+            </AvatarFallback>
           </Avatar>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-slate-900 tracking-tight">
+              <span className="text-xs font-medium tracking-tight text-slate-900">
                 {patient.firstName} {patient.lastName}
               </span>
               <StarRating rating={review.rating} size="sm" />
             </div>
             <div className="text-[11px] text-slate-500">
-              Follow-up visit • {new Date(review.createdAt).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}
+              Follow-up visit •{" "}
+              {new Date(review.createdAt).toLocaleDateString("en-US", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })}
             </div>
           </div>
         </div>
@@ -86,7 +102,7 @@ export function ReviewCard({ review, professionalId, showReplyInput = false }: R
       </div>
 
       {/* Content */}
-      <p className="text-xs text-slate-700 leading-relaxed">{review.comment}</p>
+      <p className="text-xs leading-relaxed text-slate-700">{review.comment}</p>
 
       {/* Actions */}
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-slate-200 pt-2">
@@ -94,14 +110,14 @@ export function ReviewCard({ review, professionalId, showReplyInput = false }: R
           {canLike && (
             <button
               onClick={handleLike}
-              className={`inline-flex items-center gap-1 px-2 py-1 rounded-full border transition-colors ${
+              className={`inline-flex items-center gap-1 rounded-full border px-2 py-1 transition-colors ${
                 review.isLiked
                   ? "border-[#3fa6ff]/70 bg-[#3fa6ff]/5 text-[#3fa6ff]"
                   : "border-slate-200 bg-white text-slate-700 hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5"
               }`}
             >
               <Heart
-                className={`w-3.5 h-3.5 ${review.isLiked ? "fill-current" : ""}`}
+                className={`h-3.5 w-3.5 ${review.isLiked ? "fill-current" : ""}`}
                 strokeWidth={1.5}
               />
               <span>Like</span>
@@ -110,15 +126,16 @@ export function ReviewCard({ review, professionalId, showReplyInput = false }: R
           {canReply && (
             <button
               onClick={() => setShowReplyInputState(!showReplyInputState)}
-              className="inline-flex items-center gap-1 px-2 py-1 rounded-full border border-slate-200 bg-white text-slate-700 hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5 transition-colors"
+              className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1 text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5"
             >
-              <Reply className="w-3.5 h-3.5 text-slate-500" strokeWidth={1.5} />
+              <Reply className="h-3.5 w-3.5 text-slate-500" strokeWidth={1.5} />
               <span>Reply</span>
             </button>
           )}
         </div>
         <div className="text-[11px] text-slate-500">
-          {review.likesCount} {review.likesCount === 1 ? "like" : "likes"} • {review.repliesCount}{" "}
+          {review.likesCount} {review.likesCount === 1 ? "like" : "likes"} •{" "}
+          {review.repliesCount}{" "}
           {review.repliesCount === 1 ? "reply" : "replies"}
         </div>
       </div>
@@ -128,19 +145,24 @@ export function ReviewCard({ review, professionalId, showReplyInput = false }: R
         <div className="mt-2 space-y-2">
           {review.replies.map((reply) => (
             <div key={reply.id} className="flex items-start gap-2 pl-8">
-              <div className="h-5 w-px bg-slate-200 mr-1"></div>
-              <div className="flex-1 rounded-xl bg-slate-50 px-3 py-2 border border-slate-200/70">
+              <div className="mr-1 h-5 w-px bg-slate-200"></div>
+              <div className="flex-1 rounded-xl border border-slate-200/70 bg-slate-50 px-3 py-2">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-medium text-slate-800">
                     {reply.isProfessional
                       ? `Reply from ${reply.userFirstName ? `Dr. ${reply.userFirstName} ${reply.userLastName || ""}`.trim() : "Professional"}`
-                      : `${reply.userFirstName || ""} ${reply.userLastName || ""}`.trim() || "User"}
+                      : `${reply.userFirstName || ""} ${reply.userLastName || ""}`.trim() ||
+                        "User"}
                   </span>
                   <span className="text-[10px] text-slate-400">
-                    {formatDistanceToNow(new Date(reply.createdAt), { addSuffix: true })}
+                    {formatDistanceToNow(new Date(reply.createdAt), {
+                      addSuffix: true,
+                    })}
                   </span>
                 </div>
-                <p className="mt-0.5 text-[11px] text-slate-700 leading-snug">{reply.comment}</p>
+                <p className="mt-0.5 text-[11px] leading-snug text-slate-700">
+                  {reply.comment}
+                </p>
               </div>
             </div>
           ))}
@@ -150,8 +172,8 @@ export function ReviewCard({ review, professionalId, showReplyInput = false }: R
       {/* Inline reply input */}
       {showReplyInputState && canReply && (
         <div className="flex items-start gap-2 pl-8">
-          <div className="h-5 w-px bg-slate-200 mr-1"></div>
-          <div className="flex-1 flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px]">
+          <div className="mr-1 h-5 w-px bg-slate-200"></div>
+          <div className="flex flex-1 items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px]">
             <input
               type="text"
               placeholder="Write a reply..."
@@ -168,7 +190,7 @@ export function ReviewCard({ review, professionalId, showReplyInput = false }: R
             <button
               onClick={handleReply}
               disabled={isReplying || !replyText.trim()}
-              className="inline-flex items-center px-2 py-0.5 rounded-full bg-[#00394a] text-[11px] text-white hover:bg-[#00546e] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center rounded-full bg-[#00394a] px-2 py-0.5 text-[11px] text-white hover:bg-[#00546e] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isReplying ? "Sending..." : "Send"}
             </button>

@@ -22,6 +22,25 @@ export const API_ENDPOINTS = {
       `/professionals/${professionalId}/availability`,
     UPLOAD_VERIFICATION_DOCUMENT: "/professionals/me/documents",
     GET_VERIFICATION_DOCUMENTS: "/professionals/me/documents",
+    // Awards
+    GET_AWARDS: "/professionals/me/awards",
+    CREATE_AWARD: "/professionals/me/awards",
+    UPDATE_AWARD: (awardId: string) => `/professionals/me/awards/${awardId}`,
+    DELETE_AWARD: (awardId: string) => `/professionals/me/awards/${awardId}`,
+    // Education
+    GET_EDUCATIONS: "/professionals/me/educations",
+    CREATE_EDUCATION: "/professionals/me/educations",
+    UPDATE_EDUCATION: (educationId: string) =>
+      `/professionals/me/educations/${educationId}`,
+    DELETE_EDUCATION: (educationId: string) =>
+      `/professionals/me/educations/${educationId}`,
+    // Experience
+    GET_EXPERIENCES: "/professionals/me/experiences",
+    CREATE_EXPERIENCE: "/professionals/me/experiences",
+    UPDATE_EXPERIENCE: (experienceId: string) =>
+      `/professionals/me/experiences/${experienceId}`,
+    DELETE_EXPERIENCE: (experienceId: string) =>
+      `/professionals/me/experiences/${experienceId}`,
   },
   PATIENTS: {
     REGISTER_PATIENT: "/patients/register",
