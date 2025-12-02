@@ -58,7 +58,7 @@ export function ReviewsList({ professionalId }: ReviewsListProps) {
   const totalCount = statsData?.totalCount ?? 0;
 
   return (
-    <section className="space-y-4">
+    <section className="flex flex-1 flex-col gap-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-sm font-semibold tracking-tight text-[#00394a]">
@@ -83,17 +83,15 @@ export function ReviewsList({ professionalId }: ReviewsListProps) {
           <p className="text-xs text-slate-500">No reviews yet.</p>
         </div>
       ) : (
-        <div className="space-y-3">
-          <div className="max-h-96 space-y-3 overflow-y-auto pr-1">
-            {reviews.map((review) => (
-              <ReviewCard
-                key={review.id}
-                review={review}
-                professionalId={professionalId}
-                showReplyInput={isViewingOwnProfile}
-              />
-            ))}
-          </div>
+        <div className="space-y-3 pr-1">
+          {reviews.map((review) => (
+            <ReviewCard
+              key={review.id}
+              review={review}
+              professionalId={professionalId}
+              showReplyInput={isViewingOwnProfile}
+            />
+          ))}
         </div>
       )}
       {isPatient && (

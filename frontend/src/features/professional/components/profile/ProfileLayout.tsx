@@ -218,7 +218,7 @@ export function ProfileLayout() {
   }
 
   return (
-    <section className="flex-1 space-y-6 overflow-y-auto px-4 py-5 sm:px-6 lg:px-8">
+    <section className="mb-6 flex-1 space-y-6 overflow-y-auto px-4 py-5 sm:px-6 lg:px-8">
       {/* Profile Header Card */}
       <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white">
         {/* Cover / decorative top */}
