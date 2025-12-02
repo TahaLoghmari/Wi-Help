@@ -9,9 +9,17 @@ const getCurrentProfessional = () => {
   );
 };
 
-export function GetCurrentProfessional() {
+interface GetCurrentProfessionalOptions {
+  enabled?: boolean;
+}
+
+export function GetCurrentProfessional(
+  options: GetCurrentProfessionalOptions = {},
+) {
+  const { enabled = true } = options;
   return useQuery<GetCurrentProfessionalDto>({
     queryKey: ["currentProfessional"],
     queryFn: getCurrentProfessional,
+    enabled,
   });
 }

@@ -75,7 +75,7 @@ function ExperienceCard({ experience }: { experience: GetExperiencesDto }) {
             </div>
           </div>
         </div>
-        <span className="shrink-0 rounded-full bg-[#00394a] px-2.5 py-1 text-[10px] font-medium text-[#fbfbfb]">
+        <span className="shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-medium text-[#00394a]">
           {yearRange}
         </span>
       </div>
@@ -110,7 +110,7 @@ function EducationCard({ education }: { education: GetEducationsDto }) {
             </p>
           </div>
         </div>
-        <span className="shrink-0 rounded-full bg-[#00394a] px-2.5 py-1 text-[10px] font-medium text-[#fbfbfb]">
+        <span className="shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-medium text-[#00394a]">
           {yearRange}
         </span>
       </div>
@@ -153,7 +153,7 @@ function AwardCard({ award }: { award: GetAwardsDto }) {
                 </p>
               )}
             </div>
-            <span className="shrink-0 rounded-full bg-[#00394a] px-2.5 py-1 text-[10px] font-medium text-[#fbfbfb]">
+            <span className="shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-medium text-[#00394a]">
               {award.yearReceived}
             </span>
           </div>
@@ -220,7 +220,7 @@ export function ProfileLayout() {
   return (
     <section className="mb-6 flex-1 space-y-6 overflow-y-auto px-4 py-5 sm:px-6 lg:px-8">
       {/* Profile Header Card */}
-      <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white">
+      <div className="relative overflow-hidden rounded-2xl border border-[#00394a]/10 bg-white">
         {/* Cover / decorative top */}
         <div className="relative h-28 overflow-hidden bg-[#00394a]">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
@@ -248,11 +248,11 @@ export function ProfileLayout() {
             <div className="min-w-0 flex-1 space-y-1 pt-3">
               <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
                 <div>
-                  <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-slate-900">
+                  <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-[#00394a]">
                     Dr. {professional?.firstName} {professional?.lastName}
-                    <ShieldCheck className="h-5 w-5 fill-blue-50 text-[#3fa6ff]" />
+                    <ShieldCheck className="h-5 w-5 fill-[#3fa6ff]/10 text-[#3fa6ff]" />
                   </h2>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-sm text-[#00546e]">
                     {
                       SPECIALIZATIONS.find(
                         (s) => s.value === professional?.specialization,
@@ -265,7 +265,16 @@ export function ProfileLayout() {
 
               {/* Key Stats Row */}
               <div className="flex flex-wrap items-center gap-3 pt-2">
-                <div className="flex items-center gap-1.5 rounded-md border border-slate-100 bg-slate-50 px-2.5 py-1 text-xs text-slate-600">
+                <div className="flex items-center gap-1.5 rounded-md border border-[#00394a]/10 bg-[#fbfbfb] px-2.5 py-1 text-xs text-[#00546e]">
+                  <User className="h-3.5 w-3.5 text-[#00546e]" />
+                  <span className="font-medium text-[#00394a]">
+                    {professional?.gender
+                      ? professional.gender.charAt(0).toUpperCase() +
+                        professional.gender.slice(1).toLowerCase()
+                      : ""}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 rounded-md border border-[#00394a]/10 bg-[#fbfbfb] px-2.5 py-1 text-xs text-[#00546e]">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -273,19 +282,17 @@ export function ProfileLayout() {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    data-lucide="star"
-                    className="lucide lucide-star h-3.5 w-3.5 fill-amber-400 text-amber-400"
-                    data-element-path='{"xpath":"/html/body[1]/div[1]/main[1]/section[9]/div[1]/div[1]/div[2]/div[1]/div[2]/div[2]/div[1]/svg[1]","selector":"section#page-profile &gt; div.space-y-6 &gt; div.relative.rounded-2xl.bg-white.border.border-slate-200.shadow-sm.shadow-slate-100.overflow-hidden:nth-child(1) &gt; div.px-5.pb-5:nth-child(2) &gt; div.flex.flex-col.sm:flex-row.gap-5.items-start &gt; div.flex-1.min-w-0.pt-3.space-y-1:nth-child(2) &gt; div.flex.flex-wrap.items-center.gap-3.pt-2:nth-child(2) &gt; div.flex.items-center.gap-1.5.text-xs.text-slate-600.bg-slate-50.px-2.5.py-1.rounded-md.border.border-slate-100:nth-child(1) &gt; svg","tagName":"svg","attributes":{"data-lucide":"star","className":"w-3.5 h-3.5 text-amber-400 fill-amber-400"},"textContent":"","innerHTML":""}'
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-3.5 w-3.5 fill-amber-400 text-amber-400"
                   >
                     <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
                   </svg>
-                  <span className="font-semibold text-slate-900">
+                  <span className="font-semibold text-[#00394a]">
                     {reviewStats?.averageRating}
                   </span>
-                  <span className="text-slate-400">
+                  <span className="text-[#00546e]/70">
                     ({reviewStats?.totalCount} reviews)
                   </span>
                 </div>

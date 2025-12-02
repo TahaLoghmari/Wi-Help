@@ -18,7 +18,9 @@ export function ReviewsList({ professionalId }: ReviewsListProps) {
   const isProfessional = currentUser?.role?.toLowerCase() === "professional";
 
   // Only fetch current professional if user is a professional to avoid unnecessary API calls
-  const { data: currentProfessional } = GetCurrentProfessional();
+  const { data: currentProfessional } = GetCurrentProfessional({
+    enabled: isProfessional,
+  });
 
   // Check if the current professional is viewing their own profile
   const isViewingOwnProfile =

@@ -77,7 +77,7 @@ function ExperienceCard({ experience }: { experience: GetExperiencesDto }) {
             </div>
           </div>
         </div>
-        <span className="shrink-0 rounded-full bg-[#00394a] px-2.5 py-1 text-[10px] font-medium text-[#fbfbfb]">
+        <span className="shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-medium text-[#00394a]">
           {yearRange}
         </span>
       </div>
@@ -112,7 +112,7 @@ function EducationCard({ education }: { education: GetEducationsDto }) {
             </p>
           </div>
         </div>
-        <span className="shrink-0 rounded-full bg-[#00394a] px-2.5 py-1 text-[10px] font-medium text-[#fbfbfb]">
+        <span className="shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-medium text-[#00394a]">
           {yearRange}
         </span>
       </div>
@@ -155,7 +155,7 @@ function AwardCard({ award }: { award: GetAwardsDto }) {
                 </p>
               )}
             </div>
-            <span className="shrink-0 rounded-full bg-[#00394a] px-2.5 py-1 text-[10px] font-medium text-[#fbfbfb]">
+            <span className="shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-medium text-[#00394a]">
               {award.yearReceived}
             </span>
           </div>
@@ -267,8 +267,9 @@ export function ProfessionalProfileView() {
   const { data: experiences, isLoading: isLoadingExperiences } =
     useGetProfessionalExperiences({ professionalId: professionalId! });
 
-  const { data: awards, isLoading: isLoadingAwards } =
-    useGetProfessionalAwards({ professionalId: professionalId! });
+  const { data: awards, isLoading: isLoadingAwards } = useGetProfessionalAwards(
+    { professionalId: professionalId! },
+  );
 
   const { data: verificationDocuments, isLoading: isLoadingDocuments } =
     useGetProfessionalDocuments({ professionalId: professionalId! });
@@ -323,7 +324,7 @@ export function ProfessionalProfileView() {
       </button>
 
       {/* Profile Header Card */}
-      <div className="relative overflow-hidden rounded-2xl border mt-4 border-slate-200 bg-white">
+      <div className="relative mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white">
         {/* Cover / decorative top */}
         <div className="relative h-28 overflow-hidden bg-[#00394a]">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
@@ -368,6 +369,15 @@ export function ProfessionalProfileView() {
 
               {/* Key Stats Row */}
               <div className="flex flex-wrap items-center gap-3 pt-2">
+                <div className="flex items-center gap-1.5 rounded-md border border-[#00394a]/10 bg-[#fbfbfb] px-2.5 py-1 text-xs text-[#00546e]">
+                  <User className="h-3.5 w-3.5 text-[#00546e]" />
+                  <span className="font-medium text-[#00394a]">
+                    {professional?.gender
+                      ? professional.gender.charAt(0).toUpperCase() +
+                        professional.gender.slice(1).toLowerCase()
+                      : ""}
+                  </span>
+                </div>
                 <div className="flex items-center gap-1.5 rounded-md border border-slate-100 bg-slate-50 px-2.5 py-1 text-xs text-slate-600">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -415,7 +425,7 @@ export function ProfessionalProfileView() {
                 <div className="rounded-full border bg-white p-2 text-[#00394a]">
                   <Stethoscope className="h-4 w-4" />
                 </div>
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-[#00546e]">
+                <div className="text-[10px] font-semibold tracking-wider text-[#00546e] uppercase">
                   Specialty
                 </div>
                 <div className="text-xs font-semibold text-[#00394a]">
@@ -430,7 +440,7 @@ export function ProfessionalProfileView() {
                 <div className="rounded-full border bg-white p-2 text-[#00394a]">
                   <DollarSign className="h-4 w-4" />
                 </div>
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-[#00546e]">
+                <div className="text-[10px] font-semibold tracking-wider text-[#00546e] uppercase">
                   Rate
                 </div>
                 <div className="text-xs font-semibold text-[#00394a]">
@@ -441,7 +451,7 @@ export function ProfessionalProfileView() {
                 <div className="rounded-full border bg-white p-2 text-[#00394a]">
                   <Briefcase className="h-4 w-4" />
                 </div>
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-[#00546e]">
+                <div className="text-[10px] font-semibold tracking-wider text-[#00546e] uppercase">
                   Experience
                 </div>
                 <div className="text-xs font-semibold text-[#00394a]">
@@ -452,7 +462,7 @@ export function ProfessionalProfileView() {
                 <div className="rounded-full border bg-white p-2 text-[#14d3ac]">
                   <ShieldCheck className="h-4 w-4" />
                 </div>
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-[#00546e]">
+                <div className="text-[10px] font-semibold tracking-wider text-[#00546e] uppercase">
                   Status
                 </div>
                 <div className="text-xs font-semibold text-[#14d3ac]">
