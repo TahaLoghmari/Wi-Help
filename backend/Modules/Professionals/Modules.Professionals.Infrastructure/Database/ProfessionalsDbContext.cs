@@ -8,6 +8,9 @@ public sealed class ProfessionalsDbContext(DbContextOptions<ProfessionalsDbConte
     public DbSet<AvailabilityDay> AvailabilityDays { get; set; }
     public DbSet<AvailabilitySlot> AvailabilitySlots { get; set; }
     public DbSet<VerificationDocument> VerificationDocuments { get; set; }
+    public DbSet<Award> Awards { get; set; }
+    public DbSet<Education> Educations { get; set; }
+    public DbSet<WorkExperience> WorkExperiences { get; set; }
     
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
