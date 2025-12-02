@@ -58,10 +58,19 @@ export interface ReplyToReviewRequest {
   comment: string;
 }
 
+export interface UpdateReviewRequest {
+  reviewId: string;
+  comment: string;
+  rating: number;
+}
+
+export interface DeleteReviewRequest {
+  reviewId: string;
+}
+
 export interface PaginationResultDto<T> {
   items: T[];
   page: number;
   pageSize: number;
   totalCount: number;
 }
-

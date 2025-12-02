@@ -323,7 +323,7 @@ export function ProfessionalProfileView() {
       </button>
 
       {/* Profile Header Card */}
-      <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white">
+      <div className="relative overflow-hidden rounded-2xl border mt-4 border-slate-200 bg-white">
         {/* Cover / decorative top */}
         <div className="relative h-28 overflow-hidden bg-[#00394a]">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>

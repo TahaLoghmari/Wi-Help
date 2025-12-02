@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { Heart, Reply } from "lucide-react";
+import { Heart, Reply, Pencil, Trash2, X, Check } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui";
-import { StarRating } from "@/features/reviews";
+import { StarRating, StarRatingInput } from "@/features/reviews";
 import type { GetProfessionalReviewsDto } from "@/features/reviews";
 import { formatDistanceToNow } from "date-fns";
 import {
   useLikeReview,
   useUnlikeReview,
   useReplyToReview,
+  useUpdateReview,
+  useDeleteReview,
 } from "@/features/reviews";
 import { useCurrentUser } from "@/features/auth";
 
@@ -24,13 +26,19 @@ export function ReviewCard({
   const { data: currentUser } = useCurrentUser();
   const isProfessional = currentUser?.role?.toLowerCase() === "professional";
   const isPatient = currentUser?.role?.toLowerCase() === "patient";
+  const isOwner = isPatient && currentUser?.id === review.patient.userId;
 
   const [replyText, setReplyText] = useState("");
   const [showReplyInputState, setShowReplyInputState] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editComment, setEditComment] = useState(review.comment);
+  const [editRating, setEditRating] = useState(review.rating);
 
   const { mutate: likeReview } = useLikeReview();
   const { mutate: unlikeReview } = useUnlikeReview();
   const { mutate: replyToReview, isPending: isReplying } = useReplyToReview();
+  const { mutate: updateReview, isPending: isUpdating } = useUpdateReview();
+  const { mutate: deleteReview, isPending: isDeleting } = useDeleteReview();
 
   const patient = review.patient;
   const patientInitials =
@@ -63,6 +71,30 @@ export function ReviewCard({
     );
   };
 
+  const handleEdit = () => {
+    if (!editComment.trim() || editRating < 1 || editRating > 5) return;
+    updateReview(
+      { reviewId: review.id, comment: editComment.trim(), rating: editRating },
+      {
+        onSuccess: () => {
+          setIsEditing(false);
+        },
+      },
+    );
+  };
+
+  const handleCancelEdit = () => {
+    setEditComment(review.comment);
+    setEditRating(review.rating);
+    setIsEditing(false);
+  };
+
+  const handleDelete = () => {
+    if (window.confirm("Are you sure you want to delete this review?")) {
+      deleteReview({ reviewId: review.id });
+    }
+  };
+
   const canReply = isProfessional && showReplyInput;
   const canLike = isPatient || isProfessional;
 
@@ -86,7 +118,11 @@ export function ReviewCard({
               <span className="text-xs font-medium tracking-tight text-slate-900">
                 {patient.firstName} {patient.lastName}
               </span>
-              <StarRating rating={review.rating} size="sm" />
+              {isEditing ? (
+                <StarRatingInput value={editRating} onChange={setEditRating} />
+              ) : (
+                <StarRating rating={review.rating} size="sm" />
+              )}
             </div>
             <div className="text-[11px] text-slate-500">
               Follow-up visit •{" "}
@@ -98,11 +134,63 @@ export function ReviewCard({
             </div>
           </div>
         </div>
-        <div className="text-[11px] text-slate-500">{timeAgo}</div>
+        <div className="flex items-center gap-2">
+          {isOwner && !isEditing && (
+            <>
+              <button
+                onClick={() => setIsEditing(true)}
+                className="rounded-full p-1 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+                title="Edit review"
+              >
+                <Pencil className="h-3.5 w-3.5" strokeWidth={1.5} />
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="rounded-full p-1 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+                title="Delete review"
+              >
+                <Trash2 className="h-3.5 w-3.5" strokeWidth={1.5} />
+              </button>
+            </>
+          )}
+          <div className="text-[11px] text-slate-500">{timeAgo}</div>
+        </div>
       </div>
 
       {/* Content */}
-      <p className="text-xs leading-relaxed text-slate-700">{review.comment}</p>
+      {isEditing ? (
+        <div className="space-y-2">
+          <textarea
+            value={editComment}
+            onChange={(e) => setEditComment(e.target.value)}
+            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs leading-relaxed text-slate-700 outline-none focus:border-[#3fa6ff] focus:ring-1 focus:ring-[#3fa6ff]"
+            rows={3}
+            placeholder="Write your review..."
+          />
+          <div className="flex items-center justify-end gap-2">
+            <button
+              onClick={handleCancelEdit}
+              className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors hover:bg-slate-50"
+            >
+              <X className="h-3 w-3" strokeWidth={1.5} />
+              Cancel
+            </button>
+            <button
+              onClick={handleEdit}
+              disabled={isUpdating || !editComment.trim()}
+              className="inline-flex items-center gap-1 rounded-full bg-[#00394a] px-2 py-1 text-[11px] text-white transition-colors hover:bg-[#00546e] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <Check className="h-3 w-3" strokeWidth={1.5} />
+              {isUpdating ? "Saving..." : "Save"}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <p className="text-xs leading-relaxed text-slate-700">
+          {review.comment}
+        </p>
+      )}
 
       {/* Actions */}
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-slate-200 pt-2">

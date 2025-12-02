@@ -94,5 +94,7 @@ export const API_ENDPOINTS = {
     LIKE_REVIEW: (reviewId: string) => `/reviews/${reviewId}/like`,
     UNLIKE_REVIEW: (reviewId: string) => `/reviews/${reviewId}/like`,
     REPLY_TO_REVIEW: (reviewId: string) => `/reviews/${reviewId}/reply`,
+    UPDATE_REVIEW: (reviewId: string) => `/reviews/${reviewId}`,
+    DELETE_REVIEW: (reviewId: string) => `/reviews/${reviewId}`,
   },
 } as const;
