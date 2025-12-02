@@ -16,6 +16,7 @@ public class Professional
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
     public ICollection<AvailabilityDay> AvailabilityDays { get; private set; } = new List<AvailabilityDay>();
+    public ICollection<VerificationDocument> VerificationDocuments { get; private set; } = new List<VerificationDocument>();
     
     private Professional(){}
 

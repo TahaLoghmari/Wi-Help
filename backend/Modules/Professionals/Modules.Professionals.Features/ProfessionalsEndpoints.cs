@@ -10,6 +10,8 @@ public static class ProfessionalsEndpoints
     public const string GetSchedule = "professionals/schedule";
     public const string GetAllProfessionals = "professionals";
     public const string GetProfessionalAvailability = "professionals/{professionalId}/availability";
+    public const string UploadVerificationDocument = "professionals/me/documents";
+    public const string GetVerificationDocuments = "professionals/me/documents";
 }
 
 
