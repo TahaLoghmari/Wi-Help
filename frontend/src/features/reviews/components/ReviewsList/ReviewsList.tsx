@@ -61,7 +61,7 @@ export function ReviewsList({ professionalId }: ReviewsListProps) {
     <section className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-xs font-semibold tracking-tight text-[#00394a]">
+          <h3 className="text-sm font-semibold tracking-tight text-[#00394a]">
             Patient Reviews
           </h3>
           <p className="mt-0.5 max-w-xl text-[11px] text-slate-500">
@@ -84,9 +84,6 @@ export function ReviewsList({ professionalId }: ReviewsListProps) {
         </div>
       ) : (
         <div className="space-y-3">
-          <h4 className="mb-2 text-[11px] font-medium text-slate-700">
-            All Reviews
-          </h4>
           <div className="max-h-96 space-y-3 overflow-y-auto pr-1">
             {reviews.map((review) => (
               <ReviewCard

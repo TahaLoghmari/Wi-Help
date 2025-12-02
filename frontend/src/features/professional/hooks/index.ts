@@ -21,3 +21,8 @@ export * from "./GetExperiences";
 export * from "./CreateExperience";
 export * from "./UpdateExperience";
 export * from "./DeleteExperience";
+// Public professional profile hooks (by professional ID)
+export * from "./GetProfessionalEducations";
+export * from "./GetProfessionalExperiences";
+export * from "./GetProfessionalAwards";
+export * from "./GetProfessionalDocuments";
