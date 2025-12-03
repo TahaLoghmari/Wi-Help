@@ -1,9 +1,24 @@
+import { GetPatientAppointments } from "@/features/patient";
+
 export function AppointmentsStat() {
+  const { data } = GetPatientAppointments();
+  const now = new Date();
+  const upcomingAppointments =
+    data?.pages
+      .flatMap((p) => p.items)
+      .filter((a) => new Date(a.startDate) > now) || [];
+  const confirmedUpcoming = upcomingAppointments.filter(
+    (a) => a.status === "Confirmed",
+  ).length;
+  const offeredUpcoming = upcomingAppointments.filter(
+    (a) => a.status === "Offered",
+  ).length;
+
   return (
     <div className="relative flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-100">
       <div className="flex items-center justify-between">
         <div className="text-xs font-medium tracking-tight text-slate-600">
-          Appointments
+          Upcoming Appointments
         </div>
         <button className="bg-brand-dark hover:bg-brand-secondary inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium text-white transition-colors">
           <svg
@@ -27,22 +42,42 @@ export function AppointmentsStat() {
       </div>
       <div className="flex items-baseline justify-between">
         <div className="text-brand-dark text-2xl font-semibold tracking-tight">
-          24
+          {upcomingAppointments.length}
         </div>
         <div className="text-[11px] text-slate-500">
-          14 virtual • 10 in-person
+          {confirmedUpcoming} confirmed • {offeredUpcoming} offered
         </div>
       </div>
       <div className="flex items-center justify-between border-t border-dashed border-slate-200 pt-1">
         <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
           <span className="bg-brand-blue inline-block h-2 w-2 rounded-full"></span>
-          Confirmed
-          <span className="font-medium text-slate-700">19</span>
+          This week
+          <span className="font-medium text-slate-700">
+            {
+              upcomingAppointments.filter(
+                (a) =>
+                  new Date(a.startDate) <=
+                  new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
+              ).length
+            }
+          </span>
         </div>
         <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
           <span className="bg-brand-light inline-block h-2 w-2 rounded-full"></span>
-          Available slots
-          <span className="font-medium text-slate-700">6</span>
+          This month
+          <span className="font-medium text-slate-700">
+            {
+              upcomingAppointments.filter(
+                (a) =>
+                  new Date(a.startDate) <=
+                  new Date(
+                    now.getFullYear(),
+                    now.getMonth() + 1,
+                    now.getDate(),
+                  ),
+              ).length
+            }
+          </span>
         </div>
       </div>
     </div>

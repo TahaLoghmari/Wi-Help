@@ -1,3 +1,3 @@
 export * from "./AppointmentsStat";
-export * from "./TodayPatientsStat";
-export * from "./TotalPatientsStat";
+export * from "./TodayAppointmentsStat";
+export * from "./TotalAppointmentsStat";

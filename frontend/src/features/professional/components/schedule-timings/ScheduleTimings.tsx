@@ -141,7 +141,7 @@ export function ScheduleTimings() {
       <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
         <div className="w-full">
           <div className="text-brand-dark flex items-center justify-start gap-3 text-lg font-semibold">
-            <Timer className="h-5 w-5" />
+            <Timer className="text-brand-teal h-5 w-5" />
             Setup Schedule
           </div>
         </div>
@@ -156,7 +156,10 @@ export function ScheduleTimings() {
           )}
 
           {days.map((day, dayIndex) => (
-            <Card key={day.dayOfWeek} className="cursor-pointer shadow-none">
+            <Card
+              key={day.dayOfWeek}
+              className="border-brand-dark/10 bg-brand-bg hover:border-brand-teal/30 cursor-pointer shadow-none transition-all"
+            >
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
@@ -165,11 +168,13 @@ export function ScheduleTimings() {
                       onCheckedChange={(checked) =>
                         toggleDay(dayIndex, checked)
                       }
-                      className="border-border border"
+                      className="border-brand-dark/20 data-[state=checked]:bg-brand-teal border"
                     />
                     <div>
-                      <CardTitle className="text-lg">{day.dayOfWeek}</CardTitle>
-                      <p className="mt-1 text-sm text-gray-600">
+                      <CardTitle className="text-brand-dark text-lg">
+                        {day.dayOfWeek}
+                      </CardTitle>
+                      <p className="text-brand-secondary mt-1 text-sm">
                         {day.isActive
                           ? `${day.availabilitySlots?.length || 0} time slot${(day.availabilitySlots?.length || 0) !== 1 ? "s" : ""} configured`
                           : "Not available"}
@@ -184,9 +189,9 @@ export function ScheduleTimings() {
                   {day.availabilitySlots?.map((slot, slotIndex) => (
                     <div
                       key={slot.id || slotIndex}
-                      className="bg-accent card flex items-center gap-3 rounded-lg border p-2"
+                      className="border-brand-blue/20 flex items-center gap-3 rounded-lg border bg-white p-2"
                     >
-                      <Clock className="h-4 w-4 text-gray-500" />
+                      <Clock className="text-brand-blue h-4 w-4" />
                       <Select
                         value={slot.startTime}
                         onValueChange={(val) =>
@@ -204,7 +209,7 @@ export function ScheduleTimings() {
                           ))}
                         </SelectContent>
                       </Select>
-                      <span className="text-gray-500">to</span>
+                      <span className="text-brand-secondary">to</span>
                       <Select
                         value={slot.endTime}
                         onValueChange={(val) =>
@@ -227,7 +232,7 @@ export function ScheduleTimings() {
                         variant="ghost"
                         size="sm"
                         onClick={() => removeTimeSlot(dayIndex, slotIndex)}
-                        className="ml-auto text-red-600 hover:bg-red-50 hover:text-red-700"
+                        className="text-brand-secondary hover:bg-brand-cream/50 hover:text-brand-dark ml-auto"
                       >
                         <X className="h-4 w-4" />
                       </Button>
@@ -238,7 +243,7 @@ export function ScheduleTimings() {
                     variant="outline"
                     size="sm"
                     onClick={() => addTimeSlot(dayIndex)}
-                    className="w-full"
+                    className="border-brand-teal/30 text-brand-secondary hover:border-brand-teal hover:bg-brand-teal/10 hover:text-brand-dark w-full"
                   >
                     + Add Time Slot
                   </Button>
@@ -248,7 +253,11 @@ export function ScheduleTimings() {
           ))}
 
           <div className="flex justify-end pt-4">
-            <Button type="submit" disabled={isSaving}>
+            <Button
+              type="submit"
+              disabled={isSaving}
+              className="bg-brand-dark hover:bg-brand-secondary text-white"
+            >
               {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Save Schedule
             </Button>
