@@ -69,6 +69,11 @@ export interface ResetPasswordDto {
   confirmPassword: string;
 }
 
+export interface ChangePasswordDto {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export interface ForgotPasswordState {
   hasClickedResetPassword: boolean;
   email: string;

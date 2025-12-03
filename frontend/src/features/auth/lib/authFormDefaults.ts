@@ -55,3 +55,11 @@ export function ResetPasswordDefaults(email: string) {
     confirmPassword: "",
   };
 }
+
+export function ChangePasswordDefaults() {
+  return {
+    currentPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  };
+}

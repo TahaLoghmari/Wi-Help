@@ -184,3 +184,43 @@ export const forgotPasswordFormSchema = z.object({
     .min(1, { message: "Email is required." })
     .max(256, { message: "Email must be at most 256 characters." }),
 });
+
+export const changePasswordFormSchema = z
+  .object({
+    currentPassword: z
+      .string()
+      .min(1, { message: "Current password is required." }),
+    newPassword: z
+      .string()
+      .min(1, { message: "New password is required." })
+      .min(6, { message: "New password must be at least 6 characters long." })
+      .max(100, {
+        message: "New password must be at most 100 characters long.",
+      })
+      .regex(/[A-Z]/, {
+        message:
+          "New password must contain at least one uppercase letter (A-Z).",
+      })
+      .regex(/[a-z]/, {
+        message:
+          "New password must contain at least one lowercase letter (a-z).",
+      })
+      .regex(/[0-9]/, {
+        message: "New password must contain at least one digit (0-9).",
+      })
+      .regex(/[^a-zA-Z0-9]/, {
+        message:
+          "New password must contain at least one non-alphanumeric character.",
+      }),
+    confirmNewPassword: z
+      .string()
+      .min(1, { message: "Confirmation password is required." }),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: "New password and confirmation password do not match.",
+    path: ["confirmNewPassword"],
+  })
+  .refine((data) => data.currentPassword !== data.newPassword, {
+    message: "New password must be different from the current password.",
+    path: ["newPassword"],
+  });
