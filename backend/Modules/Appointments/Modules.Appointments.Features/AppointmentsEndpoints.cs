@@ -14,6 +14,9 @@ public static class AppointmentsEndpoints
     // Professional's patients list
     public const string GetMyPatients = "appointments/me/patients";
     
+    // Patient's professionals list
+    public const string GetMyProfessionals = "appointments/me/professionals";
+    
     // Respond to specific appointment (accept/reject/cancel)
     public const string RespondToAppointment = "appointments/{appointmentId}/respond";
     
