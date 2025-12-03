@@ -17,20 +17,11 @@ public class GetSchedule : IEndpoint
     {
         app.MapGet(ProfessionalsEndpoints.GetSchedule, async (
                 HttpContext httpContext,
+                Guid professionalId,
                 IQueryHandler<GetScheduleQuery, GetScheduleDto> handler,
                 CancellationToken cancellationToken) =>
             {
-                var professionalIdString = httpContext.User.FindFirst("ProfessionalId")?.Value;
-                
-                if (!Guid.TryParse(professionalIdString, out var professionalIdGuid))
-                {
-                    return CustomResults.Problem(
-                        Error.Unauthorized(
-                            "GetSchedule.Unauthorized",
-                            "Professional ID claim is missing or invalid."));
-                }
-                
-                var query = new GetScheduleQuery(professionalIdGuid);
+                var query = new GetScheduleQuery(professionalId);
                 var result = await handler.Handle(query, cancellationToken);
                 return result.Match(
                     schedule => Results.Ok(schedule),
