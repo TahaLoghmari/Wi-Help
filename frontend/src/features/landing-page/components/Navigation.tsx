@@ -15,7 +15,7 @@ export function Navigation() {
   };
 
   return (
-    <nav className="bg-brand-bg/80 fixed top-0 z-50 w-full border-b border-slate-200/50 backdrop-blur-md">
+    <nav className="bg-brand-bg/80 sticky top-0 z-50 w-full border-b border-slate-200/50 backdrop-blur-md">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
         <div className="flex items-center gap-10">
           <Link to="/" className="group flex items-center gap-3">

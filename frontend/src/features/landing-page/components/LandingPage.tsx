@@ -11,9 +11,9 @@ import {
 
 export function LandingPage() {
   return (
-    <div className="bg-brand-bg relative overflow-x-hidden">
+    <div className="bg-brand-bg relative flex h-screen flex-col overflow-auto">
       <Navigation />
-      <main className="pt-24">
+      <main className="flex-1">
         <HeroSection />
         <TrustLogosSection />
         <FeaturesSection />
