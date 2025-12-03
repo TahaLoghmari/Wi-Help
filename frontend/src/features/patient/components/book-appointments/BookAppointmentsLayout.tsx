@@ -17,6 +17,7 @@ import { useParams } from "@tanstack/react-router";
 import { Form, Calendar } from "@/components";
 import { useState } from "react";
 import type z from "zod";
+import { ArrowLeft } from "lucide-react";
 
 export function BookAppointmentsLayout() {
   const form = useForm<z.infer<typeof bookAppointmentFormSchema>>({
@@ -103,58 +104,112 @@ export function BookAppointmentsLayout() {
 
   return (
     <Form {...form}>
-      <div className="flex h-full w-full flex-col justify-center space-y-6 overflow-auto p-10">
-        <div className="flex w-full flex-col justify-center gap-10 md:flex-row">
-          <div className="border-border flex w-full flex-1 flex-col items-center justify-center rounded-xl border shadow-xs">
-            <Calendar
-              mode="single"
-              className="rounded-xl border-0"
-              captionLayout="label"
-              defaultMonth={selectedDate}
-              onSelect={handleDateSelect}
-              selected={selectedDate}
-              disabled={(date) => {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                return date < today;
-              }}
-              showOutsideDays={false}
-            />
-          </div>
-          <AvailableSlots
-            isLoading={isLoading}
-            availableSlots={availableSlots}
-            setSelectedSlot={handleSlotSelect}
-            selectedSlot={selectedSlot}
-          />
-        </div>
-        {professional && (
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">
-                Session Price:
-              </span>
-              <span className="text-brand-dark text-lg font-semibold">
-                {price} TND
-              </span>
+      <section className="flex flex-1 flex-col gap-5 space-y-5 overflow-y-auto px-4 py-5 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="mb-12 flex items-center justify-between">
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={() => window.history.back()}
+              className="group w-fit mb-2 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition-all hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 active:scale-95"
+            >
+              <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+              Back to professional
+            </button>
+            <div>
+              <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
+                Book Appointment
+              </h2>
+              <p className="mt-0.5 text-[11px] text-slate-500">
+                Select a date and time slot to book your appointment.
+              </p>
             </div>
-            <p className="mt-1 text-xs text-gray-500">
-              Professional's price range: {professional.startPrice} -{" "}
-              {professional.endPrice} TND
-            </p>
           </div>
-        )}
-        <AppointmentNotes control={form.control} />
-        <button
-          onClick={form.handleSubmit(onSubmit)}
-          disabled={!selectedSlot || bookAppointmentMutation.isPending}
-          className="bg-brand-dark w-full rounded-lg px-4 py-2 text-white disabled:bg-gray-300"
-        >
-          {bookAppointmentMutation.isPending
-            ? "Booking..."
-            : "Book Appointment"}
-        </button>
-      </div>
+        </div>
+
+        <div className="flex flex-col items-center gap-6 lg:flex-row">
+          {/* Left: Calendar & Session Price */}
+          <div className="flex w-full flex-col gap-4 lg:w-auto lg:flex-none">
+            {/* Calendar */}
+            <div className="mx-auto w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-4 lg:mx-0">
+              <Calendar
+                mode="single"
+                className="rounded-xl border-0 p-0 [--cell-size:--spacing(9)]"
+                captionLayout="label"
+                defaultMonth={selectedDate}
+                onSelect={handleDateSelect}
+                selected={selectedDate}
+                disabled={(date) => {
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
+                  return date < today;
+                }}
+                showOutsideDays={false}
+                classNames={{
+                  months: "flex flex-col",
+                  month: "space-y-2",
+                  caption_label: "text-sm font-semibold text-slate-900",
+                  nav: "flex items-center gap-1 w-full absolute top-0 inset-x-0 justify-between px-1",
+                  button_previous:
+                    "p-1.5 hover:bg-slate-50 rounded-lg text-slate-500 transition-colors",
+                  button_next:
+                    "p-1.5 hover:bg-slate-50 rounded-lg text-slate-500 transition-colors",
+                  weekdays: "flex",
+                  weekday:
+                    "text-[11px] font-medium text-slate-400 py-1 flex-1 text-center",
+                  week: "flex w-full mt-1",
+                  day: "p-0 text-center flex-1 aspect-square",
+                  today: "bg-slate-100 text-slate-900 font-medium rounded-lg",
+                  selected: "bg-[#00394a] text-white font-medium  rounded-lg",
+                  outside: "text-slate-300",
+                  disabled: "text-slate-300 opacity-50",
+                }}
+              />
+            </div>
+
+            {/* Session Price Card */}
+            {professional && (
+              <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-slate-700">
+                    Session Price
+                  </span>
+                  <span className="text-brand-dark text-sm font-semibold">
+                    {price} TND
+                  </span>
+                </div>
+                <p className="mt-1 text-[10px] text-slate-500">
+                  Professional range: {professional.startPrice} -{" "}
+                  {professional.endPrice} TND
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Right: Slots & Actions */}
+          <div className="w-full flex-1 space-y-4">
+            {/* Time Slots */}
+            <AvailableSlots
+              isLoading={isLoading}
+              availableSlots={availableSlots}
+              setSelectedSlot={handleSlotSelect}
+              selectedSlot={selectedSlot}
+            />
+
+            {/* Notes */}
+            <AppointmentNotes control={form.control} />
+
+            {/* Action Button */}
+            <button
+              onClick={form.handleSubmit(onSubmit)}
+              className="bg-brand-dark hover:bg-brand-secondary w-full rounded-xl py-2.5 text-xs font-medium text-white transition-colors disabled:cursor-not-allowed disabled:bg-slate-300"
+            >
+              {bookAppointmentMutation.isPending
+                ? "Booking..."
+                : "Book Appointment"}
+            </button>
+          </div>
+        </div>
+      </section>
     </Form>
   );
 }

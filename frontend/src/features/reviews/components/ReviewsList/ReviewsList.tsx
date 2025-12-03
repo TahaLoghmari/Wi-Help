@@ -97,7 +97,7 @@ export function ReviewsList({ professionalId }: ReviewsListProps) {
         </div>
       )}
       {isPatient && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-5">
           <SubmitReviewForm professionalId={professionalId} />
         </div>
       )}

@@ -1,6 +1,7 @@
 import { GetProfessionalPatients } from "@/features/professional";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, Link } from "@tanstack/react-router";
 import { Spinner } from "@/components";
+import { ROUTE_PATHS } from "@/config";
 
 export function MyPatientsCards() {
   const {
@@ -69,14 +70,16 @@ export function MyPatientsCards() {
                 </span>
               </div>
               <p className="truncate text-[11px] text-slate-500">
-                {calculateAge(patient.dateOfBirth)} yrs • {patient.gender} •{" "}
-                {patient.address?.city || "Unknown"} •{" "}
+                {calculateAge(patient.dateOfBirth)} yrs •{" "}
+                {patient.gender.charAt(0).toUpperCase() +
+                  patient.gender.slice(1)}{" "}
+                • {patient.address?.city || "Unknown"} •{" "}
                 {patient.address?.state || "Unknown"}
               </p>
             </div>
           </div>
 
-          <div className="mt-2 flex flex-col gap-1 text-[11px] text-slate-600">
+          <div className="mt-2 flex flex-col gap-1 border-b border-dashed border-slate-200 pb-2 text-[11px] text-slate-600">
             <div className="flex items-center gap-1.5">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -92,7 +95,7 @@ export function MyPatientsCards() {
               >
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
               </svg>
-              <span className="">{patient.phoneNumber}</span>
+              <span className="">+216 {patient.phoneNumber}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <svg
@@ -114,16 +117,11 @@ export function MyPatientsCards() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between border-t border-dashed border-slate-200 pt-2 text-[11px] text-slate-500">
-            <span className="">Last visit: N/A</span>
-            <span className={`text-brand-teal inline-flex items-center gap-1`}>
-              <span className={`bg-brand-teal h-1.5 w-1.5 rounded-full`}></span>
-              Active
-            </span>
-          </div>
-
           <div className="flex items-center gap-2 pt-1">
-            <button className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white px-2 py-1.5 text-[11px] text-slate-700 transition-colors">
+            <Link
+              to={ROUTE_PATHS.PROFESSIONAL.MESSAGES}
+              className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white px-2 py-1.5 text-[11px] text-slate-700 transition-colors"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -140,7 +138,7 @@ export function MyPatientsCards() {
                 <path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"></path>
               </svg>
               Message
-            </button>
+            </Link>
             <button
               onClick={() =>
                 navigate({

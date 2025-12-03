@@ -17,7 +17,8 @@ export const API_ENDPOINTS = {
     GET_PROFESSIONAL_BY_ID: (id: string) => `/professionals/${id}`,
     UPDATE_PROFESSIONAL: "/professionals/me",
     SETUP_SCHEDULE: "/professionals/schedule",
-    GET_SCHEDULE: "/professionals/schedule",
+    GET_SCHEDULE: (professionalId: string) =>
+      `/professionals/schedule?professionalId=${professionalId}`,
     GET_ALL_PROFESSIONALS: "/professionals",
     GET_PROFESSIONAL_AVAILABILITY: (professionalId: string) =>
       `/professionals/${professionalId}/availability`,

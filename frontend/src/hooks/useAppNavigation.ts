@@ -53,6 +53,10 @@ export function useAppNavigation() {
       navigate({ to: ROUTE_PATHS.PROFESSIONAL.ROOT });
     },
 
+    goToProfessionalMessaging: () => {
+      navigate({ to: ROUTE_PATHS.PROFESSIONAL.MESSAGES });
+    },
+
     goToPatientApp: () => {
       navigate({ to: ROUTE_PATHS.PATIENT.ROOT });
     },

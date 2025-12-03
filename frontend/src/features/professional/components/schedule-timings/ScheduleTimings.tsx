@@ -1,23 +1,12 @@
-import { Clock, Timer, X, Loader2 } from "lucide-react";
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  SelectItem,
-  CardTitle,
-  Select,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-  Switch,
-  Spinner,
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components";
+import { Clock, Timer, X, Loader2, Plus } from "lucide-react";
+import { Spinner, Alert, AlertDescription, AlertTitle } from "@/components";
 import { GenerateIdCrypto } from "@/lib";
-import { DAYS, GetSchedule, SetupSchedule } from "@/features/professional";
+import {
+  DAYS,
+  GetSchedule,
+  SetupSchedule,
+  GetCurrentProfessional,
+} from "@/features/professional";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,11 +21,12 @@ const TIME_OPTIONS = Array.from({ length: 24 }, (_, i) => {
 type ScheduleFormValues = z.infer<typeof scheduleFormSchema>;
 
 export function ScheduleTimings() {
+  const { data: professional } = GetCurrentProfessional();
   const {
     data: currentSchedule,
     isLoading: isLoadingSchedule,
     isError,
-  } = GetSchedule();
+  } = GetSchedule(professional?.id!);
   const { mutate: saveSchedule, isPending: isSaving } = SetupSchedule();
 
   const form = useForm<ScheduleFormValues>({
@@ -137,15 +127,24 @@ export function ScheduleTimings() {
   }
 
   return (
-    <div className="overflow-auto p-4">
-      <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
-        <div className="w-full">
-          <div className="text-brand-dark flex items-center justify-start gap-3 text-lg font-semibold">
-            <Timer className="text-brand-teal h-5 w-5" />
-            Setup Schedule
+    <section className="flex-1 space-y-5 overflow-y-auto px-4 py-5 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-3xl space-y-6">
+        {/* Header */}
+        <div className="flex items-center gap-3">
+          <div className="bg-brand-teal/10 text-brand-teal flex h-10 w-10 items-center justify-center rounded-xl">
+            <Timer className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="text-brand-dark text-lg font-semibold tracking-tight">
+              Setup Schedule
+            </h2>
+            <p className="text-xs text-slate-500">
+              Configure your weekly availability and time slots.
+            </p>
           </div>
         </div>
-        <div className="space-y-4 p-1">
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {Object.keys(form.formState.errors).length > 0 && (
             <Alert variant={"destructive"}>
               <AlertTitle>Validation Error</AlertTitle>
@@ -156,114 +155,123 @@ export function ScheduleTimings() {
           )}
 
           {days.map((day, dayIndex) => (
-            <Card
+            <div
               key={day.dayOfWeek}
-              className="border-brand-dark/10 bg-brand-bg hover:border-brand-teal/30 cursor-pointer shadow-none transition-all"
+              className="group hover:border-brand-blue/30 rounded-2xl border border-slate-200 bg-white shadow-sm transition-all"
             >
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <Switch
-                      checked={day.isActive}
-                      onCheckedChange={(checked) =>
-                        toggleDay(dayIndex, checked)
-                      }
-                      className="border-brand-dark/20 data-[state=checked]:bg-brand-teal border"
+              {/* Day Header */}
+              <div className="flex items-center justify-between px-5 py-4">
+                <div className="flex items-center gap-4">
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={day.isActive}
+                    onClick={() => toggleDay(dayIndex, !day.isActive)}
+                    className={`focus-visible:ring-brand-blue relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none ${
+                      day.isActive ? "bg-brand-teal" : "bg-slate-200"
+                    }`}
+                  >
+                    <span
+                      className={`pointer-events-none block h-5 w-5 rounded-full bg-white shadow-lg ring-0 transition-transform ${
+                        day.isActive ? "translate-x-5" : "translate-x-0"
+                      }`}
                     />
-                    <div>
-                      <CardTitle className="text-brand-dark text-lg">
-                        {day.dayOfWeek}
-                      </CardTitle>
-                      <p className="text-brand-secondary mt-1 text-sm">
-                        {day.isActive
-                          ? `${day.availabilitySlots?.length || 0} time slot${(day.availabilitySlots?.length || 0) !== 1 ? "s" : ""} configured`
-                          : "Not available"}
-                      </p>
-                    </div>
+                  </button>
+                  <div>
+                    <h3 className="text-brand-dark text-sm font-semibold">
+                      {day.dayOfWeek}
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      {day.isActive
+                        ? `${day.availabilitySlots?.length || 0} time slot${(day.availabilitySlots?.length || 0) !== 1 ? "s" : ""} configured`
+                        : "Not available"}
+                    </p>
                   </div>
                 </div>
-              </CardHeader>
+              </div>
 
+              {/* Time Slots */}
               {day.isActive && (
-                <CardContent className="space-y-3">
+                <div className="space-y-3 border-t border-slate-100 p-5">
                   {day.availabilitySlots?.map((slot, slotIndex) => (
                     <div
                       key={slot.id || slotIndex}
-                      className="border-brand-blue/20 flex items-center gap-3 rounded-lg border bg-white p-2"
+                      className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/50 p-2"
                     >
-                      <Clock className="text-brand-blue h-4 w-4" />
-                      <Select
-                        value={slot.startTime}
-                        onValueChange={(val) =>
-                          updateTimeSlot(dayIndex, slotIndex, "startTime", val)
-                        }
-                      >
-                        <SelectTrigger className="w-24">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
+                      <Clock className="text-brand-blue ml-2 h-4 w-4" />
+                      <div className="flex items-center gap-2">
+                        <select
+                          value={slot.startTime}
+                          onChange={(e) =>
+                            updateTimeSlot(
+                              dayIndex,
+                              slotIndex,
+                              "startTime",
+                              e.target.value,
+                            )
+                          }
+                          className="focus:border-brand-blue focus:ring-brand-blue/20 h-8 rounded-lg border-slate-200 bg-white text-xs text-slate-700"
+                        >
                           {TIME_OPTIONS.map((time) => (
-                            <SelectItem key={time} value={time}>
+                            <option key={time} value={time}>
                               {time}
-                            </SelectItem>
+                            </option>
                           ))}
-                        </SelectContent>
-                      </Select>
-                      <span className="text-brand-secondary">to</span>
-                      <Select
-                        value={slot.endTime}
-                        onValueChange={(val) =>
-                          updateTimeSlot(dayIndex, slotIndex, "endTime", val)
-                        }
-                      >
-                        <SelectTrigger className="w-24">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
+                        </select>
+                        <span className="text-xs text-slate-400">to</span>
+                        <select
+                          value={slot.endTime}
+                          onChange={(e) =>
+                            updateTimeSlot(
+                              dayIndex,
+                              slotIndex,
+                              "endTime",
+                              e.target.value,
+                            )
+                          }
+                          className="focus:border-brand-blue focus:ring-brand-blue/20 h-8 rounded-lg border-slate-200 bg-white text-xs text-slate-700"
+                        >
                           {TIME_OPTIONS.map((time) => (
-                            <SelectItem key={time} value={time}>
+                            <option key={time} value={time}>
                               {time}
-                            </SelectItem>
+                            </option>
                           ))}
-                        </SelectContent>
-                      </Select>
-                      <Button
+                        </select>
+                      </div>
+                      <button
                         type="button"
-                        variant="ghost"
-                        size="sm"
                         onClick={() => removeTimeSlot(dayIndex, slotIndex)}
-                        className="text-brand-secondary hover:bg-brand-cream/50 hover:text-brand-dark ml-auto"
+                        className="ml-auto rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-500"
                       >
                         <X className="h-4 w-4" />
-                      </Button>
+                      </button>
                     </div>
                   ))}
-                  <Button
+                  <button
                     type="button"
-                    variant="outline"
-                    size="sm"
                     onClick={() => addTimeSlot(dayIndex)}
-                    className="border-brand-teal/30 text-brand-secondary hover:border-brand-teal hover:bg-brand-teal/10 hover:text-brand-dark w-full"
+                    className="hover:border-brand-blue hover:bg-brand-blue/5 hover:text-brand-blue flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white py-2.5 text-xs font-medium text-slate-600 transition-all"
                   >
-                    + Add Time Slot
-                  </Button>
-                </CardContent>
+                    <Plus className="h-3.5 w-3.5" />
+                    Add Time Slot
+                  </button>
+                </div>
               )}
-            </Card>
+            </div>
           ))}
 
           <div className="flex justify-end pt-4">
-            <Button
+            <button
               type="submit"
               disabled={isSaving}
-              className="bg-brand-dark hover:bg-brand-secondary text-white"
+              className="bg-brand-dark hover:bg-brand-secondary inline-flex items-center justify-center gap-2 rounded-full px-6 py-2.5 text-xs font-medium text-white shadow-sm transition-colors disabled:opacity-50"
             >
-              {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
               Save Schedule
-            </Button>
+            </button>
           </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </section>
   );
 }

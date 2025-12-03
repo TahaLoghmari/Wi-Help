@@ -3,13 +3,15 @@ import { api } from "@/index";
 import { API_ENDPOINTS } from "@/config";
 import type { GetScheduleDto } from "@/features/professional";
 
-export const getSchedule = () => {
-  return api.get<GetScheduleDto>(API_ENDPOINTS.PROFESSIONALS.GET_SCHEDULE);
+export const getSchedule = (professionalId: string) => {
+  return api.get<GetScheduleDto>(
+    API_ENDPOINTS.PROFESSIONALS.GET_SCHEDULE(professionalId),
+  );
 };
 
-export function GetSchedule() {
+export function GetSchedule(professionalId: string) {
   return useQuery({
-    queryKey: ["schedule"],
-    queryFn: getSchedule,
+    queryKey: ["schedule", professionalId],
+    queryFn: () => getSchedule(professionalId),
   });
 }

@@ -1,5 +1,3 @@
-import { Users } from "lucide-react";
-
 interface TotalPatientsStatProps {
   totalPatients: number;
   isLoading?: boolean;
@@ -14,9 +12,6 @@ export function TotalPatientsStat({
       <div className="flex items-center justify-between">
         <div className="text-xs font-medium tracking-tight text-slate-600">
           Total Patients
-        </div>
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50">
-          <Users className="h-4 w-4 text-blue-500" />
         </div>
       </div>
       <div className="flex items-baseline justify-between">
