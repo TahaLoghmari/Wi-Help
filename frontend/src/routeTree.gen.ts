@@ -28,6 +28,7 @@ import { Route as PatientSettingsRouteImport } from './routes/patient/settings'
 import { Route as PatientProfileRouteImport } from './routes/patient/profile'
 import { Route as PatientPrescriptionsRouteImport } from './routes/patient/prescriptions'
 import { Route as PatientNotificationsRouteImport } from './routes/patient/notifications'
+import { Route as PatientMyProfessionalsRouteImport } from './routes/patient/my-professionals'
 import { Route as PatientMessagesRouteImport } from './routes/patient/messages'
 import { Route as PatientMedicalRecordsRouteImport } from './routes/patient/medical-records'
 import { Route as PatientFindProfessionalRouteImport } from './routes/patient/find-professional'
@@ -143,6 +144,11 @@ const PatientNotificationsRoute = PatientNotificationsRouteImport.update({
   path: '/notifications',
   getParentRoute: () => PatientRouteRoute,
 } as any)
+const PatientMyProfessionalsRoute = PatientMyProfessionalsRouteImport.update({
+  id: '/my-professionals',
+  path: '/my-professionals',
+  getParentRoute: () => PatientRouteRoute,
+} as any)
 const PatientMessagesRoute = PatientMessagesRouteImport.update({
   id: '/messages',
   path: '/messages',
@@ -244,6 +250,7 @@ export interface FileRoutesByFullPath {
   '/patient/find-professional': typeof PatientFindProfessionalRoute
   '/patient/medical-records': typeof PatientMedicalRecordsRoute
   '/patient/messages': typeof PatientMessagesRoute
+  '/patient/my-professionals': typeof PatientMyProfessionalsRoute
   '/patient/notifications': typeof PatientNotificationsRoute
   '/patient/prescriptions': typeof PatientPrescriptionsRoute
   '/patient/profile': typeof PatientProfileRoute
@@ -278,6 +285,7 @@ export interface FileRoutesByTo {
   '/patient/find-professional': typeof PatientFindProfessionalRoute
   '/patient/medical-records': typeof PatientMedicalRecordsRoute
   '/patient/messages': typeof PatientMessagesRoute
+  '/patient/my-professionals': typeof PatientMyProfessionalsRoute
   '/patient/notifications': typeof PatientNotificationsRoute
   '/patient/prescriptions': typeof PatientPrescriptionsRoute
   '/patient/profile': typeof PatientProfileRoute
@@ -316,6 +324,7 @@ export interface FileRoutesById {
   '/patient/find-professional': typeof PatientFindProfessionalRoute
   '/patient/medical-records': typeof PatientMedicalRecordsRoute
   '/patient/messages': typeof PatientMessagesRoute
+  '/patient/my-professionals': typeof PatientMyProfessionalsRoute
   '/patient/notifications': typeof PatientNotificationsRoute
   '/patient/prescriptions': typeof PatientPrescriptionsRoute
   '/patient/profile': typeof PatientProfileRoute
@@ -355,6 +364,7 @@ export interface FileRouteTypes {
     | '/patient/find-professional'
     | '/patient/medical-records'
     | '/patient/messages'
+    | '/patient/my-professionals'
     | '/patient/notifications'
     | '/patient/prescriptions'
     | '/patient/profile'
@@ -389,6 +399,7 @@ export interface FileRouteTypes {
     | '/patient/find-professional'
     | '/patient/medical-records'
     | '/patient/messages'
+    | '/patient/my-professionals'
     | '/patient/notifications'
     | '/patient/prescriptions'
     | '/patient/profile'
@@ -426,6 +437,7 @@ export interface FileRouteTypes {
     | '/patient/find-professional'
     | '/patient/medical-records'
     | '/patient/messages'
+    | '/patient/my-professionals'
     | '/patient/notifications'
     | '/patient/prescriptions'
     | '/patient/profile'
@@ -589,6 +601,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PatientNotificationsRouteImport
       parentRoute: typeof PatientRouteRoute
     }
+    '/patient/my-professionals': {
+      id: '/patient/my-professionals'
+      path: '/my-professionals'
+      fullPath: '/patient/my-professionals'
+      preLoaderRoute: typeof PatientMyProfessionalsRouteImport
+      parentRoute: typeof PatientRouteRoute
+    }
     '/patient/messages': {
       id: '/patient/messages'
       path: '/messages'
@@ -735,6 +754,7 @@ interface PatientRouteRouteChildren {
   PatientFindProfessionalRoute: typeof PatientFindProfessionalRoute
   PatientMedicalRecordsRoute: typeof PatientMedicalRecordsRoute
   PatientMessagesRoute: typeof PatientMessagesRoute
+  PatientMyProfessionalsRoute: typeof PatientMyProfessionalsRoute
   PatientNotificationsRoute: typeof PatientNotificationsRoute
   PatientPrescriptionsRoute: typeof PatientPrescriptionsRoute
   PatientProfileRoute: typeof PatientProfileRoute
@@ -752,6 +772,7 @@ const PatientRouteRouteChildren: PatientRouteRouteChildren = {
   PatientFindProfessionalRoute: PatientFindProfessionalRoute,
   PatientMedicalRecordsRoute: PatientMedicalRecordsRoute,
   PatientMessagesRoute: PatientMessagesRoute,
+  PatientMyProfessionalsRoute: PatientMyProfessionalsRoute,
   PatientNotificationsRoute: PatientNotificationsRoute,
   PatientPrescriptionsRoute: PatientPrescriptionsRoute,
   PatientProfileRoute: PatientProfileRoute,

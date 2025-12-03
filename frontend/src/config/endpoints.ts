@@ -63,6 +63,7 @@ export const API_ENDPOINTS = {
     GET_PROFESSIONAL_APPOINTMENTS: "/appointments/professional/me",
     BOOK_APPOINTMENT: "/appointments",
     GET_MY_PATIENTS: "/appointments/me/patients",
+    GET_MY_PROFESSIONALS: "/appointments/me/professionals",
     RESPOND_TO_APPOINTMENT: (appointmentId: string) =>
       `/appointments/${appointmentId}/respond`,
     GET_APPOINTMENT_BY_ID: (appointmentId: string) =>

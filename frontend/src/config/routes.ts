@@ -39,6 +39,7 @@ export const ROUTE_PATHS = {
     PROFESSIONAL_PROFILE: "/patient/professional/$professionalId",
     MEDICALRECORDS: "/patient/medical-records",
     MESSAGES: "/patient/messages",
+    MYPROFESSIONALS: "/patient/my-professionals",
     PRESCRIPTIONS: "/patient/prescriptions",
     SETTINGS: "/patient/settings",
     PROFILE: "/patient/profile",

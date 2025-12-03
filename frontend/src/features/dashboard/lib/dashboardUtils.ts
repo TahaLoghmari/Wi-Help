@@ -13,6 +13,7 @@ import {
   ClipboardList,
   Pill,
   CreditCard,
+  Stethoscope,
 } from "lucide-react";
 
 export function getNavigationData(user: UserDto) {
@@ -57,6 +58,11 @@ export function getNavigationData(user: UserDto) {
       title: "Appointments",
       url: ROUTE_PATHS.PATIENT.APPOINTMENTS,
       icon: Calendar,
+    },
+    {
+      title: "My Professionals",
+      url: ROUTE_PATHS.PATIENT.MYPROFESSIONALS,
+      icon: Stethoscope,
     },
     {
       title: "Find Professional",

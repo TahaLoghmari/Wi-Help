@@ -5,6 +5,7 @@ export * from "./favorites";
 export * from "./find-professional";
 export * from "./medical-records";
 export * from "./messages";
+export * from "./my-professionals";
 export * from "./prescriptions";
 export * from "./profile";
 export * from "./settings";
