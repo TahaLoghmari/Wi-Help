@@ -83,60 +83,12 @@ export function AppointmentsTable() {
       <div className="border-b border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-2 pl-4 sm:px-5">
         <div className="mb-2 flex items-center justify-between">
           <div className="">
-            <h2 className="text-sm font-semibold tracking-tight text-[#00394a]">
+            <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
               Patient Appointments
             </h2>
             <p className="mt-0.5 text-[11px] text-slate-500">
               Manage upcoming and today’s appointments with quick actions.
             </p>
-          </div>
-          <div className="hidden items-center gap-2 text-[11px] sm:flex">
-            <button className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                data-lucide="sliders-horizontal"
-                className="lucide lucide-sliders-horizontal h-3.5 w-3.5 text-slate-500"
-              >
-                <path d="M10 5H3"></path>
-                <path d="M12 19H3"></path>
-                <path d="M14 3v4"></path>
-                <path d="M16 17v4"></path>
-                <path d="M21 12h-9"></path>
-                <path d="M21 19h-5"></path>
-                <path d="M21 5h-7"></path>
-                <path d="M8 10v4"></path>
-                <path d="M8 12H3"></path>
-              </svg>
-              <span>Filters</span>
-            </button>
-            <button className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                data-lucide="download"
-                className="lucide lucide-download h-3.5 w-3.5 text-slate-500"
-              >
-                <path d="M12 15V3"></path>
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <path d="m7 10 5 5 5-5"></path>
-              </svg>
-              <span className="">Export</span>
-            </button>
           </div>
         </div>
 
@@ -146,13 +98,13 @@ export function AppointmentsTable() {
             onClick={() => setActiveTab("offered")}
             className={`relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-medium transition-colors ${
               activeTab === "offered"
-                ? "border-slate-200 bg-white text-[#00394a]"
+                ? "text-brand-dark border-slate-200 bg-white"
                 : "border-transparent text-slate-500 hover:border-slate-200 hover:bg-white"
             }`}
           >
             <span
               className={`inline-block h-1.5 w-1.5 rounded-full ${
-                activeTab === "offered" ? "bg-[#3fa6ff]" : "bg-slate-300"
+                activeTab === "offered" ? "bg-brand-blue" : "bg-slate-300"
               }`}
             ></span>
             Offered
@@ -162,13 +114,13 @@ export function AppointmentsTable() {
             onClick={() => setActiveTab("confirmed")}
             className={`relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 transition-colors ${
               activeTab === "confirmed"
-                ? "border-slate-200 bg-white font-medium text-[#00394a]"
+                ? "text-brand-dark border-slate-200 bg-white font-medium"
                 : "border-transparent text-slate-500 hover:border-slate-200 hover:bg-white"
             }`}
           >
             <span
               className={`inline-block h-1.5 w-1.5 rounded-full ${
-                activeTab === "confirmed" ? "bg-[#3fa6ff]" : "bg-slate-300"
+                activeTab === "confirmed" ? "bg-brand-blue" : "bg-slate-300"
               }`}
             ></span>
             Confirmed
@@ -176,7 +128,7 @@ export function AppointmentsTable() {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="min-h-[400px] overflow-x-auto">
         <table className="min-w-full text-left text-xs">
           <thead className="bg-white">
             <tr className="border-b border-slate-200">
@@ -201,97 +153,150 @@ export function AppointmentsTable() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {appointments
-              .filter((appointment) =>
-                activeTab === "offered"
-                  ? appointment.status === "Offered"
-                  : appointment.status === "Confirmed",
-              )
-              .map((appointment) => (
-                <tr key={appointment.id} className="hover:bg-slate-50/70">
-                  <td className="pt-3.5 pr-4 pb-3.5 pl-4 whitespace-nowrap sm:px-5">
-                    <div className="flex items-center gap-3">
-                      {appointment.patient?.profilePictureUrl ? (
-                        <img
-                          src={appointment.patient.profilePictureUrl}
-                          alt={appointment.patient.firstName}
-                          className="h-8 w-8 rounded-full border border-slate-200 object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
-                          {appointment.patient?.firstName?.charAt(0) || "?"}
-                        </div>
-                      )}
-                      <div className="">
-                        <div className="text-xs font-medium tracking-tight text-slate-900">
-                          {appointment.patient?.firstName || "Unknown Patient"}
-                        </div>
-                        <div className="text-[11px] text-slate-500">
-                          {appointment.patient?.dateOfBirth ? (
-                            <span>
-                              DOB:{" "}
-                              {new Date(
-                                appointment.patient.dateOfBirth,
-                              ).toLocaleDateString()}
-                            </span>
-                          ) : (
-                            <span>
-                              Patient ID:{" "}
-                              {appointment.patientId.substring(0, 6)}
-                            </span>
-                          )}
+            {appointments.filter((appointment) =>
+              activeTab === "offered"
+                ? appointment.status === "Offered"
+                : appointment.status === "Confirmed",
+            ).length === 0 ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="h-[350px] px-4 text-center align-middle sm:px-5"
+                >
+                  <div className="flex flex-col items-center justify-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-6 w-6 text-slate-400"
+                      >
+                        <rect
+                          width="18"
+                          height="18"
+                          x="3"
+                          y="4"
+                          rx="2"
+                          ry="2"
+                        ></rect>
+                        <line x1="16" x2="16" y1="2" y2="6"></line>
+                        <line x1="8" x2="8" y1="2" y2="6"></line>
+                        <line x1="3" x2="21" y1="10" y2="10"></line>
+                      </svg>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-sm font-medium text-slate-700">
+                        No {activeTab} appointments
+                      </p>
+                      <p className="mt-1 text-xs text-slate-500">
+                        {activeTab === "offered"
+                          ? "You don't have any pending appointment offers at the moment."
+                          : "You don't have any confirmed appointments yet."}
+                      </p>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            ) : (
+              appointments
+                .filter((appointment) =>
+                  activeTab === "offered"
+                    ? appointment.status === "Offered"
+                    : appointment.status === "Confirmed",
+                )
+                .map((appointment) => (
+                  <tr key={appointment.id} className="hover:bg-slate-50/70">
+                    <td className="pt-3.5 pr-4 pb-3.5 pl-4 whitespace-nowrap sm:px-5">
+                      <div className="flex items-center gap-3">
+                        {appointment.patient?.profilePictureUrl ? (
+                          <img
+                            src={appointment.patient.profilePictureUrl}
+                            alt={appointment.patient.firstName}
+                            className="h-8 w-8 rounded-full border border-slate-200 object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
+                            {appointment.patient?.firstName?.charAt(0) || "?"}
+                          </div>
+                        )}
+                        <div className="">
+                          <div className="text-xs font-medium tracking-tight text-slate-900">
+                            {appointment.patient?.firstName ||
+                              "Unknown Patient"}
+                          </div>
+                          <div className="text-[11px] text-slate-500">
+                            {appointment.patient?.dateOfBirth ? (
+                              <span>
+                                DOB:{" "}
+                                {new Date(
+                                  appointment.patient.dateOfBirth,
+                                ).toLocaleDateString()}
+                              </span>
+                            ) : (
+                              <span>
+                                Patient ID:{" "}
+                                {appointment.patientId.substring(0, 6)}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-700 sm:px-5">
-                    {new Date(appointment.startDate).toLocaleDateString()} •{" "}
-                    {new Date(appointment.startDate).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </td>
-                  <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
-                    {appointment.notes || (
-                      <span className="text-slate-400 italic">
-                        No purpose specified
+                    </td>
+                    <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-700 sm:px-5">
+                      {new Date(appointment.startDate).toLocaleDateString()} •{" "}
+                      {new Date(appointment.startDate).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </td>
+                    <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
+                      {appointment.notes || (
+                        <span className="text-slate-400 italic">
+                          No purpose specified
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
+                      <span
+                        className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] ${
+                          appointment.urgency === "High"
+                            ? "border-red-200 bg-red-50 text-red-700"
+                            : appointment.urgency === AppointmentUrgency.Medium
+                              ? "border-yellow-200 bg-yellow-50 text-yellow-700"
+                              : "border-brand-blue/40 bg-brand-blue/10 text-brand-dark"
+                        }`}
+                      >
+                        {appointment.urgency}
                       </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
-                    <span
-                      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] ${
-                        appointment.urgency === "High"
-                          ? "border-red-200 bg-red-50 text-red-700"
-                          : appointment.urgency === AppointmentUrgency.Medium
-                            ? "border-yellow-200 bg-yellow-50 text-yellow-700"
-                            : "border-[#3fa6ff]/40 bg-[#3fa6ff]/10 text-[#00394a]"
-                      }`}
-                    >
-                      {appointment.urgency}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-800 sm:px-5">
-                    ${appointment.price.toFixed(2)}
-                  </td>
-                  <td className="px-4 py-3.5 text-right whitespace-nowrap sm:px-5">
-                    <div className="flex items-center justify-end gap-1.5">
-                      <button
-                        onClick={() => handleView(appointment)}
-                        className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5"
-                      >
-                        View
-                      </button>
-                      <button
-                        onClick={() => handleAccept(appointment)}
-                        className="inline-flex items-center rounded-full border border-[#00394a] bg-[#00394a] px-2 py-1 text-[11px] text-white transition-colors hover:bg-[#00546e]"
-                      >
-                        Accept
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-800 sm:px-5">
+                      ${appointment.price.toFixed(2)}
+                    </td>
+                    <td className="px-4 py-3.5 text-right whitespace-nowrap sm:px-5">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => handleView(appointment)}
+                          className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors"
+                        >
+                          View
+                        </button>
+                        <button
+                          onClick={() => handleAccept(appointment)}
+                          className="border-brand-dark bg-brand-dark hover:bg-brand-secondary inline-flex items-center rounded-full border px-2 py-1 text-[11px] text-white transition-colors"
+                        >
+                          Accept
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+            )}
           </tbody>
         </table>
       </div>
@@ -311,7 +316,7 @@ export function AppointmentsTable() {
           <button
             onClick={() => fetchNextPage()}
             disabled={!hasNextPage || isFetchingNextPage}
-            className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-slate-600 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5 disabled:cursor-not-allowed disabled:opacity-50"
+            className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-slate-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isFetchingNextPage
               ? "Loading more..."
@@ -333,7 +338,7 @@ export function AppointmentsTable() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="border-b border-slate-200 bg-slate-50/70 px-6 py-4">
-              <h3 className="text-lg font-semibold text-[#00394a]">
+              <h3 className="text-brand-dark text-lg font-semibold">
                 Appointment Details
               </h3>
               <p className="mt-1 text-sm text-slate-500">
@@ -423,7 +428,7 @@ export function AppointmentsTable() {
                           : selectedAppointment.urgency ===
                               AppointmentUrgency.Medium
                             ? "border-yellow-200 bg-yellow-50 text-yellow-700"
-                            : "border-[#3fa6ff]/40 bg-[#3fa6ff]/10 text-[#00394a]"
+                            : "border-brand-blue/40 bg-brand-blue/10 text-brand-dark"
                       }`}
                     >
                       {selectedAppointment.urgency}
@@ -492,7 +497,7 @@ export function AppointmentsTable() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="border-b border-slate-200 bg-slate-50/70 px-6 py-4">
-              <h3 className="text-lg font-semibold text-[#00394a]">
+              <h3 className="text-brand-dark text-lg font-semibold">
                 Confirm Appointment
               </h3>
               <p className="mt-1 text-sm text-slate-500">
@@ -560,7 +565,7 @@ export function AppointmentsTable() {
               </button>
               <button
                 onClick={handleConfirmAppointment}
-                className="flex-1 rounded-lg border border-[#00394a] bg-[#00394a] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#00546e]"
+                className="border-brand-dark bg-brand-dark hover:bg-brand-secondary flex-1 rounded-lg border px-4 py-2 text-sm font-medium text-white transition-colors"
               >
                 Accept
               </button>

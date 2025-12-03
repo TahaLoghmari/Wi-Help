@@ -51,7 +51,7 @@ export function MyPatientsCards() {
       {patients.map((patient, index) => (
         <article
           key={index}
-          className="flex h-45 flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-100 transition-all hover:border-[#3fa6ff]/70 hover:shadow-md hover:shadow-slate-100"
+          className="hover:border-brand-blue/70 flex h-45 flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-100 transition-all hover:shadow-md hover:shadow-slate-100"
         >
           <div className="items:center flex gap-3">
             <img
@@ -64,7 +64,7 @@ export function MyPatientsCards() {
                 <h4 className="truncate text-xs font-medium tracking-tight text-slate-900">
                   {patient.firstName} {patient.lastName}
                 </h4>
-                <span className="inline-flex items-center rounded-full border border-[#ffecb4] bg-[#ffecb4]/60 px-1.5 py-0.5 text-[10px] text-[#00394a]">
+                <span className="border-brand-cream bg-brand-cream/60 text-brand-dark inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px]">
                   ID: #{patient.id.substring(0, 8)}
                 </span>
               </div>
@@ -116,14 +116,14 @@ export function MyPatientsCards() {
 
           <div className="flex items-center justify-between border-t border-dashed border-slate-200 pt-2 text-[11px] text-slate-500">
             <span className="">Last visit: N/A</span>
-            <span className={`inline-flex items-center gap-1 text-[#14d3ac]`}>
-              <span className={`h-1.5 w-1.5 rounded-full bg-[#14d3ac]`}></span>
+            <span className={`text-brand-teal inline-flex items-center gap-1`}>
+              <span className={`bg-brand-teal h-1.5 w-1.5 rounded-full`}></span>
               Active
             </span>
           </div>
 
           <div className="flex items-center gap-2 pt-1">
-            <button className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white px-2 py-1.5 text-[11px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5">
+            <button className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white px-2 py-1.5 text-[11px] text-slate-700 transition-colors">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -148,7 +148,7 @@ export function MyPatientsCards() {
                   params: { patientId: patient.id },
                 })
               }
-              className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-[#00394a] px-2 py-1.5 text-[11px] text-white transition-colors hover:bg-[#00546e]"
+              className="bg-brand-dark hover:bg-brand-secondary inline-flex flex-1 items-center justify-center gap-1.5 rounded-full px-2 py-1.5 text-[11px] text-white transition-colors"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -187,7 +187,7 @@ export function MyPatientsCards() {
           <button
             onClick={() => fetchNextPage()}
             disabled={!hasNextPage || isFetchingNextPage}
-            className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-slate-600 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5 disabled:cursor-not-allowed disabled:opacity-50"
+            className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-slate-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isFetchingNextPage
               ? "Loading more..."

@@ -134,7 +134,7 @@ export function BookAppointmentsLayout() {
               <span className="text-sm font-medium text-gray-700">
                 Session Price:
               </span>
-              <span className="text-lg font-semibold text-[#00394a]">
+              <span className="text-brand-dark text-lg font-semibold">
                 {price} TND
               </span>
             </div>
@@ -148,7 +148,7 @@ export function BookAppointmentsLayout() {
         <button
           onClick={form.handleSubmit(onSubmit)}
           disabled={!selectedSlot || bookAppointmentMutation.isPending}
-          className="w-full rounded-lg bg-[#00394a] px-4 py-2 text-white disabled:bg-gray-300"
+          className="bg-brand-dark w-full rounded-lg px-4 py-2 text-white disabled:bg-gray-300"
         >
           {bookAppointmentMutation.isPending
             ? "Booking..."

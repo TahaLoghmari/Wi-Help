@@ -27,12 +27,12 @@ export function DashboardHeader() {
         >
           |
         </p>
-        <p className="text-lg font-semibold tracking-tight text-[#00394a] sm:text-xl">
+        <p className="text-brand-dark text-lg font-semibold tracking-tight sm:text-xl">
           {activeNavigationPage}
         </p>
       </div>
       <div className="flex items-center gap-3">
-        <div className="hidden items-center rounded-full border border-slate-200 bg-[#fbfbfb] pt-1.5 pr-3 pb-1.5 pl-3 text-xs text-slate-700 md:flex">
+        <div className="bg-brand-bg hidden items-center rounded-full border border-slate-200 pt-1.5 pr-3 pb-1.5 pl-3 text-xs text-slate-700 md:flex">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

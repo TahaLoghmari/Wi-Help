@@ -6,7 +6,7 @@ export function DashboardHeaderDate() {
   const formattedDate = `${weekday}, ${day} ${month}`;
 
   return (
-    <button className="hidden items-center gap-1.5 gap-x-1.5 gap-y-1.5 rounded-full border border-slate-200 bg-white pt-1.5 pr-3 pb-1.5 pl-3 text-xs text-slate-700 transition-colors hover:border-[#3fa6ff]/60 hover:bg-[#3fa6ff]/5 sm:inline-flex">
+    <button className="hover:border-brand-blue/60 hover:bg-brand-blue/5 hidden items-center gap-1.5 gap-x-1.5 gap-y-1.5 rounded-full border border-slate-200 bg-white pt-1.5 pr-3 pb-1.5 pl-3 text-xs text-slate-700 transition-colors sm:inline-flex">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"

@@ -13,7 +13,7 @@ export function BookAppointmentButton({
     <button
       onClick={onClick}
       disabled={disabled}
-      className="w-full rounded-lg bg-[#00394a] px-4 py-2 text-white disabled:bg-gray-300"
+      className="bg-brand-dark w-full rounded-lg px-4 py-2 text-white disabled:bg-gray-300"
     >
       {isPending ? "Booking..." : "Book Appointment"}
     </button>

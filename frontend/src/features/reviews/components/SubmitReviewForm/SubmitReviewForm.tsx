@@ -62,7 +62,7 @@ export function SubmitReviewForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <h3 className="text-xs font-semibold tracking-tight text-[#00394a]">
+        <h3 className="text-brand-dark text-xs font-semibold tracking-tight">
           Write a review for {professionalName}
         </h3>
         <p className="mt-0.5 text-[11px] text-slate-500">
@@ -116,7 +116,7 @@ export function SubmitReviewForm({
             href="/terms"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-[#3fa6ff] hover:underline"
+            className="text-brand-blue font-medium hover:underline"
           >
             Terms & Conditions
           </a>
@@ -128,7 +128,7 @@ export function SubmitReviewForm({
         disabled={
           isPending || rating === 0 || !comment.trim() || !acceptedTerms
         }
-        className="w-full bg-[#00394a] text-xs font-medium text-white hover:bg-[#00546e] disabled:cursor-not-allowed disabled:opacity-50"
+        className="bg-brand-dark hover:bg-brand-secondary w-full text-xs font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
         size="sm"
       >
         {isPending ? "Submitting..." : "Submit Review"}

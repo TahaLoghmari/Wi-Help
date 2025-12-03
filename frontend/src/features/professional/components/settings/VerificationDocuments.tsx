@@ -66,7 +66,7 @@ export function VerificationDocuments() {
   if (isLoading) {
     return (
       <div className="flex w-full items-center justify-center py-8">
-        <Spinner className="h-6 w-6 border-2 border-[#00394a] border-t-transparent" />
+        <Spinner className="border-brand-dark h-6 w-6 border-2 border-t-transparent" />
       </div>
     );
   }
@@ -74,7 +74,7 @@ export function VerificationDocuments() {
   return (
     <div className="space-y-4" id="settings-panel-verification">
       <div className="mb-1 border-b border-slate-200 pb-3">
-        <h3 className="text-xs font-semibold tracking-tight text-[#00394a]">
+        <h3 className="text-brand-dark text-xs font-semibold tracking-tight">
           Verification Documents
         </h3>
         <p className="mt-0.5 text-xs text-slate-500">
@@ -123,7 +123,7 @@ export function VerificationDocuments() {
               <label
                 htmlFor={`document-upload-${type}`}
                 className={cn(
-                  "group relative mt-1 flex flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-slate-300 bg-white/60 px-3 py-4 text-[11px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5",
+                  "group hover:border-brand-blue/70 hover:bg-brand-blue/5 relative mt-1 flex flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-slate-300 bg-white/60 px-3 py-4 text-[11px] text-slate-700 transition-colors",
                   "cursor-pointer",
                 )}
               >
@@ -137,13 +137,13 @@ export function VerificationDocuments() {
                 <div className="flex items-center gap-2">
                   <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-500">
                     {isUploading ? (
-                      <Spinner className="h-4 w-4 border-2 border-slate-300 border-t-[#00394a]" />
+                      <Spinner className="border-t-brand-dark h-4 w-4 border-2 border-slate-300" />
                     ) : (
                       <Upload className="h-3.5 w-3.5" />
                     )}
                   </span>
                   <div className="flex flex-col">
-                    <span className="font-medium tracking-tight text-[#00394a]">
+                    <span className="text-brand-dark font-medium tracking-tight">
                       {isUploading
                         ? "Uploading..."
                         : "Click to upload document"}

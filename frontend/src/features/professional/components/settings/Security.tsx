@@ -3,7 +3,7 @@ export function Security() {
     <div className="grid gap-4 lg:grid-cols-[2fr,1fr]">
       <form className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50/60 p-3 sm:p-4">
         <div className="mb-1 border-slate-200 pb-3">
-          <h3 className="text-xs font-semibold tracking-tight text-[#00394a]">
+          <h3 className="text-brand-dark text-xs font-semibold tracking-tight">
             Security
           </h3>
           <p className="mt-0.5 text-[11px] text-slate-500">
@@ -18,7 +18,7 @@ export function Security() {
             </label>
             <input
               type="password"
-              className="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+              className="focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
               placeholder="Enter current password"
             />
           </div>
@@ -29,7 +29,7 @@ export function Security() {
               </label>
               <input
                 type="password"
-                className="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                className="focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
                 placeholder="At least 8 characters"
               />
             </div>
@@ -39,14 +39,14 @@ export function Security() {
               </label>
               <input
                 type="password"
-                className="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                className="focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
                 placeholder="Re-enter new password"
               />
             </div>
           </div>
           <button
             type="button"
-            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] text-slate-700 hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5"
+            className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] text-slate-700"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

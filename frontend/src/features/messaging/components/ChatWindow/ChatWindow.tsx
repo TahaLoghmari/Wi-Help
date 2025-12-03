@@ -144,7 +144,7 @@ export function ChatWindow({
 
   if (!conversation) {
     return (
-      <section className="flex flex-1 flex-col items-center justify-center bg-[#fbfbfb]">
+      <section className="bg-brand-bg flex flex-1 flex-col items-center justify-center">
         <div className="text-center">
           <p className="text-sm text-slate-500">
             Select a conversation to start messaging
@@ -161,7 +161,7 @@ export function ChatWindow({
   const isOtherUserOnline = onlineUserIds.has(conversation.otherParticipantId);
 
   return (
-    <section className="flex flex-1 flex-col bg-[#fbfbfb]">
+    <section className="bg-brand-bg flex flex-1 flex-col">
       {/* Chat Header */}
       <div className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 sm:px-6">
         <div className="flex items-center gap-3">
@@ -183,8 +183,8 @@ export function ChatWindow({
                 {otherParticipantName}
               </span>
               {isOtherUserOnline ? (
-                <span className="inline-flex items-center gap-1 rounded-full border border-[#14d3ac]/40 bg-[#14d3ac]/10 px-1.5 py-0.5 text-[10px] text-[#00546e]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#14d3ac]"></span>
+                <span className="border-brand-teal/40 bg-brand-teal/10 text-brand-secondary inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px]">
+                  <span className="bg-brand-teal h-1.5 w-1.5 rounded-full"></span>
                   Online
                 </span>
               ) : (

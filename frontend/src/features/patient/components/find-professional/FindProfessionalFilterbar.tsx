@@ -20,7 +20,7 @@ export function FindProfessionalFilterbar() {
           <label className="block text-[11px] font-medium text-slate-700">
             Search
           </label>
-          <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-[#fbfbfb] px-3 py-2 text-[11px] text-slate-500 transition-all focus-within:border-[#3fa6ff]/70 focus-within:ring-1 focus-within:ring-[#3fa6ff]/60">
+          <div className="bg-brand-bg focus-within:border-brand-blue/70 focus-within:ring-brand-blue/60 flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-[11px] text-slate-500 transition-all focus-within:ring-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -32,7 +32,7 @@ export function FindProfessionalFilterbar() {
               strokeLinecap="round"
               strokeLinejoin="round"
               data-lucide="search"
-              className="lucide lucide-search size-4 group-hover:text-[#00394a]"
+              className="lucide lucide-search group-hover:text-brand-dark size-4"
               data-icon-replaced="true"
             >
               <path d="m21 21-4.34-4.34" className=""></path>
@@ -56,7 +56,7 @@ export function FindProfessionalFilterbar() {
             <input
               type="text"
               placeholder="Tunis, Sousse..."
-              className="w-full rounded-full border border-slate-200 bg-[#fbfbfb] px-3 py-2 pr-8 text-[11px] text-slate-700 placeholder:text-slate-400 focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+              className="bg-brand-bg focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-full border border-slate-200 px-3 py-2 pr-8 text-[11px] text-slate-700 placeholder:text-slate-400 focus:ring-1 focus:outline-none"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
             />
@@ -73,7 +73,7 @@ export function FindProfessionalFilterbar() {
           </label>
           <div className="relative">
             <select
-              className="w-full appearance-none rounded-full border border-slate-200 bg-[#fbfbfb] px-3 py-2 pr-8 text-[11px] text-slate-700 focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+              className="bg-brand-bg focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full appearance-none rounded-full border border-slate-200 px-3 py-2 pr-8 text-[11px] text-slate-700 focus:ring-1 focus:outline-none"
               value={availability}
               onChange={(e) => setAvailability(e.target.value)}
             >

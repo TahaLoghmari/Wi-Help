@@ -5,7 +5,7 @@ export function MyPatientsLayout() {
     <div className="flex h-full w-full flex-col gap-5 bg-[#fafafb] px-8 py-5">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-semibold tracking-tight text-[#00394a]">
+          <h3 className="text-brand-dark text-sm font-semibold tracking-tight">
             My Patients
           </h3>
           <p className="mt-0.5 text-[11px] text-slate-500">
@@ -13,7 +13,7 @@ export function MyPatientsLayout() {
             communication actions.
           </p>
         </div>
-        <button className="hidden items-center gap-1.5 gap-x-1.5 gap-y-1.5 rounded-full border border-slate-200 bg-white pt-1.5 pr-2.5 pb-1.5 pl-2.5 text-[11px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5 sm:inline-flex">
+        <button className="hover:border-brand-blue/70 hover:bg-brand-blue/5 hidden items-center gap-1.5 gap-x-1.5 gap-y-1.5 rounded-full border border-slate-200 bg-white pt-1.5 pr-2.5 pb-1.5 pl-2.5 text-[11px] text-slate-700 transition-colors sm:inline-flex">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

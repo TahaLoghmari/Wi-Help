@@ -94,7 +94,7 @@ export function ProfileAndBio() {
         >
           <header className="mb-2 flex cursor-pointer items-center justify-between select-none">
             <div className="">
-              <h3 className="text-xs font-semibold tracking-tight text-[#00394a]">
+              <h3 className="text-brand-dark text-xs font-semibold tracking-tight">
                 Basic Information
               </h3>
               <p className="mt-0.5 text-[11px] text-slate-500">
@@ -154,7 +154,7 @@ export function ProfileAndBio() {
                   render={({ field: { value, onChange, ...field } }) => (
                     <FormItem>
                       <FormControl>
-                        <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700 hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5">
+                        <label className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="24"
@@ -226,7 +226,7 @@ export function ProfileAndBio() {
                     <FormControl>
                       <input
                         type="text"
-                        className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                        className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
                         placeholder="Enter first name"
                         {...field}
                       />
@@ -247,7 +247,7 @@ export function ProfileAndBio() {
                     <FormControl>
                       <input
                         type="text"
-                        className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                        className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
                         placeholder="Enter last name"
                         {...field}
                       />
@@ -270,7 +270,7 @@ export function ProfileAndBio() {
                     <FormControl>
                       <input
                         type="tel"
-                        className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                        className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
                         placeholder="Enter phone number"
                         {...field}
                       />
@@ -291,7 +291,7 @@ export function ProfileAndBio() {
                     <FormControl>
                       <input
                         type="number"
-                        className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                        className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
                         placeholder="0"
                         value={field.value ?? ""}
                         onChange={(e) =>
@@ -318,7 +318,7 @@ export function ProfileAndBio() {
                     <FormControl>
                       <input
                         type="text"
-                        className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                        className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
                         placeholder="Enter state"
                         {...field}
                       />
@@ -372,7 +372,7 @@ export function ProfileAndBio() {
                     <FormControl>
                       <input
                         type="text"
-                        className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                        className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
                         placeholder="Enter city"
                         {...field}
                       />
@@ -392,7 +392,7 @@ export function ProfileAndBio() {
                     <FormControl>
                       <input
                         type="text"
-                        className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                        className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
                         placeholder="Enter postal code"
                         {...field}
                       />
@@ -414,7 +414,7 @@ export function ProfileAndBio() {
                     <FormControl>
                       <input
                         type="text"
-                        className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                        className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
                         placeholder="Enter street address"
                         {...field}
                       />
@@ -580,7 +580,7 @@ export function ProfileAndBio() {
                         <span className="text-[11px] text-slate-500">$</span>
                         <input
                           type="number"
-                          className="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                          className="focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
                           placeholder="0"
                           value={field.value ?? ""}
                           onChange={(e) =>
@@ -608,7 +608,7 @@ export function ProfileAndBio() {
                         <span className="text-[11px] text-slate-500">$</span>
                         <input
                           type="number"
-                          className="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                          className="focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
                           placeholder="0"
                           value={field.value ?? ""}
                           onChange={(e) =>
@@ -635,7 +635,7 @@ export function ProfileAndBio() {
                   </FormLabel>
                   <FormControl>
                     <textarea
-                      className="placeholder:text-muted-foreground w-full resize-none rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                      className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full resize-none rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
                       placeholder="Short introduction that patients will see."
                       rows={4}
                       {...field}
@@ -651,7 +651,7 @@ export function ProfileAndBio() {
           </div>
           <div className="flex w-full items-center justify-end">
             <button
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#00394a] px-3 py-1.5 text-[11px] text-white transition-colors hover:bg-[#00546e]"
+              className="bg-brand-dark hover:bg-brand-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] text-white transition-colors"
               type="submit"
             >
               <svg

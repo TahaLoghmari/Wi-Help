@@ -34,7 +34,7 @@ export function Notifications() {
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-sm font-semibold tracking-tight text-[#00394a]">
+          <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
             Notifications
           </h2>
           <p className="mt-0.5 max-w-xl text-[11px] text-slate-500">
@@ -46,13 +46,13 @@ export function Notifications() {
           <button
             onClick={() => markAllNotificationsReadMutation.mutate()}
             disabled={markAllNotificationsReadMutation.isPending}
-            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5 disabled:opacity-50"
+            className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700 transition-colors disabled:opacity-50"
           >
             {markAllNotificationsReadMutation.isPending ? (
               <Spinner className="h-3.5 w-3.5" />
             ) : (
               <CheckCircle2
-                className="h-3.5 w-3.5 text-[#14d3ac]"
+                className="text-brand-teal h-3.5 w-3.5"
                 strokeWidth={1.5}
               />
             )}
@@ -63,25 +63,25 @@ export function Notifications() {
 
       {/* Notification Filters */}
       <div className="flex flex-wrap items-center gap-2 text-[11px]">
-        <button className="inline-flex items-center gap-1.5 rounded-full bg-[#00394a] px-2.5 py-1.5 text-white hover:bg-[#00546e]">
+        <button className="bg-brand-dark hover:bg-brand-secondary inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-white">
           <Inbox className="h-3.5 w-3.5 text-white" strokeWidth={1.5} />
           All
         </button>
-        <button className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700 hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5">
+        <button className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700">
           <CalendarClock
             className="h-3.5 w-3.5 text-slate-500"
             strokeWidth={1.5}
           />
           Appointments
         </button>
-        <button className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700 hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5">
+        <button className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700">
           <MessageCircle
             className="h-3.5 w-3.5 text-slate-500"
             strokeWidth={1.5}
           />
           Messages
         </button>
-        <button className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700 hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5">
+        <button className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700">
           <AlertTriangle
             className="h-3.5 w-3.5 text-[#f97316]"
             strokeWidth={1.5}
@@ -105,7 +105,7 @@ export function Notifications() {
             </span>
             <button
               onClick={() => refetch()}
-              className="text-xs text-[#3fa6ff] hover:underline"
+              className="text-brand-blue text-xs hover:underline"
             >
               Retry
             </button>
@@ -131,10 +131,10 @@ export function Notifications() {
               return (
                 <article
                   key={notification.id}
-                  className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white px-3.5 py-3 shadow-sm shadow-slate-100 transition-all hover:border-[#3fa6ff]/70 hover:shadow-md"
+                  className="hover:border-brand-blue/70 flex items-start gap-3 rounded-2xl border border-slate-200 bg-white px-3.5 py-3 shadow-sm shadow-slate-100 transition-all hover:shadow-md"
                 >
                   <div className="mt-0.5">
-                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#3fa6ff]/10 text-[#00394a]">
+                    <span className="bg-brand-blue/10 text-brand-dark inline-flex h-7 w-7 items-center justify-center rounded-full">
                       <Icon className="h-3.5 w-3.5" strokeWidth={1.5} />
                     </span>
                   </div>
@@ -157,10 +157,10 @@ export function Notifications() {
                               })
                             }
                             disabled={markNotificationReadMutation.isPending}
-                            className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1 text-[10px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5 disabled:opacity-50"
+                            className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1 text-[10px] text-slate-700 transition-colors disabled:opacity-50"
                           >
                             <CheckCircle2
-                              className="h-3 w-3 text-[#14d3ac]"
+                              className="text-brand-teal h-3 w-3"
                               strokeWidth={1.5}
                             />
                             Mark as read
@@ -175,7 +175,7 @@ export function Notifications() {
                           )}
                         </span>
                         {!notification.isRead && (
-                          <span className="inline-flex items-center gap-1 rounded-full border border-[#ffecb4] bg-[#ffecb4]/60 px-2 py-0.5 text-[10px] text-[#00394a]">
+                          <span className="border-brand-cream bg-brand-cream/60 text-brand-dark inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px]">
                             <span className="h-1.5 w-1.5 rounded-full bg-[#f97316]"></span>
                             New
                           </span>

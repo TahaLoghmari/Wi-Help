@@ -5,7 +5,7 @@ export function AppointmentsStat() {
         <div className="text-xs font-medium tracking-tight text-slate-600">
           Appointments
         </div>
-        <button className="inline-flex items-center gap-1 rounded-full bg-[#00394a] px-2.5 py-1 text-[11px] font-medium text-white transition-colors hover:bg-[#00546e]">
+        <button className="bg-brand-dark hover:bg-brand-secondary inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium text-white transition-colors">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -26,7 +26,7 @@ export function AppointmentsStat() {
         </button>
       </div>
       <div className="flex items-baseline justify-between">
-        <div className="text-2xl font-semibold tracking-tight text-[#00394a]">
+        <div className="text-brand-dark text-2xl font-semibold tracking-tight">
           24
         </div>
         <div className="text-[11px] text-slate-500">
@@ -35,12 +35,12 @@ export function AppointmentsStat() {
       </div>
       <div className="flex items-center justify-between border-t border-dashed border-slate-200 pt-1">
         <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
-          <span className="inline-block h-2 w-2 rounded-full bg-[#3fa6ff]"></span>
+          <span className="bg-brand-blue inline-block h-2 w-2 rounded-full"></span>
           Confirmed
           <span className="font-medium text-slate-700">19</span>
         </div>
         <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
-          <span className="inline-block h-2 w-2 rounded-full bg-[#00e984]"></span>
+          <span className="bg-brand-light inline-block h-2 w-2 rounded-full"></span>
           Available slots
           <span className="font-medium text-slate-700">6</span>
         </div>

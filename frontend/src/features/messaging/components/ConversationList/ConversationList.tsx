@@ -55,7 +55,7 @@ export function ConversationList({
         <div className="mb-2 text-xs font-medium tracking-tight text-slate-700">
           Messages
         </div>
-        <div className="flex items-center rounded-full border border-slate-200 bg-[#fbfbfb] px-3 py-1.5 text-[11px] text-slate-500 transition-all focus-within:border-[#3fa6ff]/70 focus-within:ring-1 focus-within:ring-[#3fa6ff]/60">
+        <div className="bg-brand-bg focus-within:border-brand-blue/70 focus-within:ring-brand-blue/60 flex items-center rounded-full border border-slate-200 px-3 py-1.5 text-[11px] text-slate-500 transition-all focus-within:ring-1">
           <Search
             className="mr-2 h-3.5 w-3.5 text-slate-400"
             strokeWidth={1.5}
@@ -102,7 +102,7 @@ export function ConversationList({
               >
                 <div
                   className={`border-b border-slate-100 px-4 py-3 ${
-                    isSelected ? "bg-[#00394a]/5" : ""
+                    isSelected ? "bg-brand-dark/5" : ""
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -125,7 +125,7 @@ export function ConversationList({
                       <span
                         className={`absolute right-0 bottom-0 h-2 w-2 rounded-full border border-white ${
                           onlineUserIds.has(conversation.otherParticipantId)
-                            ? "bg-[#14d3ac]"
+                            ? "bg-brand-teal"
                             : "bg-slate-400"
                         }`}
                       ></span>
@@ -146,7 +146,7 @@ export function ConversationList({
                             : "No messages yet"}
                         </p>
                         {conversation.unreadCount > 0 && (
-                          <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#00394a] text-[10px] text-white">
+                          <span className="bg-brand-dark inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[10px] text-white">
                             {conversation.unreadCount}
                           </span>
                         )}

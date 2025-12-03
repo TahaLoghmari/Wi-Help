@@ -11,10 +11,7 @@ import {
 
 export function LandingPage() {
   return (
-    <div
-      className="relative overflow-x-hidden"
-      style={{ backgroundColor: "#fbfbfb" }}
-    >
+    <div className="bg-brand-bg relative overflow-x-hidden">
       <Navigation />
       <main className="pt-24">
         <HeroSection />

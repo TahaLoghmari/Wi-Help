@@ -164,7 +164,7 @@ export function ReviewCard({
           <textarea
             value={editComment}
             onChange={(e) => setEditComment(e.target.value)}
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs leading-relaxed text-slate-700 outline-none focus:border-[#3fa6ff] focus:ring-1 focus:ring-[#3fa6ff]"
+            className="focus:border-brand-blue focus:ring-brand-blue w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs leading-relaxed text-slate-700 outline-none focus:ring-1"
             rows={3}
             placeholder="Write your review..."
           />
@@ -179,7 +179,7 @@ export function ReviewCard({
             <button
               onClick={handleEdit}
               disabled={isUpdating || !editComment.trim()}
-              className="inline-flex items-center gap-1 rounded-full bg-[#00394a] px-2 py-1 text-[11px] text-white transition-colors hover:bg-[#00546e] disabled:cursor-not-allowed disabled:opacity-50"
+              className="bg-brand-dark hover:bg-brand-secondary inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Check className="h-3 w-3" strokeWidth={1.5} />
               {isUpdating ? "Saving..." : "Save"}
@@ -200,8 +200,8 @@ export function ReviewCard({
               onClick={handleLike}
               className={`inline-flex items-center gap-1 rounded-full border px-2 py-1 transition-colors ${
                 review.isLiked
-                  ? "border-[#3fa6ff]/70 bg-[#3fa6ff]/5 text-[#3fa6ff]"
-                  : "border-slate-200 bg-white text-slate-700 hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5"
+                  ? "border-brand-blue/70 bg-brand-blue/5 text-brand-blue"
+                  : "hover:border-brand-blue/70 hover:bg-brand-blue/5 border-slate-200 bg-white text-slate-700"
               }`}
             >
               <Heart
@@ -214,7 +214,7 @@ export function ReviewCard({
           {canReply && (
             <button
               onClick={() => setShowReplyInputState(!showReplyInputState)}
-              className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1 text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5"
+              className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1 text-slate-700 transition-colors"
             >
               <Reply className="h-3.5 w-3.5 text-slate-500" strokeWidth={1.5} />
               <span>Reply</span>
@@ -278,7 +278,7 @@ export function ReviewCard({
             <button
               onClick={handleReply}
               disabled={isReplying || !replyText.trim()}
-              className="inline-flex items-center rounded-full bg-[#00394a] px-2 py-0.5 text-[11px] text-white hover:bg-[#00546e] disabled:cursor-not-allowed disabled:opacity-50"
+              className="bg-brand-dark hover:bg-brand-secondary inline-flex items-center rounded-full px-2 py-0.5 text-[11px] text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isReplying ? "Sending..." : "Send"}
             </button>

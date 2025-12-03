@@ -140,7 +140,7 @@ export function ScheduleTimings() {
     <div className="overflow-auto p-4">
       <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
         <div className="w-full">
-          <div className="flex items-center justify-start gap-3 text-lg font-semibold text-[#00394a]">
+          <div className="text-brand-dark flex items-center justify-start gap-3 text-lg font-semibold">
             <Timer className="h-5 w-5" />
             Setup Schedule
           </div>

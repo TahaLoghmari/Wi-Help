@@ -83,7 +83,7 @@ function AwardForm({ award, onCancel, isEditing = false }: AwardFormProps) {
                 <FormControl>
                   <input
                     type="text"
-                    className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                    className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
                     placeholder="e.g., Excellence in Patient Care Award"
                     {...field}
                   />
@@ -103,7 +103,7 @@ function AwardForm({ award, onCancel, isEditing = false }: AwardFormProps) {
                 <FormControl>
                   <input
                     type="text"
-                    className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                    className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
                     placeholder="e.g., 2023"
                     maxLength={4}
                     {...field}
@@ -125,7 +125,7 @@ function AwardForm({ award, onCancel, isEditing = false }: AwardFormProps) {
               <FormControl>
                 <input
                   type="text"
-                  className="placeholder:text-muted-foreground w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                  className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
                   placeholder="e.g., Heart & Vascular Center"
                   {...field}
                   value={field.value ?? ""}
@@ -145,7 +145,7 @@ function AwardForm({ award, onCancel, isEditing = false }: AwardFormProps) {
               </FormLabel>
               <FormControl>
                 <textarea
-                  className="placeholder:text-muted-foreground w-full resize-none rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none"
+                  className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full resize-none rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
                   rows={3}
                   placeholder="Describe the award and why you received it..."
                   {...field}
@@ -168,7 +168,7 @@ function AwardForm({ award, onCancel, isEditing = false }: AwardFormProps) {
           <button
             type="submit"
             disabled={isPending}
-            className="inline-flex items-center gap-1.5 rounded-full bg-[#00394a] px-3 py-1.5 text-[11px] text-white transition-colors hover:bg-[#00546e] disabled:opacity-50"
+            className="bg-brand-dark hover:bg-brand-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] text-white transition-colors disabled:opacity-50"
           >
             {isPending ? (
               <Spinner className="h-3.5 w-3.5 border-2 border-white/30 border-t-white" />
@@ -254,7 +254,7 @@ export function Awards() {
   if (isLoading) {
     return (
       <div className="flex w-full items-center justify-center py-8">
-        <Spinner className="h-6 w-6 border-2 border-[#00394a] border-t-transparent" />
+        <Spinner className="border-brand-dark h-6 w-6 border-2 border-t-transparent" />
       </div>
     );
   }
@@ -262,7 +262,7 @@ export function Awards() {
   return (
     <div className="space-y-3">
       <div className="mb-1 border-b border-slate-200 pb-3">
-        <h3 className="text-xs font-semibold tracking-tight text-[#00394a]">
+        <h3 className="text-brand-dark text-xs font-semibold tracking-tight">
           Awards
         </h3>
         <p className="mt-0.5 text-[11px] text-slate-500">
@@ -274,7 +274,7 @@ export function Awards() {
           type="button"
           onClick={() => setIsAddingNew(true)}
           disabled={isAddingNew}
-          className="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-slate-50/80 px-2.5 py-1.5 text-[11px] text-[#00394a] transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/10 disabled:opacity-50"
+          className="text-brand-dark hover:border-brand-blue/70 hover:bg-brand-blue/10 inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-slate-50/80 px-2.5 py-1.5 text-[11px] transition-colors disabled:opacity-50"
         >
           <Plus className="h-3.5 w-3.5" />
           Add award
@@ -283,8 +283,8 @@ export function Awards() {
       <section className="flex flex-col gap-3 bg-white p-3 sm:p-4">
         <div className="space-y-3">
           {isAddingNew && (
-            <div className="rounded-xl border border-[#3fa6ff]/30 bg-[#3fa6ff]/5 p-3">
-              <p className="mb-3 text-[11px] font-medium text-[#00394a]">
+            <div className="border-brand-blue/30 bg-brand-blue/5 rounded-xl border p-3">
+              <p className="text-brand-dark mb-3 text-[11px] font-medium">
                 Add New Award
               </p>
               <AwardForm onCancel={() => setIsAddingNew(false)} />
@@ -296,9 +296,9 @@ export function Awards() {
               editingAwardId === award.id ? (
                 <div
                   key={award.id}
-                  className="rounded-xl border border-[#3fa6ff]/30 bg-[#3fa6ff]/5 p-3"
+                  className="border-brand-blue/30 bg-brand-blue/5 rounded-xl border p-3"
                 >
-                  <p className="mb-3 text-[11px] font-medium text-[#00394a]">
+                  <p className="text-brand-dark mb-3 text-[11px] font-medium">
                     Edit Award
                   </p>
                   <AwardForm

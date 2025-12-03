@@ -80,7 +80,7 @@ export function MessageBubble({
         <div
           className={`rounded-2xl px-3 py-2 text-xs shadow-sm ${
             isOwnMessage
-              ? "rounded-tr-sm bg-[#00394a] text-white shadow-slate-200"
+              ? "bg-brand-dark rounded-tr-sm text-white shadow-slate-200"
               : "rounded-tl-sm border border-slate-200 bg-white text-slate-800 shadow-slate-100"
           }`}
         >
@@ -112,7 +112,7 @@ export function MessageBubble({
             <AlertDialogAction
               onClick={confirmDelete}
               disabled={deleteMessageMutation.isPending}
-              className="bg-[#00394a] text-white hover:bg-[#00394a]/90"
+              className="bg-brand-dark hover:bg-brand-dark/90 text-white"
             >
               {deleteMessageMutation.isPending ? "Deleting..." : "Delete"}
             </AlertDialogAction>

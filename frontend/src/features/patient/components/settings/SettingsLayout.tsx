@@ -7,7 +7,7 @@ export function SettingsLayout() {
     <div className="flex w-full flex-1 flex-col gap-5 overflow-auto bg-[#fafafb] px-8 py-5 transition-all duration-200">
       <div className="flex flex-col gap-3 gap-x-3 gap-y-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="">
-          <h2 className="text-sm font-semibold tracking-tight text-[#00394a]">
+          <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
             Account Settings
           </h2>
           <p className="mt-0.5 max-w-xl text-[11px] text-slate-500">
@@ -19,7 +19,7 @@ export function SettingsLayout() {
       <div className="space-y-4 rounded-2xl border border-slate-200 bg-white pt-4 pr-4 pb-4 pl-4 text-xs shadow-sm shadow-slate-100 sm:p-5">
         <div className="flex flex-wrap items-center gap-1 border-b border-slate-200 pb-4 text-[11px]">
           <button
-            className={`${tab === "Profile & Bio" ? "bg-[#00394a] text-white" : "border border-slate-200 bg-white text-slate-700 hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5"} inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5`}
+            className={`${tab === "Profile & Bio" ? "bg-brand-dark text-white" : "hover:border-brand-blue/70 hover:bg-brand-blue/5 border border-slate-200 bg-white text-slate-700"} inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5`}
             onClick={() => setTab("Profile & Bio")}
           >
             <svg
@@ -41,7 +41,7 @@ export function SettingsLayout() {
             Profile &amp; Bio
           </button>
           <button
-            className={`${tab === "Security" ? "bg-[#00394a] text-white" : "border border-slate-200 bg-white text-slate-700 hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5"} inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5`}
+            className={`${tab === "Security" ? "bg-brand-dark text-white" : "hover:border-brand-blue/70 hover:bg-brand-blue/5 border border-slate-200 bg-white text-slate-700"} inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5`}
             onClick={() => setTab("Security")}
           >
             <svg

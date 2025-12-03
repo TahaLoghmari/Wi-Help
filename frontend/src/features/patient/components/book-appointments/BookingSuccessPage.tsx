@@ -18,7 +18,7 @@ export function BookingSuccessPage() {
             <Check className="h-12 w-12 text-green-600" strokeWidth={3} />
           </div>
           <div className="space-y-2 text-center">
-            <h1 className="text-2xl font-bold tracking-tight text-[#00394a]">
+            <h1 className="text-brand-dark text-2xl font-bold tracking-tight">
               Booking Confirmed!
             </h1>
             <p className="text-muted-foreground px-4 text-sm">
@@ -33,7 +33,7 @@ export function BookingSuccessPage() {
         <CardFooter className="flex flex-col gap-3 pt-4 pb-8">
           <Button
             asChild
-            className="w-full bg-[#00394a] hover:bg-[#00546e]"
+            className="bg-brand-dark hover:bg-brand-secondary w-full"
             size="lg"
           >
             <Link to={ROUTE_PATHS.PATIENT.APPOINTMENTS}>

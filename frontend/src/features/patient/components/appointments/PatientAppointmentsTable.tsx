@@ -52,7 +52,7 @@ export function PatientAppointmentsTable() {
       <div className="border-b border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-2 pl-4 sm:px-5">
         <div className="mb-2 flex items-center justify-between">
           <div className="">
-            <h2 className="text-sm font-semibold tracking-tight text-[#00394a]">
+            <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
               My Appointments
             </h2>
             <p className="mt-0.5 text-[11px] text-slate-500">
@@ -60,7 +60,7 @@ export function PatientAppointmentsTable() {
             </p>
           </div>
           <div className="hidden items-center gap-2 text-[11px] sm:flex">
-            <button className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5">
+            <button className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700 transition-colors">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -86,7 +86,7 @@ export function PatientAppointmentsTable() {
               </svg>
               <span>Filters</span>
             </button>
-            <button className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5">
+            <button className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700 transition-colors">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -115,13 +115,13 @@ export function PatientAppointmentsTable() {
             onClick={() => setActiveTab("offered")}
             className={`relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-medium transition-colors ${
               activeTab === "offered"
-                ? "border-slate-200 bg-white text-[#00394a]"
+                ? "text-brand-dark border-slate-200 bg-white"
                 : "border-transparent text-slate-500 hover:border-slate-200 hover:bg-white"
             }`}
           >
             <span
               className={`inline-block h-1.5 w-1.5 rounded-full ${
-                activeTab === "offered" ? "bg-[#3fa6ff]" : "bg-slate-300"
+                activeTab === "offered" ? "bg-brand-blue" : "bg-slate-300"
               }`}
             ></span>
             Offered
@@ -131,13 +131,13 @@ export function PatientAppointmentsTable() {
             onClick={() => setActiveTab("confirmed")}
             className={`relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 transition-colors ${
               activeTab === "confirmed"
-                ? "border-slate-200 bg-white font-medium text-[#00394a]"
+                ? "text-brand-dark border-slate-200 bg-white font-medium"
                 : "border-transparent text-slate-500 hover:border-slate-200 hover:bg-white"
             }`}
           >
             <span
               className={`inline-block h-1.5 w-1.5 rounded-full ${
-                activeTab === "confirmed" ? "bg-[#3fa6ff]" : "bg-slate-300"
+                activeTab === "confirmed" ? "bg-brand-blue" : "bg-slate-300"
               }`}
             ></span>
             Confirmed
@@ -230,7 +230,7 @@ export function PatientAppointmentsTable() {
                           ? "border-red-200 bg-red-50 text-red-700"
                           : appointment.urgency === AppointmentUrgency.Medium
                             ? "border-yellow-200 bg-yellow-50 text-yellow-700"
-                            : "border-[#3fa6ff]/40 bg-[#3fa6ff]/10 text-[#00394a]"
+                            : "border-brand-blue/40 bg-brand-blue/10 text-brand-dark"
                       }`}
                     >
                       {appointment.urgency}
@@ -243,7 +243,7 @@ export function PatientAppointmentsTable() {
                     <div className="flex items-center justify-end gap-1.5">
                       <button
                         onClick={() => handleView(appointment)}
-                        className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5"
+                        className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors"
                       >
                         View
                       </button>
@@ -272,7 +272,7 @@ export function PatientAppointmentsTable() {
           <button
             onClick={() => fetchNextPage()}
             disabled={!hasNextPage || isFetchingNextPage}
-            className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-slate-600 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5 disabled:cursor-not-allowed disabled:opacity-50"
+            className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-slate-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isFetchingNextPage
               ? "Loading more..."
@@ -294,7 +294,7 @@ export function PatientAppointmentsTable() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="border-b border-slate-200 bg-slate-50/70 px-6 py-4">
-              <h3 className="text-lg font-semibold text-[#00394a]">
+              <h3 className="text-brand-dark text-lg font-semibold">
                 Appointment Details
               </h3>
               <p className="mt-1 text-sm text-slate-500">
@@ -382,7 +382,7 @@ export function PatientAppointmentsTable() {
                           : selectedAppointment.urgency ===
                               AppointmentUrgency.Medium
                             ? "border-yellow-200 bg-yellow-50 text-yellow-700"
-                            : "border-[#3fa6ff]/40 bg-[#3fa6ff]/10 text-[#00394a]"
+                            : "border-brand-blue/40 bg-brand-blue/10 text-brand-dark"
                       }`}
                     >
                       {selectedAppointment.urgency}

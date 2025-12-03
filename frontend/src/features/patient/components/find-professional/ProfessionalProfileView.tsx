@@ -50,24 +50,24 @@ function ExperienceCard({ experience }: { experience: GetExperiencesDto }) {
     : `${experience.startYear} – ${experience.endYear}`;
 
   return (
-    <article className="group rounded-xl border border-[#00394a]/10 bg-[#fbfbfb] p-4 transition-all hover:border-[#00394a]/20">
+    <article className="group border-brand-dark/10 bg-brand-bg hover:border-brand-dark/20 rounded-xl border p-4 transition-all">
       <div className="flex items-start justify-between gap-3">
         <div className="flex gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#00394a]/10 text-[#00394a]">
+          <div className="bg-brand-dark/10 text-brand-dark flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
             <Briefcase className="h-5 w-5" />
           </div>
           <div className="min-w-0">
-            <h4 className="text-sm font-semibold text-[#00394a]">
+            <h4 className="text-brand-dark text-sm font-semibold">
               {experience.title}
             </h4>
-            <div className="mt-0.5 flex items-center gap-2 text-xs text-[#00546e]">
+            <div className="text-brand-secondary mt-0.5 flex items-center gap-2 text-xs">
               <span className="flex items-center gap-1">
                 <Building2 className="h-3 w-3" />
                 {experience.organization}
               </span>
               {experience.location && (
                 <>
-                  <span className="text-[#00394a]/20">•</span>
+                  <span className="text-brand-dark/20">•</span>
                   <span className="flex items-center gap-1">
                     <MapPin className="h-3 w-3" />
                     {experience.location}
@@ -77,12 +77,12 @@ function ExperienceCard({ experience }: { experience: GetExperiencesDto }) {
             </div>
           </div>
         </div>
-        <span className="shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-medium text-[#00394a]">
+        <span className="text-brand-dark shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-medium">
           {yearRange}
         </span>
       </div>
       {experience.description && (
-        <p className="mt-3 text-xs leading-relaxed text-[#00546e]">
+        <p className="text-brand-secondary mt-3 text-xs leading-relaxed">
           {experience.description}
         </p>
       )}
@@ -97,35 +97,35 @@ function EducationCard({ education }: { education: GetEducationsDto }) {
     : `${education.startYear} – ${education.endYear}`;
 
   return (
-    <article className="group rounded-xl border border-[#00394a]/10 bg-[#fbfbfb] p-4 transition-all hover:border-[#00394a]/20">
+    <article className="group border-brand-dark/10 bg-brand-bg hover:border-brand-dark/20 rounded-xl border p-4 transition-all">
       <div className="flex items-start justify-between gap-3">
         <div className="flex gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#00394a]/10 text-[#00394a]">
+          <div className="bg-brand-dark/10 text-brand-dark flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
             <GraduationCap className="h-5 w-5" />
           </div>
           <div className="min-w-0">
-            <h4 className="text-sm font-semibold text-[#00394a]">
+            <h4 className="text-brand-dark text-sm font-semibold">
               {education.degree}
             </h4>
-            <p className="mt-0.5 text-xs font-medium text-[#00546e]">
+            <p className="text-brand-secondary mt-0.5 text-xs font-medium">
               {education.institution}
             </p>
           </div>
         </div>
-        <span className="shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-medium text-[#00394a]">
+        <span className="text-brand-dark shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-medium">
           {yearRange}
         </span>
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-3">
         {education.fieldOfStudy && (
-          <span className="flex items-center gap-1.5 rounded-full border border-[#00394a]/10 bg-[#fbfbfb] px-2.5 py-1 text-[11px] text-[#00546e]">
-            <BookOpen className="h-3 w-3 text-[#00394a]" />
+          <span className="border-brand-dark/10 bg-brand-bg text-brand-secondary flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px]">
+            <BookOpen className="text-brand-dark h-3 w-3" />
             {education.fieldOfStudy}
           </span>
         )}
         {education.country && (
-          <span className="flex items-center gap-1.5 rounded-full border border-[#00394a]/10 bg-[#fbfbfb] px-2.5 py-1 text-[11px] text-[#00546e]">
-            <MapPin className="h-3 w-3 text-[#00394a]" />
+          <span className="border-brand-dark/10 bg-brand-bg text-brand-secondary flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px]">
+            <MapPin className="text-brand-dark h-3 w-3" />
             {education.country}
           </span>
         )}
@@ -137,30 +137,30 @@ function EducationCard({ education }: { education: GetEducationsDto }) {
 // Award Card Component
 function AwardCard({ award }: { award: GetAwardsDto }) {
   return (
-    <article className="group rounded-xl border border-[#00394a]/10 bg-[#fbfbfb] p-4 transition-all hover:border-[#00394a]/20">
+    <article className="group border-brand-dark/10 bg-brand-bg hover:border-brand-dark/20 rounded-xl border p-4 transition-all">
       <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#00394a]/10 text-[#00394a]">
+        <div className="bg-brand-dark/10 text-brand-dark flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
           <Trophy className="h-5 w-5" />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <h4 className="text-sm font-semibold text-[#00394a]">
+              <h4 className="text-brand-dark text-sm font-semibold">
                 {award.title}
               </h4>
               {award.issuer && (
-                <p className="mt-0.5 flex items-center gap-1 text-xs text-[#00546e]">
+                <p className="text-brand-secondary mt-0.5 flex items-center gap-1 text-xs">
                   <Award className="h-3 w-3" />
                   {award.issuer}
                 </p>
               )}
             </div>
-            <span className="shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-medium text-[#00394a]">
+            <span className="text-brand-dark shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-medium">
               {award.yearReceived}
             </span>
           </div>
           {award.description && (
-            <p className="mt-2 text-xs leading-relaxed text-[#00546e]">
+            <p className="text-brand-secondary mt-2 text-xs leading-relaxed">
               {award.description}
             </p>
           )}
@@ -187,24 +187,24 @@ function DocumentStatusBadge({
   const isRejected = document?.status === DocumentStatus.Rejected;
 
   return (
-    <div className="group flex items-center justify-between p-4 transition-colors hover:bg-[#fbfbfb]">
+    <div className="group hover:bg-brand-bg flex items-center justify-between p-4 transition-colors">
       <div className="flex items-center gap-3">
         <div
           className={`rounded-lg p-2 transition-colors ${
             isVerified
-              ? "bg-[#14d3ac]/10 text-[#14d3ac] group-hover:bg-[#14d3ac]/20"
+              ? "bg-brand-teal/10 text-brand-teal group-hover:bg-brand-teal/20"
               : isPending
-                ? "bg-[#ffecb4]/50 text-[#00394a] group-hover:bg-[#ffecb4]"
+                ? "bg-brand-cream/50 text-brand-dark group-hover:bg-brand-cream"
                 : isRejected
                   ? "bg-rose-100 text-rose-500 group-hover:bg-rose-200"
-                  : "bg-[#00394a]/5 text-[#00546e]/40 group-hover:bg-[#00394a]/10"
+                  : "bg-brand-dark/5 text-brand-secondary/40 group-hover:bg-brand-dark/10"
           }`}
         >
           <Icon className="h-4 w-4" />
         </div>
         <div>
-          <div className="text-xs font-medium text-[#00394a]">{title}</div>
-          <div className="text-[10px] text-[#00546e]">
+          <div className="text-brand-dark text-xs font-medium">{title}</div>
+          <div className="text-brand-secondary text-[10px]">
             {isVerified
               ? verifiedText
               : isPending
@@ -218,12 +218,12 @@ function DocumentStatusBadge({
       <div
         className={
           isVerified
-            ? "text-[#14d3ac]"
+            ? "text-brand-teal"
             : isPending
-              ? "text-[#00546e]/40"
+              ? "text-brand-secondary/40"
               : isRejected
                 ? "text-rose-500"
-                : "text-[#00546e]/20"
+                : "text-brand-secondary/20"
         }
         title={
           isVerified
@@ -326,7 +326,7 @@ export function ProfessionalProfileView() {
       {/* Profile Header Card */}
       <div className="relative mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white">
         {/* Cover / decorative top */}
-        <div className="relative h-28 overflow-hidden bg-[#00394a]">
+        <div className="bg-brand-dark relative h-28 overflow-hidden">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
         </div>
         <div className="px-5 pb-5">
@@ -354,7 +354,7 @@ export function ProfessionalProfileView() {
                 <div>
                   <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-slate-900">
                     Dr. {professional?.firstName} {professional?.lastName}
-                    <ShieldCheck className="h-5 w-5 fill-blue-50 text-[#3fa6ff]" />
+                    <ShieldCheck className="text-brand-blue h-5 w-5 fill-blue-50" />
                   </h2>
                   <p className="text-sm text-slate-500">
                     {
@@ -369,9 +369,9 @@ export function ProfessionalProfileView() {
 
               {/* Key Stats Row */}
               <div className="flex flex-wrap items-center gap-3 pt-2">
-                <div className="flex items-center gap-1.5 rounded-md border border-[#00394a]/10 bg-[#fbfbfb] px-2.5 py-1 text-xs text-[#00546e]">
-                  <User className="h-3.5 w-3.5 text-[#00546e]" />
-                  <span className="font-medium text-[#00394a]">
+                <div className="border-brand-dark/10 bg-brand-bg text-brand-secondary flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs">
+                  <User className="text-brand-secondary h-3.5 w-3.5" />
+                  <span className="text-brand-dark font-medium">
                     {professional?.gender
                       ? professional.gender.charAt(0).toUpperCase() +
                         professional.gender.slice(1).toLowerCase()
@@ -410,25 +410,25 @@ export function ProfessionalProfileView() {
         {/* Left Column (Main) */}
         <div className="space-y-6 lg:col-span-2">
           {/* About */}
-          <section className="rounded-2xl border border-[#00394a]/10 bg-white p-5">
-            <h3 className="mb-4 flex items-center gap-2 text-sm font-bold tracking-tight text-[#00394a]">
-              <User className="h-4 w-4 text-[#00546e]" />
+          <section className="border-brand-dark/10 rounded-2xl border bg-white p-5">
+            <h3 className="text-brand-dark mb-4 flex items-center gap-2 text-sm font-bold tracking-tight">
+              <User className="text-brand-secondary h-4 w-4" />
               About &amp; Bio
             </h3>
-            <div className="prose prose-sm mb-6 max-w-none text-xs leading-relaxed text-[#00546e]">
+            <div className="prose prose-sm text-brand-secondary mb-6 max-w-none text-xs leading-relaxed">
               {professional?.bio}
             </div>
 
             {/* Feature Grid */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <div className="flex flex-col items-center gap-1.5 rounded-xl border border-[#00394a]/10 bg-[#fbfbfb] p-3 text-center">
-                <div className="rounded-full border bg-white p-2 text-[#00394a]">
+              <div className="border-brand-dark/10 bg-brand-bg flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center">
+                <div className="text-brand-dark rounded-full border bg-white p-2">
                   <Stethoscope className="h-4 w-4" />
                 </div>
-                <div className="text-[10px] font-semibold tracking-wider text-[#00546e] uppercase">
+                <div className="text-brand-secondary text-[10px] font-semibold tracking-wider uppercase">
                   Specialty
                 </div>
-                <div className="text-xs font-semibold text-[#00394a]">
+                <div className="text-brand-dark text-xs font-semibold">
                   {
                     SPECIALIZATIONS.find(
                       (s) => s.value === professional?.specialization,
@@ -436,36 +436,36 @@ export function ProfessionalProfileView() {
                   }
                 </div>
               </div>
-              <div className="flex flex-col items-center gap-1.5 rounded-xl border border-[#00394a]/10 bg-[#fbfbfb] p-3 text-center">
-                <div className="rounded-full border bg-white p-2 text-[#00394a]">
+              <div className="border-brand-dark/10 bg-brand-bg flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center">
+                <div className="text-brand-dark rounded-full border bg-white p-2">
                   <DollarSign className="h-4 w-4" />
                 </div>
-                <div className="text-[10px] font-semibold tracking-wider text-[#00546e] uppercase">
+                <div className="text-brand-secondary text-[10px] font-semibold tracking-wider uppercase">
                   Rate
                 </div>
-                <div className="text-xs font-semibold text-[#00394a]">
+                <div className="text-brand-dark text-xs font-semibold">
                   ${professional?.startPrice} - ${professional?.endPrice}/hr
                 </div>
               </div>
-              <div className="flex flex-col items-center gap-1.5 rounded-xl border border-[#00394a]/10 bg-[#fbfbfb] p-3 text-center">
-                <div className="rounded-full border bg-white p-2 text-[#00394a]">
+              <div className="border-brand-dark/10 bg-brand-bg flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center">
+                <div className="text-brand-dark rounded-full border bg-white p-2">
                   <Briefcase className="h-4 w-4" />
                 </div>
-                <div className="text-[10px] font-semibold tracking-wider text-[#00546e] uppercase">
+                <div className="text-brand-secondary text-[10px] font-semibold tracking-wider uppercase">
                   Experience
                 </div>
-                <div className="text-xs font-semibold text-[#00394a]">
+                <div className="text-brand-dark text-xs font-semibold">
                   {professional?.experience} Years
                 </div>
               </div>
-              <div className="flex flex-col items-center gap-1.5 rounded-xl border border-[#00394a]/10 bg-[#fbfbfb] p-3 text-center">
-                <div className="rounded-full border bg-white p-2 text-[#14d3ac]">
+              <div className="border-brand-dark/10 bg-brand-bg flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center">
+                <div className="text-brand-teal rounded-full border bg-white p-2">
                   <ShieldCheck className="h-4 w-4" />
                 </div>
-                <div className="text-[10px] font-semibold tracking-wider text-[#00546e] uppercase">
+                <div className="text-brand-secondary text-[10px] font-semibold tracking-wider uppercase">
                   Status
                 </div>
-                <div className="text-xs font-semibold text-[#14d3ac]">
+                <div className="text-brand-teal text-xs font-semibold">
                   Verified
                 </div>
               </div>
@@ -473,16 +473,16 @@ export function ProfessionalProfileView() {
           </section>
 
           {/* Specialties */}
-          <section className="rounded-2xl border border-[#00394a]/10 bg-white p-5">
-            <h3 className="mb-4 flex items-center gap-2 text-sm font-bold tracking-tight text-[#00394a]">
-              <Layers className="h-4 w-4 text-[#00546e]" />
+          <section className="border-brand-dark/10 rounded-2xl border bg-white p-5">
+            <h3 className="text-brand-dark mb-4 flex items-center gap-2 text-sm font-bold tracking-tight">
+              <Layers className="text-brand-secondary h-4 w-4" />
               Specialties &amp; Focus
             </h3>
             <div className="flex flex-wrap gap-2">
               {professional?.services.map((service, index) => (
                 <span
                   key={index}
-                  className="cursor-default rounded-full border border-[#00394a]/10 bg-[#00394a]/5 px-3 py-1.5 text-xs font-medium text-[#00394a] transition-colors hover:bg-[#00394a]/10"
+                  className="border-brand-dark/10 bg-brand-dark/5 text-brand-dark hover:bg-brand-dark/10 cursor-default rounded-full border px-3 py-1.5 text-xs font-medium transition-colors"
                 >
                   {
                     getServicesForSpecialization(
@@ -495,10 +495,10 @@ export function ProfessionalProfileView() {
           </section>
 
           {/* Work Experience Section */}
-          <section className="rounded-2xl border border-[#00394a]/10 bg-white p-5">
+          <section className="border-brand-dark/10 rounded-2xl border bg-white p-5">
             <div className="mb-6 flex items-center justify-between">
-              <h3 className="flex items-center gap-2 text-sm font-bold tracking-tight text-[#00394a]">
-                <Briefcase className="h-4 w-4 text-[#00546e]" />
+              <h3 className="text-brand-dark flex items-center gap-2 text-sm font-bold tracking-tight">
+                <Briefcase className="text-brand-secondary h-4 w-4" />
                 Experience
               </h3>
             </div>
@@ -517,8 +517,8 @@ export function ProfessionalProfileView() {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#00394a]/20 py-8 text-center">
-                <Briefcase className="mb-2 h-8 w-8 text-[#00394a]/20" />
+              <div className="border-brand-dark/20 flex flex-col items-center justify-center rounded-xl border border-dashed py-8 text-center">
+                <Briefcase className="text-brand-dark/20 mb-2 h-8 w-8" />
                 <p className="text-xs text-slate-400">
                   No work experience added yet
                 </p>
@@ -527,10 +527,10 @@ export function ProfessionalProfileView() {
           </section>
 
           {/* Education Section */}
-          <section className="rounded-2xl border border-[#00394a]/10 bg-white p-5">
+          <section className="border-brand-dark/10 rounded-2xl border bg-white p-5">
             <div className="mb-6 flex items-center justify-between">
-              <h3 className="flex items-center gap-2 text-sm font-bold tracking-tight text-[#00394a]">
-                <GraduationCap className="h-4 w-4 text-[#00546e]" />
+              <h3 className="text-brand-dark flex items-center gap-2 text-sm font-bold tracking-tight">
+                <GraduationCap className="text-brand-secondary h-4 w-4" />
                 Education
               </h3>
             </div>
@@ -549,8 +549,8 @@ export function ProfessionalProfileView() {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#00394a]/20 py-8 text-center">
-                <GraduationCap className="mb-2 h-8 w-8 text-[#00394a]/20" />
+              <div className="border-brand-dark/20 flex flex-col items-center justify-center rounded-xl border border-dashed py-8 text-center">
+                <GraduationCap className="text-brand-dark/20 mb-2 h-8 w-8" />
                 <p className="text-xs text-slate-400">
                   No education details added yet
                 </p>
@@ -559,10 +559,10 @@ export function ProfessionalProfileView() {
           </section>
 
           {/* Awards Section */}
-          <section className="rounded-2xl border border-[#00394a]/10 bg-white p-5">
+          <section className="border-brand-dark/10 rounded-2xl border bg-white p-5">
             <div className="mb-6 flex items-center justify-between">
-              <h3 className="flex items-center gap-2 text-sm font-bold tracking-tight text-[#00394a]">
-                <Medal className="h-4 w-4 text-[#00546e]" />
+              <h3 className="text-brand-dark flex items-center gap-2 text-sm font-bold tracking-tight">
+                <Medal className="text-brand-secondary h-4 w-4" />
                 Awards &amp; Recognitions
               </h3>
             </div>
@@ -578,8 +578,8 @@ export function ProfessionalProfileView() {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#00394a]/20 py-8 text-center">
-                <Medal className="mb-2 h-8 w-8 text-[#00394a]/20" />
+              <div className="border-brand-dark/20 flex flex-col items-center justify-center rounded-xl border border-dashed py-8 text-center">
+                <Medal className="text-brand-dark/20 mb-2 h-8 w-8" />
                 <p className="text-xs text-slate-400">
                   No awards or recognitions added yet
                 </p>
@@ -594,22 +594,22 @@ export function ProfessionalProfileView() {
         {/* Right Column (Sidebar) */}
         <div className="space-y-6">
           {/* Contact Info */}
-          <section className="overflow-hidden rounded-2xl border border-[#00394a]/10 bg-white">
-            <div className="border-b border-[#00394a]/10 bg-[#fbfbfb] px-5 py-3">
-              <h3 className="text-xs font-bold tracking-tight text-[#00394a]">
+          <section className="border-brand-dark/10 overflow-hidden rounded-2xl border bg-white">
+            <div className="border-brand-dark/10 bg-brand-bg border-b px-5 py-3">
+              <h3 className="text-brand-dark text-xs font-bold tracking-tight">
                 Contact Information
               </h3>
             </div>
             <div className="space-y-5 p-5">
               <div className="flex gap-3">
-                <div className="mt-0.5 shrink-0 text-[#00546e]">
+                <div className="text-brand-secondary mt-0.5 shrink-0">
                   <MapPin className="h-4 w-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-semibold text-[#00394a]">
+                  <div className="text-brand-dark text-xs font-semibold">
                     Address
                   </div>
-                  <div className="mt-0.5 text-xs leading-snug text-[#00546e]">
+                  <div className="text-brand-secondary mt-0.5 text-xs leading-snug">
                     {professional?.address.street}
                     <br />
                     {professional?.address.city}, {professional?.address.state}{" "}
@@ -622,40 +622,40 @@ export function ProfessionalProfileView() {
                 </div>
               </div>
               <div className="flex gap-3">
-                <div className="mt-0.5 shrink-0 text-[#00546e]">
+                <div className="text-brand-secondary mt-0.5 shrink-0">
                   <Mail className="h-4 w-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-semibold text-[#00394a]">
+                  <div className="text-brand-dark text-xs font-semibold">
                     Email
                   </div>
-                  <span className="mt-0.5 block text-xs text-[#3fa6ff] hover:underline">
+                  <span className="text-brand-blue mt-0.5 block text-xs hover:underline">
                     {professional?.email}
                   </span>
                 </div>
               </div>
               <div className="flex gap-3">
-                <div className="mt-0.5 shrink-0 text-[#00546e]">
+                <div className="text-brand-secondary mt-0.5 shrink-0">
                   <Phone className="h-4 w-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-semibold text-[#00394a]">
+                  <div className="text-brand-dark text-xs font-semibold">
                     Phone
                   </div>
-                  <div className="mt-0.5 text-xs text-[#00546e]">
+                  <div className="text-brand-secondary mt-0.5 text-xs">
                     +216 {professional?.phoneNumber}
                   </div>
                 </div>
               </div>
               <div className="flex gap-3">
-                <div className="mt-0.5 shrink-0 text-[#00546e]">
+                <div className="text-brand-secondary mt-0.5 shrink-0">
                   <Calendar className="h-4 w-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-semibold text-[#00394a]">
+                  <div className="text-brand-dark text-xs font-semibold">
                     Date of Birth
                   </div>
-                  <div className="mt-0.5 text-xs text-[#00546e]">
+                  <div className="text-brand-secondary mt-0.5 text-xs">
                     {professional?.dateOfBirth}
                   </div>
                 </div>
@@ -664,13 +664,13 @@ export function ProfessionalProfileView() {
           </section>
 
           {/* Documents / Verification */}
-          <section className="overflow-hidden rounded-2xl border border-[#00394a]/10 bg-white">
-            <div className="flex items-center justify-between border-b border-[#00394a]/10 bg-[#fbfbfb] px-5 py-3">
-              <h3 className="text-xs font-bold tracking-tight text-[#00394a]">
+          <section className="border-brand-dark/10 overflow-hidden rounded-2xl border bg-white">
+            <div className="border-brand-dark/10 bg-brand-bg flex items-center justify-between border-b px-5 py-3">
+              <h3 className="text-brand-dark text-xs font-bold tracking-tight">
                 Credentials
               </h3>
               {verifiedCount > 0 && (
-                <span className="rounded-full border border-[#14d3ac]/20 bg-[#14d3ac]/10 px-2 py-0.5 text-[10px] font-medium text-[#14d3ac]">
+                <span className="border-brand-teal/20 bg-brand-teal/10 text-brand-teal rounded-full border px-2 py-0.5 text-[10px] font-medium">
                   {verifiedCount} verified
                 </span>
               )}
@@ -680,7 +680,7 @@ export function ProfessionalProfileView() {
                 <Spinner className="h-5 w-5" />
               </div>
             ) : (
-              <div className="divide-y divide-[#00394a]/5">
+              <div className="divide-brand-dark/5 divide-y">
                 <DocumentStatusBadge
                   document={documentsByType[DocumentType.Diploma]}
                   Icon={GraduationCap}

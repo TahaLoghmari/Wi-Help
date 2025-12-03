@@ -25,7 +25,7 @@ export function ProfileLayout() {
 {
   /* <section className="rounded-2xl border border-slate-200 bg-white p-4 text-xs shadow-sm shadow-slate-100">
   <div className="mb-2 flex items-center justify-between">
-    <h3 className="text-xs font-semibold tracking-tight text-[#00394a]">
+    <h3 className="text-xs font-semibold tracking-tight text-brand-dark">
       Status &amp; Availability
     </h3>
   </div>

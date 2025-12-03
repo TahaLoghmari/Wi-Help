@@ -63,7 +63,7 @@ export function ReviewsList({ professionalId }: ReviewsListProps) {
     <section className="flex flex-1 flex-col gap-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-sm font-semibold tracking-tight text-[#00394a]">
+          <h3 className="text-brand-dark text-sm font-semibold tracking-tight">
             Patient Reviews
           </h3>
           <p className="mt-0.5 max-w-xl text-[11px] text-slate-500">

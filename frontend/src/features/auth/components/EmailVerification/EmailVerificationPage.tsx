@@ -31,7 +31,7 @@ export function EmailVerificationPage() {
               <p className="text-muted-foreground">
                 {t("auth.emailVerificationPage.sentTo")}
               </p>
-              <p className="font-medium text-[#00394a]">{email}</p>
+              <p className="text-brand-dark font-medium">{email}</p>
               <p className="text-muted-foreground text-center text-sm">
                 {t("auth.emailVerificationPage.instructions")}
               </p>
@@ -48,12 +48,14 @@ export function EmailVerificationPage() {
             </p>
           </div> */}
           <div
-            className={`group flex items-center rounded-md bg-[#fcf4d4] px-3 py-3 text-[#00394a]`}
+            className={`group text-brand-dark flex items-center rounded-md bg-[#fcf4d4] px-3 py-3`}
           >
             <span
-              className={`mr-3 h-7 w-1 rounded-full bg-[#00394a] transition-colors`}
+              className={`bg-brand-dark mr-3 h-7 w-1 rounded-full transition-colors`}
             ></span>
-            <div className={`cursor-pointer rounded-md text-sm text-[#00394a]`}>
+            <div
+              className={`text-brand-dark cursor-pointer rounded-md text-sm`}
+            >
               <span className="mr-1 font-semibold">
                 {t("auth.emailVerificationPage.noteLabel")}
               </span>
@@ -62,7 +64,7 @@ export function EmailVerificationPage() {
           </div>
           <div className="flex w-full flex-col gap-3">
             <Button
-              className="w-full cursor-pointer bg-[#00394a] p-4 hover:bg-[#00394a]/90"
+              className="bg-brand-dark hover:bg-brand-dark/90 w-full cursor-pointer p-4"
               onClick={() => {
                 if (email) {
                   resendConfirmationEmailMutation.mutate(email);

@@ -125,7 +125,7 @@ export function MessageInput({
   return (
     <div className="border-t border-slate-200 bg-white px-4 py-3 sm:px-6">
       <div className="flex items-end gap-2">
-        <div className="flex flex-1 items-center gap-2 rounded-2xl border border-slate-200 bg-[#fbfbfb] px-3 py-1.5">
+        <div className="bg-brand-bg flex flex-1 items-center gap-2 rounded-2xl border border-slate-200 px-3 py-1.5">
           <textarea
             ref={textareaRef}
             rows={1}
@@ -140,7 +140,7 @@ export function MessageInput({
         <button
           onClick={handleSend}
           disabled={!message.trim() || isSending}
-          className="inline-flex items-center gap-1.5 rounded-full bg-[#00394a] px-3 py-1.5 text-[11px] text-white hover:bg-[#00546e] disabled:cursor-not-allowed disabled:opacity-50"
+          className="bg-brand-dark hover:bg-brand-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] text-white disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isSending ? (
             <Spinner className="h-3.5 w-3.5" />

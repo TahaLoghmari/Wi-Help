@@ -37,7 +37,7 @@ export function FindProfessionalLayout() {
         <>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-sm font-semibold tracking-tight text-[#00394a]">
+              <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
                 Professionals
               </h2>
               <p className="mt-0.5 text-[11px] text-slate-500">
@@ -47,7 +47,7 @@ export function FindProfessionalLayout() {
             <div className="flex items-center gap-2 text-[11px]">
               <span className="text-slate-500">Sort by</span>
               <div className="relative">
-                <select className="appearance-none rounded-full border border-slate-200 bg-white px-3 py-1.5 pr-7 text-[11px] text-slate-700 focus:border-[#3fa6ff]/70 focus:ring-1 focus:ring-[#3fa6ff]/60 focus:outline-none">
+                <select className="focus:border-brand-blue/70 focus:ring-brand-blue/60 appearance-none rounded-full border border-slate-200 bg-white px-3 py-1.5 pr-7 text-[11px] text-slate-700 focus:ring-1 focus:outline-none">
                   <option>Recommended</option>
                   <option>Highest rating</option>
                   <option>Soonest availability</option>
@@ -75,7 +75,7 @@ export function FindProfessionalLayout() {
             {professionals?.map((professional) => (
               <article
                 key={professional.id}
-                className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-100 transition-all hover:border-[#3fa6ff]/70 hover:shadow-md hover:shadow-slate-100"
+                className="hover:border-brand-blue/70 flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-100 transition-all hover:shadow-md hover:shadow-slate-100"
               >
                 <div className="flex w-full items-center justify-center">
                   <Avatar className="mt-5 h-60 w-[90%] rounded-md border">
@@ -166,7 +166,7 @@ export function FindProfessionalLayout() {
                   <div className="flex items-center gap-2 pt-1">
                     <button
                       onClick={() => navigate.goToBook(professional.id)}
-                      className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-[#00394a] px-2 py-1.5 text-[11px] text-white transition-colors hover:bg-[#00546e]"
+                      className="bg-brand-dark hover:bg-brand-secondary inline-flex flex-1 items-center justify-center gap-1.5 rounded-full px-2 py-1.5 text-[11px] text-white transition-colors"
                     >
                       <CalendarPlus className="h-3.5 w-3.5 text-white" />
                       Book
@@ -174,7 +174,7 @@ export function FindProfessionalLayout() {
                     <Link
                       to="/patient/professional/$professionalId"
                       params={{ professionalId: professional.id }}
-                      className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white px-2 py-1.5 text-[11px] text-slate-700 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5"
+                      className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white px-2 py-1.5 text-[11px] text-slate-700 transition-colors"
                     >
                       <User className="h-3.5 w-fit text-slate-500" />
                       View Profile
@@ -200,7 +200,7 @@ export function FindProfessionalLayout() {
               <button
                 onClick={() => fetchNextPage()}
                 disabled={!hasNextPage || isFetchingNextPage}
-                className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-slate-600 transition-colors hover:border-[#3fa6ff]/70 hover:bg-[#3fa6ff]/5 disabled:cursor-not-allowed disabled:opacity-50"
+                className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-slate-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isFetchingNextPage
                   ? "Loading more..."

@@ -31,19 +31,19 @@ export function DashboardSidebarNavSecondary({
             }, [isActive]);
             return (
               <div
-                className={`group ${!isSidebarOpen && "justify-center"} flex items-center rounded-md px-3 py-2 ${isActive ? "bg-[#fcf4d4] font-semibold text-[#00394a]" : "hover:bg-sidebar-accent"}`}
+                className={`group ${!isSidebarOpen && "justify-center"} flex items-center rounded-md px-3 py-2 ${isActive ? "text-brand-dark bg-[#fcf4d4] font-semibold" : "hover:bg-sidebar-accent"}`}
               >
                 {isSidebarOpen && (
                   <span
-                    className={`mr-3 h-7 w-1 rounded-full ${isActive ? "bg-[#00394a]" : "bg-transparent group-hover:bg-slate-200"} transition-colors`}
+                    className={`mr-3 h-7 w-1 rounded-full ${isActive ? "bg-brand-dark" : "bg-transparent group-hover:bg-slate-200"} transition-colors`}
                   ></span>
                 )}
                 <div
-                  className={`flex cursor-pointer items-center gap-3 rounded-md text-sm text-[#00394a]`}
+                  className={`text-brand-dark flex cursor-pointer items-center gap-3 rounded-md text-sm`}
                 >
                   {item.icon && (
                     <item.icon
-                      className={`h-4 w-4 ${isActive ? "text-[#00394a]" : "text-slate-400 group-hover:text-[#00394a]"} `}
+                      className={`h-4 w-4 ${isActive ? "text-brand-dark" : "group-hover:text-brand-dark text-slate-400"} `}
                     />
                   )}
                   {isSidebarOpen && <span>{item.title}</span>}
