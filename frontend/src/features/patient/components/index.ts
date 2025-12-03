@@ -1,7 +1,6 @@
 export * from "./appointments";
 export * from "./billing";
 export * from "./book-appointments";
-export * from "./favorites";
 export * from "./find-professional";
 export * from "./medical-records";
 export * from "./messages";

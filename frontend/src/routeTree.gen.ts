@@ -32,7 +32,6 @@ import { Route as PatientMyProfessionalsRouteImport } from './routes/patient/my-
 import { Route as PatientMessagesRouteImport } from './routes/patient/messages'
 import { Route as PatientMedicalRecordsRouteImport } from './routes/patient/medical-records'
 import { Route as PatientFindProfessionalRouteImport } from './routes/patient/find-professional'
-import { Route as PatientFavoritesRouteImport } from './routes/patient/favorites'
 import { Route as PatientBillingRouteImport } from './routes/patient/billing'
 import { Route as PatientAppointmentsRouteImport } from './routes/patient/appointments'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
@@ -164,11 +163,6 @@ const PatientFindProfessionalRoute = PatientFindProfessionalRouteImport.update({
   path: '/find-professional',
   getParentRoute: () => PatientRouteRoute,
 } as any)
-const PatientFavoritesRoute = PatientFavoritesRouteImport.update({
-  id: '/favorites',
-  path: '/favorites',
-  getParentRoute: () => PatientRouteRoute,
-} as any)
 const PatientBillingRoute = PatientBillingRouteImport.update({
   id: '/billing',
   path: '/billing',
@@ -246,7 +240,6 @@ export interface FileRoutesByFullPath {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/patient/appointments': typeof PatientAppointmentsRoute
   '/patient/billing': typeof PatientBillingRoute
-  '/patient/favorites': typeof PatientFavoritesRoute
   '/patient/find-professional': typeof PatientFindProfessionalRoute
   '/patient/medical-records': typeof PatientMedicalRecordsRoute
   '/patient/messages': typeof PatientMessagesRoute
@@ -281,7 +274,6 @@ export interface FileRoutesByTo {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/patient/appointments': typeof PatientAppointmentsRoute
   '/patient/billing': typeof PatientBillingRoute
-  '/patient/favorites': typeof PatientFavoritesRoute
   '/patient/find-professional': typeof PatientFindProfessionalRoute
   '/patient/medical-records': typeof PatientMedicalRecordsRoute
   '/patient/messages': typeof PatientMessagesRoute
@@ -320,7 +312,6 @@ export interface FileRoutesById {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/patient/appointments': typeof PatientAppointmentsRoute
   '/patient/billing': typeof PatientBillingRoute
-  '/patient/favorites': typeof PatientFavoritesRoute
   '/patient/find-professional': typeof PatientFindProfessionalRoute
   '/patient/medical-records': typeof PatientMedicalRecordsRoute
   '/patient/messages': typeof PatientMessagesRoute
@@ -360,7 +351,6 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/patient/appointments'
     | '/patient/billing'
-    | '/patient/favorites'
     | '/patient/find-professional'
     | '/patient/medical-records'
     | '/patient/messages'
@@ -395,7 +385,6 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/patient/appointments'
     | '/patient/billing'
-    | '/patient/favorites'
     | '/patient/find-professional'
     | '/patient/medical-records'
     | '/patient/messages'
@@ -433,7 +422,6 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/patient/appointments'
     | '/patient/billing'
-    | '/patient/favorites'
     | '/patient/find-professional'
     | '/patient/medical-records'
     | '/patient/messages'
@@ -629,13 +617,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PatientFindProfessionalRouteImport
       parentRoute: typeof PatientRouteRoute
     }
-    '/patient/favorites': {
-      id: '/patient/favorites'
-      path: '/favorites'
-      fullPath: '/patient/favorites'
-      preLoaderRoute: typeof PatientFavoritesRouteImport
-      parentRoute: typeof PatientRouteRoute
-    }
     '/patient/billing': {
       id: '/patient/billing'
       path: '/billing'
@@ -750,7 +731,6 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 interface PatientRouteRouteChildren {
   PatientAppointmentsRoute: typeof PatientAppointmentsRoute
   PatientBillingRoute: typeof PatientBillingRoute
-  PatientFavoritesRoute: typeof PatientFavoritesRoute
   PatientFindProfessionalRoute: typeof PatientFindProfessionalRoute
   PatientMedicalRecordsRoute: typeof PatientMedicalRecordsRoute
   PatientMessagesRoute: typeof PatientMessagesRoute
@@ -768,7 +748,6 @@ interface PatientRouteRouteChildren {
 const PatientRouteRouteChildren: PatientRouteRouteChildren = {
   PatientAppointmentsRoute: PatientAppointmentsRoute,
   PatientBillingRoute: PatientBillingRoute,
-  PatientFavoritesRoute: PatientFavoritesRoute,
   PatientFindProfessionalRoute: PatientFindProfessionalRoute,
   PatientMedicalRecordsRoute: PatientMedicalRecordsRoute,
   PatientMessagesRoute: PatientMessagesRoute,

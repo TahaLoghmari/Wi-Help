@@ -6,9 +6,7 @@ import {
   Users,
   Clock,
   FileText,
-  Star,
   MessageSquare,
-  Heart,
   Search,
   ClipboardList,
   Pill,
@@ -40,11 +38,6 @@ export function getNavigationData(user: UserDto) {
       title: "Invoices",
       url: ROUTE_PATHS.PROFESSIONAL.INVOICES,
       icon: FileText,
-    },
-    {
-      title: "Reviews",
-      url: ROUTE_PATHS.PROFESSIONAL.REVIEWS,
-      icon: Star,
     },
     {
       title: "Messages",
@@ -83,11 +76,6 @@ export function getNavigationData(user: UserDto) {
       title: "Billing",
       url: ROUTE_PATHS.PATIENT.BILLING,
       icon: CreditCard,
-    },
-    {
-      title: "Favorites",
-      url: ROUTE_PATHS.PATIENT.FAVORITES,
-      icon: Heart,
     },
     {
       title: "Messages",
