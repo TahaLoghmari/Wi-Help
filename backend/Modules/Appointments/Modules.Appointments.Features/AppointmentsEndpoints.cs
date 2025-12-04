@@ -22,4 +22,17 @@ public static class AppointmentsEndpoints
     
     // Get specific appointment details
     public const string GetAppointmentById = "appointments/{appointmentId}";
+    
+    // Cancel appointment (patient)
+    public const string CancelAppointment = "appointments/{appointmentId}/cancel";
+    
+    // Cancel appointment (professional)
+    public const string CancelAppointmentByProfessional = "appointments/{appointmentId}/cancel-by-professional";
+    
+    // Complete appointment with prescription (professional)
+    public const string CompleteAppointment = "appointments/{appointmentId}/complete";
+    
+    // Prescriptions
+    public const string GetPatientPrescriptions = "appointments/patient/me/prescriptions";
+    public const string GetPrescriptionById = "appointments/prescriptions/{prescriptionId}";
 }

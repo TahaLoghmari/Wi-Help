@@ -5,4 +5,7 @@ public enum NotificationType
     newAppointment,
     appointmentAccepted,
     appointmentRejected,
+    appointmentCancelled,
+    appointmentCompleted,
+    newPrescription,
 }

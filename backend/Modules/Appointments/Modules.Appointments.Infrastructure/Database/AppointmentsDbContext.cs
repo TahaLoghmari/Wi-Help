@@ -6,6 +6,7 @@ public sealed class AppointmentsDbContext(DbContextOptions<AppointmentsDbContext
 {
     
     public DbSet<Appointment> Appointments { get; set; }
+    public DbSet<Prescription> Prescriptions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

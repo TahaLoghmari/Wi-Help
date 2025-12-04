@@ -60,4 +60,11 @@ public class Appointment
         CancelledAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
     }
+
+    public void Complete()
+    {
+        Status = AppointmentStatus.Completed;
+        CompletedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }

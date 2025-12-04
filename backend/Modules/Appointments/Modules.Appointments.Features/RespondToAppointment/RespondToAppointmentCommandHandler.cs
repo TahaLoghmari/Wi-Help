@@ -26,7 +26,7 @@ public class RespondToAppointmentCommandHandler(
     {
         logger.LogInformation(
             "Professional user {UserId} responding to appointment {AppointmentId} with action: {Action}",
-            command.ProfessionalId, command.AppointmentId, command.IsAccepted ? "Accept" : "Reject");
+            command.ProfessionalId, command.AppointmentId, command.IsAccepted ? "Accept" : "Cancel");
         
         var appointment = await appointmentsDbContext.Appointments.FirstOrDefaultAsync(ap => ap.Id == command.AppointmentId 
             && ap.ProfessionalId == command.ProfessionalId, cancellationToken);
@@ -115,8 +115,8 @@ public class RespondToAppointmentCommandHandler(
             await notificationsModuleApi.AddNotificationAsync(
                 patient.UserId.ToString(),
                 "Patient",
-                "Appointment Rejected",
-                $"{professionalName} has rejected your appointment request.",
+                "Appointment Cancelled",
+                $"{professionalName} has cancelled your appointment request.",
                 NotificationType.appointmentRejected,
                 cancellationToken);
         }
