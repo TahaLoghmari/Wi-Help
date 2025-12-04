@@ -1,4 +1,3 @@
-using backend.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -6,6 +5,7 @@ using Modules.Common.Features.Results;
 using Modules.Common.Infrastructure.Services;
 using Modules.Identity.Domain.Entities;
 using Modules.Identity.Domain.Errors;
+using Modules.Identity.Infrastructure.Services;
 using Modules.Identity.PublicApi;
 using Modules.Identity.PublicApi.Contracts;
 
@@ -13,7 +13,7 @@ namespace Modules.Identity.Features;
 
 public class IdentityModuleApi(
     UserManager<User> userManager,
-    EmailService emailService,
+    IdentityEmailService identityEmailService,
     SupabaseService supabaseService,
     ILogger<IdentityModuleApi> logger) : IIdentityModuleApi
 {
@@ -52,7 +52,7 @@ public class IdentityModuleApi(
         logger.LogInformation("User created successfully for {Email}, UserId: {UserId}",
             request.Email, user.Id);
 
-        await emailService.SendConfirmationEmail(user);
+        await identityEmailService.SendConfirmationEmail(user);
         await userManager.AddToRoleAsync(user, request.Role);
 
         logger.LogInformation("Email confirmation sent and role assigned for UserId: {UserId}", user.Id);

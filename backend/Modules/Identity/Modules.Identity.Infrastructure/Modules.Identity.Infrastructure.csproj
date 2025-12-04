@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Modules.Identity.Domain\Modules.Identity.Domain.csproj" />
+    <ProjectReference Include="..\..\Common\Modules.Common.Infrastructure\Modules.Common.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

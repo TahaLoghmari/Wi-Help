@@ -5,6 +5,9 @@ using Modules.Appointments.Infrastructure.Database;
 using Modules.Appointments.PublicApi;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Infrastructure.Services;
+using Modules.Common.Infrastructure.Templates;
 using Modules.Messaging.PublicApi;
 using Modules.Notifications.Domain.Enums;
 using Modules.Notifications.PublicApi;
@@ -20,7 +23,8 @@ public class RespondToAppointmentCommandHandler(
     INotificationsModuleApi notificationsModuleApi,
     IPatientsModuleApi patientsModuleApi,
     IProfessionalModuleApi professionalModuleApi,
-    IMessagingModuleApi messagingModuleApi) : ICommandHandler<RespondToAppointmentCommand>
+    IMessagingModuleApi messagingModuleApi,
+    EmailService emailService) : ICommandHandler<RespondToAppointmentCommand>
 {
     public async Task<Result> Handle(RespondToAppointmentCommand command, CancellationToken cancellationToken)
     {
@@ -105,6 +109,31 @@ public class RespondToAppointmentCommandHandler(
                     logger.LogInformation("Conversation {ConversationId} created for appointment {AppointmentId}", conversationResult.Value, command.AppointmentId);
                 }
             }
+            
+            // Send email to patient about acceptance
+            if (professional != null)
+            {
+                var emailBody = AppointmentEmailTemplates.AppointmentAccepted(
+                    $"{patient.FirstName} {patient.LastName}",
+                    professionalName,
+                    professional.Email,
+                    professional.PhoneNumber,
+                    professional.Specialization,
+                    appointment.StartDate,
+                    appointment.EndDate,
+                    appointment.Urgency.ToString(),
+                    appointment.Price,
+                    appointment.Notes);
+                
+                var emailDto = new EmailDto(
+                    patient.Email,
+                    "Appointment Accepted - Wi Help",
+                    emailBody,
+                    true);
+                
+                emailService.EnqueueEmail(emailDto);
+                logger.LogInformation("Acceptance email notification queued for patient {PatientId}", appointment.PatientId);
+            }
         }
         else
         {
@@ -119,6 +148,24 @@ public class RespondToAppointmentCommandHandler(
                 $"{professionalName} has cancelled your appointment request.",
                 NotificationType.appointmentRejected,
                 cancellationToken);
+            
+            // Send email to patient about rejection
+            var emailBody = AppointmentEmailTemplates.AppointmentRejected(
+                $"{patient.FirstName} {patient.LastName}",
+                professionalName,
+                appointment.StartDate,
+                appointment.EndDate,
+                appointment.Urgency.ToString(),
+                appointment.Price);
+            
+            var emailDto = new EmailDto(
+                patient.Email,
+                "Appointment Update - Wi Help",
+                emailBody,
+                true);
+            
+            emailService.EnqueueEmail(emailDto);
+            logger.LogInformation("Rejection email notification queued for patient {PatientId}", appointment.PatientId);
         }
 
         await appointmentsDbContext.SaveChangesAsync(cancellationToken);

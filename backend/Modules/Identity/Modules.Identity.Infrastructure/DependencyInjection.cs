@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using backend.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -46,12 +45,11 @@ public static class DependencyInjection
 
         services.AddScoped<TokenManagementService>();
         services.AddScoped<TokenProvider>();
-        services.AddScoped<EmailService>();
+        services.AddScoped<IdentityEmailService>();
         services.AddScoped<CookieService>();
 
         services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
         services.Configure<GoogleSettings>(configuration.GetSection("Google"));
-        services.Configure<EmailSettings>(configuration.GetSection("Email"));
 
         return services;
     }

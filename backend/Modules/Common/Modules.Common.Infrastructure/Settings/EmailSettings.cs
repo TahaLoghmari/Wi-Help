@@ -1,4 +1,4 @@
-namespace Modules.Identity.Infrastructure.Settings;
+namespace Modules.Common.Infrastructure.Settings;
 
 public class EmailSettings
 {

@@ -13,6 +13,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Supabase" />
+    <PackageReference Include="Hangfire.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>

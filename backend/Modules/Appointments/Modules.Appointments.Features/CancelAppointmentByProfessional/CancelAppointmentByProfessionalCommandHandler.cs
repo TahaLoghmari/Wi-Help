@@ -4,6 +4,9 @@ using Modules.Appointments.Domain.Enums;
 using Modules.Appointments.Infrastructure.Database;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Infrastructure.Services;
+using Modules.Common.Infrastructure.Templates;
 using Modules.Notifications.Domain.Enums;
 using Modules.Notifications.PublicApi;
 using Modules.Patients.PublicApi;
@@ -16,7 +19,8 @@ public class CancelAppointmentByProfessionalCommandHandler(
     ILogger<CancelAppointmentByProfessionalCommandHandler> logger,
     INotificationsModuleApi notificationsModuleApi,
     IPatientsModuleApi patientsModuleApi,
-    IProfessionalModuleApi professionalModuleApi) : ICommandHandler<CancelAppointmentByProfessionalCommand>
+    IProfessionalModuleApi professionalModuleApi,
+    EmailService emailService) : ICommandHandler<CancelAppointmentByProfessionalCommand>
 {
     public async Task<Result> Handle(CancelAppointmentByProfessionalCommand command, CancellationToken cancellationToken)
     {
@@ -84,6 +88,25 @@ public class CancelAppointmentByProfessionalCommandHandler(
                 $"{professionalName} has cancelled your appointment.",
                 NotificationType.appointmentRejected,
                 cancellationToken);
+            
+            // Send email to patient about cancellation
+            var emailBody = AppointmentEmailTemplates.AppointmentCancelledByProfessional(
+                $"{patient.FirstName} {patient.LastName}",
+                professionalName,
+                appointment.StartDate,
+                appointment.EndDate,
+                appointment.Urgency.ToString(),
+                appointment.Price,
+                appointment.Notes);
+            
+            var emailDto = new EmailDto(
+                patient.Email,
+                "Appointment Cancelled - Wi Help",
+                emailBody,
+                true);
+            
+            emailService.EnqueueEmail(emailDto);
+            logger.LogInformation("Cancellation email notification queued for patient {PatientId}", appointment.PatientId);
         }
 
         appointment.Cancel();

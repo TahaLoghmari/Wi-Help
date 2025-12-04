@@ -4,6 +4,9 @@ using Modules.Appointments.Domain.Enums;
 using Modules.Appointments.Infrastructure.Database;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Infrastructure.Services;
+using Modules.Common.Infrastructure.Templates;
 using Modules.Notifications.Domain.Enums;
 using Modules.Notifications.PublicApi;
 using Modules.Patients.PublicApi;
@@ -16,7 +19,8 @@ public class CancelAppointmentCommandHandler(
     ILogger<CancelAppointmentCommandHandler> logger,
     INotificationsModuleApi notificationsModuleApi,
     IPatientsModuleApi patientsModuleApi,
-    IProfessionalModuleApi professionalModuleApi) : ICommandHandler<CancelAppointmentCommand>
+    IProfessionalModuleApi professionalModuleApi,
+    EmailService emailService) : ICommandHandler<CancelAppointmentCommand>
 {
     public async Task<Result> Handle(CancelAppointmentCommand command, CancellationToken cancellationToken)
     {
@@ -83,6 +87,24 @@ public class CancelAppointmentCommandHandler(
                 $"{patientName} has cancelled their appointment.",
                 NotificationType.appointmentRejected,
                 cancellationToken);
+            
+            // Send email to professional about cancellation
+            var emailBody = AppointmentEmailTemplates.AppointmentCancelledByPatient(
+                $"{professional.FirstName} {professional.LastName}",
+                patientName,
+                appointment.StartDate,
+                appointment.EndDate,
+                appointment.Urgency.ToString(),
+                appointment.Price);
+            
+            var emailDto = new EmailDto(
+                professional.Email,
+                "Appointment Cancelled by Patient - Wi Help",
+                emailBody,
+                true);
+            
+            emailService.EnqueueEmail(emailDto);
+            logger.LogInformation("Cancellation email notification queued for professional {ProfessionalId}", appointment.ProfessionalId);
         }
 
         appointment.Cancel();

@@ -5,6 +5,9 @@ using Modules.Appointments.Infrastructure.Database;
 using Modules.Appointments.PublicApi;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Infrastructure.Services;
+using Modules.Common.Infrastructure.Templates;
 using Modules.Notifications.Domain.Enums;
 using Modules.Notifications.PublicApi;
 using Modules.Patients.PublicApi;
@@ -16,7 +19,9 @@ public class BookAppointmentCommandHandler(
     AppointmentsDbContext appointmentsDbContext,
     ILogger<BookAppointmentCommandHandler> logger,
     INotificationsModuleApi notificationsModuleApi,
-    IProfessionalModuleApi professionalModuleApi) : ICommandHandler<BookAppointmentCommand>
+    IProfessionalModuleApi professionalModuleApi,
+    IPatientsModuleApi patientsModuleApi,
+    EmailService emailService) : ICommandHandler<BookAppointmentCommand>
 {
     public async Task<Result> Handle(BookAppointmentCommand command, CancellationToken cancellationToken)
     {
@@ -63,6 +68,40 @@ public class BookAppointmentCommandHandler(
             "A patient has booked an appointment with you.",
             NotificationType.newAppointment,
             cancellationToken);
+
+        // Get patient information for email
+        var patientResult = await patientsModuleApi.GetPatientsByIdsAsync([command.PatientId], cancellationToken);
+        if (patientResult.IsSuccess && patientResult.Value.Any())
+        {
+            var patient = patientResult.Value.First();
+            var patientName = $"{patient.FirstName} {patient.LastName}";
+            var professionalName = $"{professional.FirstName} {professional.LastName}";
+            
+            // Send email to professional
+            var emailBody = AppointmentEmailTemplates.AppointmentBooked(
+                professionalName,
+                patientName,
+                patient.Email,
+                patient.PhoneNumber,
+                command.StartDate,
+                command.EndDate,
+                command.Urgency.ToString(),
+                command.Price,
+                command.Notes);
+            
+            var emailDto = new EmailDto(
+                professional.Email,
+                "New Appointment Booked - Wi Help",
+                emailBody,
+                true);
+            
+            emailService.EnqueueEmail(emailDto);
+            logger.LogInformation("Email notification queued for professional {ProfessionalId}", command.ProfessionalId);
+        }
+        else
+        {
+            logger.LogWarning("Failed to fetch patient details for email notification: {Error}", patientResult.Error);
+        }
 
         return Result.Success();
     }
