@@ -6,7 +6,7 @@ import {
 } from "@microsoft/signalr";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
-import { queryClient } from "@/providers/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import type { NotificationDto } from "@/features/notifications";
 import { API_ENDPOINTS } from "@/config/endpoints";
 import { env } from "@/config/env";
@@ -18,6 +18,7 @@ export const SignalRProvider = ({
   children: React.ReactNode;
 }) => {
   const { data: currentUser, isLoading: isUserLoading } = useCurrentUser();
+  const queryClient = useQueryClient();
   const connectionRef = useRef<HubConnection | null>(null);
   const isStoppingRef = useRef(false);
 

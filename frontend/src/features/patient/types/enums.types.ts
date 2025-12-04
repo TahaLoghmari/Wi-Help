@@ -5,13 +5,13 @@ export interface MedicalInfo {
   medications: string[];
   mobilityStatus: MobilityStatus;
 }
-export type AppointmentUrgency = "Low" | "Medium" | "High";
 
-export type AppointmentStatus =
-  | "Offered"
-  | "Confirmed"
-  | "Completed"
-  | "Canceled";
+// Re-export from professional types for consistency
+export {
+  AppointmentStatus,
+  AppointmentUrgency,
+} from "@/features/professional/types/enums.types";
+
 export interface TimeSlotResponse {
   startTime: string;
   endTime: string;

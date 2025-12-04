@@ -2,6 +2,8 @@ interface AppointmentsStatProps {
   totalAppointments: number;
   confirmedCount: number;
   offeredCount: number;
+  cancelledCount: number;
+  completedCount: number;
   isLoading?: boolean;
 }
 
@@ -9,6 +11,8 @@ export function AppointmentsStat({
   totalAppointments,
   confirmedCount,
   offeredCount,
+  cancelledCount,
+  completedCount,
   isLoading,
 }: AppointmentsStatProps) {
   return (
@@ -22,13 +26,15 @@ export function AppointmentsStat({
         <div className="text-brand-dark text-2xl font-semibold tracking-tight">
           {isLoading ? "..." : totalAppointments}
         </div>
-        <div className="text-[11px] text-slate-500">
-          {isLoading
-            ? "-"
-            : `${confirmedCount} confirmed • ${offeredCount} pending`}
-        </div>
       </div>
-      <div className="flex items-center justify-between border-t border-dashed border-slate-200 pt-1">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-slate-200 pt-2">
+        <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
+          <span className="bg-brand-teal inline-block h-2 w-2 rounded-full"></span>
+          Completed
+          <span className="font-medium text-slate-700">
+            {isLoading ? "-" : completedCount}
+          </span>
+        </div>
         <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
           <span className="bg-brand-blue inline-block h-2 w-2 rounded-full"></span>
           Confirmed
@@ -37,10 +43,17 @@ export function AppointmentsStat({
           </span>
         </div>
         <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
-          <span className="bg-brand-light inline-block h-2 w-2 rounded-full"></span>
+          <span className="bg-brand-cream inline-block h-2 w-2 rounded-full"></span>
           Offered
           <span className="font-medium text-slate-700">
             {isLoading ? "-" : offeredCount}
+          </span>
+        </div>
+        <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
+          <span className="bg-brand-secondary inline-block h-2 w-2 rounded-full"></span>
+          Cancelled
+          <span className="font-medium text-slate-700">
+            {isLoading ? "-" : cancelledCount}
           </span>
         </div>
       </div>

@@ -40,18 +40,32 @@ export function AppointmentsLayout() {
       return aptLocalDate.getTime() === todayStart.getTime();
     });
 
+    // Total counts by status
     const confirmedAppointments = appointments.filter(
       (apt) => apt.status === "Confirmed",
     );
     const offeredAppointments = appointments.filter(
       (apt) => apt.status === "Offered",
     );
+    const cancelledAppointments = appointments.filter(
+      (apt) => apt.status === "Cancelled",
+    );
+    const completedAppointments = appointments.filter(
+      (apt) => apt.status === "Completed",
+    );
 
+    // Today's counts by status
     const todayConfirmed = todayAppointments.filter(
       (apt) => apt.status === "Confirmed",
     );
-    const todayPending = todayAppointments.filter(
+    const todayOffered = todayAppointments.filter(
       (apt) => apt.status === "Offered",
+    );
+    const todayCancelled = todayAppointments.filter(
+      (apt) => apt.status === "Cancelled",
+    );
+    const todayCompleted = todayAppointments.filter(
+      (apt) => apt.status === "Completed",
     );
 
     return {
@@ -59,9 +73,13 @@ export function AppointmentsLayout() {
       totalAppointments: appointments.length,
       confirmedCount: confirmedAppointments.length,
       offeredCount: offeredAppointments.length,
+      cancelledCount: cancelledAppointments.length,
+      completedCount: completedAppointments.length,
       todayAppointments: todayAppointments.length,
       todayConfirmed: todayConfirmed.length,
-      todayPending: todayPending.length,
+      todayOffered: todayOffered.length,
+      todayCancelled: todayCancelled.length,
+      todayCompleted: todayCompleted.length,
     };
   }, [appointmentsData, patientsData]);
 
@@ -77,13 +95,17 @@ export function AppointmentsLayout() {
         <TodayPatientsStat
           todayAppointments={stats.todayAppointments}
           confirmedCount={stats.todayConfirmed}
-          pendingCount={stats.todayPending}
+          offeredCount={stats.todayOffered}
+          cancelledCount={stats.todayCancelled}
+          completedCount={stats.todayCompleted}
           isLoading={isLoading}
         />
         <AppointmentsStat
           totalAppointments={stats.totalAppointments}
           confirmedCount={stats.confirmedCount}
           offeredCount={stats.offeredCount}
+          cancelledCount={stats.cancelledCount}
+          completedCount={stats.completedCount}
           isLoading={isLoading}
         />
       </div>

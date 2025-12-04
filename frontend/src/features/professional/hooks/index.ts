@@ -8,6 +8,8 @@ export * from "./GetSchedule";
 export * from "./SetupSchedule";
 export * from "./UpdateProfessional";
 export * from "./RespondToAppointment";
+export * from "./CompleteAppointment";
+export * from "./CancelAppointmentByProfessional";
 export * from "./VerificationDocuments";
 export * from "./GetAwards";
 export * from "./CreateAward";

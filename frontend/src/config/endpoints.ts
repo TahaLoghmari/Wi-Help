@@ -69,6 +69,15 @@ export const API_ENDPOINTS = {
       `/appointments/${appointmentId}/respond`,
     GET_APPOINTMENT_BY_ID: (appointmentId: string) =>
       `/appointments/${appointmentId}`,
+    CANCEL_APPOINTMENT: (appointmentId: string) =>
+      `/appointments/${appointmentId}/cancel`,
+    CANCEL_APPOINTMENT_BY_PROFESSIONAL: (appointmentId: string) =>
+      `/appointments/${appointmentId}/cancel-by-professional`,
+    COMPLETE_APPOINTMENT: (appointmentId: string) =>
+      `/appointments/${appointmentId}/complete`,
+    GET_PATIENT_PRESCRIPTIONS: "/appointments/patient/me/prescriptions",
+    GET_PRESCRIPTION_BY_ID: (prescriptionId: string) =>
+      `/appointments/prescriptions/${prescriptionId}`,
   },
   NOTIFICATIONS: {
     GET_NOTIFICATIONS: "/notifications",

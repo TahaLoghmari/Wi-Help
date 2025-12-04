@@ -3,19 +3,23 @@ import { Progress } from "@/components/ui/progress";
 interface TodayPatientsStatProps {
   todayAppointments: number;
   confirmedCount: number;
-  pendingCount: number;
+  offeredCount: number;
+  cancelledCount: number;
+  completedCount: number;
   isLoading?: boolean;
 }
 
 export function TodayPatientsStat({
   todayAppointments,
   confirmedCount,
-  pendingCount,
+  offeredCount,
+  cancelledCount,
+  completedCount,
   isLoading,
 }: TodayPatientsStatProps) {
   const completedPercentage =
     todayAppointments > 0
-      ? Math.round((confirmedCount / todayAppointments) * 100)
+      ? Math.round((completedCount / todayAppointments) * 100)
       : 0;
 
   return (
@@ -32,22 +36,40 @@ export function TodayPatientsStat({
         <div className="text-brand-dark text-2xl font-semibold tracking-tight">
           {isLoading ? "..." : todayAppointments}
         </div>
-        <div className="flex items-center gap-2 text-[11px] text-slate-500">
-          <span className="">Confirmed</span>
-          <span className="font-medium text-slate-800">
-            {isLoading ? "-" : confirmedCount}
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-500">
+          <span>
+            Confirmed{" "}
+            <span className="font-medium text-slate-800">
+              {isLoading ? "-" : confirmedCount}
+            </span>
           </span>
           <span className="h-3 w-px bg-slate-200"></span>
-          <span>Pending</span>
-          <span className="font-medium text-slate-800">
-            {isLoading ? "-" : pendingCount}
+          <span>
+            Offered{" "}
+            <span className="font-medium text-slate-800">
+              {isLoading ? "-" : offeredCount}
+            </span>
+          </span>
+          <span className="h-3 w-px bg-slate-200"></span>
+          <span>
+            Cancelled{" "}
+            <span className="font-medium text-slate-800">
+              {isLoading ? "-" : cancelledCount}
+            </span>
+          </span>
+          <span className="h-3 w-px bg-slate-200"></span>
+          <span>
+            Completed{" "}
+            <span className="font-medium text-slate-800">
+              {isLoading ? "-" : completedCount}
+            </span>
           </span>
         </div>
       </div>
       <div className="mt-1 flex items-center gap-2">
         <Progress value={completedPercentage} className="flex-1" />
         <span className="text-[11px] text-slate-500">
-          {completedPercentage}% confirmed
+          {completedPercentage}% completed
         </span>
       </div>
     </div>

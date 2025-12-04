@@ -1,10 +1,35 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   AppointmentUrgency,
+  AppointmentStatus,
   GetProfessionalAppointments,
   type GetProfessionalAppointmentsDto,
   RespondToAppointment,
+  CancelAppointmentByProfessional,
+  CompleteAppointment,
 } from "@/features/professional";
+import { Sheet, SheetContent, SheetClose } from "@/components/ui/sheet";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { X, Calendar, Upload, FileText } from "lucide-react";
+
+type AppointmentTab = "offered" | "confirmed" | "cancelled" | "completed";
 
 export function AppointmentsTable() {
   const {
@@ -17,18 +42,26 @@ export function AppointmentsTable() {
   } = GetProfessionalAppointments();
 
   const respondToAppointmentMutation = RespondToAppointment();
+  const cancelAppointmentMutation = CancelAppointmentByProfessional();
+  const completeAppointmentMutation = CompleteAppointment();
 
   const appointments = data?.pages.flatMap((page) => page.items) || [];
   const totalCount = data?.pages[0]?.totalCount || 0;
 
-  const [activeTab, setActiveTab] = useState<"offered" | "confirmed">(
-    "offered",
-  );
+  const [activeTab, setActiveTab] = useState<AppointmentTab>("offered");
 
   const [viewModalOpen, setViewModalOpen] = useState(false);
-  const [acceptModalOpen, setAcceptModalOpen] = useState(false);
+  const [acceptDialogOpen, setAcceptDialogOpen] = useState(false);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [completeDialogOpen, setCompleteDialogOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] =
     useState<GetProfessionalAppointmentsDto | null>(null);
+
+  // Prescription upload state
+  const [prescriptionFile, setPrescriptionFile] = useState<File | null>(null);
+  const [prescriptionTitle, setPrescriptionTitle] = useState("");
+  const [prescriptionNotes, setPrescriptionNotes] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleView = (appointment: GetProfessionalAppointmentsDto) => {
     setSelectedAppointment(appointment);
@@ -37,7 +70,20 @@ export function AppointmentsTable() {
 
   const handleAccept = (appointment: GetProfessionalAppointmentsDto) => {
     setSelectedAppointment(appointment);
-    setAcceptModalOpen(true);
+    setAcceptDialogOpen(true);
+  };
+
+  const handleCancel = (appointment: GetProfessionalAppointmentsDto) => {
+    setSelectedAppointment(appointment);
+    setCancelDialogOpen(true);
+  };
+
+  const handleMarkComplete = (appointment: GetProfessionalAppointmentsDto) => {
+    setSelectedAppointment(appointment);
+    setPrescriptionFile(null);
+    setPrescriptionTitle("");
+    setPrescriptionNotes("");
+    setCompleteDialogOpen(true);
   };
 
   const handleConfirmAppointment = () => {
@@ -46,19 +92,91 @@ export function AppointmentsTable() {
         appointmentId: selectedAppointment.id,
         isAccepted: true,
       });
-      setAcceptModalOpen(false);
+      setAcceptDialogOpen(false);
       setSelectedAppointment(null);
     }
   };
 
-  const handleRejectAppointment = () => {
+  const handleCancelAppointment = () => {
     if (selectedAppointment) {
-      respondToAppointmentMutation.mutate({
-        appointmentId: selectedAppointment.id,
-        isAccepted: false,
-      });
-      setAcceptModalOpen(false);
+      // For offered appointments, use respond with isAccepted: false
+      if (selectedAppointment.status === AppointmentStatus.Offered) {
+        respondToAppointmentMutation.mutate({
+          appointmentId: selectedAppointment.id,
+          isAccepted: false,
+        });
+      } else {
+        // For confirmed appointments, use the dedicated cancel endpoint
+        cancelAppointmentMutation.mutate(selectedAppointment.id);
+      }
+      setCancelDialogOpen(false);
       setSelectedAppointment(null);
+    }
+  };
+
+  const handleCompleteAppointment = () => {
+    if (selectedAppointment && prescriptionFile) {
+      completeAppointmentMutation.mutate({
+        appointmentId: selectedAppointment.id,
+        prescriptionPdf: prescriptionFile,
+        prescriptionTitle: prescriptionTitle || undefined,
+        prescriptionNotes: prescriptionNotes || undefined,
+      });
+      setCompleteDialogOpen(false);
+      setSelectedAppointment(null);
+      setPrescriptionFile(null);
+      setPrescriptionTitle("");
+      setPrescriptionNotes("");
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type === "application/pdf") {
+      setPrescriptionFile(file);
+    }
+  };
+
+  const getFilteredAppointments = () => {
+    return appointments.filter((appointment) => {
+      switch (activeTab) {
+        case "offered":
+          return appointment.status === AppointmentStatus.Offered;
+        case "confirmed":
+          return appointment.status === AppointmentStatus.Confirmed;
+        case "cancelled":
+          return appointment.status === AppointmentStatus.Cancelled;
+        case "completed":
+          return appointment.status === AppointmentStatus.Completed;
+        default:
+          return false;
+      }
+    });
+  };
+
+  const getEmptyStateMessage = () => {
+    switch (activeTab) {
+      case "offered":
+        return {
+          title: "No offered appointments",
+          description:
+            "You don't have any pending appointment offers at the moment.",
+        };
+      case "confirmed":
+        return {
+          title: "No confirmed appointments",
+          description: "You don't have any confirmed appointments yet.",
+        };
+      case "cancelled":
+        return {
+          title: "No cancelled appointments",
+          description: "You don't have any cancelled appointments.",
+        };
+      case "completed":
+        return {
+          title: "No completed appointments",
+          description: "You don't have any completed appointments yet.",
+        };
     }
   };
 
@@ -78,8 +196,11 @@ export function AppointmentsTable() {
     );
   }
 
+  const filteredAppointments = getFilteredAppointments();
+  const emptyState = getEmptyStateMessage();
+
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-100">
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
       <div className="border-b border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-2 pl-4 sm:px-5">
         <div className="mb-2 flex items-center justify-between">
           <div className="">
@@ -125,6 +246,38 @@ export function AppointmentsTable() {
             ></span>
             Confirmed
           </button>
+          <button
+            id="appt-tab-cancelled"
+            onClick={() => setActiveTab("cancelled")}
+            className={`relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 transition-colors ${
+              activeTab === "cancelled"
+                ? "text-brand-dark border-slate-200 bg-white font-medium"
+                : "border-transparent text-slate-500 hover:border-slate-200 hover:bg-white"
+            }`}
+          >
+            <span
+              className={`inline-block h-1.5 w-1.5 rounded-full ${
+                activeTab === "cancelled" ? "bg-brand-blue" : "bg-slate-300"
+              }`}
+            ></span>
+            Cancelled
+          </button>
+          <button
+            id="appt-tab-completed"
+            onClick={() => setActiveTab("completed")}
+            className={`relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 transition-colors ${
+              activeTab === "completed"
+                ? "text-brand-dark border-slate-200 bg-white font-medium"
+                : "border-transparent text-slate-500 hover:border-slate-200 hover:bg-white"
+            }`}
+          >
+            <span
+              className={`inline-block h-1.5 w-1.5 rounded-full ${
+                activeTab === "completed" ? "bg-brand-blue" : "bg-slate-300"
+              }`}
+            ></span>
+            Completed
+          </button>
         </div>
       </div>
 
@@ -153,11 +306,7 @@ export function AppointmentsTable() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {appointments.filter((appointment) =>
-              activeTab === "offered"
-                ? appointment.status === "Offered"
-                : appointment.status === "Confirmed",
-            ).length === 0 ? (
+            {filteredAppointments.length === 0 ? (
               <tr>
                 <td
                   colSpan={6}
@@ -192,110 +341,131 @@ export function AppointmentsTable() {
                     </div>
                     <div className="text-center">
                       <p className="text-sm font-medium text-slate-700">
-                        No {activeTab} appointments
+                        {emptyState.title}
                       </p>
                       <p className="mt-1 text-xs text-slate-500">
-                        {activeTab === "offered"
-                          ? "You don't have any pending appointment offers at the moment."
-                          : "You don't have any confirmed appointments yet."}
+                        {emptyState.description}
                       </p>
                     </div>
                   </div>
                 </td>
               </tr>
             ) : (
-              appointments
-                .filter((appointment) =>
-                  activeTab === "offered"
-                    ? appointment.status === "Offered"
-                    : appointment.status === "Confirmed",
-                )
-                .map((appointment) => (
-                  <tr key={appointment.id} className="hover:bg-slate-50/70">
-                    <td className="pt-3.5 pr-4 pb-3.5 pl-4 whitespace-nowrap sm:px-5">
-                      <div className="flex items-center gap-3">
-                        {appointment.patient?.profilePictureUrl ? (
-                          <img
-                            src={appointment.patient.profilePictureUrl}
-                            alt={appointment.patient.firstName}
-                            className="h-8 w-8 rounded-full border border-slate-200 object-cover"
-                          />
-                        ) : (
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
-                            {appointment.patient?.firstName?.charAt(0) || "?"}
-                          </div>
-                        )}
-                        <div className="">
-                          <div className="text-xs font-medium tracking-tight text-slate-900">
-                            {appointment.patient?.firstName ||
-                              "Unknown Patient"}
-                          </div>
-                          <div className="text-[11px] text-slate-500">
-                            {appointment.patient?.dateOfBirth ? (
-                              <span>
-                                DOB:{" "}
-                                {new Date(
-                                  appointment.patient.dateOfBirth,
-                                ).toLocaleDateString()}
-                              </span>
-                            ) : (
-                              <span>
-                                Patient ID:{" "}
-                                {appointment.patientId.substring(0, 6)}
-                              </span>
-                            )}
-                          </div>
+              filteredAppointments.map((appointment) => (
+                <tr key={appointment.id} className="hover:bg-slate-50/70">
+                  <td className="pt-3.5 pr-4 pb-3.5 pl-4 whitespace-nowrap sm:px-5">
+                    <div className="flex items-center gap-3">
+                      {appointment.patient?.profilePictureUrl ? (
+                        <img
+                          src={appointment.patient.profilePictureUrl}
+                          alt={appointment.patient.firstName}
+                          className="h-8 w-8 rounded-full border border-slate-200 object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
+                          {appointment.patient?.firstName?.charAt(0) || "?"}
+                        </div>
+                      )}
+                      <div className="">
+                        <div className="text-xs font-medium tracking-tight text-slate-900">
+                          {appointment.patient?.firstName || "Unknown Patient"}
+                        </div>
+                        <div className="text-[11px] text-slate-500">
+                          {appointment.patient?.dateOfBirth ? (
+                            <span>
+                              DOB:{" "}
+                              {new Date(
+                                appointment.patient.dateOfBirth,
+                              ).toLocaleDateString()}
+                            </span>
+                          ) : (
+                            <span>
+                              Patient ID:{" "}
+                              {appointment.patientId.substring(0, 6)}
+                            </span>
+                          )}
                         </div>
                       </div>
-                    </td>
-                    <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-700 sm:px-5">
-                      {new Date(appointment.startDate).toLocaleDateString()} •{" "}
-                      {new Date(appointment.startDate).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </td>
-                    <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
-                      {appointment.notes || (
-                        <span className="text-slate-400 italic">
-                          No purpose specified
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
-                      <span
-                        className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] ${
-                          appointment.urgency === "High"
-                            ? "border-red-200 bg-red-50 text-red-700"
-                            : appointment.urgency === AppointmentUrgency.Medium
-                              ? "border-yellow-200 bg-yellow-50 text-yellow-700"
-                              : "border-brand-blue/40 bg-brand-blue/10 text-brand-dark"
-                        }`}
-                      >
-                        {appointment.urgency}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-700 sm:px-5">
+                    {new Date(appointment.startDate).toLocaleDateString()} •{" "}
+                    {new Date(appointment.startDate).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </td>
+                  <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
+                    {appointment.notes || (
+                      <span className="text-slate-400 italic">
+                        No purpose specified
                       </span>
-                    </td>
-                    <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-800 sm:px-5">
-                      ${appointment.price.toFixed(2)}
-                    </td>
-                    <td className="px-4 py-3.5 text-right whitespace-nowrap sm:px-5">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          onClick={() => handleView(appointment)}
-                          className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors"
-                        >
-                          View
-                        </button>
-                        <button
-                          onClick={() => handleAccept(appointment)}
-                          className="border-brand-dark bg-brand-dark hover:bg-brand-secondary inline-flex items-center rounded-full border px-2 py-1 text-[11px] text-white transition-colors"
-                        >
-                          Accept
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                    )}
+                  </td>
+                  <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
+                    <span
+                      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] ${
+                        appointment.urgency === "High"
+                          ? "border-red-200 bg-red-50 text-red-700"
+                          : appointment.urgency === AppointmentUrgency.Medium
+                            ? "border-yellow-200 bg-yellow-50 text-yellow-700"
+                            : "border-brand-blue/40 bg-brand-blue/10 text-brand-dark"
+                      }`}
+                    >
+                      {appointment.urgency}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-800 sm:px-5">
+                    ${appointment.price.toFixed(2)}
+                  </td>
+                  <td className="px-4 py-3.5 text-right whitespace-nowrap sm:px-5">
+                    <div className="flex items-center justify-end gap-1.5">
+                      {appointment.status === AppointmentStatus.Offered && (
+                        <>
+                          <button
+                            onClick={() => handleAccept(appointment)}
+                            disabled={respondToAppointmentMutation.isPending}
+                            className="border-brand-dark bg-brand-dark hover:bg-brand-secondary inline-flex items-center rounded-full border px-2 py-1 text-[11px] text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            Accept
+                          </button>
+                          <button
+                            onClick={() => handleCancel(appointment)}
+                            disabled={respondToAppointmentMutation.isPending}
+                            className="inline-flex items-center rounded-full border border-red-200 bg-white px-2 py-1 text-[11px] text-red-700 transition-colors hover:border-red-300 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      )}
+                      {appointment.status === AppointmentStatus.Confirmed && (
+                        <>
+                          <button
+                            onClick={() => handleMarkComplete(appointment)}
+                            disabled={completeAppointmentMutation.isPending}
+                            className="border-brand-dark bg-brand-dark hover:bg-brand-secondary inline-flex items-center rounded-full border px-2 py-1 text-[11px] text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            Complete
+                          </button>
+                          <button
+                            onClick={() => handleCancel(appointment)}
+                            disabled={cancelAppointmentMutation.isPending}
+                            className="inline-flex items-center rounded-full border border-red-200 bg-white px-2 py-1 text-[11px] text-red-700 transition-colors hover:border-red-300 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      )}
+                      <button
+                        onClick={() => handleView(appointment)}
+                        className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors"
+                      >
+                        View
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
             )}
           </tbody>
         </table>
@@ -327,252 +497,376 @@ export function AppointmentsTable() {
         </div>
       </div>
 
-      {/* View Appointment Modal */}
-      {viewModalOpen && selectedAppointment && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-          onClick={() => setViewModalOpen(false)}
+      {/* View Appointment Sheet */}
+      <Sheet open={viewModalOpen} onOpenChange={setViewModalOpen}>
+        <SheetContent
+          side="right"
+          className="w-full max-w-xl! border-l border-slate-200 p-0 [&>button]:hidden"
         >
-          <div
-            className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-200 bg-white shadow-xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="border-b border-slate-200 bg-slate-50/70 px-6 py-4">
-              <h3 className="text-brand-dark text-lg font-semibold">
-                Appointment Details
-              </h3>
-              <p className="mt-1 text-sm text-slate-500">
-                Review the appointment information
-              </p>
-            </div>
-            <div className="space-y-4 px-6 py-5">
-              <div>
-                <label className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                  Patient
-                </label>
-                <div className="mt-2 flex items-center gap-3">
+          {selectedAppointment && (
+            <div className="flex h-full flex-col">
+              {/* Header */}
+              <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-100 bg-white/90 px-6 py-5 backdrop-blur-sm">
+                <div>
+                  <h2 className="text-brand-dark text-lg font-bold tracking-tight">
+                    Appointment Details
+                  </h2>
+                  <p className="mt-0.5 text-xs font-medium text-slate-500">
+                    Review full appointment information
+                  </p>
+                </div>
+                <SheetClose className="-mr-2 rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-600">
+                  <X className="h-5 w-5" />
+                </SheetClose>
+              </div>
+
+              {/* Body */}
+              <div className="flex-1 space-y-6 overflow-y-auto p-6">
+                {/* Patient */}
+                <div className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/80 p-4">
                   {selectedAppointment.patient?.profilePictureUrl ? (
                     <img
                       src={selectedAppointment.patient.profilePictureUrl}
                       alt={selectedAppointment.patient.firstName}
-                      className="h-12 w-12 rounded-full border border-slate-200 object-cover"
+                      className="h-14 w-14 rounded-full border-[3px] border-white object-cover"
                     />
                   ) : (
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-sm font-medium text-slate-500">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-full border-[3px] border-white bg-slate-100 text-sm font-medium text-slate-500">
                       {selectedAppointment.patient?.firstName?.charAt(0) || "?"}
                     </div>
                   )}
-                  <div>
-                    <div className="text-sm font-medium text-slate-900">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="truncate text-sm font-bold text-slate-900">
                       {selectedAppointment.patient?.firstName ||
                         "Unknown Patient"}
-                    </div>
-                    <div className="text-xs text-slate-500">
-                      {selectedAppointment.patient?.dateOfBirth
-                        ? `DOB: ${new Date(selectedAppointment.patient.dateOfBirth).toLocaleDateString()}`
-                        : `Patient ID: ${selectedAppointment.patientId.substring(0, 8)}`}
+                    </h3>
+                    <div className="mt-1 flex flex-col gap-0.5">
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                        <Calendar className="h-3 w-3" />
+                        <span>
+                          {selectedAppointment.patient?.dateOfBirth
+                            ? `DOB: ${new Date(selectedAppointment.patient.dateOfBirth).toLocaleDateString()}`
+                            : `Patient ID: ${selectedAppointment.patientId.substring(0, 8)}`}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                    Start Date & Time
-                  </label>
-                  <p className="mt-1 text-sm text-slate-900">
-                    {new Date(
-                      selectedAppointment.startDate,
-                    ).toLocaleDateString()}
-                  </p>
-                  <p className="text-sm text-slate-700">
-                    {new Date(selectedAppointment.startDate).toLocaleTimeString(
-                      [],
-                      {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      },
-                    )}
-                  </p>
+                {/* Dates */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="rounded-2xl border border-slate-100 bg-white p-3">
+                    <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                      Start Time
+                    </span>
+                    <div className="mt-1 flex items-center gap-2">
+                      <div className="bg-brand-secondary h-8 w-1 rounded-full"></div>
+                      <div>
+                        <div className="text-xs font-medium text-slate-500">
+                          {new Date(
+                            selectedAppointment.startDate,
+                          ).toLocaleDateString()}
+                        </div>
+                        <div className="text-sm font-bold text-slate-900">
+                          {new Date(
+                            selectedAppointment.startDate,
+                          ).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="rounded-2xl border border-slate-100 bg-white p-3">
+                    <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                      End Time
+                    </span>
+                    <div className="mt-1 flex items-center gap-2">
+                      <div className="bg-brand-secondary h-8 w-1 rounded-full"></div>
+                      <div>
+                        <div className="text-xs font-medium text-slate-500">
+                          {new Date(
+                            selectedAppointment.endDate,
+                          ).toLocaleDateString()}
+                        </div>
+                        <div className="text-sm font-bold text-slate-900">
+                          {new Date(
+                            selectedAppointment.endDate,
+                          ).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                    End Date & Time
-                  </label>
-                  <p className="mt-1 text-sm text-slate-900">
-                    {new Date(selectedAppointment.endDate).toLocaleDateString()}
-                  </p>
-                  <p className="text-sm text-slate-700">
-                    {new Date(selectedAppointment.endDate).toLocaleTimeString(
-                      [],
-                      {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      },
-                    )}
-                  </p>
-                </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                    Urgency
-                  </label>
-                  <div className="mt-1">
-                    <span
-                      className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium ${
-                        selectedAppointment.urgency === "High"
-                          ? "border-red-200 bg-red-50 text-red-700"
-                          : selectedAppointment.urgency ===
-                              AppointmentUrgency.Medium
-                            ? "border-yellow-200 bg-yellow-50 text-yellow-700"
-                            : "border-brand-blue/40 bg-brand-blue/10 text-brand-dark"
-                      }`}
-                    >
-                      {selectedAppointment.urgency}
+                {/* Status & Urgency */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
+                      Status
+                    </label>
+                    <div>
+                      <span
+                        className={`border-brand-secondary text-brand-secondary inline-flex items-center gap-1.5 rounded-full border bg-white px-3 py-1.5 text-[10px] font-semibold`}
+                      >
+                        {selectedAppointment.status}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
+                      Urgency
+                    </label>
+                    <div>
+                      <span
+                        className={`border-brand-secondary text-brand-secondary inline-flex items-center gap-1.5 rounded-full border bg-white px-3 py-1.5 text-[10px] font-semibold`}
+                      >
+                        {selectedAppointment.urgency}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Price */}
+                <div className="rounded-2xl border border-slate-200 bg-slate-50/30 p-4">
+                  <div className="mb-4 flex items-center justify-between">
+                    <span className="text-xs font-semibold text-slate-600">
+                      Total Price
+                    </span>
+                    <span className="text-brand-dark text-xl font-bold">
+                      ${selectedAppointment.price.toFixed(2)}
                     </span>
                   </div>
-                </div>
-                <div>
-                  <label className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                    Status
-                  </label>
-                  <p className="mt-1 text-sm text-slate-900">
-                    {selectedAppointment.status}
-                  </p>
-                </div>
-              </div>
-
-              <div>
-                <label className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                  Price
-                </label>
-                <p className="mt-1 text-lg font-semibold text-slate-900">
-                  ${selectedAppointment.price.toFixed(2)}
-                </p>
-              </div>
-
-              <div>
-                <label className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                  Purpose / Notes
-                </label>
-                <p className="mt-1 text-sm text-slate-700">
-                  {selectedAppointment.notes || "No notes provided"}
-                </p>
-              </div>
-
-              {selectedAppointment.offeredAt && (
-                <div>
-                  <label className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                    Offered At
-                  </label>
-                  <p className="mt-1 text-sm text-slate-700">
-                    {new Date(selectedAppointment.offeredAt).toLocaleString()}
-                  </p>
-                </div>
-              )}
-            </div>
-            <div className="border-t border-slate-200 bg-slate-50/70 px-6 py-4">
-              <button
-                onClick={() => setViewModalOpen(false)}
-                className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Accept Appointment Modal */}
-      {acceptModalOpen && selectedAppointment && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-          onClick={() => setAcceptModalOpen(false)}
-        >
-          <div
-            className="w-full max-w-md rounded-2xl border border-slate-200 bg-white shadow-xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="border-b border-slate-200 bg-slate-50/70 px-6 py-4">
-              <h3 className="text-brand-dark text-lg font-semibold">
-                Confirm Appointment
-              </h3>
-              <p className="mt-1 text-sm text-slate-500">
-                Choose an action for this appointment
-              </p>
-            </div>
-            <div className="space-y-4 px-6 py-5">
-              <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-4">
-                <div className="flex items-center gap-3">
-                  {selectedAppointment.patient?.profilePictureUrl ? (
-                    <img
-                      src={selectedAppointment.patient.profilePictureUrl}
-                      alt={selectedAppointment.patient.firstName}
-                      className="h-10 w-10 rounded-full border border-slate-200 object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-medium text-slate-500">
-                      {selectedAppointment.patient?.firstName?.charAt(0) || "?"}
-                    </div>
-                  )}
-                  <div className="flex-1">
-                    <div className="text-sm font-medium text-slate-900">
-                      {selectedAppointment.patient?.firstName ||
-                        "Unknown Patient"}
-                    </div>
-                    <div className="text-xs text-slate-500">
-                      {new Date(
-                        selectedAppointment.startDate,
-                      ).toLocaleDateString()}{" "}
-                      •{" "}
-                      {new Date(
-                        selectedAppointment.startDate,
-                      ).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </div>
+                  <div className="my-2 h-px bg-slate-200"></div>
+                  <div className="grid grid-cols-2 gap-4 pt-1">
+                    {selectedAppointment.offeredAt && (
+                      <div>
+                        <div className="text-[10px] font-medium tracking-wide text-slate-400 uppercase">
+                          Offered At
+                        </div>
+                        <div className="mt-0.5 text-xs font-medium text-slate-700">
+                          {new Date(
+                            selectedAppointment.offeredAt,
+                          ).toLocaleString()}
+                        </div>
+                      </div>
+                    )}
+                    {selectedAppointment.confirmedAt && (
+                      <div>
+                        <div className="text-[10px] font-medium tracking-wide text-slate-400 uppercase">
+                          Confirmed At
+                        </div>
+                        <div className="mt-0.5 text-xs font-medium text-slate-700">
+                          {new Date(
+                            selectedAppointment.confirmedAt,
+                          ).toLocaleString()}
+                        </div>
+                      </div>
+                    )}
+                    {selectedAppointment.completedAt && (
+                      <div>
+                        <div className="text-[10px] font-medium tracking-wide text-slate-400 uppercase">
+                          Completed At
+                        </div>
+                        <div className="mt-0.5 text-xs font-medium text-slate-700">
+                          {new Date(
+                            selectedAppointment.completedAt,
+                          ).toLocaleString()}
+                        </div>
+                      </div>
+                    )}
+                    {selectedAppointment.cancelledAt && (
+                      <div>
+                        <div className="text-[10px] font-medium tracking-wide text-slate-400 uppercase">
+                          Cancelled At
+                        </div>
+                        <div className="mt-0.5 text-xs font-medium text-slate-700">
+                          {new Date(
+                            selectedAppointment.cancelledAt,
+                          ).toLocaleString()}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
-                <div className="mt-3 text-xs text-slate-600">
-                  {selectedAppointment.notes ? (
-                    <>
-                      <span className="font-medium">Notes:</span>{" "}
-                      {selectedAppointment.notes}
-                    </>
+
+                {/* Notes */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
+                    Purpose / Notes
+                  </label>
+                  <div className="w-full rounded-2xl border border-slate-200 bg-white p-4 text-xs leading-relaxed text-slate-600 italic">
+                    {selectedAppointment.notes ||
+                      "No notes provided for this appointment."}
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="sticky bottom-0 z-10 flex gap-3 border-t border-slate-100 bg-white p-6">
+                <SheetClose className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 transition-all hover:border-slate-300 hover:bg-slate-50">
+                  Close
+                </SheetClose>
+              </div>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
+
+      {/* Accept Appointment Alert Dialog */}
+      <AlertDialog open={acceptDialogOpen} onOpenChange={setAcceptDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Accept Appointment</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to accept this appointment?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-brand-dark"
+              onClick={handleConfirmAppointment}
+            >
+              Accept
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Cancel Appointment Alert Dialog */}
+      <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancel Appointment</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to cancel this appointment?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="border border-red-600 bg-red-600 text-white hover:bg-red-700"
+              onClick={handleCancelAppointment}
+              disabled={
+                respondToAppointmentMutation.isPending ||
+                cancelAppointmentMutation.isPending
+              }
+            >
+              {respondToAppointmentMutation.isPending ||
+              cancelAppointmentMutation.isPending
+                ? "Cancelling..."
+                : "Cancel Appointment"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Complete Appointment Dialog with Prescription Upload */}
+      <Dialog open={completeDialogOpen} onOpenChange={setCompleteDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Mark Appointment as Completed</DialogTitle>
+            <DialogDescription>
+              Upload a prescription PDF to complete this appointment. This
+              prescription will be available to the patient.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedAppointment && (
+            <div className="space-y-4 pb-4">
+              {/* File Upload */}
+              <div className="space-y-2">
+                <label className="mb-2 text-sm font-medium text-slate-700">
+                  Prescription PDF <span className="text-red-500">*</span>
+                </label>
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  className={`mt-2 cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition-colors ${
+                    prescriptionFile
+                      ? "border-emerald-300 bg-emerald-50"
+                      : "hover:border-brand-blue hover:bg-brand-blue/5 border-slate-300"
+                  }`}
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="application/pdf"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                  {prescriptionFile ? (
+                    <div className="flex items-center justify-center gap-2 text-emerald-700">
+                      <FileText className="h-5 w-5" />
+                      <span className="text-sm font-medium">
+                        {prescriptionFile.name}
+                      </span>
+                    </div>
                   ) : (
-                    <>
-                      <span className="font-medium">Notes:</span> No notes
-                      provided
-                    </>
+                    <div className="text-slate-500">
+                      <Upload className="mx-auto h-8 w-8 text-slate-400" />
+                      <p className="mt-2 text-sm">
+                        Click to upload or drag and drop
+                      </p>
+                      <p className="text-xs text-slate-400">PDF only</p>
+                    </div>
                   )}
                 </div>
               </div>
 
-              <div className="text-sm text-slate-600">
-                <p>Would you like to accept or reject this appointment?</p>
+              {/* Prescription Title */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">
+                  Prescription Title (optional)
+                </label>
+                <input
+                  type="text"
+                  value={prescriptionTitle}
+                  onChange={(e) => setPrescriptionTitle(e.target.value)}
+                  placeholder="e.g., General Consultation Prescription"
+                  className="focus:border-brand-blue mt-2 focus:ring-brand-blue w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-1 focus:outline-none"
+                />
+              </div>
+
+              {/* Prescription Notes */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">
+                  Notes (optional)
+                </label>
+                <textarea
+                  value={prescriptionNotes}
+                  onChange={(e) => setPrescriptionNotes(e.target.value)}
+                  placeholder="Additional notes about the prescription..."
+                  rows={3}
+                  className="focus:border-brand-blue mt-2 focus:ring-brand-blue w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-1 focus:outline-none"
+                />
               </div>
             </div>
-            <div className="flex gap-3 border-t border-slate-200 bg-slate-50/70 px-6 py-4">
-              <button
-                onClick={handleRejectAppointment}
-                className="flex-1 rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-medium text-red-700 transition-colors hover:bg-red-50"
-              >
-                Reject
-              </button>
-              <button
-                onClick={handleConfirmAppointment}
-                className="border-brand-dark bg-brand-dark hover:bg-brand-secondary flex-1 rounded-lg border px-4 py-2 text-sm font-medium text-white transition-colors"
-              >
-                Accept
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+          )}
+          <DialogFooter>
+            <button
+              onClick={() => setCompleteDialogOpen(false)}
+              className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleCompleteAppointment}
+              disabled={
+                !prescriptionFile || completeAppointmentMutation.isPending
+              }
+              className="bg-brand-dark hover:bg-brand-dark/70 rounded-lg border px-4 py-2 text-sm font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {completeAppointmentMutation.isPending
+                ? "Completing..."
+                : "Complete Appointment"}
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
