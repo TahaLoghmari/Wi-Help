@@ -60,22 +60,38 @@ public class BookAppointmentCommandHandler(
             return Result.Success();
         }
 
+        // Get patient information for notification and email
+        var patientResult = await patientsModuleApi.GetPatientsByIdsAsync([command.PatientId], cancellationToken);
+        if (!patientResult.IsSuccess || !patientResult.Value.Any())
+        {
+            logger.LogWarning("Failed to fetch patient details for notification: {Error}", patientResult.Error);
+            // Send notification without patient name
+            await notificationsModuleApi.AddNotificationAsync(
+                professional.UserId.ToString(),
+                "Professional",
+                "New Appointment Booked",
+                "A patient has booked an appointment with you.",
+                NotificationType.newAppointment,
+                cancellationToken);
+            return Result.Success();
+        }
+
+        var patient = patientResult.Value.First();
+        var patientName = $"{patient.FirstName} {patient.LastName}";
+        var professionalName = $"{professional.FirstName} {professional.LastName}";
+
         // Send notification to professional's UserId (not ProfessionalId)
         await notificationsModuleApi.AddNotificationAsync(
             professional.UserId.ToString(),
             "Professional",
             "New Appointment Booked",
-            "A patient has booked an appointment with you.",
+            $"{patientName} has booked an appointment with you.",
             NotificationType.newAppointment,
             cancellationToken);
 
         // Get patient information for email
-        var patientResult = await patientsModuleApi.GetPatientsByIdsAsync([command.PatientId], cancellationToken);
         if (patientResult.IsSuccess && patientResult.Value.Any())
         {
-            var patient = patientResult.Value.First();
-            var patientName = $"{patient.FirstName} {patient.LastName}";
-            var professionalName = $"{professional.FirstName} {professional.LastName}";
             
             // Send email to professional
             var emailBody = AppointmentEmailTemplates.AppointmentBooked(

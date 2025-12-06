@@ -13,11 +13,19 @@ public static class AppointmentEmailTemplates
         decimal price,
         string? notes)
     {
-        var formattedStartDate = startDate.ToString("dddd, MMMM dd, yyyy");
-        var formattedStartTime = startDate.ToString("hh:mm tt");
-        var formattedEndTime = endDate.ToString("hh:mm tt");
-        var duration = (endDate - startDate).TotalHours;
-        var formattedPrice = price.ToString("C");
+        // Convert UTC times to local timezone (Tunisia)
+        var localStartDate = TimeZoneInfo.ConvertTimeFromUtc(
+            DateTime.SpecifyKind(startDate, DateTimeKind.Utc),
+            TimeZoneInfo.FindSystemTimeZoneById("Africa/Tunis"));
+        var localEndDate = TimeZoneInfo.ConvertTimeFromUtc(
+            DateTime.SpecifyKind(endDate, DateTimeKind.Utc),
+            TimeZoneInfo.FindSystemTimeZoneById("Africa/Tunis"));
+            
+        var formattedStartDate = localStartDate.ToString("dddd, MMMM dd, yyyy");
+        var formattedStartTime = localStartDate.ToString("hh:mm tt");
+        var formattedEndTime = localEndDate.ToString("hh:mm tt");
+        var duration = (localEndDate - localStartDate).TotalHours;
+        var formattedPrice = $"{price:F2} TND";
         
         var notesSection = string.IsNullOrWhiteSpace(notes) ? "" : $@"
                 <div style=""margin-bottom: 0;"">
@@ -50,7 +58,7 @@ public static class AppointmentEmailTemplates
                 <div style=""margin-bottom: 15px;""><p style=""margin: 0 0 5px 0; font-size: 14px; color: #00546e; font-weight: 600;"">📧 Email:</p><p style=""margin: 0; font-size: 16px; color: #00394a;"">{patientEmail}</p></div>
                 <div style=""margin-bottom: 15px;""><p style=""margin: 0 0 5px 0; font-size: 14px; color: #00546e; font-weight: 600;"">📱 Phone:</p><p style=""margin: 0; font-size: 16px; color: #00394a;"">{patientPhone}</p></div>
                 <div style=""margin-bottom: 15px;""><p style=""margin: 0 0 5px 0; font-size: 14px; color: #00546e; font-weight: 600;"">📅 Date:</p><p style=""margin: 0; font-size: 16px; color: #00394a;"">{formattedStartDate}</p></div>
-                <div style=""margin-bottom: 15px;""><p style=""margin: 0 0 5px 0; font-size: 14px; color: #00546e; font-weight: 600;"">�� Time:</p><p style=""margin: 0; font-size: 16px; color: #00394a;"">{formattedStartTime} - {formattedEndTime} ({duration:F1} hours)</p></div>
+                <div style=""margin-bottom: 15px;""><p style=""margin: 0 0 5px 0; font-size: 14px; color: #00546e; font-weight: 600;"">🕐 Time:</p><p style=""margin: 0; font-size: 16px; color: #00394a;"">{formattedStartTime} - {formattedEndTime} ({duration:F1} hours)</p></div>
                 <div style=""margin-bottom: 15px;""><p style=""margin: 0 0 5px 0; font-size: 14px; color: #00546e; font-weight: 600;"">⚡ Urgency:</p><p style=""margin: 0; font-size: 16px; color: #00394a;"">{urgency}</p></div>
                 <div style=""margin-bottom: 15px;""><p style=""margin: 0 0 5px 0; font-size: 14px; color: #00546e; font-weight: 600;"">💰 Price:</p><p style=""margin: 0; font-size: 16px; color: #00394a; font-weight: 600;"">{formattedPrice}</p></div>
                 {notesSection}
@@ -81,11 +89,19 @@ public static class AppointmentEmailTemplates
         decimal price,
         string? notes)
     {
-        var formattedStartDate = startDate.ToString("dddd, MMMM dd, yyyy");
-        var formattedStartTime = startDate.ToString("hh:mm tt");
-        var formattedEndTime = endDate.ToString("hh:mm tt");
-        var duration = (endDate - startDate).TotalHours;
-        var formattedPrice = price.ToString("C");
+        // Convert UTC times to local timezone (Tunisia)
+        var localStartDate = TimeZoneInfo.ConvertTimeFromUtc(
+            DateTime.SpecifyKind(startDate, DateTimeKind.Utc),
+            TimeZoneInfo.FindSystemTimeZoneById("Africa/Tunis"));
+        var localEndDate = TimeZoneInfo.ConvertTimeFromUtc(
+            DateTime.SpecifyKind(endDate, DateTimeKind.Utc),
+            TimeZoneInfo.FindSystemTimeZoneById("Africa/Tunis"));
+            
+        var formattedStartDate = localStartDate.ToString("dddd, MMMM dd, yyyy");
+        var formattedStartTime = localStartDate.ToString("hh:mm tt");
+        var formattedEndTime = localEndDate.ToString("hh:mm tt");
+        var duration = (localEndDate - localStartDate).TotalHours;
+        var formattedPrice = $"{price:F2} TND";
         
         var notesSection = string.IsNullOrWhiteSpace(notes) ? "" : $@"
                 <div style=""margin-bottom: 0;"">
@@ -140,11 +156,19 @@ public static class AppointmentEmailTemplates
 
     public static string AppointmentRejected(string patientName, string professionalName, DateTime startDate, DateTime endDate, string urgency, decimal price)
     {
-        var formattedStartDate = startDate.ToString("dddd, MMMM dd, yyyy");
-        var formattedStartTime = startDate.ToString("hh:mm tt");
-        var formattedEndTime = endDate.ToString("hh:mm tt");
-        var duration = (endDate - startDate).TotalHours;
-        var formattedPrice = price.ToString("C");
+        // Convert UTC times to local timezone (Tunisia)
+        var localStartDate = TimeZoneInfo.ConvertTimeFromUtc(
+            DateTime.SpecifyKind(startDate, DateTimeKind.Utc),
+            TimeZoneInfo.FindSystemTimeZoneById("Africa/Tunis"));
+        var localEndDate = TimeZoneInfo.ConvertTimeFromUtc(
+            DateTime.SpecifyKind(endDate, DateTimeKind.Utc),
+            TimeZoneInfo.FindSystemTimeZoneById("Africa/Tunis"));
+            
+        var formattedStartDate = localStartDate.ToString("dddd, MMMM dd, yyyy");
+        var formattedStartTime = localStartDate.ToString("hh:mm tt");
+        var formattedEndTime = localEndDate.ToString("hh:mm tt");
+        var duration = (localEndDate - localStartDate).TotalHours;
+        var formattedPrice = $"{price:F2} TND";
         
         return $@"
 <!DOCTYPE html>
@@ -246,11 +270,19 @@ public static class AppointmentEmailTemplates
 
     public static string AppointmentCancelledByProfessional(string patientName, string professionalName, DateTime startDate, DateTime endDate, string urgency, decimal price, string? notes)
     {
-        var formattedStartDate = startDate.ToString("dddd, MMMM dd, yyyy");
-        var formattedStartTime = startDate.ToString("hh:mm tt");
-        var formattedEndTime = endDate.ToString("hh:mm tt");
-        var duration = (endDate - startDate).TotalHours;
-        var formattedPrice = price.ToString("C");
+        // Convert UTC times to local timezone (Tunisia)
+        var localStartDate = TimeZoneInfo.ConvertTimeFromUtc(
+            DateTime.SpecifyKind(startDate, DateTimeKind.Utc),
+            TimeZoneInfo.FindSystemTimeZoneById("Africa/Tunis"));
+        var localEndDate = TimeZoneInfo.ConvertTimeFromUtc(
+            DateTime.SpecifyKind(endDate, DateTimeKind.Utc),
+            TimeZoneInfo.FindSystemTimeZoneById("Africa/Tunis"));
+            
+        var formattedStartDate = localStartDate.ToString("dddd, MMMM dd, yyyy");
+        var formattedStartTime = localStartDate.ToString("hh:mm tt");
+        var formattedEndTime = localEndDate.ToString("hh:mm tt");
+        var duration = (localEndDate - localStartDate).TotalHours;
+        var formattedPrice = $"{price:F2} TND";
         
         return $@"
 <!DOCTYPE html>
@@ -352,11 +384,19 @@ public static class AppointmentEmailTemplates
 
     public static string AppointmentCancelledByPatient(string professionalName, string patientName, DateTime startDate, DateTime endDate, string urgency, decimal price)
     {
-        var formattedStartDate = startDate.ToString("dddd, MMMM dd, yyyy");
-        var formattedStartTime = startDate.ToString("hh:mm tt");
-        var formattedEndTime = endDate.ToString("hh:mm tt");
-        var duration = (endDate - startDate).TotalHours;
-        var formattedPrice = price.ToString("C");
+        // Convert UTC times to local timezone (Tunisia)
+        var localStartDate = TimeZoneInfo.ConvertTimeFromUtc(
+            DateTime.SpecifyKind(startDate, DateTimeKind.Utc),
+            TimeZoneInfo.FindSystemTimeZoneById("Africa/Tunis"));
+        var localEndDate = TimeZoneInfo.ConvertTimeFromUtc(
+            DateTime.SpecifyKind(endDate, DateTimeKind.Utc),
+            TimeZoneInfo.FindSystemTimeZoneById("Africa/Tunis"));
+            
+        var formattedStartDate = localStartDate.ToString("dddd, MMMM dd, yyyy");
+        var formattedStartTime = localStartDate.ToString("hh:mm tt");
+        var formattedEndTime = localEndDate.ToString("hh:mm tt");
+        var duration = (localEndDate - localStartDate).TotalHours;
+        var formattedPrice = $"{price:F2} TND";
         
         return $@"
 <!DOCTYPE html>

@@ -6,12 +6,17 @@ using Modules.Common.Features.Results;
 using Modules.Messaging.Domain.Entities;
 using Modules.Messaging.Infrastructure;
 using Modules.Messaging.Infrastructure.Database;
+using Modules.Notifications.Domain.Enums;
+using Modules.Notifications.PublicApi;
+using Modules.Identity.PublicApi;
 
 namespace Modules.Messaging.Features.SendMessage;
 
 public class SendMessageCommandHandler(
     MessagingDbContext messagingDbContext,
     IHubContext<ChatHub> hubContext,
+    INotificationsModuleApi notificationsModuleApi,
+    IIdentityModuleApi identityModuleApi,
     ILogger<SendMessageCommandHandler> logger) : ICommandHandler<SendMessageCommand, Guid>
 {
     public async Task<Result<Guid>> Handle(SendMessageCommand command, CancellationToken cancellationToken)
@@ -45,10 +50,37 @@ public class SendMessageCommandHandler(
         logger.LogInformation("Message {MessageId} sent in conversation {ConversationId} by user {SenderId}",
             message.Id, command.ConversationId, command.SenderId);
 
+        // Get recipient ID
+        var recipientId = conversation.GetOtherParticipant(command.SenderId);
+
+        // Send notification to recipient
+        try
+        {
+            // Get sender information for the notification
+            var senderResult = await identityModuleApi.GetUserByIdAsync(command.SenderId, cancellationToken);
+            var senderName = "Someone";
+            if (senderResult.IsSuccess)
+            {
+                senderName = $"{senderResult.Value.FirstName} {senderResult.Value.LastName}";
+            }
+
+            await notificationsModuleApi.AddNotificationAsync(
+                recipientId.ToString(),
+                "User", // Will be filtered by the actual user's role
+                "New Message",
+                $"{senderName} sent you a message.",
+                NotificationType.newMessage,
+                CancellationToken.None);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Failed to create notification for message {MessageId}", message.Id);
+            // Don't fail the operation - message was saved successfully
+        }
+
         // Notify all participants in the conversation via SignalR
         try
         {
-            var recipientId = conversation.GetOtherParticipant(command.SenderId);
             await hubContext.Clients.Group($"conversation_{command.ConversationId}")
                 .SendAsync("MessageReceived", new
                 {

@@ -38,15 +38,16 @@ public class GetConversationsQueryHandler(
             .Distinct()
             .ToList();
 
-        // Batch fetch all users at once
-        var userResults = await Task.WhenAll(
-            otherParticipantIds.Select(id => identityApi.GetUserByIdAsync(id, cancellationToken))
-        );
+        // Batch fetch all users at once using the batch API
+        var usersResult = await identityApi.GetUsersByIdsAsync(otherParticipantIds, cancellationToken);
+        
+        if (!usersResult.IsSuccess)
+        {
+            logger.LogError("Failed to fetch users for conversations: {Error}", usersResult.Error);
+            return Result<List<ConversationDto>>.Failure(usersResult.Error);
+        }
 
-        var userLookup = otherParticipantIds
-            .Zip(userResults, (id, result) => (Id: id, Result: result))
-            .Where(x => x.Result.IsSuccess)
-            .ToDictionary(x => x.Id, x => x.Result.Value);
+        var userLookup = usersResult.Value.ToDictionary(u => u.Id, u => u);
 
         var conversationDtos = new List<ConversationDto>();
 
