@@ -23,6 +23,7 @@ export const ROUTE_PATHS = {
     INVOICES: "/professional/invoices",
     MESSAGES: "/professional/messages",
     NOTIFICATIONS: "/professional/notifications",
+    PAYMENT: "/professional/payment",
     SETTINGS: "/professional/settings",
     PROFILE: "/professional/profile",
     PATIENT_PROFILE: "/professional/patient/$patientId",

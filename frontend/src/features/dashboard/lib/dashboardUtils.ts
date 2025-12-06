@@ -44,6 +44,11 @@ export function getNavigationData(user: UserDto) {
       url: ROUTE_PATHS.PROFESSIONAL.INVOICES,
       icon: FileText,
     },
+    {
+      title: "Payment",
+      url: ROUTE_PATHS.PROFESSIONAL.PAYMENT,
+      icon: CreditCard,
+    },
   ];
 
   const patientNavMain = [

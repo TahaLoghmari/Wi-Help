@@ -19,6 +19,7 @@ import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as ProfessionalSettingsRouteImport } from './routes/professional/settings'
 import { Route as ProfessionalScheduleTimingsRouteImport } from './routes/professional/schedule-timings'
 import { Route as ProfessionalProfileRouteImport } from './routes/professional/profile'
+import { Route as ProfessionalPaymentRouteImport } from './routes/professional/payment'
 import { Route as ProfessionalNotificationsRouteImport } from './routes/professional/notifications'
 import { Route as ProfessionalMyPatientsRouteImport } from './routes/professional/my-patients'
 import { Route as ProfessionalMessagesRouteImport } from './routes/professional/messages'
@@ -93,6 +94,11 @@ const ProfessionalScheduleTimingsRoute =
 const ProfessionalProfileRoute = ProfessionalProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => ProfessionalRouteRoute,
+} as any)
+const ProfessionalPaymentRoute = ProfessionalPaymentRouteImport.update({
+  id: '/payment',
+  path: '/payment',
   getParentRoute: () => ProfessionalRouteRoute,
 } as any)
 const ProfessionalNotificationsRoute =
@@ -246,6 +252,7 @@ export interface FileRoutesByFullPath {
   '/professional/messages': typeof ProfessionalMessagesRoute
   '/professional/my-patients': typeof ProfessionalMyPatientsRoute
   '/professional/notifications': typeof ProfessionalNotificationsRoute
+  '/professional/payment': typeof ProfessionalPaymentRoute
   '/professional/profile': typeof ProfessionalProfileRoute
   '/professional/schedule-timings': typeof ProfessionalScheduleTimingsRoute
   '/professional/settings': typeof ProfessionalSettingsRoute
@@ -279,6 +286,7 @@ export interface FileRoutesByTo {
   '/professional/messages': typeof ProfessionalMessagesRoute
   '/professional/my-patients': typeof ProfessionalMyPatientsRoute
   '/professional/notifications': typeof ProfessionalNotificationsRoute
+  '/professional/payment': typeof ProfessionalPaymentRoute
   '/professional/profile': typeof ProfessionalProfileRoute
   '/professional/schedule-timings': typeof ProfessionalScheduleTimingsRoute
   '/professional/settings': typeof ProfessionalSettingsRoute
@@ -316,6 +324,7 @@ export interface FileRoutesById {
   '/professional/messages': typeof ProfessionalMessagesRoute
   '/professional/my-patients': typeof ProfessionalMyPatientsRoute
   '/professional/notifications': typeof ProfessionalNotificationsRoute
+  '/professional/payment': typeof ProfessionalPaymentRoute
   '/professional/profile': typeof ProfessionalProfileRoute
   '/professional/schedule-timings': typeof ProfessionalScheduleTimingsRoute
   '/professional/settings': typeof ProfessionalSettingsRoute
@@ -354,6 +363,7 @@ export interface FileRouteTypes {
     | '/professional/messages'
     | '/professional/my-patients'
     | '/professional/notifications'
+    | '/professional/payment'
     | '/professional/profile'
     | '/professional/schedule-timings'
     | '/professional/settings'
@@ -387,6 +397,7 @@ export interface FileRouteTypes {
     | '/professional/messages'
     | '/professional/my-patients'
     | '/professional/notifications'
+    | '/professional/payment'
     | '/professional/profile'
     | '/professional/schedule-timings'
     | '/professional/settings'
@@ -423,6 +434,7 @@ export interface FileRouteTypes {
     | '/professional/messages'
     | '/professional/my-patients'
     | '/professional/notifications'
+    | '/professional/payment'
     | '/professional/profile'
     | '/professional/schedule-timings'
     | '/professional/settings'
@@ -512,6 +524,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/professional/profile'
       preLoaderRoute: typeof ProfessionalProfileRouteImport
+      parentRoute: typeof ProfessionalRouteRoute
+    }
+    '/professional/payment': {
+      id: '/professional/payment'
+      path: '/payment'
+      fullPath: '/professional/payment'
+      preLoaderRoute: typeof ProfessionalPaymentRouteImport
       parentRoute: typeof ProfessionalRouteRoute
     }
     '/professional/notifications': {
@@ -752,6 +771,7 @@ interface ProfessionalRouteRouteChildren {
   ProfessionalMessagesRoute: typeof ProfessionalMessagesRoute
   ProfessionalMyPatientsRoute: typeof ProfessionalMyPatientsRoute
   ProfessionalNotificationsRoute: typeof ProfessionalNotificationsRoute
+  ProfessionalPaymentRoute: typeof ProfessionalPaymentRoute
   ProfessionalProfileRoute: typeof ProfessionalProfileRoute
   ProfessionalScheduleTimingsRoute: typeof ProfessionalScheduleTimingsRoute
   ProfessionalSettingsRoute: typeof ProfessionalSettingsRoute
@@ -765,6 +785,7 @@ const ProfessionalRouteRouteChildren: ProfessionalRouteRouteChildren = {
   ProfessionalMessagesRoute: ProfessionalMessagesRoute,
   ProfessionalMyPatientsRoute: ProfessionalMyPatientsRoute,
   ProfessionalNotificationsRoute: ProfessionalNotificationsRoute,
+  ProfessionalPaymentRoute: ProfessionalPaymentRoute,
   ProfessionalProfileRoute: ProfessionalProfileRoute,
   ProfessionalScheduleTimingsRoute: ProfessionalScheduleTimingsRoute,
   ProfessionalSettingsRoute: ProfessionalSettingsRoute,
