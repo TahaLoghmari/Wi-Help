@@ -2,40 +2,48 @@ using Microsoft.EntityFrameworkCore;
 using Modules.Appointments.Infrastructure.Database;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Common.Infrastructure.DTOs;
+using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
 
 namespace Modules.Appointments.Features.GetPatientPrescriptions;
 
 public sealed class GetPatientPrescriptionsQueryHandler(
     AppointmentsDbContext dbContext,
+    IPatientsModuleApi patientsApi,
     IProfessionalModuleApi professionalApi)
-    : IQueryHandler<GetPatientPrescriptionsQuery, PagedResult<PrescriptionDto>>
+    : IQueryHandler<GetPatientPrescriptionsQuery, PaginationResultDto<PrescriptionDto>>
 {
-    public async Task<Result<PagedResult<PrescriptionDto>>> Handle(
+    public async Task<Result<PaginationResultDto<PrescriptionDto>>> Handle(
         GetPatientPrescriptionsQuery query,
         CancellationToken cancellationToken)
     {
+        // Get patientId from userId
+        var patientResult = await patientsApi.GetPatientByUserIdAsync(query.UserId, cancellationToken);
+        if (patientResult.IsFailure)
+        {
+            return Result<PaginationResultDto<PrescriptionDto>>.Failure(patientResult.Error);
+        }
+
+        var patientId = patientResult.Value.Id;
+
         var baseQuery = dbContext.Prescriptions
             .AsNoTracking()
-            .Where(p => p.PatientId == query.PatientId)
+            .Where(p => p.PatientId == patientId)
             .OrderByDescending(p => p.IssuedAt);
 
-        var totalCount = await baseQuery.CountAsync(cancellationToken);
-
-        var prescriptions = await baseQuery
-            .Skip((query.PageNumber - 1) * query.PageSize)
-            .Take(query.PageSize)
-            .ToListAsync(cancellationToken);
+        var paginatedPrescriptions = await PaginationResultDto<Domain.Entities.Prescription>.CreateAsync(
+            baseQuery, query.Page, query.PageSize, cancellationToken);
 
         // Get professional info for prescriptions
-        var professionalIds = prescriptions.Select(p => p.ProfessionalId).Distinct().ToList();
+        var professionalIds = paginatedPrescriptions.Items.Select(p => p.ProfessionalId).Distinct().ToList();
         var professionalsResult = await professionalApi.GetProfessionalsByIdsAsync(professionalIds, cancellationToken);
 
         var professionalsMap = professionalsResult.IsSuccess 
             ? professionalsResult.Value.ToDictionary(p => p.Id)
             : new Dictionary<Guid, Modules.Professionals.PublicApi.Contracts.ProfessionalDto>();
 
-        var dtos = prescriptions.Select(p => new PrescriptionDto
+        var dtos = paginatedPrescriptions.Items.Select(p => new PrescriptionDto
         {
             Id = p.Id,
             AppointmentId = p.AppointmentId,
@@ -57,12 +65,12 @@ public sealed class GetPatientPrescriptionsQueryHandler(
                 : null
         }).ToList();
 
-        return Result<PagedResult<PrescriptionDto>>.Success(new PagedResult<PrescriptionDto>
+        return Result<PaginationResultDto<PrescriptionDto>>.Success(new PaginationResultDto<PrescriptionDto>
         {
             Items = dtos,
-            TotalCount = totalCount,
-            PageNumber = query.PageNumber,
-            PageSize = query.PageSize
+            Page = paginatedPrescriptions.Page,
+            PageSize = paginatedPrescriptions.PageSize,
+            TotalCount = paginatedPrescriptions.TotalCount
         });
     }
 }
