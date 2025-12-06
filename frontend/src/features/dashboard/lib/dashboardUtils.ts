@@ -8,7 +8,6 @@ import {
   FileText,
   MessageSquare,
   Search,
-  ClipboardList,
   Pill,
   CreditCard,
   Stethoscope,
@@ -34,15 +33,16 @@ export function getNavigationData(user: UserDto) {
       url: ROUTE_PATHS.PROFESSIONAL.SCHEDULETIMINGS,
       icon: Clock,
     },
-    {
-      title: "Invoices",
-      url: ROUTE_PATHS.PROFESSIONAL.INVOICES,
-      icon: FileText,
-    },
+
     {
       title: "Messages",
       url: ROUTE_PATHS.PROFESSIONAL.MESSAGES,
       icon: MessageSquare,
+    },
+    {
+      title: "Invoices",
+      url: ROUTE_PATHS.PROFESSIONAL.INVOICES,
+      icon: FileText,
     },
   ];
 
@@ -63,24 +63,19 @@ export function getNavigationData(user: UserDto) {
       icon: Search,
     },
     {
-      title: "Medical Records",
-      url: ROUTE_PATHS.PATIENT.MEDICALRECORDS,
-      icon: ClipboardList,
-    },
-    {
       title: "Prescriptions",
       url: ROUTE_PATHS.PATIENT.PRESCRIPTIONS,
       icon: Pill,
     },
     {
-      title: "Billing",
-      url: ROUTE_PATHS.PATIENT.BILLING,
-      icon: CreditCard,
-    },
-    {
       title: "Messages",
       url: ROUTE_PATHS.PATIENT.MESSAGES,
       icon: MessageSquare,
+    },
+    {
+      title: "Billing",
+      url: ROUTE_PATHS.PATIENT.BILLING,
+      icon: CreditCard,
     },
   ];
 

@@ -31,6 +31,9 @@ export function CompleteAppointment() {
         queryKey: ["patient-appointments"],
       });
       queryClient.invalidateQueries({
+        queryKey: ["patient-prescriptions"],
+      });
+      queryClient.invalidateQueries({
         queryKey: ["notifications"],
       });
     },

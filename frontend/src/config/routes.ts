@@ -35,7 +35,6 @@ export const ROUTE_PATHS = {
     BILLING: "/patient/billing",
     FINDPROFESSIONAL: "/patient/find-professional",
     PROFESSIONAL_PROFILE: "/patient/professional/$professionalId",
-    MEDICALRECORDS: "/patient/medical-records",
     MESSAGES: "/patient/messages",
     MYPROFESSIONALS: "/patient/my-professionals",
     PRESCRIPTIONS: "/patient/prescriptions",

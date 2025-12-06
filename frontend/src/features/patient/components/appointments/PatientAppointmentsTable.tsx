@@ -5,6 +5,7 @@ import {
   GetPatientAppointments,
   type GetPatientAppointmentsDto,
 } from "@/features/patient";
+import { SPECIALIZATIONS } from "@/features/auth";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -296,30 +297,31 @@ export function PatientAppointmentsTable() {
                         {appointment.professional?.profilePictureUrl ? (
                           <img
                             src={appointment.professional.profilePictureUrl}
-                            alt={
-                              appointment.professional?.firstName +
-                              " " +
-                              appointment.professional?.lastName
-                            }
-                            className="h-8 w-8 cursor-pointer rounded-full border border-slate-200 object-cover"
+                            alt={`${appointment.professional.firstName} ${appointment.professional.lastName}`}
+                            className="h-10 w-10 cursor-pointer rounded-full border border-slate-200 object-cover"
                           />
                         ) : (
-                          <div className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
+                          <div className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
                             {appointment.professional?.firstName?.charAt(0) ||
                               "?"}
                           </div>
                         )}
                       </button>
-                      <div className="">
+                      <div>
                         <div className="text-xs font-medium tracking-tight text-slate-900">
-                          {appointment.professional?.firstName || "Unknown"}
+                          {appointment.professional
+                            ? `${appointment.professional.firstName} ${appointment.professional.lastName}`
+                            : "Unknown Professional"}
                         </div>
-                        <div className="text-[11px] text-slate-500">
-                          {/* Professional ID or Specialization if available */}
-                          <span>
-                            ID: {appointment.professionalId.substring(0, 6)}
-                          </span>
-                        </div>
+                        {appointment.professional?.specialization && (
+                          <div className="text-[11px] text-slate-500">
+                            {SPECIALIZATIONS.find(
+                              (s) =>
+                                s.value ===
+                                appointment.professional?.specialization,
+                            )?.label || appointment.professional.specialization}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </td>

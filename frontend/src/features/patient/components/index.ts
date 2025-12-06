@@ -2,7 +2,6 @@ export * from "./appointments";
 export * from "./billing";
 export * from "./book-appointments";
 export * from "./find-professional";
-export * from "./medical-records";
 export * from "./messages";
 export * from "./my-professionals";
 export * from "./prescriptions";

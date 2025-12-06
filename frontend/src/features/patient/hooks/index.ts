@@ -3,5 +3,6 @@ export * from "./CancelAppointment";
 export * from "./GetCurrentPatient";
 export * from "./GetPatient";
 export * from "./GetPatientAppointments";
+export * from "./GetPatientPrescriptions";
 export * from "./GetPatientProfessionals";
 export * from "./UpdatePatient";
