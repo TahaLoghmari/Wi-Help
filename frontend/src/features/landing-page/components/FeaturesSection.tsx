@@ -3,6 +3,8 @@ import {
   Stethoscope,
   CheckCircle2,
   ArrowRight,
+  Calendar,
+  Activity,
 } from "lucide-react";
 
 export function FeaturesSection() {
@@ -56,27 +58,74 @@ export function FeaturesSection() {
             </div>
 
             {/* UI Snippet for Patient */}
-            <div className="shadow-card mt-12 translate-y-4 transform rounded-t-2xl border border-slate-100 bg-white p-4 transition-transform duration-500 group-hover:translate-y-2">
-              <div className="mb-4 flex items-center gap-3">
-                <div className="bg-brand-blue/10 text-brand-blue flex h-10 w-10 items-center justify-center rounded-full font-semibold">
-                  S
+            <div className="shadow-soft mt-12 translate-y-8 transform rounded-2xl border border-white/50 bg-white/80 pt-6 pr-6 pb-6 pl-6 backdrop-blur-xl transition-transform duration-500 ease-out will-change-transform group-hover:translate-y-4">
+              <div className="mb-5 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <img
+                      src="https://i.pravatar.cc/150?img=38"
+                      alt="Sarah"
+                      className="h-11 w-11 rounded-full object-cover shadow-sm ring-2 ring-white"
+                    />
+                    <div className="bg-brand-teal absolute -right-0.5 -bottom-0.5 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="10"
+                        height="10"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        className="text-white"
+                      >
+                        <path d="M20 6 9 17l-5-5"></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-brand-dark text-sm font-semibold">
+                      Sarah's Profile
+                    </h4>
+                    <p className="bg-brand-bg mt-0.5 inline-block rounded border border-slate-100/50 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">
+                      ID: 8291-P
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-brand-dark text-sm font-medium">
-                    Sarah's Health Profile
-                  </div>
-                  <div className="text-xs text-slate-400">
-                    Updated 2 days ago
-                  </div>
+                <div className="flex -space-x-1.5">
+                  <span className="bg-brand-blue h-2 w-2 animate-pulse rounded-full"></span>
                 </div>
               </div>
-              <div className="mb-3 flex gap-2">
-                <span className="rounded-md border border-red-100 bg-red-50 px-2 py-1 text-[10px] font-medium text-red-600">
-                  Type 2 Diabetes
-                </span>
-                <span className="rounded-md border border-orange-100 bg-orange-50 px-2 py-1 text-[10px] font-medium text-orange-600">
-                  Penicillin Allergy
-                </span>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-brand-bg group/card hover:border-brand-teal/30 flex flex-col justify-between gap-2 rounded-xl border border-slate-100 p-3 transition-colors">
+                  <div className="bg-brand-cream text-brand-secondary flex h-8 w-8 items-center justify-center rounded-lg">
+                    <Calendar className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <span className="block text-[10px] font-medium tracking-wide text-slate-400 uppercase">
+                      Next Care
+                    </span>
+                    <span className="text-brand-dark mt-0.5 block text-xs font-bold">
+                      Today, 2pm
+                    </span>
+                  </div>
+                </div>
+
+                <div className="bg-brand-bg group/card hover:border-brand-blue/30 flex flex-col justify-between gap-2 rounded-xl border border-slate-100 p-3 transition-colors">
+                  <div className="bg-brand-blue/10 text-brand-blue flex h-8 w-8 items-center justify-center rounded-lg">
+                    <Activity className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <span className="block text-[10px] font-medium tracking-wide text-slate-400 uppercase">
+                      Vitals
+                    </span>
+                    <span className="text-brand-dark mt-0.5 block text-xs font-bold">
+                      Stable
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

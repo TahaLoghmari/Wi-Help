@@ -126,7 +126,7 @@ export function TrustVerificationSection() {
                   <div className="flex items-center gap-3">
                     <FileCheck className="h-4 w-4 text-slate-400" />
                     <span className="text-sm text-slate-600">
-                      Criminal Record
+                      Professional License
                     </span>
                   </div>
                   <CheckCircle className="text-brand-teal h-4 w-4" />

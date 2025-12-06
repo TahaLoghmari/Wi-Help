@@ -47,7 +47,7 @@ export function Navigation() {
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
           <button
             onClick={handleLogin}
             className="hover:text-brand-dark hidden text-sm font-medium text-slate-500 transition-colors md:block"
