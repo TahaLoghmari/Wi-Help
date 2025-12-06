@@ -5,6 +5,7 @@ export function bookAppointmentFormDefaults() {
     startDate: "",
     endDate: "",
     price: 0,
+    urgency: "Medium" as const,
     notes: "",
   };
 }

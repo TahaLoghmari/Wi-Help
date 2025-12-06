@@ -16,7 +16,7 @@ import {
   ChangePasswordDefaults,
   type ChangePasswordDto,
 } from "@/features/auth";
-import { Key, Shield } from "lucide-react";
+import { Key } from "lucide-react";
 
 export function Security() {
   const form = useForm<z.infer<typeof changePasswordFormSchema>>({
@@ -134,28 +134,6 @@ export function Security() {
                 )}
                 Update password
               </button>
-            </div>
-          </div>
-
-          <div className="mt-1 space-y-3 border-t border-dashed border-slate-200 pt-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-[11px] text-slate-700">
-                <Shield className="h-3.5 w-3.5 text-slate-400" />
-                <div>
-                  <p className="font-medium tracking-tight text-slate-900">
-                    Two-factor authentication
-                  </p>
-                  <p className="text-[10px] text-slate-500">
-                    Add an extra layer of security using SMS or an authenticator
-                    app.
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-col items-end gap-1">
-                <span className="inline-flex items-center gap-1 text-[10px] text-slate-500">
-                  Coming soon
-                </span>
-              </div>
             </div>
           </div>
         </form>

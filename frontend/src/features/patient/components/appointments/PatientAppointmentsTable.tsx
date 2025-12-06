@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Sheet, SheetContent, SheetClose } from "@/components/ui/sheet";
 import { X, Calendar } from "lucide-react";
+import { useAppNavigation } from "@/hooks";
 
 type AppointmentTab = "offered" | "confirmed" | "cancelled" | "completed";
 
@@ -31,6 +32,8 @@ export function PatientAppointmentsTable() {
   } = GetPatientAppointments();
 
   const cancelAppointmentMutation = CancelAppointment();
+
+  const { goToProfessionalProfile } = useAppNavigation();
 
   const appointments = data?.pages.flatMap((page) => page.items) || [];
   const totalCount = data?.pages[0]?.totalCount || 0;
@@ -50,6 +53,12 @@ export function PatientAppointmentsTable() {
   const handleCancel = (appointment: GetPatientAppointmentsDto) => {
     setSelectedAppointment(appointment);
     setCancelDialogOpen(true);
+  };
+
+  const handleProfessionalProfileClick = (
+    appointment: GetPatientAppointmentsDto,
+  ) => {
+    goToProfessionalProfile(appointment.professionalId);
   };
 
   const handleConfirmCancel = () => {
@@ -133,54 +142,6 @@ export function PatientAppointmentsTable() {
             <p className="mt-0.5 text-[11px] text-slate-500">
               Manage upcoming and today’s appointments with quick actions.
             </p>
-          </div>
-          <div className="hidden items-center gap-2 text-[11px] sm:flex">
-            <button className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700 transition-colors">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                data-lucide="sliders-horizontal"
-                className="lucide lucide-sliders-horizontal h-3.5 w-3.5 text-slate-500"
-              >
-                <path d="M10 5H3"></path>
-                <path d="M12 19H3"></path>
-                <path d="M14 3v4"></path>
-                <path d="M16 17v4"></path>
-                <path d="M21 12h-9"></path>
-                <path d="M21 19h-5"></path>
-                <path d="M21 5h-7"></path>
-                <path d="M8 10v4"></path>
-                <path d="M8 12H3"></path>
-              </svg>
-              <span>Filters</span>
-            </button>
-            <button className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700 transition-colors">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                data-lucide="download"
-                className="lucide lucide-download h-3.5 w-3.5 text-slate-500"
-              >
-                <path d="M12 15V3"></path>
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <path d="m7 10 5 5 5-5"></path>
-              </svg>
-              <span className="">Export</span>
-            </button>
           </div>
         </div>
 
@@ -326,22 +287,29 @@ export function PatientAppointmentsTable() {
                 <tr key={appointment.id} className="hover:bg-slate-50/70">
                   <td className="pt-3.5 pr-4 pb-3.5 pl-4 whitespace-nowrap sm:px-5">
                     <div className="flex items-center gap-3">
-                      {appointment.professional?.profilePictureUrl ? (
-                        <img
-                          src={appointment.professional.profilePictureUrl}
-                          alt={
-                            appointment.professional?.firstName +
-                            " " +
-                            appointment.professional?.lastName
-                          }
-                          className="h-8 w-8 rounded-full border border-slate-200 object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
-                          {appointment.professional?.firstName?.charAt(0) ||
-                            "?"}
-                        </div>
-                      )}
+                      <button
+                        onClick={() =>
+                          handleProfessionalProfileClick(appointment)
+                        }
+                        className="transition-opacity hover:opacity-80"
+                      >
+                        {appointment.professional?.profilePictureUrl ? (
+                          <img
+                            src={appointment.professional.profilePictureUrl}
+                            alt={
+                              appointment.professional?.firstName +
+                              " " +
+                              appointment.professional?.lastName
+                            }
+                            className="h-8 w-8 cursor-pointer rounded-full border border-slate-200 object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
+                            {appointment.professional?.firstName?.charAt(0) ||
+                              "?"}
+                          </div>
+                        )}
+                      </button>
                       <div className="">
                         <div className="text-xs font-medium tracking-tight text-slate-900">
                           {appointment.professional?.firstName || "Unknown"}

@@ -76,6 +76,9 @@ export const bookAppointmentFormSchema = z.object({
   startDate: z.string().min(1, "Start date is required"),
   endDate: z.string().min(1, "End date is required"),
   price: z.number().positive("Price must be a positive number"),
+  urgency: z.enum(["Low", "Medium", "High"], {
+    message: "Please select an urgency level",
+  }),
   notes: z
     .string()
     .max(1000, "Notes cannot exceed 1000 characters.")

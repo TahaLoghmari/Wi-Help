@@ -28,6 +28,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { X, Calendar, Upload, FileText } from "lucide-react";
+import { useAppNavigation } from "@/hooks";
 
 type AppointmentTab = "offered" | "confirmed" | "cancelled" | "completed";
 
@@ -44,6 +45,8 @@ export function AppointmentsTable() {
   const respondToAppointmentMutation = RespondToAppointment();
   const cancelAppointmentMutation = CancelAppointmentByProfessional();
   const completeAppointmentMutation = CompleteAppointment();
+
+  const { goToPatientProfile } = useAppNavigation();
 
   const appointments = data?.pages.flatMap((page) => page.items) || [];
   const totalCount = data?.pages[0]?.totalCount || 0;
@@ -84,6 +87,12 @@ export function AppointmentsTable() {
     setPrescriptionTitle("");
     setPrescriptionNotes("");
     setCompleteDialogOpen(true);
+  };
+
+  const handlePatientProfileClick = (
+    appointment: GetProfessionalAppointmentsDto,
+  ) => {
+    goToPatientProfile(appointment.patientId);
   };
 
   const handleConfirmAppointment = () => {
@@ -355,17 +364,22 @@ export function AppointmentsTable() {
                 <tr key={appointment.id} className="hover:bg-slate-50/70">
                   <td className="pt-3.5 pr-4 pb-3.5 pl-4 whitespace-nowrap sm:px-5">
                     <div className="flex items-center gap-3">
-                      {appointment.patient?.profilePictureUrl ? (
-                        <img
-                          src={appointment.patient.profilePictureUrl}
-                          alt={appointment.patient.firstName}
-                          className="h-8 w-8 rounded-full border border-slate-200 object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
-                          {appointment.patient?.firstName?.charAt(0) || "?"}
-                        </div>
-                      )}
+                      <button
+                        onClick={() => handlePatientProfileClick(appointment)}
+                        className="transition-opacity hover:opacity-80"
+                      >
+                        {appointment.patient?.profilePictureUrl ? (
+                          <img
+                            src={appointment.patient.profilePictureUrl}
+                            alt={appointment.patient.firstName}
+                            className="h-8 w-8 cursor-pointer rounded-full border border-slate-200 object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
+                            {appointment.patient?.firstName?.charAt(0) || "?"}
+                          </div>
+                        )}
+                      </button>
                       <div className="">
                         <div className="text-xs font-medium tracking-tight text-slate-900">
                           {appointment.patient?.firstName || "Unknown Patient"}
@@ -827,7 +841,7 @@ export function AppointmentsTable() {
                   value={prescriptionTitle}
                   onChange={(e) => setPrescriptionTitle(e.target.value)}
                   placeholder="e.g., General Consultation Prescription"
-                  className="focus:border-brand-blue mt-2 focus:ring-brand-blue w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-1 focus:outline-none"
+                  className="focus:border-brand-blue focus:ring-brand-blue mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-1 focus:outline-none"
                 />
               </div>
 
@@ -841,7 +855,7 @@ export function AppointmentsTable() {
                   onChange={(e) => setPrescriptionNotes(e.target.value)}
                   placeholder="Additional notes about the prescription..."
                   rows={3}
-                  className="focus:border-brand-blue mt-2 focus:ring-brand-blue w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-1 focus:outline-none"
+                  className="focus:border-brand-blue focus:ring-brand-blue mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-1 focus:outline-none"
                 />
               </div>
             </div>

@@ -4,6 +4,7 @@ import {
   type DailyAvailabilityResponse,
   AvailableSlots,
   AppointmentNotes,
+  AppointmentUrgencySelector,
   bookAppointmentFormSchema,
   bookAppointmentFormDefaults,
 } from "@/features/patient";
@@ -97,7 +98,7 @@ export function BookAppointmentsLayout() {
       startDate: credentials.startDate,
       endDate: credentials.endDate,
       price: price,
-      urgency: "Medium",
+      urgency: credentials.urgency,
       notes: credentials.notes || "",
     });
   };
@@ -110,7 +111,7 @@ export function BookAppointmentsLayout() {
           <div className="flex flex-col gap-3">
             <button
               onClick={() => window.history.back()}
-              className="group w-fit mb-2 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition-all hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 active:scale-95"
+              className="group mb-2 inline-flex w-fit items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition-all hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 active:scale-95"
             >
               <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
               Back to professional
@@ -194,6 +195,9 @@ export function BookAppointmentsLayout() {
               setSelectedSlot={handleSlotSelect}
               selectedSlot={selectedSlot}
             />
+
+            {/* Urgency Selector */}
+            <AppointmentUrgencySelector control={form.control} />
 
             {/* Notes */}
             <AppointmentNotes control={form.control} />

@@ -1,7 +1,10 @@
 import { GetPatientAppointments } from "@/features/patient";
+import { useNavigate } from "@tanstack/react-router";
+import { ROUTE_PATHS } from "@/config/routes";
 
 export function AppointmentsStat() {
   const { data } = GetPatientAppointments();
+  const navigate = useNavigate();
   const now = new Date();
   const upcomingAppointments =
     data?.pages
@@ -20,7 +23,10 @@ export function AppointmentsStat() {
         <div className="text-xs font-medium tracking-tight text-slate-600">
           Upcoming Appointments
         </div>
-        <button className="bg-brand-dark hover:bg-brand-secondary inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium text-white transition-colors">
+        <button
+          onClick={() => navigate({ to: ROUTE_PATHS.PATIENT.FINDPROFESSIONAL })}
+          className="bg-brand-dark hover:bg-brand-secondary inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium text-white transition-colors"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

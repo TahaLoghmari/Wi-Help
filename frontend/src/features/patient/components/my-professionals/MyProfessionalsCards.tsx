@@ -1,6 +1,8 @@
 import { GetPatientProfessionals } from "@/features/patient";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, Link } from "@tanstack/react-router";
 import { Spinner } from "@/components";
+import { ROUTE_PATHS } from "@/config";
+import { SPECIALIZATIONS } from "@/features/auth/lib/authConstants";
 
 export function MyProfessionalsCards() {
   const {
@@ -15,6 +17,14 @@ export function MyProfessionalsCards() {
   const professionals = data?.pages.flatMap((page) => page.items) || [];
   const totalCount = data?.pages[0]?.totalCount || 0;
   const navigate = useNavigate();
+
+  const calculateAge = (dob: string) => {
+    if (!dob) return "N/A";
+    const birthDate = new Date(dob);
+    const ageDifMs = Date.now() - birthDate.getTime();
+    const ageDate = new Date(ageDifMs);
+    return Math.abs(ageDate.getUTCFullYear() - 1970).toString();
+  };
 
   if (isLoading) {
     return (
@@ -58,35 +68,21 @@ export function MyProfessionalsCards() {
                 <h4 className="truncate text-xs font-medium tracking-tight text-slate-900">
                   Dr. {professional.firstName} {professional.lastName}
                 </h4>
-                {professional.isVerified && (
-                  <span className="border-brand-teal/30 bg-brand-teal/10 text-brand-teal inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px]">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="10"
-                      height="10"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="mr-0.5"
-                    >
-                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
-                    Verified
-                  </span>
-                )}
+                <span className="border-brand-cream bg-brand-cream/60 text-brand-dark inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px]">
+                  ID: #{professional.id.substring(0, 8)}
+                </span>
               </div>
               <p className="truncate text-[11px] text-slate-500">
-                {professional.specialization} • {professional.experience} yrs
-                exp
+                {calculateAge(professional.dateOfBirth)} yrs •{" "}
+                {professional.gender.charAt(0).toUpperCase() +
+                  professional.gender.slice(1)}{" "}
+                • {professional.address?.city || "Unknown"} •{" "}
+                {professional.address?.state || "Unknown"}
               </p>
             </div>
           </div>
 
-          <div className="mt-2 flex flex-col gap-1 text-[11px] text-slate-600">
+          <div className="mt-2 grid grid-cols-2 gap-2 border-b border-dashed border-slate-200 pb-3 text-[11px] text-slate-600">
             <div className="flex items-center gap-1.5">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -98,14 +94,12 @@ export function MyProfessionalsCards() {
                 strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="lucide lucide-map-pin h-3.5 w-3.5 text-slate-400"
+                className="lucide lucide-phone h-3.5 w-3.5 text-slate-400"
               >
-                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                <circle cx="12" cy="10" r="3"></circle>
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
               </svg>
-              <span className="truncate">
-                {professional.address?.city || "Unknown"},{" "}
-                {professional.address?.state || "Unknown"}
+              <span className="font-medium">
+                +216 {professional.phoneNumber}
               </span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -119,30 +113,63 @@ export function MyProfessionalsCards() {
                 strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="lucide lucide-banknote h-3.5 w-3.5 text-slate-400"
+                className="lucide lucide-mail h-3.5 w-3.5 text-slate-400"
               >
-                <rect width="20" height="12" x="2" y="6" rx="2" />
-                <circle cx="12" cy="12" r="2" />
-                <path d="M6 12h.01M18 12h.01" />
+                <rect width="20" height="16" x="2" y="4" rx="2" />
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
               </svg>
-              <span className="">
-                ${professional.startPrice} - ${professional.endPrice}
+              <span className="truncate font-medium">{professional.email}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-briefcase h-3.5 w-3.5 text-slate-400"
+              >
+                <rect width="20" height="14" x="2" y="7" rx="2" ry="2" />
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+              </svg>
+              <span className="font-medium text-slate-700">
+                {professional.experience} years
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-stethoscope h-3.5 w-3.5 text-slate-400"
+              >
+                <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3" />
+                <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4" />
+                <circle cx="20" cy="10" r="2" />
+              </svg>
+              <span className="font-medium text-slate-700">
+                {SPECIALIZATIONS.find(
+                  (spec) => spec.value === professional.specialization,
+                )?.label || professional.specialization}
               </span>
             </div>
           </div>
 
-          <div className="flex items-center justify-between border-t border-dashed border-slate-200 pt-2 text-[11px] text-slate-500">
-            <span className="">
-              {professional.services?.slice(0, 2).join(", ") || "General Care"}
-            </span>
-            <span className={`text-brand-teal inline-flex items-center gap-1`}>
-              <span className={`bg-brand-teal h-1.5 w-1.5 rounded-full`}></span>
-              Available
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 pt-1">
-            <button className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white px-2 py-1.5 text-[11px] text-slate-700 transition-colors">
+          <div className="flex items-center gap-2 pt-2">
+            <Link
+              to={ROUTE_PATHS.PATIENT.MESSAGES}
+              className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white px-2 py-1.5 text-[11px] text-slate-700 transition-colors"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -159,7 +186,7 @@ export function MyProfessionalsCards() {
                 <path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"></path>
               </svg>
               Message
-            </button>
+            </Link>
             <button
               onClick={() =>
                 navigate({

@@ -3,6 +3,7 @@ import {
   CalendarCheck2,
   CalendarX2,
   FileText,
+  MessageCircle,
 } from "lucide-react";
 import type { NotificationType } from "@/features/notifications";
 import type { ElementType } from "react";
@@ -15,4 +16,5 @@ export const NOTIFICATION_TYPE_TO_ICON: Record<NotificationType, ElementType> =
     appointmentCancelled: CalendarX2,
     appointmentCompleted: CalendarCheck2,
     newPrescription: FileText,
+    newMessage: MessageCircle,
   };

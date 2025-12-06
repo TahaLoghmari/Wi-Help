@@ -65,6 +65,20 @@ export function useAppNavigation() {
       navigate({ to: ROUTE_PATHS.PATIENT.BOOK_SUCCESS });
     },
 
+    goToPatientProfile: (patientId: string) => {
+      navigate({
+        to: ROUTE_PATHS.PROFESSIONAL.PATIENT_PROFILE,
+        params: { patientId },
+      });
+    },
+
+    goToProfessionalProfile: (professionalId: string) => {
+      navigate({
+        to: ROUTE_PATHS.PATIENT.PROFESSIONAL_PROFILE,
+        params: { professionalId },
+      });
+    },
+
     goBack: () => {
       window.history.back();
     },
