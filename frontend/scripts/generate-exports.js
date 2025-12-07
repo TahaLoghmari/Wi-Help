@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const srcDir = join(__dirname, "../src");
+const srcDir = join(__dirname, "../src/features");
 
 if (!existsSync(srcDir)) {
   console.error(`❌ Source directory not found: ${srcDir}`);
