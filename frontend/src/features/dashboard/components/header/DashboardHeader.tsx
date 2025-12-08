@@ -6,11 +6,13 @@ import {
   useActiveNavigationPageStore,
   useDashboardSidebarStateStore,
 } from "@/features/dashboard";
+import { useCurrentUser } from "@/features/auth";
 
 export function DashboardHeader() {
   const { isSidebarOpen, setIsSidebarOpen } = useDashboardSidebarStateStore();
   const { currentScreenSize } = useCurrentScreenSize();
   const { activeNavigationPage } = useActiveNavigationPageStore();
+  const { data: user } = useCurrentUser();
   return (
     <div className="flex h-16 w-full shrink-0 items-center justify-between gap-1 border-b px-4 lg:gap-2 lg:px-6">
       <div className="flex items-center gap-3">
@@ -32,27 +34,30 @@ export function DashboardHeader() {
         </p>
       </div>
       <div className="flex items-center gap-3">
-        <div className="bg-brand-bg hidden items-center rounded-full border border-slate-200 pt-1.5 pr-3 pb-1.5 pl-3 text-xs text-slate-700 md:flex">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            data-lucide="wallet"
-            className="lucide lucide-wallet mr-2 h-3.5 w-3.5 text-slate-500"
-          >
-            <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path>
-            <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path>
-          </svg>
-          <span className="text-[11px]">
-            Wallet: <span className="font-medium text-slate-900">0 TND</span>
-          </span>
-        </div>
+        {user?.role !== "Admin" && (
+          <div className="bg-brand-bg hidden items-center rounded-full border border-slate-200 pt-1.5 pr-3 pb-1.5 pl-3 text-xs text-slate-700 md:flex">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              data-lucide="wallet"
+              className="lucide lucide-wallet mr-2 h-3.5 w-3.5 text-slate-500"
+            >
+              <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path>
+              <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path>
+            </svg>
+
+            <span className="text-[11px]">
+              Wallet: <span className="font-medium text-slate-900">0 TND</span>
+            </span>
+          </div>
+        )}
         <DashboardHeaderDate />
         <DashboardHeaderNotificationBell />
       </div>

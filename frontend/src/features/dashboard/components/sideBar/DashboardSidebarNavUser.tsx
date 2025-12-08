@@ -105,32 +105,36 @@ export function DashboardSidebarNavUser({
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem asChild>
-              <Link
-                to={
-                  user.role.toLowerCase() === "professional"
-                    ? ROUTE_PATHS.PROFESSIONAL.PROFILE
-                    : ROUTE_PATHS.PATIENT.PROFILE
-                }
-              >
-                {({ isActive }) => {
-                  useEffect(() => {
-                    if (isActive) {
-                      setActiveNavigationPage("Profile Overview");
+          {user.role !== "Admin" && (
+            <>
+              <DropdownMenuGroup>
+                <DropdownMenuItem asChild>
+                  <Link
+                    to={
+                      user.role.toLowerCase() === "professional"
+                        ? ROUTE_PATHS.PROFESSIONAL.PROFILE
+                        : ROUTE_PATHS.PATIENT.PROFILE
                     }
-                  }, [isActive]);
-                  return (
-                    <>
-                      <IconUserCircle />
-                      Profile
-                    </>
-                  );
-                }}
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
+                  >
+                    {({ isActive }) => {
+                      useEffect(() => {
+                        if (isActive) {
+                          setActiveNavigationPage("Profile Overview");
+                        }
+                      }, [isActive]);
+                      return (
+                        <>
+                          <IconUserCircle />
+                          Profile
+                        </>
+                      );
+                    }}
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+            </>
+          )}
           <DropdownMenuItem onSelect={() => setIsOpen(true)}>
             <IconLogout />
             Log out
