@@ -12,6 +12,7 @@ import { useCurrentUser } from "@/features/auth";
 import { useCurrentScreenSize } from "@/hooks";
 import { Route as ProfessionalRoute } from "@/routes/professional/route";
 import { Route as PatientRoute } from "@/routes/patient/route";
+import { Route as AdminRoute } from "@/routes/admin/route";
 import { useAppNavigation } from "@/index";
 import { Outlet, useRouterState } from "@tanstack/react-router";
 
@@ -22,33 +23,43 @@ export function DashboardLayout() {
   const { currentScreenSize } = useCurrentScreenSize();
   const routerState = useRouterState();
   const isPatientRoute = routerState.location.pathname.startsWith("/patient");
+  const isAdminRoute = routerState.location.pathname.startsWith("/admin");
 
   // Use the appropriate route search based on the current route
-  const professionalSearch = !isPatientRoute
-    ? ProfessionalRoute.useSearch()
+  const adminSearch = isAdminRoute
+    ? AdminRoute.useSearch()
     : { message: undefined };
+  const professionalSearch =
+    !isPatientRoute && !isAdminRoute
+      ? ProfessionalRoute.useSearch()
+      : { message: undefined };
   const patientSearch = isPatientRoute
     ? PatientRoute.useSearch()
     : { message: undefined };
 
-  const message = isPatientRoute
-    ? patientSearch.message
-    : professionalSearch.message;
+  const message = isAdminRoute
+    ? adminSearch.message
+    : isPatientRoute
+      ? patientSearch.message
+      : professionalSearch.message;
 
-  const { goToProfessionalApp, goToPatientApp } = useAppNavigation();
+  const { goToProfessionalApp, goToPatientApp, goToAdminApp } =
+    useAppNavigation();
   // useSignalRNotifications(user?.id);
 
   // this is for google signin/signup failing or any error when the redirection is comming from the backend with an error
   useEffect(() => {
     if (message) {
       toast.error(message);
-      if (user?.role === "professional") {
+      if (user?.role === "admin") {
+        goToAdminApp();
+      } else if (user?.role === "professional") {
         goToProfessionalApp();
       } else {
         goToPatientApp();
       }
     }
-  }, [message, user?.role, goToProfessionalApp, goToPatientApp]);
+  }, [message, user?.role, goToProfessionalApp, goToPatientApp, goToAdminApp]);
 
   useEffect(() => {
     if (currentScreenSize >= 768 && currentScreenSize < 1280)

@@ -9,17 +9,20 @@ export interface GuestGuardProps {
 
 export function GuestGuard({ children }: GuestGuardProps) {
   const { data: user, isLoading, isError } = useCurrentUser();
-  const { goToProfessionalApp, goToPatientApp } = useAppNavigation();
+  const { goToProfessionalApp, goToPatientApp, goToAdminApp } =
+    useAppNavigation();
 
   useEffect(() => {
     if (user) {
-      if (user.role.toLowerCase() === "professional") {
+      if (user.role.toLowerCase() === "admin") {
+        goToAdminApp();
+      } else if (user.role.toLowerCase() === "professional") {
         goToProfessionalApp();
       } else if (user.role.toLowerCase() === "patient") {
         goToPatientApp();
       }
     }
-  }, [user, goToProfessionalApp, goToPatientApp]);
+  }, [user, goToProfessionalApp, goToPatientApp, goToAdminApp]);
 
   if (user) return null;
   if (isError) return <>{children}</>;

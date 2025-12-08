@@ -49,6 +49,10 @@ export function useAppNavigation() {
       navigate({ to: ROUTE_PATHS.ROOT });
     },
 
+    goToAdminApp: () => {
+      navigate({ to: ROUTE_PATHS.ADMIN.ROOT });
+    },
+
     goToProfessionalApp: () => {
       navigate({ to: ROUTE_PATHS.PROFESSIONAL.ROOT });
     },

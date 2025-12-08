@@ -14,6 +14,19 @@ export const ROUTE_PATHS = {
     RESET_PASSWORD: "/auth/reset-password",
   },
 
+  ADMIN: {
+    ROOT: "/admin",
+    INDEX: "/admin/",
+    APPOINTMENTS: "/admin/appointments",
+    PATIENTS: "/admin/patients",
+    PROFESSIONALS: "/admin/professionals",
+    REVIEWS: "/admin/reviews",
+    TRANSACTIONS: "/admin/transactions",
+    DOCUMENTS: "/admin/documents",
+    REPORTS: "/admin/reports",
+    SETTINGS: "/admin/settings",
+  },
+
   PROFESSIONAL: {
     ROOT: "/professional",
     INDEX: "/professional/",

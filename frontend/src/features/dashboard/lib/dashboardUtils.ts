@@ -11,11 +11,55 @@ import {
   Pill,
   CreditCard,
   Stethoscope,
+  UserCheck,
+  Star,
+  Receipt,
+  FolderOpen,
+  BarChart3,
 } from "lucide-react";
 
 export function getNavigationData(user: UserDto) {
   const isProfessional = user.role.toLowerCase() === "professional";
   const isPatient = user.role.toLowerCase() === "patient";
+  const isAdmin = user.role.toLowerCase() === "admin";
+
+  const adminNavMain = [
+    {
+      title: "Appointments",
+      url: ROUTE_PATHS.ADMIN.APPOINTMENTS,
+      icon: Calendar,
+    },
+    {
+      title: "Patients",
+      url: ROUTE_PATHS.ADMIN.PATIENTS,
+      icon: Users,
+    },
+    {
+      title: "Professionals",
+      url: ROUTE_PATHS.ADMIN.PROFESSIONALS,
+      icon: UserCheck,
+    },
+    {
+      title: "Reviews",
+      url: ROUTE_PATHS.ADMIN.REVIEWS,
+      icon: Star,
+    },
+    {
+      title: "Transactions",
+      url: ROUTE_PATHS.ADMIN.TRANSACTIONS,
+      icon: Receipt,
+    },
+    {
+      title: "Documents",
+      url: ROUTE_PATHS.ADMIN.DOCUMENTS,
+      icon: FolderOpen,
+    },
+    {
+      title: "Reports",
+      url: ROUTE_PATHS.ADMIN.REPORTS,
+      icon: BarChart3,
+    },
+  ];
 
   const professionalNavMain = [
     {
@@ -86,17 +130,21 @@ export function getNavigationData(user: UserDto) {
 
   return {
     user,
-    navMain: isProfessional
-      ? professionalNavMain
-      : isPatient
-        ? patientNavMain
-        : [],
+    navMain: isAdmin
+      ? adminNavMain
+      : isProfessional
+        ? professionalNavMain
+        : isPatient
+          ? patientNavMain
+          : [],
     navSecondary: [
       {
         title: "Settings",
-        url: isProfessional
-          ? ROUTE_PATHS.PROFESSIONAL.SETTINGS
-          : ROUTE_PATHS.PATIENT.SETTINGS,
+        url: isAdmin
+          ? ROUTE_PATHS.ADMIN.SETTINGS
+          : isProfessional
+            ? ROUTE_PATHS.PROFESSIONAL.SETTINGS
+            : ROUTE_PATHS.PATIENT.SETTINGS,
         icon: IconSettings,
       },
     ],

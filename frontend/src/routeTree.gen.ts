@@ -12,10 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProfessionalRouteRouteImport } from './routes/professional/route'
 import { Route as PatientRouteRouteImport } from './routes/patient/route'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProfessionalIndexRouteImport } from './routes/professional/index'
 import { Route as PatientIndexRouteImport } from './routes/patient/index'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as ProfessionalSettingsRouteImport } from './routes/professional/settings'
 import { Route as ProfessionalScheduleTimingsRouteImport } from './routes/professional/schedule-timings'
 import { Route as ProfessionalProfileRouteImport } from './routes/professional/profile'
@@ -40,6 +42,14 @@ import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
 import { Route as AuthEmailVerifiedRouteImport } from './routes/auth/email-verified'
 import { Route as AuthEmailVerificationRouteImport } from './routes/auth/email-verification'
+import { Route as AdminTransactionsRouteImport } from './routes/admin/transactions'
+import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
+import { Route as AdminReviewsRouteImport } from './routes/admin/reviews'
+import { Route as AdminReportsRouteImport } from './routes/admin/reports'
+import { Route as AdminProfessionalsRouteImport } from './routes/admin/professionals'
+import { Route as AdminPatientsRouteImport } from './routes/admin/patients'
+import { Route as AdminDocumentsRouteImport } from './routes/admin/documents'
+import { Route as AdminAppointmentsRouteImport } from './routes/admin/appointments'
 import { Route as ProfessionalPatientPatientIdRouteImport } from './routes/professional/patient.$patientId'
 import { Route as PatientProfessionalProfessionalIdRouteImport } from './routes/patient/professional.$professionalId'
 import { Route as PatientBookSuccessRouteImport } from './routes/patient/book.success'
@@ -58,6 +68,11 @@ const PatientRouteRoute = PatientRouteRouteImport.update({
 const AuthRouteRoute = AuthRouteRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -79,6 +94,11 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthRouteRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const ProfessionalSettingsRoute = ProfessionalSettingsRouteImport.update({
   id: '/settings',
@@ -203,6 +223,46 @@ const AuthEmailVerificationRoute = AuthEmailVerificationRouteImport.update({
   path: '/email-verification',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AdminTransactionsRoute = AdminTransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminReviewsRoute = AdminReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminReportsRoute = AdminReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminProfessionalsRoute = AdminProfessionalsRouteImport.update({
+  id: '/professionals',
+  path: '/professionals',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminPatientsRoute = AdminPatientsRouteImport.update({
+  id: '/patients',
+  path: '/patients',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminDocumentsRoute = AdminDocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminAppointmentsRoute = AdminAppointmentsRouteImport.update({
+  id: '/appointments',
+  path: '/appointments',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const ProfessionalPatientPatientIdRoute =
   ProfessionalPatientPatientIdRouteImport.update({
     id: '/patient/$patientId',
@@ -229,9 +289,18 @@ const PatientBookProfessionalIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/patient': typeof PatientRouteRouteWithChildren
   '/professional': typeof ProfessionalRouteRouteWithChildren
+  '/admin/appointments': typeof AdminAppointmentsRoute
+  '/admin/documents': typeof AdminDocumentsRoute
+  '/admin/patients': typeof AdminPatientsRoute
+  '/admin/professionals': typeof AdminProfessionalsRoute
+  '/admin/reports': typeof AdminReportsRoute
+  '/admin/reviews': typeof AdminReviewsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/transactions': typeof AdminTransactionsRoute
   '/auth/email-verification': typeof AuthEmailVerificationRoute
   '/auth/email-verified': typeof AuthEmailVerifiedRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -256,6 +325,7 @@ export interface FileRoutesByFullPath {
   '/professional/profile': typeof ProfessionalProfileRoute
   '/professional/schedule-timings': typeof ProfessionalScheduleTimingsRoute
   '/professional/settings': typeof ProfessionalSettingsRoute
+  '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
   '/patient/': typeof PatientIndexRoute
   '/professional/': typeof ProfessionalIndexRoute
@@ -266,6 +336,14 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin/appointments': typeof AdminAppointmentsRoute
+  '/admin/documents': typeof AdminDocumentsRoute
+  '/admin/patients': typeof AdminPatientsRoute
+  '/admin/professionals': typeof AdminProfessionalsRoute
+  '/admin/reports': typeof AdminReportsRoute
+  '/admin/reviews': typeof AdminReviewsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/transactions': typeof AdminTransactionsRoute
   '/auth/email-verification': typeof AuthEmailVerificationRoute
   '/auth/email-verified': typeof AuthEmailVerifiedRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -290,6 +368,7 @@ export interface FileRoutesByTo {
   '/professional/profile': typeof ProfessionalProfileRoute
   '/professional/schedule-timings': typeof ProfessionalScheduleTimingsRoute
   '/professional/settings': typeof ProfessionalSettingsRoute
+  '/admin': typeof AdminIndexRoute
   '/auth': typeof AuthIndexRoute
   '/patient': typeof PatientIndexRoute
   '/professional': typeof ProfessionalIndexRoute
@@ -301,9 +380,18 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/patient': typeof PatientRouteRouteWithChildren
   '/professional': typeof ProfessionalRouteRouteWithChildren
+  '/admin/appointments': typeof AdminAppointmentsRoute
+  '/admin/documents': typeof AdminDocumentsRoute
+  '/admin/patients': typeof AdminPatientsRoute
+  '/admin/professionals': typeof AdminProfessionalsRoute
+  '/admin/reports': typeof AdminReportsRoute
+  '/admin/reviews': typeof AdminReviewsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/transactions': typeof AdminTransactionsRoute
   '/auth/email-verification': typeof AuthEmailVerificationRoute
   '/auth/email-verified': typeof AuthEmailVerifiedRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -328,6 +416,7 @@ export interface FileRoutesById {
   '/professional/profile': typeof ProfessionalProfileRoute
   '/professional/schedule-timings': typeof ProfessionalScheduleTimingsRoute
   '/professional/settings': typeof ProfessionalSettingsRoute
+  '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
   '/patient/': typeof PatientIndexRoute
   '/professional/': typeof ProfessionalIndexRoute
@@ -340,9 +429,18 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/auth'
     | '/patient'
     | '/professional'
+    | '/admin/appointments'
+    | '/admin/documents'
+    | '/admin/patients'
+    | '/admin/professionals'
+    | '/admin/reports'
+    | '/admin/reviews'
+    | '/admin/settings'
+    | '/admin/transactions'
     | '/auth/email-verification'
     | '/auth/email-verified'
     | '/auth/forgot-password'
@@ -367,6 +465,7 @@ export interface FileRouteTypes {
     | '/professional/profile'
     | '/professional/schedule-timings'
     | '/professional/settings'
+    | '/admin/'
     | '/auth/'
     | '/patient/'
     | '/professional/'
@@ -377,6 +476,14 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin/appointments'
+    | '/admin/documents'
+    | '/admin/patients'
+    | '/admin/professionals'
+    | '/admin/reports'
+    | '/admin/reviews'
+    | '/admin/settings'
+    | '/admin/transactions'
     | '/auth/email-verification'
     | '/auth/email-verified'
     | '/auth/forgot-password'
@@ -401,6 +508,7 @@ export interface FileRouteTypes {
     | '/professional/profile'
     | '/professional/schedule-timings'
     | '/professional/settings'
+    | '/admin'
     | '/auth'
     | '/patient'
     | '/professional'
@@ -411,9 +519,18 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/auth'
     | '/patient'
     | '/professional'
+    | '/admin/appointments'
+    | '/admin/documents'
+    | '/admin/patients'
+    | '/admin/professionals'
+    | '/admin/reports'
+    | '/admin/reviews'
+    | '/admin/settings'
+    | '/admin/transactions'
     | '/auth/email-verification'
     | '/auth/email-verified'
     | '/auth/forgot-password'
@@ -438,6 +555,7 @@ export interface FileRouteTypes {
     | '/professional/profile'
     | '/professional/schedule-timings'
     | '/professional/settings'
+    | '/admin/'
     | '/auth/'
     | '/patient/'
     | '/professional/'
@@ -449,6 +567,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   PatientRouteRoute: typeof PatientRouteRouteWithChildren
   ProfessionalRouteRoute: typeof ProfessionalRouteRouteWithChildren
@@ -475,6 +594,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -504,6 +630,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/'
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof AuthRouteRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/professional/settings': {
       id: '/professional/settings'
@@ -673,6 +806,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthEmailVerificationRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/admin/transactions': {
+      id: '/admin/transactions'
+      path: '/transactions'
+      fullPath: '/admin/transactions'
+      preLoaderRoute: typeof AdminTransactionsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/reviews': {
+      id: '/admin/reviews'
+      path: '/reviews'
+      fullPath: '/admin/reviews'
+      preLoaderRoute: typeof AdminReviewsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/reports': {
+      id: '/admin/reports'
+      path: '/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AdminReportsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/professionals': {
+      id: '/admin/professionals'
+      path: '/professionals'
+      fullPath: '/admin/professionals'
+      preLoaderRoute: typeof AdminProfessionalsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/patients': {
+      id: '/admin/patients'
+      path: '/patients'
+      fullPath: '/admin/patients'
+      preLoaderRoute: typeof AdminPatientsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/documents': {
+      id: '/admin/documents'
+      path: '/documents'
+      fullPath: '/admin/documents'
+      preLoaderRoute: typeof AdminDocumentsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/appointments': {
+      id: '/admin/appointments'
+      path: '/appointments'
+      fullPath: '/admin/appointments'
+      preLoaderRoute: typeof AdminAppointmentsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/professional/patient/$patientId': {
       id: '/professional/patient/$patientId'
       path: '/patient/$patientId'
@@ -703,6 +892,34 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AdminRouteRouteChildren {
+  AdminAppointmentsRoute: typeof AdminAppointmentsRoute
+  AdminDocumentsRoute: typeof AdminDocumentsRoute
+  AdminPatientsRoute: typeof AdminPatientsRoute
+  AdminProfessionalsRoute: typeof AdminProfessionalsRoute
+  AdminReportsRoute: typeof AdminReportsRoute
+  AdminReviewsRoute: typeof AdminReviewsRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminTransactionsRoute: typeof AdminTransactionsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminAppointmentsRoute: AdminAppointmentsRoute,
+  AdminDocumentsRoute: AdminDocumentsRoute,
+  AdminPatientsRoute: AdminPatientsRoute,
+  AdminProfessionalsRoute: AdminProfessionalsRoute,
+  AdminReportsRoute: AdminReportsRoute,
+  AdminReviewsRoute: AdminReviewsRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminTransactionsRoute: AdminTransactionsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
 
 interface AuthRouteRouteChildren {
   AuthEmailVerificationRoute: typeof AuthEmailVerificationRoute
@@ -798,6 +1015,7 @@ const ProfessionalRouteRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   PatientRouteRoute: PatientRouteRouteWithChildren,
   ProfessionalRouteRoute: ProfessionalRouteRouteWithChildren,
