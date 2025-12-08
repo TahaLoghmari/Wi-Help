@@ -35,4 +35,8 @@ public static class AppointmentsEndpoints
     // Prescriptions
     public const string GetPatientPrescriptions = "appointments/patient/me/prescriptions";
     public const string GetPrescriptionById = "appointments/prescriptions/{prescriptionId}";
+    
+    // Admin endpoints
+    public const string GetAllAppointmentsForAdmin = "appointments/admin/all";
+    public const string UpdateAppointmentStatusByAdmin = "appointments/{appointmentId}/admin/status";
 }

@@ -67,4 +67,25 @@ public class Appointment
         CompletedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
     }
+
+    public void UpdateStatus(AppointmentStatus status)
+    {
+        Status = status;
+        var now = DateTime.UtcNow;
+        
+        switch (status)
+        {
+            case AppointmentStatus.Confirmed:
+                ConfirmedAt = now;
+                break;
+            case AppointmentStatus.Completed:
+                CompletedAt = now;
+                break;
+            case AppointmentStatus.Cancelled:
+                CancelledAt = now;
+                break;
+        }
+        
+        UpdatedAt = now;
+    }
 }

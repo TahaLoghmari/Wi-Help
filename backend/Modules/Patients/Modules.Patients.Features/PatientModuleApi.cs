@@ -2,6 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Modules.Common.Features.Results;
+using Modules.Common.Infrastructure.DTOs;
 using Modules.Identity.PublicApi;
 using Modules.Patients.Domain;
 using Modules.Patients.Infrastructure.Database;
@@ -102,5 +103,87 @@ public class PatientModuleApi(
         );
 
         return Result<PatientDto>.Success(patientDto);
+    }
+
+    public async Task<Result<PaginationResultDto<PatientAdminDto>>> GetAllPatientsForAdminAsync(
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        var baseQuery = dbContext.Patients
+            .AsNoTracking()
+            .OrderBy(p => p.Id);
+
+        var totalCount = await baseQuery.CountAsync(cancellationToken);
+
+        var patients = await baseQuery
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        // Get user IDs
+        var userIds = patients.Select(p => p.UserId).ToList();
+
+        // Fetch user data from Identity module
+        var usersResult = await identityApi.GetUsersByIdsAsync(userIds, cancellationToken);
+        if (usersResult.IsFailure)
+        {
+            return Result<PaginationResultDto<PatientAdminDto>>.Failure(usersResult.Error);
+        }
+
+        var usersMap = usersResult.Value.ToDictionary(u => u.Id);
+
+        // Map to DTOs - Note: LastAppointmentDate and TotalPaid will be populated by caller (Appointments module)
+        var patientDtos = patients.Select(p =>
+        {
+            var user = usersMap.TryGetValue(p.UserId, out var u) ? u : null;
+
+            // Calculate age from DateOfBirth
+            int age = 0;
+            if (user != null && DateTime.TryParse(user.DateOfBirth, out var dob))
+            {
+                age = DateTime.UtcNow.Year - dob.Year;
+                if (DateTime.UtcNow < dob.AddYears(age)) age--;
+            }
+
+            // Format address as string
+            string? addressString = null;
+            if (user?.Address != null)
+            {
+                var parts = new List<string>();
+                if (!string.IsNullOrWhiteSpace(user.Address.Street))
+                    parts.Add(user.Address.Street);
+                if (!string.IsNullOrWhiteSpace(user.Address.City))
+                    parts.Add(user.Address.City);
+                if (!string.IsNullOrWhiteSpace(user.Address.State))
+                    parts.Add(user.Address.State);
+                if (!string.IsNullOrWhiteSpace(user.Address.Country))
+                    parts.Add(user.Address.Country);
+                addressString = parts.Count > 0 ? string.Join(", ", parts) : null;
+            }
+
+            return new PatientAdminDto(
+                p.Id,
+                p.UserId,
+                user?.FirstName ?? "",
+                user?.LastName ?? "",
+                user?.ProfilePictureUrl,
+                user?.Email ?? "",
+                user?.PhoneNumber,
+                age,
+                addressString,
+                null, // LastAppointmentDate - will be populated by caller
+                0     // TotalPaid - will be populated by caller
+            );
+        }).ToList();
+
+        return Result<PaginationResultDto<PatientAdminDto>>.Success(
+            new PaginationResultDto<PatientAdminDto>
+            {
+                Items = patientDtos,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            });
     }
 }

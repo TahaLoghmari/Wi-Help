@@ -7,8 +7,9 @@
   </PropertyGroup>
     
     <ItemGroup>
-        <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Features\Modules.Common.Features.csproj" />
-      <ProjectReference Include="..\Modules.Patients.Domain\Modules.Patients.Domain.csproj" />
+        <ProjectReference Include="..\..\.\..\Modules\Common\Modules.Common.Features\Modules.Common.Features.csproj" />
+        <ProjectReference Include="..\..\Common\Modules.Common.Infrastructure\Modules.Common.Infrastructure.csproj" />
+        <ProjectReference Include="..\Modules.Patients.Domain\Modules.Patients.Domain.csproj" />
     </ItemGroup>
     
     <ItemGroup>

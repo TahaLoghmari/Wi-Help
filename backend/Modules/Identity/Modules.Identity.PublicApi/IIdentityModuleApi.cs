@@ -26,4 +26,17 @@ public interface IIdentityModuleApi
         string claimType,
         string claimValue,
         CancellationToken cancellationToken);
+    
+    Task<Result> BanUserAsync(
+        Guid userId,
+        CancellationToken cancellationToken);
+    
+    Task<Result> UnbanUserAsync(
+        Guid userId,
+        CancellationToken cancellationToken);
+    
+    Task<Result> ResetUserPasswordAsync(
+        Guid userId,
+        string newPassword,
+        CancellationToken cancellationToken);
 }

@@ -31,6 +31,7 @@ using Modules.Messaging.Features;
 using Modules.Messaging.Infrastructure;
 using Modules.Reviews.Features;
 using Modules.Reviews.Infrastructure;
+using Modules.Administration.Features;
 
 namespace backend.Host;
 
@@ -196,7 +197,8 @@ internal static class DependencyInjection
             Modules.Appointments.Features.AssemblyReference.Assembly,
             Modules.Notifications.Features.AssemblyReference.Assembly,
             Modules.Messaging.Features.AssemblyReference.Assembly,
-            Modules.Reviews.Features.AssemblyReference.Assembly
+            Modules.Reviews.Features.AssemblyReference.Assembly,
+            Modules.Administration.Features.AssemblyReference.Assembly
         ];
 
         builder.Services.AddEndpoints(moduleApplicationAssemblies);
@@ -218,10 +220,11 @@ internal static class DependencyInjection
 
         builder.Services.AddMessagingModule()
             .AddMessagingInfrastructure(builder.Configuration);
-
+        
         builder.Services.AddReviewsModule()
             .AddReviewsInfrastructure(builder.Configuration);
 
+        builder.Services.AddAdministrationModule();
         builder.Services.AddCommonModule(moduleApplicationAssemblies)
             .AddCommonInfrastructure(builder.Configuration);
 

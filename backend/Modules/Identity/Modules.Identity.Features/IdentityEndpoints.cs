@@ -8,4 +8,6 @@ public static class IdentityEndpoints
     public const string Refresh = "auth/refresh";
     public const string Logout = "auth/logout";
     public const string ChangePassword = "auth/change-password";
+    public const string BanUser = "identity/users/{userId}/ban";
+    public const string AdminChangePassword = "identity/users/{userId}/password";
 }

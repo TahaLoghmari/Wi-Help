@@ -4,6 +4,26 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <RootNamespace>Modules.Administration.Features</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Appointments\Modules.Appointments.Infrastructure\Modules.Appointments.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Appointments\Modules.Appointments.Domain\Modules.Appointments.Domain.csproj" />
+    <ProjectReference Include="..\..\Professionals\Modules.Professionals.Domain\Modules.Professionals.Domain.csproj" />
+    <ProjectReference Include="..\..\Professionals\Modules.Professionals.PublicApi\Modules.Professionals.PublicApi.csproj" />
+    <ProjectReference Include="..\..\Patients\Modules.Patients.PublicApi\Modules.Patients.PublicApi.csproj" />
+    <ProjectReference Include="..\..\Identity\Modules.Identity.PublicApi\Modules.Identity.PublicApi.csproj" />
+    <ProjectReference Include="..\Modules.Administration.Domain\Modules.Administration.Domain.csproj" />
+    <ProjectReference Include="..\Modules.Administration.Infrastructure\Modules.Administration.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules.Administration.PublicApi\Modules.Administration.PublicApi.csproj" />
+    <ProjectReference Include="..\..\Common\Modules.Common.Infrastructure\Modules.Common.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
 </Project>

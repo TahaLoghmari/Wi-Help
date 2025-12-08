@@ -47,6 +47,7 @@
     <ProjectReference Include="..\Modules\Messaging\Modules.Messaging.Infrastructure\Modules.Messaging.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Reviews\Modules.Reviews.Features\Modules.Reviews.Features.csproj" />
     <ProjectReference Include="..\Modules\Reviews\Modules.Reviews.Infrastructure\Modules.Reviews.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Administration\Modules.Administration.Features\Modules.Administration.Features.csproj" />
   </ItemGroup>
 
 </Project>

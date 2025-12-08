@@ -36,6 +36,9 @@ public static class ProfessionalsEndpoints
     public const string GetProfessionalExperiences = "professionals/{professionalId}/experiences";
     public const string GetProfessionalAwards = "professionals/{professionalId}/awards";
     public const string GetProfessionalDocuments = "professionals/{professionalId}/documents";
+    
+    public const string UpdateAccountStatus = "professionals/{professionalId}/status";
+    public const string GetProfessionalsForAdmin = "professionals/admin";
 }
 
 

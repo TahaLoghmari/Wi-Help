@@ -1,4 +1,5 @@
 using Modules.Common.Features.ValueObjects;
+using Modules.Professionals.Domain.Enums;
 
 namespace Modules.Professionals.Domain.Entities;
 
@@ -12,6 +13,7 @@ public class Professional
     public string Specialization { get; set; } = string.Empty;
     public int Experience { get; private set; }
     public bool IsVerified { get; private set; }
+    public VerificationStatus VerificationStatus { get; private set; }
     public List<string>? Services { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
@@ -33,7 +35,15 @@ public class Professional
         Experience = experience;
         Specialization = specialization;
         IsVerified = false;
+        VerificationStatus = VerificationStatus.Pending;
         CreatedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
+    }
+    
+    public void UpdateVerificationStatus(VerificationStatus status)
+    {
+        VerificationStatus = status;
+        IsVerified = status == VerificationStatus.Verified;
         UpdatedAt = DateTime.UtcNow;
     }
     
