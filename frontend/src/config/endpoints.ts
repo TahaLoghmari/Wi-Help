@@ -11,6 +11,11 @@ export const API_ENDPOINTS = {
     SEND_CONFIRMATION_EMAIL: "/auth/send-confirmation-email",
     CHANGE_PASSWORD: "/auth/change-password",
   },
+  IDENTITY: {
+    BAN_USER: (userId: string) => `/identity/users/${userId}/ban`,
+    ADMIN_CHANGE_PASSWORD: (userId: string) =>
+      `/identity/users/${userId}/password`,
+  },
   PROFESSIONALS: {
     REGISTER_PROFESSIONAL: "/professionals/register",
     CURRENT_PROFESSIONAL: "/professionals/me",
@@ -20,6 +25,9 @@ export const API_ENDPOINTS = {
     GET_SCHEDULE: (professionalId: string) =>
       `/professionals/schedule?professionalId=${professionalId}`,
     GET_ALL_PROFESSIONALS: "/professionals",
+    GET_ALL_AS_ADMIN: "/professionals/admin",
+    UPDATE_ACCOUNT_STATUS: (professionalId: string) =>
+      `/professionals/${professionalId}/status`,
     GET_PROFESSIONAL_AVAILABILITY: (professionalId: string) =>
       `/professionals/${professionalId}/availability`,
     UPLOAD_VERIFICATION_DOCUMENT: "/professionals/me/documents",
@@ -58,6 +66,7 @@ export const API_ENDPOINTS = {
     CURRENT_PATIENT: "/patients/me",
     GET_PATIENT_BY_ID: (patientId: string) => `/patients/${patientId}`,
     UPDATE_PATIENT: "/patients/me",
+    GET_ALL_AS_ADMIN: "/patients/admin",
   },
   APPOINTMENTS: {
     GET_PATIENT_APPOINTMENTS: "/appointments/patient/me",
@@ -78,6 +87,9 @@ export const API_ENDPOINTS = {
     GET_PATIENT_PRESCRIPTIONS: "/appointments/patient/me/prescriptions",
     GET_PRESCRIPTION_BY_ID: (prescriptionId: string) =>
       `/appointments/prescriptions/${prescriptionId}`,
+    GET_ALL_AS_ADMIN: "/appointments/admin/all",
+    UPDATE_STATUS_AS_ADMIN: (appointmentId: string) =>
+      `/appointments/${appointmentId}/admin/status`,
   },
   NOTIFICATIONS: {
     GET_NOTIFICATIONS: "/notifications",
