@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Modules.Appointments.Infrastructure.Database;
+using Modules.Identity.Domain.Entities;
 using Modules.Identity.Infrastructure.Database;
 using Modules.Notifications.Infrastructure;
 using Modules.Messaging.Infrastructure;
@@ -67,6 +68,10 @@ using (var scope = app.Services.CreateScope())
 
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
     await IdentityDataSeeder.SeedRolesAsync(roleManager);
+
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+    await IdentityDataSeeder.SeedAdminUserAsync(userManager, configuration);
 
     var supabaseService = scope.ServiceProvider.GetRequiredService<SupabaseService>();
     await supabaseService.InitializeAsync();

@@ -38,7 +38,7 @@ public sealed class User : IdentityUser<Guid>
             Email = email,
             PhoneNumber = phoneNumber,
             UserName = $"{firstName.ToLower()}.{lastName.ToLower()}",
-            Address =  address
+            Address =  address,
         };
     }
     
