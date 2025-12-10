@@ -32,8 +32,6 @@ using Modules.Messaging.Infrastructure;
 using Modules.Reviews.Features;
 using Modules.Reviews.Infrastructure;
 using Modules.Administration.Features;
-using Modules.Reports.Features;
-using Modules.Reports.Infrastructure;
 
 namespace backend.Host;
 
@@ -200,11 +198,12 @@ internal static class DependencyInjection
             Modules.Notifications.Features.AssemblyReference.Assembly,
             Modules.Messaging.Features.AssemblyReference.Assembly,
             Modules.Reviews.Features.AssemblyReference.Assembly,
-            Modules.Administration.Features.AssemblyReference.Assembly,
-            Modules.Reports.Features.AssemblyReference.Assembly
+            Modules.Administration.Features.AssemblyReference.Assembly
         ];
 
         builder.Services.AddCommonModule(moduleApplicationAssemblies);
+        
+        builder.Services.AddEndpoints(moduleApplicationAssemblies);
 
         builder.Services.AddIdentityModule()
             .AddIdentityInfrastructure(builder.Configuration);
@@ -226,9 +225,6 @@ internal static class DependencyInjection
         
         builder.Services.AddReviewsModule()
             .AddReviewsInfrastructure(builder.Configuration);
-
-        builder.Services.AddReportsModule()
-            .AddReportsInfrastructure(builder.Configuration);
 
         builder.Services.AddAdministrationModule();
         builder.Services.AddCommonModule(moduleApplicationAssemblies)

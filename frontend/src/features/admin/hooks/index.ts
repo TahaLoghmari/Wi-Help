@@ -12,6 +12,4 @@ export * from "./DeleteReviewForAdmin";
 export * from "./GetVerificationDocumentsForAdmin";
 export * from "./GetAllPrescriptionsForAdmin";
 export * from "./DeletePrescriptionForAdmin";
-export * from "./GetReportsForAdmin";
-export * from "./UpdateReportStatus";
 export * from "./UpdateDocumentStatus";

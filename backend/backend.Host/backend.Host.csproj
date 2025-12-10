@@ -48,8 +48,6 @@
     <ProjectReference Include="..\Modules\Reviews\Modules.Reviews.Features\Modules.Reviews.Features.csproj" />
     <ProjectReference Include="..\Modules\Reviews\Modules.Reviews.Infrastructure\Modules.Reviews.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Administration\Modules.Administration.Features\Modules.Administration.Features.csproj" />
-    <ProjectReference Include="..\Modules\Reports\Modules.Reports.Features\Modules.Reports.Features.csproj" />
-    <ProjectReference Include="..\Modules\Reports\Modules.Reports.Infrastructure\Modules.Reports.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

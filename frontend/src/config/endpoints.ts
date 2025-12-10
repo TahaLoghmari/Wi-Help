@@ -129,8 +129,4 @@ export const API_ENDPOINTS = {
     GET_ALL_AS_ADMIN: "/reviews/admin",
     DELETE_AS_ADMIN: (reviewId: string) => `/reviews/admin/${reviewId}`,
   },
-  REPORTS: {
-    GET_ALL_AS_ADMIN: "/reports/admin",
-    UPDATE_STATUS: (reportId: string) => `/reports/admin/${reportId}/status`,
-  },
 } as const;

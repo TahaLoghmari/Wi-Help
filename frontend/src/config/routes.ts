@@ -23,7 +23,6 @@ export const ROUTE_PATHS = {
     REVIEWS: "/admin/reviews",
     TRANSACTIONS: "/admin/transactions",
     DOCUMENTS: "/admin/documents",
-    REPORTS: "/admin/reports",
     SETTINGS: "/admin/settings",
   },
 

@@ -45,7 +45,6 @@ import { Route as AuthEmailVerificationRouteImport } from './routes/auth/email-v
 import { Route as AdminTransactionsRouteImport } from './routes/admin/transactions'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminReviewsRouteImport } from './routes/admin/reviews'
-import { Route as AdminReportsRouteImport } from './routes/admin/reports'
 import { Route as AdminDocumentsRouteImport } from './routes/admin/documents'
 import { Route as AdminAppointmentsRouteImport } from './routes/admin/appointments'
 import { Route as AdminProfessionalsIndexRouteImport } from './routes/admin/professionals.index'
@@ -240,11 +239,6 @@ const AdminReviewsRoute = AdminReviewsRouteImport.update({
   path: '/reviews',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const AdminReportsRoute = AdminReportsRouteImport.update({
-  id: '/reports',
-  path: '/reports',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
 const AdminDocumentsRoute = AdminDocumentsRouteImport.update({
   id: '/documents',
   path: '/documents',
@@ -308,7 +302,6 @@ export interface FileRoutesByFullPath {
   '/professional': typeof ProfessionalRouteRouteWithChildren
   '/admin/appointments': typeof AdminAppointmentsRoute
   '/admin/documents': typeof AdminDocumentsRoute
-  '/admin/reports': typeof AdminReportsRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/transactions': typeof AdminTransactionsRoute
@@ -353,7 +346,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin/appointments': typeof AdminAppointmentsRoute
   '/admin/documents': typeof AdminDocumentsRoute
-  '/admin/reports': typeof AdminReportsRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/transactions': typeof AdminTransactionsRoute
@@ -403,7 +395,6 @@ export interface FileRoutesById {
   '/professional': typeof ProfessionalRouteRouteWithChildren
   '/admin/appointments': typeof AdminAppointmentsRoute
   '/admin/documents': typeof AdminDocumentsRoute
-  '/admin/reports': typeof AdminReportsRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/transactions': typeof AdminTransactionsRoute
@@ -454,7 +445,6 @@ export interface FileRouteTypes {
     | '/professional'
     | '/admin/appointments'
     | '/admin/documents'
-    | '/admin/reports'
     | '/admin/reviews'
     | '/admin/settings'
     | '/admin/transactions'
@@ -499,7 +489,6 @@ export interface FileRouteTypes {
     | '/'
     | '/admin/appointments'
     | '/admin/documents'
-    | '/admin/reports'
     | '/admin/reviews'
     | '/admin/settings'
     | '/admin/transactions'
@@ -548,7 +537,6 @@ export interface FileRouteTypes {
     | '/professional'
     | '/admin/appointments'
     | '/admin/documents'
-    | '/admin/reports'
     | '/admin/reviews'
     | '/admin/settings'
     | '/admin/transactions'
@@ -852,13 +840,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminReviewsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
-    '/admin/reports': {
-      id: '/admin/reports'
-      path: '/reports'
-      fullPath: '/admin/reports'
-      preLoaderRoute: typeof AdminReportsRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
     '/admin/documents': {
       id: '/admin/documents'
       path: '/documents'
@@ -935,7 +916,6 @@ declare module '@tanstack/react-router' {
 interface AdminRouteRouteChildren {
   AdminAppointmentsRoute: typeof AdminAppointmentsRoute
   AdminDocumentsRoute: typeof AdminDocumentsRoute
-  AdminReportsRoute: typeof AdminReportsRoute
   AdminReviewsRoute: typeof AdminReviewsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminTransactionsRoute: typeof AdminTransactionsRoute
@@ -949,7 +929,6 @@ interface AdminRouteRouteChildren {
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAppointmentsRoute: AdminAppointmentsRoute,
   AdminDocumentsRoute: AdminDocumentsRoute,
-  AdminReportsRoute: AdminReportsRoute,
   AdminReviewsRoute: AdminReviewsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminTransactionsRoute: AdminTransactionsRoute,

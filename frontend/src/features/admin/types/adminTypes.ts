@@ -152,25 +152,3 @@ export interface PrescriptionAdminDto {
   date: string;
   prescriptionUrl: string | null;
 }
-
-export interface ReportAdminDto {
-  id: string;
-  reporterId: string;
-  reporterName: string;
-  reporterEmail: string;
-  reporterPhone: string;
-  reporterProfilePicture: string;
-  reportedId: string;
-  reportedName: string;
-  reportedEmail: string;
-  reportedPhone: string;
-  reportedProfilePicture: string;
-  title: string;
-  description: string;
-  date: string;
-  status: string;
-}
-
-export interface UpdateReportStatusRequest {
-  status: string;
-}

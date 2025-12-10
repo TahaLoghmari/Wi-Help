@@ -54,11 +54,6 @@ export function getNavigationData(user: UserDto) {
       url: ROUTE_PATHS.ADMIN.DOCUMENTS,
       icon: FolderOpen,
     },
-    {
-      title: "Reports",
-      url: ROUTE_PATHS.ADMIN.REPORTS,
-      icon: BarChart3,
-    },
   ];
 
   const professionalNavMain = [
