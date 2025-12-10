@@ -1,7 +1,5 @@
 dependencies should flow from specific/feature modules toward core/shared modules, not the other way around.
 
-Excellent question! Let me explain the **principles** that determine dependency direction in modular architecture.
-
 ## Core Principles for Dependency Direction
 
 ### 1. **Stable Dependencies Principle (SDP)**
@@ -166,3 +164,6 @@ Golden Rule: The module that owns the relationship data owns the queries about t
 → Would need to call Appointments.PublicApi anyway
 
 If you're in some module and you are using another module's public API, you can the use the return type contracts defined in its PublicApi
+
+Dependency Flow : 
+Features -> Infrastructure / Public Api -> Domain
