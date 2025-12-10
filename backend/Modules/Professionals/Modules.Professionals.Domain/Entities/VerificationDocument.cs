@@ -49,7 +49,7 @@ public class VerificationDocument
         ReviewedAt = null;
     }
 
-    public void SetStatus(DocumentStatus status)
+    public void UpdateStatus(DocumentStatus status)
     {
         Status = status;
         ReviewedAt = DateTime.UtcNow;

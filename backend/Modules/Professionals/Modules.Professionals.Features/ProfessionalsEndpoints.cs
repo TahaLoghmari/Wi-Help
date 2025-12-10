@@ -39,6 +39,8 @@ public static class ProfessionalsEndpoints
     
     public const string UpdateAccountStatus = "professionals/{professionalId}/status";
     public const string GetProfessionalsForAdmin = "professionals/admin";
+    public const string GetVerificationDocumentsForAdmin = "professionals/admin/documents";
+    public const string UpdateDocumentStatus = "professionals/admin/documents/{documentId}/status";
 }
 
 

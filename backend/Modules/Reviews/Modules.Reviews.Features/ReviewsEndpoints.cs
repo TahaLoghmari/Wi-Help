@@ -23,5 +23,8 @@ public static class ReviewsEndpoints
 
     // Delete a review (patient can delete their own review)
     public const string DeleteReview = "reviews/{reviewId}";
+
+    public const string GetReviewsForAdmin = "reviews/admin";
+    public const string DeleteReviewForAdmin = "reviews/admin/{reviewId}";
 }
 

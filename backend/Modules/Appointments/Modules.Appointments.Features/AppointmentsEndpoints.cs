@@ -39,4 +39,7 @@ public static class AppointmentsEndpoints
     // Admin endpoints
     public const string GetAllAppointmentsForAdmin = "appointments/admin/all";
     public const string UpdateAppointmentStatusByAdmin = "appointments/{appointmentId}/admin/status";
+
+    public const string GetAllPrescriptionsForAdmin = "appointments/admin/prescriptions";
+    public const string DeletePrescription = "appointments/admin/prescriptions/{prescriptionId}";
 }
