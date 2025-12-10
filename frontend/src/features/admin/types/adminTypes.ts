@@ -62,7 +62,7 @@ export interface GetAllProfessionalsDto {
   specialization: string;
   createdAt: string;
   totalEarned: number;
-  verificationStatus: VerificationStatus;
+  accountStatus: VerificationStatus;
   isBanned: boolean;
 }
 
@@ -90,7 +90,11 @@ export interface UpdateAppointmentStatusRequest {
 }
 
 export interface UpdateProfessionalAccountStatusRequest {
-  verificationStatus: VerificationStatus;
+  status: VerificationStatus;
+}
+
+export interface UpdateDocumentStatusRequest {
+  status: string;
 }
 
 export interface BanUserRequest {
@@ -106,4 +110,67 @@ export interface PaginationResultDto<T> {
   totalCount: number;
   page: number;
   pageSize: number;
+}
+
+export interface ReviewAdminDto {
+  id: string;
+  patientId: string;
+  patientName: string;
+  patientProfilePicture: string;
+  professionalId: string;
+  professionalName: string;
+  professionalProfilePicture: string;
+  rating: number;
+  description: string;
+  date: string;
+}
+
+export interface VerificationDocumentAdminDto {
+  id: string;
+  type: string;
+  url: string;
+  status: string;
+}
+
+export interface ProfessionalVerificationDto {
+  professionalId: string;
+  name: string;
+  profilePicture: string;
+  accountStatus: string;
+  documents: VerificationDocumentAdminDto[];
+}
+
+export interface PrescriptionAdminDto {
+  id: string;
+  patientId: string;
+  patientName: string;
+  patientProfilePicture: string;
+  professionalId: string;
+  professionalName: string;
+  professionalProfilePicture: string;
+  title: string;
+  date: string;
+  prescriptionUrl: string | null;
+}
+
+export interface ReportAdminDto {
+  id: string;
+  reporterId: string;
+  reporterName: string;
+  reporterEmail: string;
+  reporterPhone: string;
+  reporterProfilePicture: string;
+  reportedId: string;
+  reportedName: string;
+  reportedEmail: string;
+  reportedPhone: string;
+  reportedProfilePicture: string;
+  title: string;
+  description: string;
+  date: string;
+  status: string;
+}
+
+export interface UpdateReportStatusRequest {
+  status: string;
 }

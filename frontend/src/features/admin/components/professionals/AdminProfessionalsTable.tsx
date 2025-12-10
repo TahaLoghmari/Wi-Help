@@ -2,12 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   GetAllProfessionals,
-  UpdateProfessionalAccountStatus,
+  useUpdateProfessionalAccountStatus,
   BanProfessional,
   EditProfessionalPassword,
   type GetAllProfessionalsDto,
   VerificationStatus,
 } from "@/features/admin";
+import { SPECIALIZATIONS } from "@/features/auth/lib/authConstants";
 import {
   Select,
   SelectContent,
@@ -39,7 +40,7 @@ export function AdminProfessionalsTable() {
     isFetchingNextPage,
   } = GetAllProfessionals();
 
-  const updateStatusMutation = UpdateProfessionalAccountStatus();
+  const updateStatusMutation = useUpdateProfessionalAccountStatus();
   const banMutation = BanProfessional();
   const editPasswordMutation = EditProfessionalPassword();
 
@@ -55,7 +56,7 @@ export function AdminProfessionalsTable() {
     professionalId: string,
     verificationStatus: VerificationStatus,
   ) => {
-    updateStatusMutation.mutate({ professionalId, verificationStatus });
+    updateStatusMutation.mutate({ professionalId, status: verificationStatus });
   };
 
   const handleBanChange = (professionalId: string, value: string) => {
@@ -82,17 +83,6 @@ export function AdminProfessionalsTable() {
 
   const handleNavigateToProfile = (professionalId: string) => {
     navigate({ to: `/admin/professionals/${professionalId}` });
-  };
-
-  const getStatusBadgeClass = (status: VerificationStatus) => {
-    switch (status) {
-      case VerificationStatus.Verified:
-        return "border-green-200 bg-green-50 text-green-700";
-      case VerificationStatus.Rejected:
-        return "border-red-200 bg-red-50 text-red-700";
-      default:
-        return "border-yellow-200 bg-yellow-50 text-yellow-700";
-    }
   };
 
   if (isLoading) {
@@ -181,114 +171,117 @@ export function AdminProfessionalsTable() {
                   </td>
                 </tr>
               ) : (
-                professionals.map((professional) => (
-                  <tr key={professional.id} className="hover:bg-slate-50/70">
-                    <td className="pt-3.5 pr-4 pb-3.5 pl-4 whitespace-nowrap sm:px-5">
-                      <div
-                        className="flex cursor-pointer items-center gap-3 transition-opacity hover:opacity-80"
-                        onClick={() => handleNavigateToProfile(professional.id)}
-                      >
-                        {professional.profilePictureUrl ? (
-                          <img
-                            src={professional.profilePictureUrl}
-                            alt={`${professional.firstName} ${professional.lastName}`}
-                            className="h-10 w-10 rounded-full border border-slate-200 object-cover"
-                          />
-                        ) : (
-                          <div className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
-                            {professional.firstName?.charAt(0) || "?"}
-                          </div>
-                        )}
-                        <div>
-                          <div className="text-xs font-medium tracking-tight text-slate-900">
-                            {professional.firstName} {professional.lastName}
-                          </div>
-                          <div className="text-[11px] text-slate-500">
-                            ID: {professional.id.substring(0, 8)}...
+                professionals.map((professional) => {
+                  console.log(professional);
+                  return (
+                    <tr key={professional.id} className="hover:bg-slate-50/70">
+                      <td className="pt-3.5 pr-4 pb-3.5 pl-4 whitespace-nowrap sm:px-5">
+                        <div
+                          className="flex cursor-pointer items-center gap-3 transition-opacity hover:opacity-80"
+                          onClick={() =>
+                            handleNavigateToProfile(professional.id)
+                          }
+                        >
+                          {professional.profilePictureUrl ? (
+                            <img
+                              src={professional.profilePictureUrl}
+                              alt={`${professional.firstName} ${professional.lastName}`}
+                              className="h-10 w-10 rounded-full border border-slate-200 object-cover"
+                            />
+                          ) : (
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
+                              {professional.firstName?.charAt(0) || "?"}
+                            </div>
+                          )}
+                          <div>
+                            <div className="text-xs font-medium tracking-tight text-slate-900">
+                              {professional.firstName} {professional.lastName}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
-                      {professional.email}
-                    </td>
-                    <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
-                      {professional.phoneNumber || "N/A"}
-                    </td>
-                    <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
-                      {professional.specialization}
-                    </td>
-                    <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-700 sm:px-5">
-                      {new Date(professional.createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-800 sm:px-5">
-                      ${professional.totalEarned.toFixed(2)}
-                    </td>
-                    <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
-                      <Select
-                        value={professional.verificationStatus}
-                        onValueChange={(value) =>
-                          handleStatusChange(
-                            professional.id,
-                            value as VerificationStatus,
-                          )
-                        }
-                      >
-                        <SelectTrigger className="h-7 w-[110px] text-[11px]">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value={VerificationStatus.Pending}>
-                            Pending
-                          </SelectItem>
-                          <SelectItem value={VerificationStatus.Verified}>
-                            Verified
-                          </SelectItem>
-                          <SelectItem value={VerificationStatus.Rejected}>
-                            Rejected
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </td>
-                    <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
-                      <Select
-                        value={professional.isBanned ? "banned" : "active"}
-                        onValueChange={(value) =>
-                          handleBanChange(professional.id, value)
-                        }
-                        disabled={banMutation.isPending}
-                      >
-                        <SelectTrigger
-                          className={`h-7 w-[100px] text-[11px] ${
-                            professional.isBanned
-                              ? "border-red-200 bg-red-50 text-red-700"
-                              : "border-green-200 bg-green-50 text-green-700"
-                          }`}
+                      </td>
+                      <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
+                        {professional.email}
+                      </td>
+                      <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
+                        {professional.phoneNumber || "N/A"}
+                      </td>
+                      <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
+                        {SPECIALIZATIONS.find(
+                          (s) => s.value === professional.specialization,
+                        )?.label || professional.specialization}
+                      </td>
+                      <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-700 sm:px-5">
+                        {new Date(professional.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-800 sm:px-5">
+                        ${professional.totalEarned.toFixed(2)}
+                      </td>
+                      <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
+                        <Select
+                          value={professional.accountStatus}
+                          onValueChange={(value) =>
+                            handleStatusChange(
+                              professional.id,
+                              value as VerificationStatus,
+                            )
+                          }
                         >
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="active" className="text-green-700">
-                            Active
-                          </SelectItem>
-                          <SelectItem value="banned" className="text-red-700">
-                            Banned
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </td>
-                    <td className="px-4 py-3.5 text-right whitespace-nowrap sm:px-5">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          onClick={() => handlePasswordEdit(professional)}
-                          className="inline-flex items-center rounded-full border border-blue-200 bg-white px-2 py-1 text-[11px] text-blue-700 transition-colors hover:border-blue-300 hover:bg-blue-50"
+                          <SelectTrigger className="h-7 w-[110px] text-[11px]">
+                            <SelectValue
+                              placeholder={professional.accountStatus}
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value={VerificationStatus.Pending}>
+                              Pending
+                            </SelectItem>
+                            <SelectItem value={VerificationStatus.Verified}>
+                              Verified
+                            </SelectItem>
+                            <SelectItem value={VerificationStatus.Rejected}>
+                              Rejected
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </td>
+                      <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
+                        <Select
+                          value={professional.isBanned ? "banned" : "active"}
+                          onValueChange={(value) =>
+                            handleBanChange(professional.id, value)
+                          }
+                          disabled={banMutation.isPending}
                         >
-                          Edit Password
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                          <SelectTrigger className="h-7 w-[100px] text-[11px]">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem
+                              value="active"
+                              className="text-green-700"
+                            >
+                              Active
+                            </SelectItem>
+                            <SelectItem value="banned" className="text-red-700">
+                              Banned
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </td>
+                      <td className="px-4 py-3.5 text-right whitespace-nowrap sm:px-5">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={() => handlePasswordEdit(professional)}
+                            className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors"
+                          >
+                            Edit Password
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

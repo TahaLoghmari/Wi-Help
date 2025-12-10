@@ -1,0 +1,39 @@
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { api } from "@/api-client";
+import { API_ENDPOINTS } from "@/config";
+import { toQueryString } from "@/lib";
+import type {
+  ProfessionalVerificationDto,
+  PaginationResultDto,
+} from "@/features/admin";
+
+export interface GetVerificationDocumentsForAdminRequest {
+  page: number;
+  pageSize: number;
+}
+
+const getVerificationDocumentsForAdmin = (
+  request: GetVerificationDocumentsForAdminRequest,
+) => {
+  const queryString = toQueryString(request);
+  return api.get<PaginationResultDto<ProfessionalVerificationDto>>(
+    `${API_ENDPOINTS.PROFESSIONALS.GET_VERIFICATION_DOCUMENTS_AS_ADMIN}?${queryString}`,
+  );
+};
+
+export function useGetVerificationDocumentsForAdmin() {
+  return useInfiniteQuery<PaginationResultDto<ProfessionalVerificationDto>>({
+    queryKey: ["admin-verification-documents"],
+    queryFn: ({ pageParam = 1 }) =>
+      getVerificationDocumentsForAdmin({
+        page: pageParam as number,
+        pageSize: 10,
+      }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, pages) => {
+      const hasNextPage =
+        lastPage.totalCount > pages.length * lastPage.pageSize;
+      return hasNextPage ? pages.length + 1 : undefined;
+    },
+  });
+}

@@ -1,4 +1,3 @@
-import { ROUTE_PATHS } from "@/config/routes";
 import { AdminProfessionalsLayout } from "@/features/admin";
 import { ContentLoading } from "@/components/ui";
 import { createFileRoute } from "@tanstack/react-router";

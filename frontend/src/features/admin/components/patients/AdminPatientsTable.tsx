@@ -197,13 +197,7 @@ export function AdminPatientsTable() {
                         }
                         disabled={banMutation.isPending}
                       >
-                        <SelectTrigger
-                          className={`h-7 w-[100px] text-[11px] ${
-                            patient.isBanned
-                              ? "border-red-200 bg-red-50 text-red-700"
-                              : "border-green-200 bg-green-50 text-green-700"
-                          }`}
-                        >
+                        <SelectTrigger className="h-7 w-[100px] text-[11px]">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -220,7 +214,7 @@ export function AdminPatientsTable() {
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() => handlePasswordEdit(patient)}
-                          className="inline-flex items-center rounded-full border border-blue-200 bg-white px-2 py-1 text-[11px] text-blue-700 transition-colors hover:border-blue-300 hover:bg-blue-50"
+                          className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors"
                         >
                           Edit Password
                         </button>

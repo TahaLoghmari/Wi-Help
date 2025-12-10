@@ -5,6 +5,7 @@ import {
   type GetAllAppointmentsDto,
   AppointmentStatus,
 } from "@/features/admin";
+import { SPECIALIZATIONS } from "@/features/auth/lib/authConstants";
 import {
   Select,
   SelectContent,
@@ -44,19 +45,6 @@ export function AdminAppointmentsTable() {
     status: AppointmentStatus,
   ) => {
     updateStatusMutation.mutate({ appointmentId, status });
-  };
-
-  const getStatusBadgeClass = (status: AppointmentStatus) => {
-    switch (status) {
-      case AppointmentStatus.Confirmed:
-        return "border-green-200 bg-green-50 text-green-700";
-      case AppointmentStatus.Completed:
-        return "border-blue-200 bg-blue-50 text-blue-700";
-      case AppointmentStatus.Cancelled:
-        return "border-red-200 bg-red-50 text-red-700";
-      default:
-        return "border-yellow-200 bg-yellow-50 text-yellow-700";
-    }
   };
 
   if (isLoading) {
@@ -156,7 +144,11 @@ export function AdminAppointmentsTable() {
                           {appointment.professional.lastName}
                         </div>
                         <div className="text-[11px] text-slate-500">
-                          {appointment.professional.specialization}
+                          {SPECIALIZATIONS.find(
+                            (s) =>
+                              s.value ===
+                              appointment.professional.specialization,
+                          )?.label || appointment.professional.specialization}
                         </div>
                       </div>
                     </div>
@@ -167,10 +159,10 @@ export function AdminAppointmentsTable() {
                         <img
                           src={appointment.patient.profilePictureUrl}
                           alt={`${appointment.patient.firstName} ${appointment.patient.lastName}`}
-                          className="h-8 w-8 rounded-full border border-slate-200 object-cover"
+                          className="h-10 w-10 rounded-full border border-slate-200 object-cover"
                         />
                       ) : (
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-xs font-medium text-slate-500">
                           {appointment.patient.firstName?.charAt(0) || "?"}
                         </div>
                       )}

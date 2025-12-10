@@ -9,29 +9,32 @@ import { toast } from "sonner";
 
 interface UpdateProfessionalAccountStatusParams {
   professionalId: string;
-  verificationStatus: VerificationStatus;
+  status: VerificationStatus;
 }
 
 const updateProfessionalAccountStatus = ({
   professionalId,
-  verificationStatus,
+  status,
 }: UpdateProfessionalAccountStatusParams) => {
   const request: UpdateProfessionalAccountStatusRequest = {
-    verificationStatus,
+    status,
   };
-  return api.patch(
+  return api.put(
     API_ENDPOINTS.PROFESSIONALS.UPDATE_ACCOUNT_STATUS(professionalId),
     request,
   );
 };
 
-export function UpdateProfessionalAccountStatus() {
+export function useUpdateProfessionalAccountStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: updateProfessionalAccountStatus,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-professionals"] });
+      queryClient.invalidateQueries({
+        queryKey: ["admin-verification-documents"],
+      });
       toast.success("Professional account status updated successfully");
     },
     onError: () => {

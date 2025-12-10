@@ -28,6 +28,8 @@ export const API_ENDPOINTS = {
     GET_ALL_AS_ADMIN: "/professionals/admin",
     UPDATE_ACCOUNT_STATUS: (professionalId: string) =>
       `/professionals/${professionalId}/status`,
+    UPDATE_DOCUMENT_STATUS_AS_ADMIN: (documentId: string) =>
+      `/professionals/admin/documents/${documentId}/status`,
     GET_PROFESSIONAL_AVAILABILITY: (professionalId: string) =>
       `/professionals/${professionalId}/availability`,
     UPLOAD_VERIFICATION_DOCUMENT: "/professionals/me/documents",
@@ -60,6 +62,7 @@ export const API_ENDPOINTS = {
       `/professionals/${professionalId}/awards`,
     GET_PROFESSIONAL_DOCUMENTS: (professionalId: string) =>
       `/professionals/${professionalId}/documents`,
+    GET_VERIFICATION_DOCUMENTS_AS_ADMIN: "/professionals/admin/documents",
   },
   PATIENTS: {
     REGISTER_PATIENT: "/patients/register",
@@ -90,6 +93,9 @@ export const API_ENDPOINTS = {
     GET_ALL_AS_ADMIN: "/appointments/admin/all",
     UPDATE_STATUS_AS_ADMIN: (appointmentId: string) =>
       `/appointments/${appointmentId}/admin/status`,
+    GET_PRESCRIPTIONS_AS_ADMIN: "/appointments/admin/prescriptions",
+    DELETE_PRESCRIPTION_AS_ADMIN: (prescriptionId: string) =>
+      `/appointments/admin/prescriptions/${prescriptionId}`,
   },
   NOTIFICATIONS: {
     GET_NOTIFICATIONS: "/notifications",
@@ -120,5 +126,11 @@ export const API_ENDPOINTS = {
     REPLY_TO_REVIEW: (reviewId: string) => `/reviews/${reviewId}/reply`,
     UPDATE_REVIEW: (reviewId: string) => `/reviews/${reviewId}`,
     DELETE_REVIEW: (reviewId: string) => `/reviews/${reviewId}`,
+    GET_ALL_AS_ADMIN: "/reviews/admin",
+    DELETE_AS_ADMIN: (reviewId: string) => `/reviews/admin/${reviewId}`,
+  },
+  REPORTS: {
+    GET_ALL_AS_ADMIN: "/reports/admin",
+    UPDATE_STATUS: (reportId: string) => `/reports/admin/${reportId}/status`,
   },
 } as const;
