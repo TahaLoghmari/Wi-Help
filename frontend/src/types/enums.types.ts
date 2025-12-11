@@ -1,11 +1,9 @@
 export interface ProblemDetailsDto {
-  detail?: string;
-  errors?: Record<string, unknown>;
-  requestedId: string;
-  status: number;
   title?: string;
-  traceId: string;
+  detail?: string;
   type?: string;
+  status?: number;
+  errors?: Record<string, string[]>;
 }
 
 export interface PaginationResultDto<T> {

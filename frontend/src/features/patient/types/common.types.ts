@@ -12,7 +12,7 @@ export interface PatientDto {
   phoneNumber: string;
   dateOfBirth: string;
   gender: string;
-  address?: Address;
+  address: Address;
   emergencyContact: EmergencyContact;
   medicalInfo: MedicalInfo;
   bio?: string;

@@ -12,7 +12,7 @@ export interface GetCurrentPatientDto {
   gender: string;
   address: Address;
   emergencyContact: EmergencyContact;
-  medicalInfo: MedicalInfo;
+  medicalInfo?: MedicalInfo;
   bio?: string;
   profilePictureUrl?: string;
 }

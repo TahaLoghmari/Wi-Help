@@ -1,6 +1,6 @@
 import type { Address, EmergencyContact } from "@/features/auth";
 import type { MedicalInfo } from "@/features/patient/types/enums.types";
-import type { GetProfessionalDto } from "@/features/professional/hooks/GetProfessional/GetProfessionalDto";
+import type { ProfessionalDto } from "@/features/professional";
 import type { PatientDto } from "@/features/patient/types/common.types";
 
 export const AppointmentStatus = {
@@ -47,7 +47,7 @@ export interface GetAllAppointmentsDto {
   cancelledAt: string | null;
   createdAt: string;
   updatedAt: string;
-  professional: GetProfessionalDto;
+  professional: ProfessionalDto;
   patient: PatientDto;
 }
 
