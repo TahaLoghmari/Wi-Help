@@ -24,6 +24,7 @@ export const ROUTE_PATHS = {
     TRANSACTIONS: "/admin/transactions",
     DOCUMENTS: "/admin/documents",
     SETTINGS: "/admin/settings",
+    NOTIFICATIONS: "/admin/notifications",
   },
 
   PROFESSIONAL: {

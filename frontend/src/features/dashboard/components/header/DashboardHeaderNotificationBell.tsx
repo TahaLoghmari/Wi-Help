@@ -17,7 +17,9 @@ export function DashboardHeaderNotificationBell() {
   const notificationsPath =
     user?.role === "Professional"
       ? ROUTE_PATHS.PROFESSIONAL.NOTIFICATIONS
-      : ROUTE_PATHS.PATIENT.NOTIFICATIONS;
+      : user?.role === "Admin"
+        ? ROUTE_PATHS.ADMIN.NOTIFICATIONS
+        : ROUTE_PATHS.PATIENT.NOTIFICATIONS;
 
   return (
     <Link to={notificationsPath}>

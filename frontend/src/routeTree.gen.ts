@@ -45,6 +45,7 @@ import { Route as AuthEmailVerificationRouteImport } from './routes/auth/email-v
 import { Route as AdminTransactionsRouteImport } from './routes/admin/transactions'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminReviewsRouteImport } from './routes/admin/reviews'
+import { Route as AdminNotificationsRouteImport } from './routes/admin/notifications'
 import { Route as AdminDocumentsRouteImport } from './routes/admin/documents'
 import { Route as AdminAppointmentsRouteImport } from './routes/admin/appointments'
 import { Route as AdminProfessionalsIndexRouteImport } from './routes/admin/professionals.index'
@@ -239,6 +240,11 @@ const AdminReviewsRoute = AdminReviewsRouteImport.update({
   path: '/reviews',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminNotificationsRoute = AdminNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminDocumentsRoute = AdminDocumentsRouteImport.update({
   id: '/documents',
   path: '/documents',
@@ -302,6 +308,7 @@ export interface FileRoutesByFullPath {
   '/professional': typeof ProfessionalRouteRouteWithChildren
   '/admin/appointments': typeof AdminAppointmentsRoute
   '/admin/documents': typeof AdminDocumentsRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/transactions': typeof AdminTransactionsRoute
@@ -346,6 +353,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin/appointments': typeof AdminAppointmentsRoute
   '/admin/documents': typeof AdminDocumentsRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/transactions': typeof AdminTransactionsRoute
@@ -395,6 +403,7 @@ export interface FileRoutesById {
   '/professional': typeof ProfessionalRouteRouteWithChildren
   '/admin/appointments': typeof AdminAppointmentsRoute
   '/admin/documents': typeof AdminDocumentsRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/transactions': typeof AdminTransactionsRoute
@@ -445,6 +454,7 @@ export interface FileRouteTypes {
     | '/professional'
     | '/admin/appointments'
     | '/admin/documents'
+    | '/admin/notifications'
     | '/admin/reviews'
     | '/admin/settings'
     | '/admin/transactions'
@@ -489,6 +499,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin/appointments'
     | '/admin/documents'
+    | '/admin/notifications'
     | '/admin/reviews'
     | '/admin/settings'
     | '/admin/transactions'
@@ -537,6 +548,7 @@ export interface FileRouteTypes {
     | '/professional'
     | '/admin/appointments'
     | '/admin/documents'
+    | '/admin/notifications'
     | '/admin/reviews'
     | '/admin/settings'
     | '/admin/transactions'
@@ -840,6 +852,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminReviewsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/notifications': {
+      id: '/admin/notifications'
+      path: '/notifications'
+      fullPath: '/admin/notifications'
+      preLoaderRoute: typeof AdminNotificationsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/documents': {
       id: '/admin/documents'
       path: '/documents'
@@ -916,6 +935,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteRouteChildren {
   AdminAppointmentsRoute: typeof AdminAppointmentsRoute
   AdminDocumentsRoute: typeof AdminDocumentsRoute
+  AdminNotificationsRoute: typeof AdminNotificationsRoute
   AdminReviewsRoute: typeof AdminReviewsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminTransactionsRoute: typeof AdminTransactionsRoute
@@ -929,6 +949,7 @@ interface AdminRouteRouteChildren {
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAppointmentsRoute: AdminAppointmentsRoute,
   AdminDocumentsRoute: AdminDocumentsRoute,
+  AdminNotificationsRoute: AdminNotificationsRoute,
   AdminReviewsRoute: AdminReviewsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminTransactionsRoute: AdminTransactionsRoute,

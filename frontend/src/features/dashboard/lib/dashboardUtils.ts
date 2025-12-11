@@ -15,7 +15,6 @@ import {
   Star,
   Receipt,
   FolderOpen,
-  BarChart3,
 } from "lucide-react";
 
 export function getNavigationData(user: UserDto) {
@@ -132,16 +131,16 @@ export function getNavigationData(user: UserDto) {
         : isPatient
           ? patientNavMain
           : [],
-    navSecondary: [
-      {
-        title: "Settings",
-        url: isAdmin
-          ? ROUTE_PATHS.ADMIN.SETTINGS
-          : isProfessional
-            ? ROUTE_PATHS.PROFESSIONAL.SETTINGS
-            : ROUTE_PATHS.PATIENT.SETTINGS,
-        icon: IconSettings,
-      },
-    ],
+    navSecondary: !isAdmin
+      ? [
+          {
+            title: "Settings",
+            url: isProfessional
+              ? ROUTE_PATHS.PROFESSIONAL.SETTINGS
+              : ROUTE_PATHS.PATIENT.SETTINGS,
+            icon: IconSettings,
+          },
+        ]
+      : [],
   };
 }

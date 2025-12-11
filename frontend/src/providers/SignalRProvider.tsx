@@ -121,12 +121,22 @@ export const SignalRProvider = ({
           queryClient.invalidateQueries({
             queryKey: ["professional-appointments"],
           });
+          queryClient.invalidateQueries({
+            queryKey: ["professional-profile"],
+          });
         } else if (notification.role === "Patient") {
           queryClient.invalidateQueries({
             queryKey: ["patient-appointments"],
           });
           queryClient.invalidateQueries({
             queryKey: ["conversations"],
+          });
+        } else if (notification.role === "Admin") {
+          queryClient.invalidateQueries({
+            queryKey: ["admin-appointments"],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["admin-professionals"],
           });
         }
       });
