@@ -14,6 +14,7 @@ using Modules.Notifications.PublicApi;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
 using Modules.Professionals.PublicApi.Contracts;
+using Modules.Identity.PublicApi;
 
 namespace Modules.Appointments.Features.RespondToAppointment;
 
@@ -24,6 +25,7 @@ public class RespondToAppointmentCommandHandler(
     IPatientsModuleApi patientsModuleApi,
     IProfessionalModuleApi professionalModuleApi,
     IMessagingModuleApi messagingModuleApi,
+    IIdentityModuleApi identityModuleApi,
     EmailService emailService) : ICommandHandler<RespondToAppointmentCommand>
 {
     public async Task<Result> Handle(RespondToAppointmentCommand command, CancellationToken cancellationToken)
@@ -134,6 +136,23 @@ public class RespondToAppointmentCommandHandler(
                 emailService.EnqueueEmail(emailDto);
                 logger.LogInformation("Acceptance email notification queued for patient {PatientId}", appointment.PatientId);
             }
+
+            // Notify Admins
+            var adminsResult = await identityModuleApi.GetUsersByRoleAsync("admin", cancellationToken);
+            if (adminsResult.IsSuccess)
+            {
+                var patientName = $"{patient.FirstName} {patient.LastName}";
+                foreach (var admin in adminsResult.Value)
+                {
+                    await notificationsModuleApi.AddNotificationAsync(
+                        admin.Id.ToString(),
+                        "Admin",
+                        "Appointment Confirmed",
+                        $"Appointment confirmed: {professionalName} with {patientName}",
+                        NotificationType.appointmentAccepted,
+                        cancellationToken);
+                }
+            }
         }
         else
         {
@@ -166,6 +185,23 @@ public class RespondToAppointmentCommandHandler(
             
             emailService.EnqueueEmail(emailDto);
             logger.LogInformation("Rejection email notification queued for patient {PatientId}", appointment.PatientId);
+
+            // Notify Admins
+            var adminsResult = await identityModuleApi.GetUsersByRoleAsync("admin", cancellationToken);
+            if (adminsResult.IsSuccess)
+            {
+                var patientName = $"{patient.FirstName} {patient.LastName}";
+                foreach (var admin in adminsResult.Value)
+                {
+                    await notificationsModuleApi.AddNotificationAsync(
+                        admin.Id.ToString(),
+                        "Admin",
+                        "Appointment Rejected",
+                        $"Appointment rejected by professional: {professionalName} with {patientName}",
+                        NotificationType.appointmentRejected,
+                        cancellationToken);
+                }
+            }
         }
 
         await appointmentsDbContext.SaveChangesAsync(cancellationToken);

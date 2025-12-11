@@ -12,6 +12,7 @@ using Modules.Notifications.Domain.Enums;
 using Modules.Notifications.PublicApi;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
+using Modules.Identity.PublicApi;
 
 namespace Modules.Appointments.Features.BookAppointment;
 
@@ -21,6 +22,7 @@ public class BookAppointmentCommandHandler(
     INotificationsModuleApi notificationsModuleApi,
     IProfessionalModuleApi professionalModuleApi,
     IPatientsModuleApi patientsModuleApi,
+    IIdentityModuleApi identityModuleApi,
     EmailService emailService) : ICommandHandler<BookAppointmentCommand>
 {
     public async Task<Result> Handle(BookAppointmentCommand command, CancellationToken cancellationToken)
@@ -117,6 +119,22 @@ public class BookAppointmentCommandHandler(
         else
         {
             logger.LogWarning("Failed to fetch patient details for email notification: {Error}", patientResult.Error);
+        }
+
+        // Notify Admins
+        var adminsResult = await identityModuleApi.GetUsersByRoleAsync("admin", cancellationToken);
+        if (adminsResult.IsSuccess)
+        {
+            foreach (var admin in adminsResult.Value)
+            {
+                await notificationsModuleApi.AddNotificationAsync(
+                    admin.Id.ToString(),
+                    "Admin",
+                    "New Appointment Booked",
+                    $"New appointment booked: {professionalName} with {patientName}",
+                    NotificationType.newAppointment,
+                    cancellationToken);
+            }
         }
 
         return Result.Success();

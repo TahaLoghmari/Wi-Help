@@ -275,5 +275,29 @@ public class IdentityModuleApi(
         logger.LogInformation("Password reset successfully for user {UserId}", userId);
         return Result.Success();
     }
+
+    public async Task<Result<List<UserDto>>> GetUsersByRoleAsync(string role, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("Retrieving users with role: {Role}", role);
+
+        var users = await userManager.GetUsersInRoleAsync(role);
+        
+        var userDtos = users.Select(user => new UserDto(
+            user.Id,
+            user.Email!,
+            user.FirstName,
+            user.LastName,
+            user.DateOfBirth.ToString("yyyy-MM-dd"),
+            user.Gender,
+            user.PhoneNumber!,
+            user.Address,
+            user.ProfilePictureUrl,
+            user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTimeOffset.UtcNow
+        )).ToList();
+
+        logger.LogInformation("Retrieved {Count} users with role {Role}", userDtos.Count, role);
+
+        return Result<List<UserDto>>.Success(userDtos);
+    }
 }
 

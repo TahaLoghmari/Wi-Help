@@ -11,6 +11,7 @@ using Modules.Notifications.Domain.Enums;
 using Modules.Notifications.PublicApi;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
+using Modules.Identity.PublicApi;
 
 namespace Modules.Appointments.Features.CancelAppointment;
 
@@ -20,6 +21,7 @@ public class CancelAppointmentCommandHandler(
     INotificationsModuleApi notificationsModuleApi,
     IPatientsModuleApi patientsModuleApi,
     IProfessionalModuleApi professionalModuleApi,
+    IIdentityModuleApi identityModuleApi,
     EmailService emailService) : ICommandHandler<CancelAppointmentCommand>
 {
     public async Task<Result> Handle(CancelAppointmentCommand command, CancellationToken cancellationToken)
@@ -105,6 +107,23 @@ public class CancelAppointmentCommandHandler(
             
             emailService.EnqueueEmail(emailDto);
             logger.LogInformation("Cancellation email notification queued for professional {ProfessionalId}", appointment.ProfessionalId);
+
+            // Notify Admins
+            var adminsResult = await identityModuleApi.GetUsersByRoleAsync("admin", cancellationToken);
+            if (adminsResult.IsSuccess)
+            {
+                var professionalName = $"{professional.FirstName} {professional.LastName}";
+                foreach (var admin in adminsResult.Value)
+                {
+                    await notificationsModuleApi.AddNotificationAsync(
+                        admin.Id.ToString(),
+                        "Admin",
+                        "Appointment Cancelled",
+                        $"Appointment cancelled: {professionalName} with {patientName}",
+                        NotificationType.appointmentCancelled,
+                        cancellationToken);
+                }
+            }
         }
 
         appointment.Cancel();

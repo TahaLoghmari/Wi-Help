@@ -9,4 +9,7 @@ public enum NotificationType
     appointmentCompleted,
     newPrescription,
     newMessage,
+    accountStatusUpdated,
+    documentStatusUpdated,
+    appointmentStatusUpdated
 }

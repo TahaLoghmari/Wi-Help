@@ -20,6 +20,7 @@
     <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Infrastructure\Modules.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Notifications\Modules.Notifications.PublicApi\Modules.Notifications.PublicApi.csproj" />
     <ProjectReference Include="..\..\Messaging\Modules.Messaging.PublicApi\Modules.Messaging.PublicApi.csproj" />
+    <ProjectReference Include="..\..\Identity\Modules.Identity.PublicApi\Modules.Identity.PublicApi.csproj" />
   </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

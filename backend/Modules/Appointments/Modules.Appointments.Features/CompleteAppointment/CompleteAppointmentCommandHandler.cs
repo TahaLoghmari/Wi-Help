@@ -10,6 +10,7 @@ using Modules.Notifications.Domain.Enums;
 using Modules.Notifications.PublicApi;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
+using Modules.Identity.PublicApi;
 
 namespace Modules.Appointments.Features.CompleteAppointment;
 
@@ -19,6 +20,7 @@ public class CompleteAppointmentCommandHandler(
     INotificationsModuleApi notificationsModuleApi,
     IPatientsModuleApi patientsModuleApi,
     IProfessionalModuleApi professionalModuleApi,
+    IIdentityModuleApi identityModuleApi,
     SupabaseService supabaseService) : ICommandHandler<CompleteAppointmentCommand>
 {
     private const string PrescriptionsBucketName = "prescriptions";
@@ -142,6 +144,23 @@ public class CompleteAppointmentCommandHandler(
             $"{professionalName} has marked your appointment as completed and uploaded a prescription.",
             NotificationType.newPrescription,
             cancellationToken);
+
+        // Notify Admins
+        var adminsResult = await identityModuleApi.GetUsersByRoleAsync("admin", cancellationToken);
+        if (adminsResult.IsSuccess)
+        {
+            var patientName = $"{patient.FirstName} {patient.LastName}";
+            foreach (var admin in adminsResult.Value)
+            {
+                await notificationsModuleApi.AddNotificationAsync(
+                    admin.Id.ToString(),
+                    "Admin",
+                    "Appointment Completed",
+                    $"Appointment completed: {professionalName} with {patientName}",
+                    NotificationType.appointmentCompleted,
+                    cancellationToken);
+            }
+        }
 
         return Result.Success();
     }

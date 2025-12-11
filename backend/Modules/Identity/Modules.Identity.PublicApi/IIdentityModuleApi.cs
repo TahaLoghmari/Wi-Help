@@ -39,4 +39,8 @@ public interface IIdentityModuleApi
         Guid userId,
         string newPassword,
         CancellationToken cancellationToken);
+
+    Task<Result<List<UserDto>>> GetUsersByRoleAsync(
+        string role,
+        CancellationToken cancellationToken);
 }
