@@ -110,7 +110,8 @@ public sealed class GetProfessionalsQueryHandler(
                         professional.EndPrice,
                         professional.Bio,
                         professional.IsVerified,
-                        user.ProfilePictureUrl));
+                        user.ProfilePictureUrl,
+                        professional.VerificationStatus));
                 }
             }
             else

@@ -57,7 +57,8 @@ public sealed class GetProfessionalQueryHandler(
             professional.EndPrice,
             professional.Bio,
             professional.IsVerified,
-            user.ProfilePictureUrl);
+            user.ProfilePictureUrl,
+            professional.VerificationStatus);
 
         return Result<GetProfessionalDto>.Success(profileDto);
     }

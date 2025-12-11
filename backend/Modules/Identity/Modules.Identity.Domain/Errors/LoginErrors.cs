@@ -15,4 +15,8 @@ public static class LoginErrors
     public static Error InvalidPassword() => Error.Problem(
         "Login.InvalidPassword",
         "Invalid email or password");
+
+    public static Error UserLockedOut() => Error.Problem(
+        "Login.UserLockedOut",
+        "Your account has been banned. Please contact support.");
 }

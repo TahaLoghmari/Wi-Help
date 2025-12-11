@@ -35,6 +35,8 @@ internal sealed class BanUserCommandHandler(
             {
                 return Result.Failure(Error.Failure("Identity.BanFailed", "Failed to set lockout end date."));
             }
+
+            await userManager.UpdateSecurityStampAsync(user);
         }
         else
         {

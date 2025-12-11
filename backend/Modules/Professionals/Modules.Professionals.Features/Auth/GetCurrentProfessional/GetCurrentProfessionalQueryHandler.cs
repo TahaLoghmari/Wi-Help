@@ -56,7 +56,8 @@ public sealed class GetCurrentProfessionalQueryHandler(
             professional.EndPrice,
             professional.Bio,
             professional.IsVerified,
-            user.ProfilePictureUrl);
+            user.ProfilePictureUrl,
+            professional.VerificationStatus);
 
         logger.LogInformation("Professional profile retrieved successfully for UserId: {UserId}", query.UserId);
 

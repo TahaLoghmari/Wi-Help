@@ -76,6 +76,13 @@ public sealed class TokenManagementService(
             await identityDbContext.SaveChangesAsync(cancellationToken);
             return Result<AccessTokensDto>.Failure(RefreshTokenErrors.Expired(refreshToken.Id));
         }
+
+        if (await userManager.IsLockedOutAsync(refreshToken.User))
+        {
+            logger.LogWarning("Token refresh failed - user is locked out for {Email}, UserId: {UserId}", 
+                refreshToken.User.Email, refreshToken.User.Id);
+            return Result<AccessTokensDto>.Failure(LoginErrors.UserLockedOut());
+        }
         
         IList<string> userRoles = await userManager.GetRolesAsync(refreshToken.User);
         

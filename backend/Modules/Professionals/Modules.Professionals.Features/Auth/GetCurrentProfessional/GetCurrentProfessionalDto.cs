@@ -1,4 +1,5 @@
 using Modules.Common.Features.ValueObjects;
+using Modules.Professionals.Domain.Enums;
 
 namespace Modules.Professionals.Features.Auth.GetCurrentProfessional;
 
@@ -19,4 +20,5 @@ public sealed record GetCurrentProfessionalDto(
     int? EndPrice,
     string? Bio,
     bool IsVerified,
-    string? ProfilePictureUrl);
+    string? ProfilePictureUrl,
+    VerificationStatus VerificationStatus);

@@ -35,6 +35,13 @@ public sealed class LoginCommandHandler(
             return Result<AccessTokensDto>.Failure(LoginErrors.EmailNotConfirmed());
         }
 
+        if (await userManager.IsLockedOutAsync(user))
+        {
+            logger.LogWarning("Login failed - user is locked out for {Email}, UserId: {UserId}", 
+                command.Email, user.Id);
+            return Result<AccessTokensDto>.Failure(LoginErrors.UserLockedOut());
+        }
+
         var result = await userManager.CheckPasswordAsync(user, command.Password);
 
         if (!result)
