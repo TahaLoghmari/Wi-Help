@@ -1,22 +1,20 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api-client";
 import { API_ENDPOINTS } from "@/config";
-import type { EditPasswordRequest } from "@/features/admin";
 import { toast } from "sonner";
 
 interface EditProfessionalPasswordParams {
-  professionalId: string;
+  userId: string;
   newPassword: string;
 }
 
 const editProfessionalPassword = ({
-  professionalId,
+  userId,
   newPassword,
 }: EditProfessionalPasswordParams) => {
-  const request: EditPasswordRequest = { newPassword };
+  const queryParams = new URLSearchParams({ NewPassword: newPassword });
   return api.patch(
-    API_ENDPOINTS.IDENTITY.ADMIN_CHANGE_PASSWORD(professionalId),
-    request,
+    `${API_ENDPOINTS.IDENTITY.ADMIN_CHANGE_PASSWORD(userId)}?${queryParams.toString()}`,
   );
 };
 

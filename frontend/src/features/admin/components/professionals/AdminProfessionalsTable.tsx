@@ -59,9 +59,9 @@ export function AdminProfessionalsTable() {
     updateStatusMutation.mutate({ professionalId, status: verificationStatus });
   };
 
-  const handleBanChange = (professionalId: string, value: string) => {
+  const handleBanChange = (userId: string, value: string) => {
     const isBanned = value === "banned";
-    banMutation.mutate({ professionalId, isBan: isBanned });
+    banMutation.mutate({ userId, isBan: isBanned });
   };
 
   const handlePasswordEdit = (professional: GetAllProfessionalsDto) => {
@@ -73,7 +73,7 @@ export function AdminProfessionalsTable() {
   const handlePasswordSubmit = () => {
     if (selectedProfessional && newPassword) {
       editPasswordMutation.mutate({
-        professionalId: selectedProfessional.id,
+        userId: selectedProfessional.userId,
         newPassword,
       });
       setPasswordDialogOpen(false);
@@ -249,7 +249,7 @@ export function AdminProfessionalsTable() {
                         <Select
                           value={professional.isBanned ? "banned" : "active"}
                           onValueChange={(value) =>
-                            handleBanChange(professional.id, value)
+                            handleBanChange(professional.userId, value)
                           }
                           disabled={banMutation.isPending}
                         >
@@ -322,17 +322,15 @@ export function AdminProfessionalsTable() {
               {selectedProfessional?.lastName}
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div>
-              <Label htmlFor="newPassword">New Password</Label>
-              <Input
-                id="newPassword"
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Enter new password"
-              />
-            </div>
+          <div className="space-y-2 py-4">
+            <Label htmlFor="newPassword">New Password</Label>
+            <Input
+              id="newPassword"
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Enter new password"
+            />
           </div>
           <DialogFooter>
             <Button

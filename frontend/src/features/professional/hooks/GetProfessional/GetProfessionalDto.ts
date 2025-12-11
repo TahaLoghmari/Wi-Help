@@ -1,4 +1,5 @@
 import type { Address } from "@/features/auth";
+import type { VerificationStatus } from "@/features/admin/types/adminTypes";
 
 export interface GetProfessionalDto {
   id: string;
@@ -18,4 +19,5 @@ export interface GetProfessionalDto {
   bio: string;
   isVerified: boolean;
   profilePictureUrl: string;
+  verificationStatus: VerificationStatus;
 }

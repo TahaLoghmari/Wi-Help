@@ -490,7 +490,7 @@ export function AdminAppointmentsTable() {
               </div>
 
               {/* Footer */}
-              <div className="sticky bottom-0 z-10 flex gap-3 border-t border-slate-100 bg-white p-6">
+              <div className="sticky bottom-0 z-10 flex gap-3 bg-white p-6">
                 <SheetClose className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 transition-all hover:border-slate-300 hover:bg-slate-50">
                   Close
                 </SheetClose>

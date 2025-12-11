@@ -1,10 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api-client";
 import { API_ENDPOINTS } from "@/config";
-import type {
-  UpdateProfessionalAccountStatusRequest,
-  VerificationStatus,
-} from "@/features/admin";
+import type { VerificationStatus } from "@/features/admin";
 import { toast } from "sonner";
 
 interface UpdateProfessionalAccountStatusParams {
@@ -16,12 +13,9 @@ const updateProfessionalAccountStatus = ({
   professionalId,
   status,
 }: UpdateProfessionalAccountStatusParams) => {
-  const request: UpdateProfessionalAccountStatusRequest = {
-    status,
-  };
+  const queryParams = new URLSearchParams({ Status: status });
   return api.put(
-    API_ENDPOINTS.PROFESSIONALS.UPDATE_ACCOUNT_STATUS(professionalId),
-    request,
+    `${API_ENDPOINTS.PROFESSIONALS.UPDATE_ACCOUNT_STATUS(professionalId)}?${queryParams.toString()}`,
   );
 };
 

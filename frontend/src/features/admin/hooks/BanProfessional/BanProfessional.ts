@@ -1,17 +1,18 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api-client";
 import { API_ENDPOINTS } from "@/config";
-import type { BanUserRequest } from "@/features/admin";
 import { toast } from "sonner";
 
 interface BanProfessionalParams {
-  professionalId: string;
+  userId: string;
   isBan: boolean;
 }
 
-const banProfessional = ({ professionalId, isBan }: BanProfessionalParams) => {
-  const request: BanUserRequest = { isBan };
-  return api.patch(API_ENDPOINTS.IDENTITY.BAN_USER(professionalId), request);
+const banProfessional = ({ userId, isBan }: BanProfessionalParams) => {
+  const queryParams = new URLSearchParams({ IsBanned: isBan.toString() });
+  return api.patch(
+    `${API_ENDPOINTS.IDENTITY.BAN_USER(userId)}?${queryParams.toString()}`,
+  );
 };
 
 export function BanProfessional() {

@@ -44,6 +44,7 @@ import {
   type GetAwardsDto,
   type VerificationDocumentDto,
 } from "@/features/professional";
+import { VerificationStatus } from "@/features/admin/types/adminTypes";
 import { ReviewsList, GetProfessionalReviewStats } from "@/features/reviews";
 
 type TabType = "overview" | "reviews" | "schedule";
@@ -524,17 +525,42 @@ export function ProfessionalProfileView() {
                     {professional?.experience} Years
                   </div>
                 </div>
-                <div className="border-brand-dark/10 bg-brand-bg flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center">
-                  <div className="text-brand-teal rounded-full border bg-white p-2">
-                    <ShieldCheck className="h-4 w-4" />
-                  </div>
-                  <div className="text-brand-secondary text-[10px] font-semibold tracking-wider uppercase">
-                    Status
-                  </div>
-                  <div className="text-brand-teal text-xs font-semibold">
-                    Verified
-                  </div>
-                </div>
+                {(() => {
+                  const status = professional?.verificationStatus;
+                  let statusColor = "text-gray-500";
+                  let StatusIcon = Shield;
+                  let statusLabel = "Unknown";
+
+                  if (status === VerificationStatus.Verified) {
+                    statusColor = "text-brand-teal";
+                    StatusIcon = ShieldCheck;
+                    statusLabel = "Verified";
+                  } else if (status === VerificationStatus.Pending) {
+                    statusColor = "text-brand-dark";
+                    StatusIcon = Clock;
+                    statusLabel = "Pending";
+                  } else if (status === VerificationStatus.Rejected) {
+                    statusColor = "text-red-500";
+                    StatusIcon = XCircle;
+                    statusLabel = "Rejected";
+                  }
+
+                  return (
+                    <div className="border-brand-dark/10 bg-brand-bg flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center">
+                      <div
+                        className={`${statusColor} rounded-full border p-2 ${status === VerificationStatus.Pending ? "border-brand-cream/50 bg-brand-cream/50" : "bg-white"}`}
+                      >
+                        <StatusIcon className="h-4 w-4" />
+                      </div>
+                      <div className="text-brand-secondary text-[10px] font-semibold tracking-wider uppercase">
+                        Status
+                      </div>
+                      <div className={`${statusColor} text-xs font-semibold`}>
+                        {statusLabel}
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             </section>
 
