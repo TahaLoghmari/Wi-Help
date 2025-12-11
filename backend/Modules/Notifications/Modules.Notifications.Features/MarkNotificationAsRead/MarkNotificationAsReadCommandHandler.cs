@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Notifications.Domain;
 using Modules.Notifications.Domain.Entities;
 using Modules.Notifications.Infrastructure.Database;
 
@@ -18,7 +19,7 @@ public sealed class MarkNotificationAsReadCommandHandler(NotificationsDbContext 
 
         if (notification is null)
         {
-            return Result.Failure(Error.Failure("Notification.NotFound", $"Notification with ID '{command.Id}' not found."));
+            return Result.Failure(NotificationErrors.NotFound(command.Id));
         }
 
         if (!notification.IsRead)

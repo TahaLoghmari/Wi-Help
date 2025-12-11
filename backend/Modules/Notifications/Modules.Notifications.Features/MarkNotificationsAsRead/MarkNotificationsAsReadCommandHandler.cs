@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Notifications.Domain;
 using Modules.Notifications.Domain.Entities;
 using Modules.Notifications.Infrastructure.Database;
 
@@ -19,7 +20,7 @@ public sealed class MarkNotificationsAsReadCommandHandler(NotificationsDbContext
 
         if (notifications.Count == 0)
         {
-            return Result.Failure(Error.Failure("Notification.NoUnread", "No unread notifications found."));
+            return Result.Failure(NotificationErrors.NoUnread());
         }
 
         foreach (var notification in notifications)

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Messaging.Domain;
 using Modules.Messaging.Domain.Entities;
 using Modules.Messaging.Infrastructure;
 using Modules.Messaging.Infrastructure.Database;
@@ -28,14 +29,14 @@ public class SendMessageCommandHandler(
         if (conversation == null)
         {
             logger.LogWarning("Conversation {ConversationId} not found", command.ConversationId);
-            return Result<Guid>.Failure(Error.NotFound("Messaging.ConversationNotFound", $"Conversation with ID '{command.ConversationId}' not found."));
+            return Result<Guid>.Failure(MessagingErrors.ConversationNotFound(command.ConversationId));
         }
 
         if (!conversation.IsParticipant(command.SenderId))
         {
             logger.LogWarning("User {SenderId} is not a participant in conversation {ConversationId}",
                 command.SenderId, command.ConversationId);
-            return Result<Guid>.Failure(Error.Forbidden("Messaging.NotParticipant", "You are not a participant in this conversation."));
+            return Result<Guid>.Failure(MessagingErrors.NotParticipant());
         }
 
         var message = new Message(

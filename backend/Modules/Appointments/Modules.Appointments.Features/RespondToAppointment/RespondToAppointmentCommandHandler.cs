@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Modules.Appointments.Domain;
 using Modules.Appointments.Domain.Enums;
 using Modules.Appointments.Infrastructure.Database;
 using Modules.Appointments.PublicApi;
@@ -40,10 +41,7 @@ public class RespondToAppointmentCommandHandler(
         if (appointment is null)
         {
             logger.LogWarning("Appointment {AppointmentId} not found", command.AppointmentId);
-            return Result.Failure(
-                Error.NotFound(
-                    "Appointment.NotFound",
-                    $"Appointment with ID '{command.AppointmentId}' not found."));
+            return Result.Failure(AppointmentErrors.AppointmentNotFound(command.AppointmentId));
         }
 
         if (appointment.Status != AppointmentStatus.Offered)
@@ -51,10 +49,7 @@ public class RespondToAppointmentCommandHandler(
             logger.LogWarning(
                 "Cannot respond to appointment {AppointmentId} in status {Status}",
                 command.AppointmentId, appointment.Status);
-            return Result.Failure(
-                Error.Problem(
-                    "Appointment.InvalidStatus",
-                    $"Appointment is in {appointment.Status} status and cannot be responded to."));
+            return Result.Failure(AppointmentErrors.InvalidStatus(appointment.Status, "responded to"));
         }
 
         // Get patient information before updating appointment status

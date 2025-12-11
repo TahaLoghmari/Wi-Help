@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Messaging.Domain;
 using Modules.Messaging.Domain.Enums;
 using Modules.Messaging.Infrastructure;
 using Modules.Messaging.Infrastructure.Database;
@@ -23,14 +24,14 @@ public class MarkMessagesAsReadCommandHandler(
         if (conversation == null)
         {
             logger.LogWarning("Conversation {ConversationId} not found", command.ConversationId);
-            return Result.Failure(Error.NotFound("Messaging.ConversationNotFound", $"Conversation with ID '{command.ConversationId}' not found."));
+            return Result.Failure(MessagingErrors.ConversationNotFound(command.ConversationId));
         }
 
         if (!conversation.IsParticipant(command.UserId))
         {
             logger.LogWarning("User {UserId} is not a participant in conversation {ConversationId}",
                 command.UserId, command.ConversationId);
-            return Result.Failure(Error.Forbidden("Messaging.NotParticipant", "You are not a participant in this conversation."));
+            return Result.Failure(MessagingErrors.NotParticipant());
         }
 
         // Mark all unread messages from other participants as read

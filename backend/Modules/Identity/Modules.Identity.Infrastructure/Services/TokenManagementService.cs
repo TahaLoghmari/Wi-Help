@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Modules.Common.Features.Results;
 using Modules.Identity.Domain.Entities;
-using Modules.Identity.Domain.Errors;
+using Modules.Identity.Domain;
 using Modules.Identity.Features.DTOs;
 using Modules.Identity.Infrastructure.Database;
 using Modules.Identity.Infrastructure.DTOs;
@@ -66,7 +66,7 @@ public sealed class TokenManagementService(
         if (refreshToken is null)
         {
             logger.LogWarning("Token refresh failed - refresh token not found");
-            return Result<AccessTokensDto>.Failure(RefreshTokenErrors.NotFound(Guid.Empty));
+            return Result<AccessTokensDto>.Failure(IdentityErrors.RefreshTokenNotFound(Guid.Empty));
         }
 
         if (refreshToken.ExpiresAtUtc < DateTime.UtcNow)
@@ -74,14 +74,14 @@ public sealed class TokenManagementService(
             logger.LogWarning("Token refresh failed - expired refresh token");
             identityDbContext.RefreshTokens.Remove(refreshToken);
             await identityDbContext.SaveChangesAsync(cancellationToken);
-            return Result<AccessTokensDto>.Failure(RefreshTokenErrors.Expired(refreshToken.Id));
+            return Result<AccessTokensDto>.Failure(IdentityErrors.RefreshTokenExpired(refreshToken.Id));
         }
 
         if (await userManager.IsLockedOutAsync(refreshToken.User))
         {
             logger.LogWarning("Token refresh failed - user is locked out for {Email}, UserId: {UserId}", 
                 refreshToken.User.Email, refreshToken.User.Id);
-            return Result<AccessTokensDto>.Failure(LoginErrors.UserLockedOut());
+            return Result<AccessTokensDto>.Failure(IdentityErrors.UserLockedOut());
         }
         
         IList<string> userRoles = await userManager.GetRolesAsync(refreshToken.User);
@@ -89,7 +89,7 @@ public sealed class TokenManagementService(
         if (userRoles.Count == 0)
         {
             logger.LogError("User {UserId} has no assigned roles during token refresh", refreshToken.User.Id);
-            return Result<AccessTokensDto>.Failure(RefreshTokenErrors.NotFound(refreshToken.Id));
+            return Result<AccessTokensDto>.Failure(IdentityErrors.RefreshTokenNotFound(refreshToken.Id));
         }
         
         string role = userRoles[0];

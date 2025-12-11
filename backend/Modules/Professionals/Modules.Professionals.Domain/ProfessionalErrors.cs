@@ -26,4 +26,8 @@ public class ProfessionalErrors
     public static Error ExperienceNotFound(Guid id) => Error.NotFound(
         "Experience.NotFound",
         $"Experience not found with id {id}.");
+
+    public static Error Unauthorized() => Error.Unauthorized(
+        "Professional.Unauthorized",
+        "Professional ID claim is missing or invalid.");
 }

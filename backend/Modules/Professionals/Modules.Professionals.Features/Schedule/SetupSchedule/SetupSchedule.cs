@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Professionals.Domain;
 using Modules.Professionals.Infrastructure.DTOs;
 
 namespace Modules.Professionals.Features.Schedule.SetupSchedule;
@@ -23,10 +24,7 @@ public class SetupSchedule : IEndpoint
                 
                 if (!Guid.TryParse(professionalIdString, out var professionalIdGuid))
                 {
-                    return CustomResults.Problem(
-                        Error.Unauthorized(
-                            "SetupSchedule.Unauthorized",
-                            "Professional ID claim is missing or invalid."));
+                    return CustomResults.Problem(ProfessionalErrors.Unauthorized());
                 }
 
                 var command = new SetupScheduleCommand(

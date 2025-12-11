@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Messaging.Domain;
 using Modules.Messaging.Infrastructure.Database;
 using Modules.Messaging.PublicApi.Contracts;
 
@@ -20,14 +21,14 @@ public class GetMessagesQueryHandler(
         if (conversation == null)
         {
             logger.LogWarning("Conversation {ConversationId} not found", query.ConversationId);
-            return Result<MessagesResponseDto>.Failure(Error.NotFound("Messaging.ConversationNotFound", $"Conversation with ID '{query.ConversationId}' not found."));
+            return Result<MessagesResponseDto>.Failure(MessagingErrors.ConversationNotFound(query.ConversationId));
         }
 
         if (!conversation.IsParticipant(query.UserId))
         {
             logger.LogWarning("User {UserId} is not a participant in conversation {ConversationId}",
                 query.UserId, query.ConversationId);
-            return Result<MessagesResponseDto>.Failure(Error.Forbidden("Messaging.NotParticipant", "You are not a participant in this conversation."));
+            return Result<MessagesResponseDto>.Failure(MessagingErrors.NotParticipant());
         }
 
         // DeletedAt filter is handled by global query filter in MessagingDbContext

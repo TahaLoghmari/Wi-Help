@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.Domain.Entities;
-using Modules.Identity.Domain.Errors;
+using Modules.Identity.Domain;
 using Modules.Identity.Features.DTOs;
 using Modules.Identity.Infrastructure.Services;
 
@@ -25,21 +25,21 @@ public sealed class LoginCommandHandler(
         if (user is null)
         {
             logger.LogWarning("Login failed - user not found for {Email}", command.Email);
-            return Result<AccessTokensDto>.Failure(LoginErrors.UserNotFound());
+            return Result<AccessTokensDto>.Failure(IdentityErrors.InvalidCredentials());
         }
 
         if (!await userManager.IsEmailConfirmedAsync(user))
         {
             logger.LogWarning("Login failed - email not confirmed for {Email}, UserId: {UserId}", 
                 command.Email, user.Id);
-            return Result<AccessTokensDto>.Failure(LoginErrors.EmailNotConfirmed());
+            return Result<AccessTokensDto>.Failure(IdentityErrors.EmailNotConfirmed());
         }
 
         if (await userManager.IsLockedOutAsync(user))
         {
             logger.LogWarning("Login failed - user is locked out for {Email}, UserId: {UserId}", 
                 command.Email, user.Id);
-            return Result<AccessTokensDto>.Failure(LoginErrors.UserLockedOut());
+            return Result<AccessTokensDto>.Failure(IdentityErrors.UserLockedOut());
         }
 
         var result = await userManager.CheckPasswordAsync(user, command.Password);
@@ -48,7 +48,7 @@ public sealed class LoginCommandHandler(
         {
             logger.LogWarning("Login failed - invalid password for {Email}, UserId: {UserId}", 
                 command.Email, user.Id);
-            return Result<AccessTokensDto>.Failure(LoginErrors.InvalidPassword());
+            return Result<AccessTokensDto>.Failure(IdentityErrors.InvalidCredentials());
         }
         
         var userRoles = await userManager.GetRolesAsync(user);

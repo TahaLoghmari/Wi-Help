@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Modules.Appointments.Domain;
+using Modules.Appointments.Domain.Entities;
 using Modules.Appointments.Domain.Enums;
 using Modules.Appointments.Infrastructure.Database;
 using Modules.Common.Features.Abstractions;
@@ -38,10 +40,7 @@ public class CancelAppointmentCommandHandler(
         {
             logger.LogWarning("Appointment {AppointmentId} not found for patient {PatientId}", 
                 command.AppointmentId, command.PatientId);
-            return Result.Failure(
-                Error.NotFound(
-                    "Appointment.NotFound",
-                    $"Appointment with ID '{command.AppointmentId}' not found."));
+            return Result.Failure(AppointmentErrors.AppointmentNotFound(command.AppointmentId));
         }
 
         if (appointment.Status != AppointmentStatus.Offered && appointment.Status != AppointmentStatus.Confirmed)
@@ -49,10 +48,7 @@ public class CancelAppointmentCommandHandler(
             logger.LogWarning(
                 "Cannot cancel appointment {AppointmentId} in status {Status}",
                 command.AppointmentId, appointment.Status);
-            return Result.Failure(
-                Error.Problem(
-                    "Appointment.InvalidStatus",
-                    $"Appointment is in {appointment.Status} status and cannot be cancelled."));
+            return Result.Failure(AppointmentErrors.InvalidStatus(appointment.Status, "cancelled"));
         }
 
         // Get patient information

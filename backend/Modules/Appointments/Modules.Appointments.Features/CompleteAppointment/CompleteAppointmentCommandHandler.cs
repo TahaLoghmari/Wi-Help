@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Modules.Appointments.Domain;
 using Modules.Appointments.Domain.Entities;
 using Modules.Appointments.Domain.Enums;
 using Modules.Appointments.Infrastructure.Database;
@@ -39,10 +40,7 @@ public class CompleteAppointmentCommandHandler(
         {
             logger.LogWarning("Appointment {AppointmentId} not found for professional {ProfessionalId}", 
                 command.AppointmentId, command.ProfessionalId);
-            return Result.Failure(
-                Error.NotFound(
-                    "Appointment.NotFound",
-                    $"Appointment with ID '{command.AppointmentId}' not found."));
+            return Result.Failure(AppointmentErrors.AppointmentNotFound(command.AppointmentId));
         }
 
         if (appointment.Status != AppointmentStatus.Confirmed)
@@ -50,28 +48,19 @@ public class CompleteAppointmentCommandHandler(
             logger.LogWarning(
                 "Cannot complete appointment {AppointmentId} in status {Status}",
                 command.AppointmentId, appointment.Status);
-            return Result.Failure(
-                Error.Problem(
-                    "Appointment.InvalidStatus",
-                    $"Appointment is in {appointment.Status} status and cannot be marked as completed. Only confirmed appointments can be completed."));
+            return Result.Failure(AppointmentErrors.InvalidStatus(appointment.Status, "marked as completed. Only confirmed appointments can be completed"));
         }
 
         // Validate PDF file
         if (command.PrescriptionPdf == null || command.PrescriptionPdf.Length == 0)
         {
-            return Result.Failure(
-                Error.Validation(
-                    "Prescription.PdfRequired",
-                    "A prescription PDF file is required to complete the appointment."));
+            return Result.Failure(AppointmentErrors.PrescriptionPdfRequired());
         }
 
         var allowedContentTypes = new[] { "application/pdf" };
         if (!allowedContentTypes.Contains(command.PrescriptionPdf.ContentType.ToLower()))
         {
-            return Result.Failure(
-                Error.Validation(
-                    "Prescription.InvalidFileType",
-                    "Only PDF files are allowed for prescriptions."));
+            return Result.Failure(AppointmentErrors.InvalidPrescriptionFileType());
         }
 
         // Upload prescription PDF to storage
@@ -90,10 +79,7 @@ public class CompleteAppointmentCommandHandler(
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to upload prescription PDF for appointment {AppointmentId}", command.AppointmentId);
-            return Result.Failure(
-                Error.Problem(
-                    "Prescription.UploadFailed",
-                    "Failed to upload the prescription PDF. Please try again."));
+            return Result.Failure(AppointmentErrors.PrescriptionUploadFailed());
         }
 
         // Create prescription record

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.PublicApi;
+using Modules.Messaging.Domain;
 using Modules.Messaging.Domain.Entities;
 using Modules.Messaging.Domain.Enums;
 using Modules.Messaging.Infrastructure.Database;
@@ -20,14 +21,14 @@ public class CreateConversationCommandHandler(
         if (participant1Result.IsFailure)
         {
             logger.LogWarning("Participant 1 {Participant1Id} not found", command.Participant1Id);
-            return Result<Guid>.Failure(Error.NotFound("Messaging.ParticipantNotFound", $"Participant with ID '{command.Participant1Id}' not found."));
+            return Result<Guid>.Failure(MessagingErrors.ParticipantNotFound(command.Participant1Id));
         }
 
         var participant2Result = await identityApi.GetUserByIdAsync(command.Participant2Id, cancellationToken);
         if (participant2Result.IsFailure)
         {
             logger.LogWarning("Participant 2 {Participant2Id} not found", command.Participant2Id);
-            return Result<Guid>.Failure(Error.NotFound("Messaging.ParticipantNotFound", $"Participant with ID '{command.Participant2Id}' not found."));
+            return Result<Guid>.Failure(MessagingErrors.ParticipantNotFound(command.Participant2Id));
         }
 
         // Check if conversation already exists between these participants

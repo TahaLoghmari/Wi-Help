@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Messaging.Domain;
 using Modules.Messaging.Infrastructure;
 using Modules.Messaging.Infrastructure.Database;
 
@@ -22,7 +23,7 @@ public class DeleteMessageCommandHandler(
         if (message == null)
         {
             logger.LogWarning("Message {MessageId} not found", command.MessageId);
-            return Result.Failure(Error.NotFound("Messaging.MessageNotFound", $"Message with ID '{command.MessageId}' not found."));
+            return Result.Failure(MessagingErrors.MessageNotFound(command.MessageId));
         }
 
         // Only the sender can delete their message
@@ -30,7 +31,7 @@ public class DeleteMessageCommandHandler(
         {
             logger.LogWarning("User {UserId} attempted to delete message {MessageId} they didn't send",
                 command.UserId, command.MessageId);
-            return Result.Failure(Error.Forbidden("Messaging.CannotDeleteMessage", "You can only delete your own messages."));
+            return Result.Failure(MessagingErrors.CannotDeleteMessage());
         }
 
         message.Delete();

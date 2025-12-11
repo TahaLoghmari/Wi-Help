@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Results;
 using Modules.Common.Infrastructure.Services;
 using Modules.Identity.Domain.Entities;
-using Modules.Identity.Domain.Errors;
+using Modules.Identity.Domain;
 using Modules.Identity.Infrastructure.Services;
 using Modules.Identity.PublicApi;
 using Modules.Identity.PublicApi.Contracts;
@@ -27,7 +27,7 @@ public class IdentityModuleApi(
         if (existingUser != null)
         {
             logger.LogWarning("User creation failed - email already exists: {Email}", request.Email);
-            return Result<Guid>.Failure(RegisterErrors.UserExists());
+            return Result<Guid>.Failure(IdentityErrors.UserAlreadyExists());
         }
 
         User user = User.Create(
@@ -46,7 +46,7 @@ public class IdentityModuleApi(
             logger.LogError("User creation failed for {Email}. Errors: {Errors}",
                 request.Email,
                 string.Join(", ", result.Errors.Select(e => $"{e.Code}: {e.Description}")));
-            return Result<Guid>.Failure(RegisterErrors.InvalidInput());
+            return Result<Guid>.Failure(IdentityErrors.InvalidRegistrationInput());
         }
 
         logger.LogInformation("User created successfully for {Email}, UserId: {UserId}",

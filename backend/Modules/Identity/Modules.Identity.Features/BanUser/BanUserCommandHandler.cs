@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.Domain.Entities;
-using Modules.Identity.Domain.Errors;
 
 namespace Modules.Identity.Features.BanUser;
 
