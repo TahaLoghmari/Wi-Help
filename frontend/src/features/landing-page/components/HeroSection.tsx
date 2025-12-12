@@ -1,9 +1,11 @@
 import { useNavigate } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { ROUTE_PATHS } from "@/config/routes";
+import { useTranslation } from "react-i18next";
 
 export function HeroSection() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleFindProfessional = () => {
     navigate({ to: ROUTE_PATHS.AUTH.REGISTER });
@@ -20,21 +22,19 @@ export function HeroSection() {
         <div className="relative z-10 max-w-2xl">
           <div className="border-brand-dark/10 text-brand-secondary mb-8 inline-flex items-center gap-2 rounded-full border bg-white px-3 py-1 text-xs font-medium shadow-sm">
             <span className="bg-brand-teal flex h-2 w-2 animate-pulse rounded-full"></span>
-            Now live across Greater Tunis
+            {t("landing.hero.badge")}
           </div>
 
           <h1 className="text-brand-dark mb-6 text-5xl leading-[1.05] font-semibold tracking-tight lg:text-7xl">
-            Expert healthcare,
+            {t("landing.hero.title")}
             <br />
             <span className="font-light text-slate-400">
-              where you feel safest.
+              {t("landing.hero.subtitle")}
             </span>
           </h1>
 
           <p className="mb-10 max-w-lg text-lg leading-relaxed font-light text-slate-500">
-            Tunisia's first verified marketplace for home care. Connect with
-            licensed nurses and caregivers instantly. Book appointments, track
-            visits, and pay securely.
+            {t("landing.hero.description")}
           </p>
           <div className="mb-6 flex items-center gap-2">
             <div className="uui-button-wrapper">
@@ -65,14 +65,14 @@ export function HeroSection() {
               onClick={handleFindProfessional}
               className="bg-brand-teal text-brand-dark hover:bg-brand-teal/80 shadow-brand-teal/20 flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-sm font-semibold shadow-xl transition-all"
             >
-              Find a Professional
+              {t("landing.hero.findProfessional")}
               <Search className="h-4 w-4" />
             </button>
             <button
               onClick={handleImCaregiver}
               className="text-brand-dark flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-8 py-4 text-sm font-medium transition-all hover:bg-slate-50"
             >
-              I'm a Caregiver
+              {t("landing.hero.imCaregiver")}
             </button>
           </div>
 
@@ -100,7 +100,7 @@ export function HeroSection() {
                 />
               </div>
             </div>
-            <p>Trusted by 2,000+ Tunisian families</p>
+            <p>{t("landing.hero.trustedBy")}</p>
           </div>
         </div>
 
@@ -119,22 +119,22 @@ export function HeroSection() {
           <div className="shadow-card animate-float absolute top-12 -right-4 z-30 w-64 rounded-2xl border border-white/60 bg-white/70 p-5 backdrop-blur-xl lg:-right-6">
             <div className="mb-4 flex items-center justify-between">
               <h4 className="font-geist text-xs font-medium text-slate-500">
-                Total Revenue
+                {t("landing.hero.totalRevenue")}
               </h4>
               <span className="rounded-full bg-green-100/80 px-1.5 py-0.5 text-[10px] font-medium text-green-700">
-                +18.3%
+                {t("landing.hero.revenueGrowth")}
               </span>
             </div>
             <div className="mb-1 flex items-baseline gap-1">
               <span className="text-brand-dark font-geist text-2xl font-semibold tracking-tight">
-                6,900
+                {t("landing.hero.revenueAmount")}
               </span>
               <span className="font-geist text-sm font-normal text-slate-400">
-                DT
+                {t("landing.hero.currency")}
               </span>
             </div>
             <div className="font-geist mb-4 text-[10px] text-slate-400">
-              vs 4,300 DT last month
+              {t("landing.hero.revenueComparison")}
             </div>
             <div className="mt-2 flex h-12 items-end gap-1.5">
               <div className="bg-brand-teal/20 h-[40%] w-full rounded-sm"></div>
@@ -151,10 +151,10 @@ export function HeroSection() {
             <div className="mb-4 flex items-start justify-between">
               <div>
                 <h4 className="font-geist mb-1 text-xs font-medium text-slate-500">
-                  Active Patients
+                  {t("landing.hero.activePatients")}
                 </h4>
                 <div className="text-brand-dark font-geist text-3xl font-semibold tracking-tight">
-                  149
+                  {t("landing.hero.patientsCount")}
                 </div>
               </div>
               <div className="bg-brand-teal/10 flex h-6 w-6 items-center justify-center rounded-md">
@@ -182,12 +182,15 @@ export function HeroSection() {
               <div className="from-brand-teal to-brand-blue h-full w-[70%] rounded-full bg-linear-to-r"></div>
             </div>
             <div className="flex items-center gap-2 text-[10px] font-medium text-slate-500">
-              <span className="text-brand-teal">+12</span> new this week
+              <span className="text-brand-teal">
+                {t("landing.hero.newPatients")}
+              </span>{" "}
+              {t("landing.hero.newPatientsText")}
             </div>
           </div>
           <div className="shadow-card animate-float-reverse absolute bottom-16 -left-2 z-30 w-60 rounded-2xl border border-white/60 bg-white/70 p-5 backdrop-blur-xl lg:-left-6">
             <h4 className="font-geist mb-3 text-xs font-medium text-slate-500">
-              Schedule Heatmap
+              {t("landing.hero.scheduleHeatmap")}
             </h4>
             <div className="mb-4 grid grid-cols-8 gap-1">
               <div className="bg-brand-teal/10 h-1.5 rounded-[1px]"></div>
@@ -216,14 +219,18 @@ export function HeroSection() {
               <div className="bg-brand-teal/5 h-1.5 rounded-[1px]"></div>
             </div>
             <div className="font-geist flex items-center justify-between text-[11px]">
-              <span className="text-brand-dark font-medium">Wednesday</span>
-              <span className="text-slate-400">10AM - 02PM</span>
+              <span className="text-brand-dark font-medium">
+                {t("landing.hero.scheduleDay")}
+              </span>
+              <span className="text-slate-400">
+                {t("landing.hero.scheduleTime")}
+              </span>
             </div>
           </div>
 
           <div className="shadow-card animate-float-slow absolute -right-4 bottom-20 z-20 w-64 rounded-2xl border border-white/60 bg-white/70 p-5 backdrop-blur-xl lg:-right-8">
             <h4 className="font-geist mb-4 text-xs font-medium text-slate-500">
-              Service Trends
+              {t("landing.hero.serviceTrends")}
             </h4>
             <div className="relative mb-3 h-12 w-full">
               <svg
@@ -253,13 +260,13 @@ export function HeroSection() {
               <div className="flex items-center gap-1.5">
                 <div className="bg-brand-teal h-1.5 w-1.5 rounded-full"></div>
                 <span className="text-[10px] font-medium text-slate-500">
-                  Nursing
+                  {t("landing.hero.nursing")}
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="bg-brand-blue/50 h-1.5 w-1.5 rounded-full"></div>
                 <span className="text-[10px] font-medium text-slate-500">
-                  Physio
+                  {t("landing.hero.physio")}
                 </span>
               </div>
             </div>

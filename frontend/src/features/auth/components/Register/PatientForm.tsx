@@ -28,12 +28,14 @@ import {
 } from "@/components";
 import { CalendarIcon, ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface PatientFormProps {
   form: UseFormReturn<z.infer<typeof registerFormSchema>>;
 }
 
 export function PatientForm({ form }: PatientFormProps) {
+  const { t } = useTranslation();
   const { step, setStep } = useStepsStore();
   const registerPatientMutation = useRegisterPatient();
   const [open, setOpen] = useState(false);
@@ -49,12 +51,12 @@ export function PatientForm({ form }: PatientFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      First Name
+                      {t("forms.labels.firstName")}
                     </FormLabel>
                     <FormControl>
                       <Input
                         className="text-xs placeholder:text-sm"
-                        placeholder="Enter first name"
+                        placeholder={t("placeholders.firstName")}
                         {...field}
                       />
                     </FormControl>
@@ -70,12 +72,12 @@ export function PatientForm({ form }: PatientFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      Last Name
+                      {t("forms.labels.lastName")}
                     </FormLabel>
                     <FormControl>
                       <Input
                         className="text-xs placeholder:text-sm"
-                        placeholder="Enter last name"
+                        placeholder={t("placeholders.lastName")}
                         {...field}
                       />
                     </FormControl>
@@ -91,12 +93,14 @@ export function PatientForm({ form }: PatientFormProps) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-xs text-gray-700">Email</FormLabel>
+                  <FormLabel className="text-xs text-gray-700">
+                    {t("common.email")}
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="email"
                       className="text-xs placeholder:text-sm"
-                      placeholder="Enter email address"
+                      placeholder={t("placeholders.email")}
                       {...field}
                     />
                   </FormControl>
@@ -113,13 +117,13 @@ export function PatientForm({ form }: PatientFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      Password
+                      {t("forms.labels.password")}
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="password"
                         className="text-xs placeholder:text-sm"
-                        placeholder="Create password"
+                        placeholder={t("placeholders.createPassword")}
                         {...field}
                       />
                     </FormControl>
@@ -135,13 +139,13 @@ export function PatientForm({ form }: PatientFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      Confirm Password
+                      {t("forms.labels.confirmPassword")}
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="password"
                         className="text-xs placeholder:text-sm"
-                        placeholder="Confirm password"
+                        placeholder={t("placeholders.confirmPassword")}
                         {...field}
                       />
                     </FormControl>
@@ -159,7 +163,7 @@ export function PatientForm({ form }: PatientFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      Gender
+                      {t("forms.labels.gender")}
                     </FormLabel>
                     <FormControl>
                       <Select
@@ -170,18 +174,22 @@ export function PatientForm({ form }: PatientFormProps) {
                         <SelectTrigger className="w-full">
                           <SelectValue
                             className="text-xs placeholder:text-xs"
-                            placeholder="Select Gender"
+                            placeholder={t("placeholders.selectGender")}
                           >
                             {field.value === "male"
-                              ? "Male"
+                              ? t("common.male")
                               : field.value === "female"
-                                ? "Female"
-                                : "Male"}
+                                ? t("common.female")
+                                : t("common.male")}
                           </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="male">Male</SelectItem>
-                          <SelectItem value="female">Female</SelectItem>
+                          <SelectItem value="male">
+                            {t("common.male")}
+                          </SelectItem>
+                          <SelectItem value="female">
+                            {t("common.female")}
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>
@@ -196,7 +204,7 @@ export function PatientForm({ form }: PatientFormProps) {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel className="text-xs text-gray-700">
-                    Date Of Birth
+                    {t("forms.labels.dateOfBirth")}
                   </FormLabel>
                   <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
@@ -214,7 +222,7 @@ export function PatientForm({ form }: PatientFormProps) {
                         ) : (
                           <div className="flex items-center gap-4">
                             <CalendarIcon />
-                            Select date
+                            {t("common.selectDate")}
                           </div>
                         )}
                         <ChevronDownIcon />
@@ -253,12 +261,12 @@ export function PatientForm({ form }: PatientFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-xs text-gray-700">
-                    Phone Number
+                    {t("forms.labels.phoneNumber")}
                   </FormLabel>
                   <FormControl>
                     <Input
                       className="text-xs placeholder:text-sm"
-                      placeholder="Enter phone number"
+                      placeholder={t("placeholders.phoneNumber")}
                       {...field}
                     />
                   </FormControl>
@@ -275,7 +283,7 @@ export function PatientForm({ form }: PatientFormProps) {
                 setStep(step - 1);
               }}
             >
-              Back
+              {t("common.back")}
             </Button>
             <Button
               className="bg-brand-dark hover:bg-brand-dark cursor-pointer transition-transform duration-200 hover:scale-101 hover:shadow-lg"
@@ -295,7 +303,7 @@ export function PatientForm({ form }: PatientFormProps) {
                 }
               }}
             >
-              Continue to Next Step
+              {t("common.continue")}
             </Button>
           </div>
         </div>
@@ -309,12 +317,12 @@ export function PatientForm({ form }: PatientFormProps) {
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-2">
                   <FormLabel className="text-xs text-gray-700">
-                    Street Address
+                    {t("forms.labels.streetAddress")}
                   </FormLabel>
                   <FormControl>
                     <Input
                       className="text-xs placeholder:text-sm"
-                      placeholder="Enter street address"
+                      placeholder={t("placeholders.streetAddress")}
                       {...field}
                     />
                   </FormControl>
@@ -331,7 +339,7 @@ export function PatientForm({ form }: PatientFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      Country
+                      {t("forms.labels.country")}
                     </FormLabel>
                     <FormControl>
                       <Select
@@ -342,13 +350,13 @@ export function PatientForm({ form }: PatientFormProps) {
                         <SelectTrigger className="w-full">
                           <SelectValue
                             className="text-xs placeholder:text-xs"
-                            placeholder="Select Country"
+                            placeholder={t("placeholders.selectCountry")}
                           ></SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                           {COUNTRIES.map((country, idx) => (
                             <SelectItem key={idx} value={country.value}>
-                              {country.label}
+                              {t(country.label)}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -366,12 +374,12 @@ export function PatientForm({ form }: PatientFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      State
+                      {t("forms.labels.state")}
                     </FormLabel>
                     <FormControl>
                       <Input
                         className="text-xs placeholder:text-sm"
-                        placeholder="Enter state"
+                        placeholder={t("placeholders.state")}
                         {...field}
                       />
                     </FormControl>
@@ -389,12 +397,12 @@ export function PatientForm({ form }: PatientFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      City
+                      {t("forms.labels.city")}
                     </FormLabel>
                     <FormControl>
                       <Input
                         className="text-xs placeholder:text-sm"
-                        placeholder="Enter city"
+                        placeholder={t("placeholders.city")}
                         {...field}
                       />
                     </FormControl>
@@ -410,12 +418,12 @@ export function PatientForm({ form }: PatientFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      Postal Code
+                      {t("forms.labels.postalCode")}
                     </FormLabel>
                     <FormControl>
                       <Input
                         className="text-xs placeholder:text-sm"
-                        placeholder="Enter postal code"
+                        placeholder={t("placeholders.postalCode")}
                         {...field}
                       />
                     </FormControl>
@@ -433,7 +441,7 @@ export function PatientForm({ form }: PatientFormProps) {
                 setStep(step - 1);
               }}
             >
-              Back
+              {t("common.back")}
             </Button>
             <Button
               className="bg-brand-dark hover:bg-brand-dark cursor-pointer transition-transform duration-200 hover:scale-101 hover:shadow-lg"
@@ -450,7 +458,7 @@ export function PatientForm({ form }: PatientFormProps) {
                 }
               }}
             >
-              Continue to Next Step
+              {t("common.continue")}
             </Button>
           </div>
         </div>
@@ -466,7 +474,7 @@ export function PatientForm({ form }: PatientFormProps) {
             >
               <path d="M224.2 89C216.3 70.1 195.7 60.1 176.1 65.4L170.6 66.9C106 84.5 50.8 147.1 66.9 223.3C104 398.3 241.7 536 416.7 573.1C493 589.3 555.5 534 573.1 469.4L574.6 463.9C580 444.2 569.9 423.6 551.1 415.8L453.8 375.3C437.3 368.4 418.2 373.2 406.8 387.1L368.2 434.3C297.9 399.4 241.3 341 208.8 269.3L253 233.3C266.9 222 271.6 202.9 264.8 186.3L224.2 89z" />
             </svg>
-            <p className="font-semibold">Emergency Contact</p>
+            <p className="font-semibold">{t("auth.steps.emergencyContact")}</p>
           </div>
           <div className="grid gap-3">
             <FormField
@@ -474,11 +482,13 @@ export function PatientForm({ form }: PatientFormProps) {
               name="emergencyContact.fullName"
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-2">
-                  <FormLabel className="text-xs text-gray-700">Name</FormLabel>
+                  <FormLabel className="text-xs text-gray-700">
+                    {t("common.name")}
+                  </FormLabel>
                   <FormControl>
                     <Input
                       className="text-xs placeholder:text-sm"
-                      placeholder="Enter name"
+                      placeholder={t("placeholders.emergencyContactName")}
                       {...field}
                     />
                   </FormControl>
@@ -495,12 +505,12 @@ export function PatientForm({ form }: PatientFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      Phone Number
+                      {t("forms.labels.phoneNumber")}
                     </FormLabel>
                     <FormControl>
                       <Input
                         className="text-xs placeholder:text-sm"
-                        placeholder="Enter phone number"
+                        placeholder={t("placeholders.phoneNumber")}
                         {...field}
                       />
                     </FormControl>
@@ -516,7 +526,7 @@ export function PatientForm({ form }: PatientFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      Relationship
+                      {t("forms.labels.relationship")}
                     </FormLabel>
                     <FormControl>
                       <Select
@@ -527,13 +537,13 @@ export function PatientForm({ form }: PatientFormProps) {
                         <SelectTrigger className="w-full">
                           <SelectValue
                             className="text-xs placeholder:text-xs"
-                            placeholder="Select Relationship"
+                            placeholder={t("placeholders.selectRelationship")}
                           ></SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                           {RELATIONSHIPS.map((relationship, idx) => (
                             <SelectItem key={idx} value={relationship.value}>
-                              {relationship.label}
+                              {t(relationship.label)}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -553,7 +563,7 @@ export function PatientForm({ form }: PatientFormProps) {
                 setStep(step - 1);
               }}
             >
-              Back
+              {t("common.back")}
             </Button>
             <Button
               type="submit"
@@ -563,7 +573,7 @@ export function PatientForm({ form }: PatientFormProps) {
               {registerPatientMutation.isPending ? (
                 <Spinner className="h-5 w-5 border-2 invert" />
               ) : (
-                "Register"
+                t("common.register")
               )}
             </Button>
           </div>

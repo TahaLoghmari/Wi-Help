@@ -28,12 +28,14 @@ import {
 } from "@/components";
 import { CalendarIcon, ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface ProfessionalFormProps {
   form: UseFormReturn<z.infer<typeof registerFormSchema>>;
 }
 
 export function ProfessionalForm({ form }: ProfessionalFormProps) {
+  const { t } = useTranslation();
   const { step, setStep } = useStepsStore();
   const registerProfessionalMutation = useRegisterProfessional();
   const [open, setOpen] = useState(false);
@@ -49,12 +51,12 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      First Name
+                      {t("forms.labels.firstName")}
                     </FormLabel>
                     <FormControl>
                       <Input
                         className="text-xs placeholder:text-sm"
-                        placeholder="Enter first name"
+                        placeholder={t("placeholders.firstName")}
                         {...field}
                       />
                     </FormControl>
@@ -70,12 +72,12 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      Last Name
+                      {t("forms.labels.lastName")}
                     </FormLabel>
                     <FormControl>
                       <Input
                         className="text-xs placeholder:text-sm"
-                        placeholder="Enter last name"
+                        placeholder={t("placeholders.lastName")}
                         {...field}
                       />
                     </FormControl>
@@ -91,12 +93,14 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-xs text-gray-700">Email</FormLabel>
+                  <FormLabel className="text-xs text-gray-700">
+                    {t("common.email")}
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="email"
                       className="text-xs placeholder:text-sm"
-                      placeholder="Enter email address"
+                      placeholder={t("placeholders.email")}
                       {...field}
                     />
                   </FormControl>
@@ -113,13 +117,13 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      Password
+                      {t("forms.labels.password")}
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="password"
                         className="text-xs placeholder:text-sm"
-                        placeholder="Create password"
+                        placeholder={t("placeholders.createPassword")}
                         {...field}
                       />
                     </FormControl>
@@ -135,13 +139,13 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      Confirm Password
+                      {t("forms.labels.confirmPassword")}
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="password"
                         className="text-xs placeholder:text-sm"
-                        placeholder="Confirm password"
+                        placeholder={t("placeholders.confirmPassword")}
                         {...field}
                       />
                     </FormControl>
@@ -159,7 +163,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      Gender
+                      {t("forms.labels.gender")}
                     </FormLabel>
                     <FormControl>
                       <Select
@@ -170,18 +174,22 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                         <SelectTrigger className="w-full">
                           <SelectValue
                             className="text-xs placeholder:text-xs"
-                            placeholder="Select Gender"
+                            placeholder={t("placeholders.selectGender")}
                           >
                             {field.value === "male"
-                              ? "Male"
+                              ? t("common.male")
                               : field.value === "female"
-                                ? "Female"
-                                : "Male"}
+                                ? t("common.female")
+                                : t("common.male")}
                           </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="male">Male</SelectItem>
-                          <SelectItem value="female">Female</SelectItem>
+                          <SelectItem value="male">
+                            {t("common.male")}
+                          </SelectItem>
+                          <SelectItem value="female">
+                            {t("common.female")}
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>
@@ -196,7 +204,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel className="text-xs text-gray-700">
-                    Date Of Birth
+                    {t("forms.labels.dateOfBirth")}
                   </FormLabel>
                   <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
@@ -214,7 +222,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                         ) : (
                           <div className="flex items-center gap-4">
                             <CalendarIcon />
-                            Select date
+                            {t("common.selectDate")}
                           </div>
                         )}
                         <ChevronDownIcon />
@@ -253,12 +261,12 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-xs text-gray-700">
-                    Phone Number
+                    {t("forms.labels.phoneNumber")}
                   </FormLabel>
                   <FormControl>
                     <Input
                       className="text-xs placeholder:text-sm"
-                      placeholder="Enter phone number"
+                      placeholder={t("placeholders.phoneNumber")}
                       {...field}
                     />
                   </FormControl>
@@ -275,7 +283,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                 setStep(step - 1);
               }}
             >
-              Back
+              {t("common.back")}
             </Button>
             <Button
               className="bg-brand-dark hover:bg-brand-dark cursor-pointer transition-transform duration-200 hover:scale-101 hover:shadow-lg"
@@ -295,7 +303,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                 }
               }}
             >
-              Continue to Next Step
+              {t("common.continue")}
             </Button>
           </div>
         </div>
@@ -309,12 +317,12 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-2">
                   <FormLabel className="text-xs text-gray-700">
-                    Street Address
+                    {t("forms.labels.streetAddress")}
                   </FormLabel>
                   <FormControl>
                     <Input
                       className="text-xs placeholder:text-sm"
-                      placeholder="Enter street address"
+                      placeholder={t("placeholders.streetAddress")}
                       {...field}
                     />
                   </FormControl>
@@ -331,7 +339,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      Country
+                      {t("forms.labels.country")}
                     </FormLabel>
                     <FormControl>
                       <Select
@@ -342,13 +350,13 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                         <SelectTrigger className="w-full">
                           <SelectValue
                             className="text-xs placeholder:text-xs"
-                            placeholder="Select Country"
+                            placeholder={t("placeholders.selectCountry")}
                           ></SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                           {COUNTRIES.map((country, idx) => (
                             <SelectItem key={idx} value={country.value}>
-                              {country.label}
+                              {t(country.label)}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -366,12 +374,12 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      State
+                      {t("forms.labels.state")}
                     </FormLabel>
                     <FormControl>
                       <Input
                         className="text-xs placeholder:text-sm"
-                        placeholder="Enter state"
+                        placeholder={t("placeholders.state")}
                         {...field}
                       />
                     </FormControl>
@@ -389,12 +397,12 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      City
+                      {t("forms.labels.city")}
                     </FormLabel>
                     <FormControl>
                       <Input
                         className="text-xs placeholder:text-sm"
-                        placeholder="Enter city"
+                        placeholder={t("placeholders.city")}
                         {...field}
                       />
                     </FormControl>
@@ -410,12 +418,12 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
-                      Postal Code
+                      {t("forms.labels.postalCode")}
                     </FormLabel>
                     <FormControl>
                       <Input
                         className="text-xs placeholder:text-sm"
-                        placeholder="Enter postal code"
+                        placeholder={t("placeholders.postalCode")}
                         {...field}
                       />
                     </FormControl>
@@ -433,7 +441,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                 setStep(step - 1);
               }}
             >
-              Back
+              {t("common.back")}
             </Button>
             <Button
               className="bg-brand-dark hover:bg-brand-dark cursor-pointer transition-transform duration-200 hover:scale-101 hover:shadow-lg"
@@ -450,7 +458,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                 }
               }}
             >
-              Continue to Next Step
+              {t("common.continue")}
             </Button>
           </div>
         </div>
@@ -466,7 +474,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
             >
               <path d="M64 112C64 85.5 85.5 64 112 64L160 64C177.7 64 192 78.3 192 96C192 113.7 177.7 128 160 128L128 128L128 256C128 309 171 352 224 352C277 352 320 309 320 256L320 128L288 128C270.3 128 256 113.7 256 96C256 78.3 270.3 64 288 64L336 64C362.5 64 384 85.5 384 112L384 256C384 333.4 329 398 256 412.8L256 432C256 493.9 306.1 544 368 544C429.9 544 480 493.9 480 432L480 346.5C442.7 333.3 416 297.8 416 256C416 203 459 160 512 160C565 160 608 203 608 256C608 297.8 581.3 333.4 544 346.5L544 432C544 529.2 465.2 608 368 608C270.8 608 192 529.2 192 432L192 412.8C119 398 64 333.4 64 256L64 112zM512 288C529.7 288 544 273.7 544 256C544 238.3 529.7 224 512 224C494.3 224 480 238.3 480 256C480 273.7 494.3 288 512 288z" />
             </svg>
-            <p className="font-semibold">Professional Information</p>
+            <p className="font-semibold">{t("auth.steps.professionalInfo")}</p>
           </div>
           <div className="grid gap-3">
             <FormField
@@ -475,7 +483,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-2">
                   <FormLabel className="text-xs text-gray-700">
-                    Specialization
+                    {t("forms.labels.specialization")}
                   </FormLabel>
                   <FormControl>
                     <Select
@@ -486,13 +494,13 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                       <SelectTrigger className="w-full">
                         <SelectValue
                           className="text-xs placeholder:text-xs"
-                          placeholder="Select specialization"
+                          placeholder={t("placeholders.selectSpecialization")}
                         ></SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         {SPECIALIZATIONS.map((specialization, idx) => (
                           <SelectItem key={idx} value={specialization.value}>
-                            {specialization.label}
+                            {t(specialization.label)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -510,7 +518,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-2">
                   <FormLabel className="text-xs text-gray-700">
-                    Experience
+                    {t("forms.labels.experience")}
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -518,7 +526,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                       min="0"
                       max="100"
                       className="text-xs placeholder:text-sm"
-                      placeholder="Enter experience"
+                      placeholder={t("placeholders.experience")}
                       value={field.value ?? ""}
                       onChange={(e) => {
                         const value = e.target.value;
@@ -541,7 +549,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                 setStep(step - 1);
               }}
             >
-              Back
+              {t("common.back")}
             </Button>
             <Button
               type="submit"
@@ -551,7 +559,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
               {registerProfessionalMutation.isPending ? (
                 <Spinner className="h-5 w-5 border-2 invert" />
               ) : (
-                "Register"
+                t("common.register")
               )}
             </Button>
           </div>

@@ -1,47 +1,46 @@
 import { Star } from "lucide-react";
-
-const testimonials = [
-  {
-    id: 1,
-    name: "Leila K.",
-    role: "Patient Daughter",
-    avatar: "https://i.pravatar.cc/150?img=35",
-    quote:
-      "Finding a reliable nurse for my father's daily insulin was a nightmare until Wi-Help. The profile transparency gave us total peace of mind.",
-  },
-  {
-    id: 2,
-    name: "Youssef B.",
-    role: "Physiotherapist",
-    avatar: "https://i.pravatar.cc/150?img=11",
-    quote:
-      "Wi-Help allows me to fill my schedule gaps efficiently. The payment is secure, and I don't have to worry about chasing invoices anymore.",
-  },
-  {
-    id: 3,
-    name: "Nadia T.",
-    role: "Post-Op Patient",
-    avatar: "https://i.pravatar.cc/150?img=5",
-    quote:
-      "The booking process is incredibly smooth. I could see the nurse's certifications right on the app, which meant everything to me.",
-  },
-];
+import { useTranslation } from "react-i18next";
 
 export function TestimonialsSection() {
+  const { t } = useTranslation();
+
+  const testimonials = [
+    {
+      id: 1,
+      name: t("landing.testimonials.items.0.name"),
+      role: t("landing.testimonials.items.0.role"),
+      avatar: "https://i.pravatar.cc/150?img=35",
+      quote: t("landing.testimonials.items.0.quote"),
+    },
+    {
+      id: 2,
+      name: t("landing.testimonials.items.1.name"),
+      role: t("landing.testimonials.items.1.role"),
+      avatar: "https://i.pravatar.cc/150?img=11",
+      quote: t("landing.testimonials.items.1.quote"),
+    },
+    {
+      id: 3,
+      name: t("landing.testimonials.items.2.name"),
+      role: t("landing.testimonials.items.2.role"),
+      avatar: "https://i.pravatar.cc/150?img=5",
+      quote: t("landing.testimonials.items.2.quote"),
+    },
+  ];
+
   return (
     <section className="bg-brand-dark relative overflow-hidden py-24">
       <div className="mx-auto max-w-7xl px-6">
         {/* Header */}
         <div className="mx-auto mb-16 max-w-4xl text-center">
           <span className="text-brand-teal font-geist inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium backdrop-blur">
-            Success Stories
+            {t("landing.testimonials.badge")}
           </span>
           <h2 className="font-geist mt-4 text-3xl font-semibold tracking-tighter text-white md:text-5xl">
-            Tunisians trust Wi-Help.
+            {t("landing.testimonials.title")}
           </h2>
           <p className="font-geist mt-4 text-base font-light text-white/70">
-            Real experiences from patients and professionals transforming home
-            care.
+            {t("landing.testimonials.description")}
           </p>
         </div>
 

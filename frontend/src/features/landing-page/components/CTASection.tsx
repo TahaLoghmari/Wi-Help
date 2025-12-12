@@ -1,9 +1,11 @@
 import { useNavigate } from "@tanstack/react-router";
 import { HeartHandshake } from "lucide-react";
 import { ROUTE_PATHS } from "@/config/routes";
+import { useTranslation } from "react-i18next";
 
 export function CTASection() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleFindCare = () => {
     navigate({ to: ROUTE_PATHS.AUTH.REGISTER });
@@ -32,11 +34,10 @@ export function CTASection() {
             <HeartHandshake className="text-brand-dark h-7 w-7" />
           </div>
           <h2 className="text-brand-dark mb-6 text-4xl font-semibold tracking-tight md:text-5xl">
-            Ready to simplify care?
+            {t("landing.cta.title")}
           </h2>
           <p className="mx-auto mb-10 max-w-xl text-lg font-light text-slate-500">
-            Join the Wi-Help community today. Whether you need care or provide
-            it, we have a solution for you.
+            {t("landing.cta.description")}
           </p>
 
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -44,13 +45,13 @@ export function CTASection() {
               onClick={handleFindCare}
               className="bg-brand-dark hover:bg-brand-secondary shadow-brand-dark/10 w-full rounded-xl px-8 py-4 text-sm font-semibold text-white shadow-xl transition-all sm:w-auto"
             >
-              Find Care Now
+              {t("landing.cta.findCareNow")}
             </button>
             <button
               onClick={handleApplyProfessional}
               className="text-brand-dark border-brand-dark/10 w-full rounded-xl border bg-white px-8 py-4 text-sm font-semibold transition-all hover:bg-slate-50 sm:w-auto"
             >
-              Apply as Professional
+              {t("landing.cta.applyAsProfessional")}
             </button>
           </div>
         </div>

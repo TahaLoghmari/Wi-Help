@@ -7,8 +7,10 @@ import {
   CheckCircle,
   Check,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function TrustVerificationSection() {
+  const { t } = useTranslation();
   return (
     <section
       id="trust"
@@ -19,17 +21,15 @@ export function TrustVerificationSection() {
           <div className="lg:w-1/2">
             <div className="text-brand-dark mb-4 inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase">
               <Shield className="h-4 w-4" />
-              Safety First
+              {t("landing.trust.badge")}
             </div>
             <h2 className="text-brand-dark mb-6 text-3xl font-semibold tracking-tight md:text-4xl">
-              Verified Professionals.
+              {t("landing.trust.title")}
               <br />
-              Peace of mind.
+              {t("landing.trust.subtitle")}
             </h2>
             <p className="mb-8 leading-relaxed text-slate-500">
-              Trust is our currency. Every professional on Wi-Help undergoes a
-              rigorous 4-step verification process before they can accept a
-              single booking.
+              {t("landing.trust.description")}
             </p>
 
             <div className="space-y-6">
@@ -39,11 +39,10 @@ export function TrustVerificationSection() {
                 </div>
                 <div>
                   <h4 className="text-brand-dark font-medium">
-                    Diploma Verification
+                    {t("landing.trust.steps.diploma.title")}
                   </h4>
                   <p className="mt-1 text-sm text-slate-500">
-                    We authenticate medical degrees directly with issuing
-                    institutions.
+                    {t("landing.trust.steps.diploma.description")}
                   </p>
                 </div>
               </div>
@@ -53,10 +52,10 @@ export function TrustVerificationSection() {
                 </div>
                 <div>
                   <h4 className="text-brand-dark font-medium">
-                    Professional License
+                    {t("landing.trust.steps.license.title")}
                   </h4>
                   <p className="mt-1 text-sm text-slate-500">
-                    Valid practice permits and National ID cross-referencing.
+                    {t("landing.trust.steps.license.description")}
                   </p>
                 </div>
               </div>
@@ -66,11 +65,10 @@ export function TrustVerificationSection() {
                 </div>
                 <div>
                   <h4 className="text-brand-dark font-medium">
-                    Liability Insurance
+                    {t("landing.trust.steps.insurance.title")}
                   </h4>
                   <p className="mt-1 text-sm text-slate-500">
-                    Comprehensive coverage for both parties during care
-                    delivery.
+                    {t("landing.trust.steps.insurance.description")}
                   </p>
                 </div>
               </div>
@@ -97,11 +95,11 @@ export function TrustVerificationSection() {
 
               <div className="mb-8 text-center">
                 <h3 className="text-brand-dark text-lg font-semibold">
-                  Hana M.
+                  {t("landing.trust.professional.name")}
                 </h3>
                 <div className="bg-brand-dark/5 text-brand-dark mt-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium">
                   <span className="bg-brand-teal h-1.5 w-1.5 rounded-full"></span>{" "}
-                  Verified Professional
+                  {t("landing.trust.professional.status")}
                 </div>
               </div>
 
@@ -109,7 +107,7 @@ export function TrustVerificationSection() {
                 <div className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 p-3">
                   <div className="flex items-center gap-3">
                     <FileCheck className="h-4 w-4 text-slate-400" />
-                    <span className="text-sm text-slate-600">National ID</span>
+                    <span className="text-sm text-slate-600">{t("landing.trust.verification.nationalId")}</span>
                   </div>
                   <CheckCircle className="text-brand-teal h-4 w-4" />
                 </div>
@@ -117,7 +115,7 @@ export function TrustVerificationSection() {
                   <div className="flex items-center gap-3">
                     <FileCheck className="h-4 w-4 text-slate-400" />
                     <span className="text-sm text-slate-600">
-                      Nursing Diploma
+                      {t("landing.trust.verification.diploma")}
                     </span>
                   </div>
                   <CheckCircle className="text-brand-teal h-4 w-4" />
@@ -126,7 +124,7 @@ export function TrustVerificationSection() {
                   <div className="flex items-center gap-3">
                     <FileCheck className="h-4 w-4 text-slate-400" />
                     <span className="text-sm text-slate-600">
-                      Professional License
+                      {t("landing.trust.verification.license")}
                     </span>
                   </div>
                   <CheckCircle className="text-brand-teal h-4 w-4" />

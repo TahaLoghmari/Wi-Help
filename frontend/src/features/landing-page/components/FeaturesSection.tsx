@@ -6,19 +6,21 @@ import {
   Calendar,
   Activity,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function FeaturesSection() {
+  const { t } = useTranslation();
   return (
     <section id="features" className="relative bg-white py-24">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto mb-16 max-w-3xl md:text-center">
           <span className="text-brand-blue text-sm font-medium tracking-tight">
-            The Ecosystem
+            {t("landing.features.ecosystem")}
           </span>
           <h2 className="text-brand-dark mt-3 text-3xl font-semibold tracking-tight md:text-5xl">
-            One platform.
+            {t("landing.features.title")}
             <br />
-            Two seamless journeys.
+            {t("landing.features.subtitle")}
           </h2>
         </div>
 
@@ -33,27 +35,28 @@ export function FeaturesSection() {
                 <HeartPulse className="text-brand-blue h-6 w-6" />
               </div>
               <h3 className="text-brand-dark mb-4 text-2xl font-semibold">
-                For Patients &amp; Families
+                {t("landing.features.patient.title")}
               </h3>
               <ul className="mb-8 space-y-4">
                 <li className="flex items-start gap-3 text-sm text-slate-600">
                   <CheckCircle2 className="text-brand-teal h-5 w-5 shrink-0" />
-                  Browse verified profiles with real reviews.
+                  {t("landing.features.patient.feature1")}
                 </li>
                 <li className="flex items-start gap-3 text-sm text-slate-600">
                   <CheckCircle2 className="text-brand-teal h-5 w-5 shrink-0" />
-                  Manage medical identity (Conditions, Allergies).
+                  {t("landing.features.patient.feature2")}
                 </li>
                 <li className="flex items-start gap-3 text-sm text-slate-600">
                   <CheckCircle2 className="text-brand-teal h-5 w-5 shrink-0" />
-                  Secure, transparent pricing before booking.
+                  {t("landing.features.patient.feature3")}
                 </li>
               </ul>
               <a
                 href="#"
                 className="text-brand-dark border-brand-dark/20 hover:border-brand-dark inline-flex items-center border-b pb-0.5 text-sm font-medium transition-colors"
               >
-                Find care near you <ArrowRight className="ml-1 h-3 w-3" />
+                {t("landing.features.patient.link")}{" "}
+                <ArrowRight className="ml-1 h-3 w-3" />
               </a>
             </div>
 
@@ -86,10 +89,10 @@ export function FeaturesSection() {
                   </div>
                   <div>
                     <h4 className="text-brand-dark text-sm font-semibold">
-                      Sarah's Profile
+                      {t("landing.features.patient.profileName")}
                     </h4>
                     <p className="bg-brand-bg mt-0.5 inline-block rounded border border-slate-100/50 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">
-                      ID: 8291-P
+                      {t("landing.features.patient.profileId")}
                     </p>
                   </div>
                 </div>
@@ -105,10 +108,10 @@ export function FeaturesSection() {
                   </div>
                   <div>
                     <span className="block text-[10px] font-medium tracking-wide text-slate-400 uppercase">
-                      Next Care
+                      {t("landing.features.patient.nextCare")}
                     </span>
                     <span className="text-brand-dark mt-0.5 block text-xs font-bold">
-                      Today, 2pm
+                      {t("landing.features.patient.nextCareTime")}
                     </span>
                   </div>
                 </div>
@@ -119,10 +122,10 @@ export function FeaturesSection() {
                   </div>
                   <div>
                     <span className="block text-[10px] font-medium tracking-wide text-slate-400 uppercase">
-                      Vitals
+                      {t("landing.features.patient.vitals")}
                     </span>
                     <span className="text-brand-dark mt-0.5 block text-xs font-bold">
-                      Stable
+                      {t("landing.features.patient.vitalsStatus")}
                     </span>
                   </div>
                 </div>
@@ -142,27 +145,28 @@ export function FeaturesSection() {
                 <Stethoscope className="text-brand-teal h-6 w-6" />
               </div>
               <h3 className="mb-4 text-2xl font-semibold text-white">
-                For Healthcare Pros
+                {t("landing.features.professional.title")}
               </h3>
               <ul className="mb-8 space-y-4">
                 <li className="flex items-start gap-3 text-sm text-slate-300">
                   <CheckCircle2 className="text-brand-teal h-5 w-5 shrink-0" />
-                  Set your own service areas and schedule.
+                  {t("landing.features.professional.feature1")}
                 </li>
                 <li className="flex items-start gap-3 text-sm text-slate-300">
                   <CheckCircle2 className="text-brand-teal h-5 w-5 shrink-0" />
-                  Automated earnings tracking &amp; payouts.
+                  {t("landing.features.professional.feature2")}
                 </li>
                 <li className="flex items-start gap-3 text-sm text-slate-300">
                   <CheckCircle2 className="text-brand-teal h-5 w-5 shrink-0" />
-                  Build reputation through verified quality scores.
+                  {t("landing.features.professional.feature3")}
                 </li>
               </ul>
               <a
                 href="#"
                 className="text-brand-teal border-brand-teal/20 hover:border-brand-teal inline-flex items-center border-b pb-0.5 text-sm font-medium transition-colors"
               >
-                Join network <ArrowRight className="ml-1 h-3 w-3" />
+                {t("landing.features.professional.link")}{" "}
+                <ArrowRight className="ml-1 h-3 w-3" />
               </a>
             </div>
 
@@ -170,16 +174,18 @@ export function FeaturesSection() {
             <div className="mt-12 translate-y-4 transform rounded-t-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-md transition-transform duration-500 group-hover:translate-y-2">
               <div className="mb-4 flex items-end justify-between">
                 <div>
-                  <div className="text-xs text-slate-400">Total Earnings</div>
+                  <div className="text-xs text-slate-400">
+                    {t("landing.features.professional.totalEarnings")}
+                  </div>
                   <div className="text-xl font-semibold text-white">
                     1,240{" "}
                     <span className="text-sm font-normal text-slate-400">
-                      TND
+                      {t("landing.features.professional.currency")}
                     </span>
                   </div>
                 </div>
                 <div className="bg-brand-teal/20 text-brand-teal rounded px-2 py-1 text-[10px] font-medium">
-                  +18% this week
+                  {t("landing.features.professional.earningsGrowth")}
                 </div>
               </div>
               <div className="flex h-12 items-end gap-1">

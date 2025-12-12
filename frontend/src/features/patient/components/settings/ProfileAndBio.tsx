@@ -43,8 +43,10 @@ import { COUNTRIES, RELATIONSHIPS } from "@/features/auth";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export function ProfileAndBio() {
+  const { t } = useTranslation();
   const { data: patient, isLoading, isError } = GetCurrentPatient();
 
   if (isLoading) {
@@ -345,7 +347,7 @@ export function ProfileAndBio() {
                         <SelectContent>
                           {COUNTRIES.map((country, idx) => (
                             <SelectItem key={idx} value={country.value}>
-                              {country.label}
+                              {t(country.label)}
                             </SelectItem>
                           ))}
                         </SelectContent>

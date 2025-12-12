@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Facebook, Instagram, Twitter } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import Icon2 from "@/assets/Icon-2.png";
+import { Link } from "@tanstack/react-router";
 
 export function NewFooterSection() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle newsletter subscription
     console.log("Newsletter subscription:", email);
     setEmail("");
   };
@@ -17,24 +20,22 @@ export function NewFooterSection() {
         <div className="relative z-10 pt-8 pr-4 pb-8 pl-4 sm:p-12">
           <div className="grid grid-cols-1 gap-12 pb-12 lg:grid-cols-4">
             <div className="lg:col-span-4">
-              <div className="mb-8 flex items-center gap-3">
-                <div className="bg-brand-teal text-brand-dark flex h-8 w-8 items-center justify-center rounded-lg text-lg font-bold">
-                  W
-                </div>
-                <span className="text-xl font-semibold tracking-tight text-white">
-                  Wi-Help Platform
+              <Link to="/" className="group flex items-center gap-3 mb-4">
+                <img src={Icon2} alt="Logo" className="h-10" />
+                <span className="text-white text-lg font-semibold tracking-tight">
+                  Wi-Help
                 </span>
-              </div>
+              </Link>
 
               <div className="grid grid-cols-1 gap-12 lg:grid-cols-3 lg:gap-8">
                 {/* Newsletter Column */}
                 <div className="space-y-6">
                   <div className="bg-brand-teal/10 text-brand-teal ring-brand-teal/20 font-geist inline-flex items-center gap-2 rounded-full px-3 py-2 text-xs ring-1">
                     <span className="bg-brand-teal h-1.5 w-1.5 animate-pulse rounded-full"></span>
-                    Health tips &amp; Updates
+                    {t("landing.footer.newsletter.badge")}
                   </div>
                   <h4 className="font-geist text-2xl font-semibold tracking-tight text-white">
-                    Stay healthy
+                    {t("landing.footer.newsletter.title")}
                   </h4>
                   <form onSubmit={handleSubmit} className="flex gap-3 pt-2">
                     <input
@@ -49,11 +50,11 @@ export function NewFooterSection() {
                       type="submit"
                       className="bg-brand-teal text-brand-dark hover:bg-brand-light font-geist inline-flex h-12 items-center gap-2 rounded-xl px-5 text-sm font-semibold transition"
                     >
-                      Join
+                      {t("landing.footer.newsletter.join")}
                     </button>
                   </form>
                   <p className="font-geist text-xs text-white/40">
-                    We respect your inbox. Unsubscribe anytime.
+                    {t("landing.footer.newsletter.description")}
                   </p>
                 </div>
 
@@ -61,7 +62,7 @@ export function NewFooterSection() {
                 <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-2">
                   <div>
                     <h5 className="font-geist mb-4 text-xs font-medium tracking-wider text-white/40 uppercase">
-                      Platform
+                      {t("landing.footer.sections.platform")}
                     </h5>
                     <ul className="space-y-3 text-sm text-white/70">
                       <li>
@@ -69,7 +70,7 @@ export function NewFooterSection() {
                           className="hover:text-brand-teal font-geist transition"
                           href="#"
                         >
-                          Browse Profiles
+                          {t("landing.footer.links.browseProfiles")}
                         </a>
                       </li>
                       <li>
@@ -77,7 +78,7 @@ export function NewFooterSection() {
                           className="hover:text-brand-teal font-geist transition"
                           href="#"
                         >
-                          How it Works
+                          {t("landing.footer.links.howItWorks")}
                         </a>
                       </li>
                       <li>
@@ -85,7 +86,7 @@ export function NewFooterSection() {
                           className="hover:text-brand-teal font-geist transition"
                           href="#"
                         >
-                          Pricing
+                          {t("landing.footer.links.pricing")}
                         </a>
                       </li>
                       <li>
@@ -93,14 +94,14 @@ export function NewFooterSection() {
                           className="hover:text-brand-teal font-geist transition"
                           href="#"
                         >
-                          Safety
+                          {t("landing.footer.links.safety")}
                         </a>
                       </li>
                     </ul>
                   </div>
                   <div>
                     <h5 className="font-geist mb-4 text-xs font-medium tracking-wider text-white/40 uppercase">
-                      Professionals
+                      {t("landing.footer.sections.professionals")}
                     </h5>
                     <ul className="space-y-3 text-sm text-white/70">
                       <li>
@@ -108,7 +109,7 @@ export function NewFooterSection() {
                           className="hover:text-brand-teal font-geist transition"
                           href="#"
                         >
-                          Join Network
+                          {t("landing.footer.links.joinNetwork")}
                         </a>
                       </li>
                       <li>
@@ -116,7 +117,7 @@ export function NewFooterSection() {
                           className="hover:text-brand-teal font-geist transition"
                           href="#"
                         >
-                          Success Stories
+                          {t("landing.footer.links.successStories")}
                         </a>
                       </li>
                       <li>
@@ -124,7 +125,7 @@ export function NewFooterSection() {
                           className="hover:text-brand-teal font-geist transition"
                           href="#"
                         >
-                          Requirements
+                          {t("landing.footer.links.requirements")}
                         </a>
                       </li>
                       <li>
@@ -132,14 +133,14 @@ export function NewFooterSection() {
                           className="hover:text-brand-teal font-geist transition"
                           href="#"
                         >
-                          Partner Log In
+                          {t("landing.footer.links.partnerLogin")}
                         </a>
                       </li>
                     </ul>
                   </div>
                   <div>
                     <h5 className="font-geist mb-4 text-xs font-medium tracking-wider text-white/40 uppercase">
-                      Company
+                      {t("landing.footer.sections.company")}
                     </h5>
                     <ul className="space-y-3 text-sm text-white/70">
                       <li>
@@ -147,7 +148,7 @@ export function NewFooterSection() {
                           className="hover:text-brand-teal font-geist transition"
                           href="#"
                         >
-                          About Us
+                          {t("landing.footer.links.aboutUs")}
                         </a>
                       </li>
                       <li>
@@ -155,7 +156,7 @@ export function NewFooterSection() {
                           className="hover:text-brand-teal font-geist transition"
                           href="#"
                         >
-                          Contact Support
+                          {t("landing.footer.links.contactSupport")}
                         </a>
                       </li>
                       <li>
@@ -163,7 +164,7 @@ export function NewFooterSection() {
                           className="hover:text-brand-teal font-geist transition"
                           href="#"
                         >
-                          Terms of Service
+                          {t("landing.footer.links.termsOfService")}
                         </a>
                       </li>
                       <li>
@@ -171,7 +172,7 @@ export function NewFooterSection() {
                           className="hover:text-brand-teal font-geist transition"
                           href="#"
                         >
-                          Privacy Policy
+                          {t("landing.footer.links.privacyPolicy")}
                         </a>
                       </li>
                     </ul>
@@ -183,7 +184,7 @@ export function NewFooterSection() {
 
           <div className="flex flex-col items-center justify-between gap-6 border-t border-white/10 pt-8 sm:flex-row">
             <p className="font-geist text-sm text-white/40">
-              © 2025 Wi-Help Platform Tunisia. All rights reserved.
+              {t("landing.footer.copyright")}
             </p>
             <div className="flex items-center gap-4">
               <a href="#" className="text-white/40 transition hover:text-white">
