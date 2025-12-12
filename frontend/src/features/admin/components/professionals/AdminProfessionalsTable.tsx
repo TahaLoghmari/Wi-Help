@@ -8,7 +8,7 @@ import {
   type GetAllProfessionalsDto,
   VerificationStatus,
 } from "@/features/admin";
-import { SPECIALIZATIONS } from "@/features/auth/lib/authConstants";
+import { getSpecializations } from "@/features/auth/lib/authConstants";
 import {
   Select,
   SelectContent,
@@ -28,8 +28,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { User } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function AdminProfessionalsTable() {
+  const { i18n } = useTranslation();
   const navigate = useNavigate();
   const {
     data,
@@ -207,9 +209,11 @@ export function AdminProfessionalsTable() {
                         {professional.phoneNumber || "N/A"}
                       </td>
                       <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
-                        {SPECIALIZATIONS.find(
-                          (s) => s.value === professional.specialization,
-                        )?.label || professional.specialization}
+                        <div className="text-xs text-slate-500">
+                          {getSpecializations(i18n.language).find(
+                            (s) => s.value === professional.specialization,
+                          )?.label || professional.specialization}
+                        </div>
                       </td>
                       <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-700 sm:px-5">
                         {new Date(professional.createdAt).toLocaleDateString()}

@@ -1,7 +1,9 @@
 import { useProfessionalFiltersStore } from "@/features/patient";
 import { Slider } from "@/components/ui";
+import { useTranslation } from "react-i18next";
 
 export function FindProfessionalFilterbar() {
+  const { t } = useTranslation();
   const { search, location, maxPrice, setSearch, setLocation, setMaxPrice } =
     useProfessionalFiltersStore();
 
@@ -10,7 +12,7 @@ export function FindProfessionalFilterbar() {
       <div className="grid items-center gap-3 lg:grid-cols-3">
         <div className="space-y-1">
           <label className="block text-[11px] font-medium text-slate-700">
-            Search
+            {t("patient.findProfessional.filter.search.label")}
           </label>
           <div className="bg-brand-bg focus-within:border-brand-blue/70 focus-within:ring-brand-blue/60 flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-[11px] text-slate-500 transition-all focus-within:ring-1">
             <svg
@@ -32,7 +34,9 @@ export function FindProfessionalFilterbar() {
             </svg>
             <input
               type="text"
-              placeholder="Keyword, condition or name"
+              placeholder={t(
+                "patient.findProfessional.filter.search.placeholder",
+              )}
               className="w-full bg-transparent text-[11px] outline-none placeholder:text-slate-400"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -42,12 +46,14 @@ export function FindProfessionalFilterbar() {
 
         <div className="space-y-1">
           <label className="block text-[11px] font-medium text-slate-700">
-            Location
+            {t("patient.findProfessional.filter.location.label")}
           </label>
           <div className="relative">
             <input
               type="text"
-              placeholder="Tunis, Sousse..."
+              placeholder={t(
+                "patient.findProfessional.filter.location.placeholder",
+              )}
               className="bg-brand-bg focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-full border border-slate-200 px-3 py-2 pr-8 text-[11px] text-slate-700 placeholder:text-slate-400 focus:ring-1 focus:outline-none"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
@@ -61,7 +67,7 @@ export function FindProfessionalFilterbar() {
         </div>
         <div className="space-y-1">
           <label className="block text-[11px] font-medium text-slate-700">
-            Price range
+            {t("patient.findProfessional.filter.price.label")}
           </label>
           <div className="mb-1 flex items-center justify-between text-[10px] text-slate-600">
             <span>25 TND</span>

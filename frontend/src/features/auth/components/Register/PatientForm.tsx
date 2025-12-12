@@ -2,8 +2,8 @@ import type { UseFormReturn } from "react-hook-form";
 import {
   useStepsStore,
   type registerFormSchema,
-  COUNTRIES,
-  RELATIONSHIPS,
+  getCountries,
+  getRelationships,
   useRegisterPatient,
 } from "@/features/auth";
 import type z from "zod";
@@ -29,6 +29,7 @@ import {
 import { CalendarIcon, ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import i18n from "@/config/i18n";
 
 interface PatientFormProps {
   form: UseFormReturn<z.infer<typeof registerFormSchema>>;
@@ -354,7 +355,7 @@ export function PatientForm({ form }: PatientFormProps) {
                           ></SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          {COUNTRIES.map((country, idx) => (
+                          {getCountries(i18n.language).map((country, idx) => (
                             <SelectItem key={idx} value={country.value}>
                               {t(country.label)}
                             </SelectItem>
@@ -541,11 +542,13 @@ export function PatientForm({ form }: PatientFormProps) {
                           ></SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          {RELATIONSHIPS.map((relationship, idx) => (
-                            <SelectItem key={idx} value={relationship.value}>
-                              {t(relationship.label)}
-                            </SelectItem>
-                          ))}
+                          {getRelationships(i18n.language).map(
+                            (relationship, idx) => (
+                              <SelectItem key={idx} value={relationship.value}>
+                                {t(relationship.label)}
+                              </SelectItem>
+                            ),
+                          )}
                         </SelectContent>
                       </Select>
                     </FormControl>

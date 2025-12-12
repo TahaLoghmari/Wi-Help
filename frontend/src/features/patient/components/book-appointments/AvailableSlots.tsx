@@ -1,5 +1,6 @@
 import { Spinner } from "@/components";
 import type { TimeSlotResponse } from "../../types";
+import { useTranslation } from "react-i18next";
 
 export function AvailableSlots({
   isLoading,
@@ -24,10 +25,11 @@ export function AvailableSlots({
     isBooked: boolean;
   } | null;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5">
       <h3 className="text-brand-dark text-xs font-semibold">
-        Available Time Slots
+        {t("patient.booking.slots.title")}
       </h3>
       {isLoading ? (
         <div className="flex justify-center p-4">
@@ -51,7 +53,7 @@ export function AvailableSlots({
         </div>
       ) : (
         <p className="text-xs text-slate-500">
-          No available slots for selected date
+          {t("patient.booking.slots.noSlots")}
         </p>
       )}
     </div>

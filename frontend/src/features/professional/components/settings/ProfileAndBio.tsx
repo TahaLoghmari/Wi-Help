@@ -35,12 +35,14 @@ import {
   UpdateProfessional,
 } from "@/features/professional";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { COUNTRIES, SPECIALIZATIONS } from "@/features/auth";
+import { getCountries, getSpecializations } from "@/features/auth";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export function ProfileAndBio() {
+  const { i18n } = useTranslation();
   const { data: professional } = GetCurrentProfessional();
   const form = useForm<z.infer<typeof profileAndBioFormSchema>>({
     resolver: zodResolver(profileAndBioFormSchema),
@@ -347,7 +349,7 @@ export function ProfileAndBio() {
                           ></SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          {COUNTRIES.map((country, idx) => (
+                          {getCountries(i18n.language).map((country, idx) => (
                             <SelectItem key={idx} value={country.value}>
                               {country.label}
                             </SelectItem>
@@ -442,11 +444,16 @@ export function ProfileAndBio() {
                           <SelectValue placeholder="Select specialization" />
                         </SelectTrigger>
                         <SelectContent>
-                          {SPECIALIZATIONS.map((specialization, idx) => (
-                            <SelectItem key={idx} value={specialization.value}>
-                              {specialization.label}
-                            </SelectItem>
-                          ))}
+                          {getSpecializations(i18n.language).map(
+                            (specialization, idx) => (
+                              <SelectItem
+                                key={idx}
+                                value={specialization.value}
+                              >
+                                {specialization.label}
+                              </SelectItem>
+                            ),
+                          )}
                         </SelectContent>
                       </Select>
                     </FormControl>

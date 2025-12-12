@@ -19,8 +19,9 @@ import {
   type PatientDto,
 } from "@/features/patient";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components";
-import { COUNTRIES, RELATIONSHIPS } from "@/features/auth";
+import { getCountries, getRelationships } from "@/features/auth";
 import { useRouter } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 
 interface PatientProfileProps {
   patient?: PatientDto;
@@ -31,6 +32,7 @@ export function PatientProfile({
   patient,
   showBackButton = false,
 }: PatientProfileProps) {
+  const { t, i18n } = useTranslation();
   const router = useRouter();
 
   const patientInitials =
@@ -47,7 +49,7 @@ export function PatientProfile({
           className="group border-brand-dark/20 bg-brand-bg text-brand-secondary hover:border-brand-dark/40 hover:text-brand-dark my-6 mt-2 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium shadow-sm transition-all hover:bg-white active:scale-95"
         >
           <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
-          Back
+          {t("patient.profile.back")}
         </button>
       )}
 
@@ -83,7 +85,7 @@ export function PatientProfile({
                     <ShieldCheck className="fill-brand-blue/10 text-brand-blue h-5 w-5" />
                   </h2>
                   <p className="text-brand-secondary text-sm">
-                    Patient Profile
+                    {t("patient.profile.title")}
                   </p>
                 </div>
               </div>
@@ -112,10 +114,10 @@ export function PatientProfile({
           <section className="border-brand-dark/10 rounded-2xl border bg-white p-5">
             <h3 className="text-brand-dark mb-4 flex items-center gap-2 text-sm font-bold tracking-tight">
               <User className="text-brand-secondary h-4 w-4" />
-              About &amp; Bio
+              {t("patient.profile.about")}
             </h3>
             <div className="prose prose-sm text-brand-secondary mb-6 max-w-none text-xs leading-relaxed">
-              {patient?.bio || "No bio provided yet."}
+              {patient?.bio || t("patient.profile.noBio")}
             </div>
 
             {/* Feature Grid */}
@@ -125,7 +127,7 @@ export function PatientProfile({
                   <User className="h-4 w-4" />
                 </div>
                 <div className="text-brand-secondary text-[10px] font-semibold tracking-wider uppercase">
-                  Gender
+                  {t("patient.profile.gender")}
                 </div>
                 <div className="text-brand-dark text-xs font-semibold">
                   {patient?.gender
@@ -139,7 +141,7 @@ export function PatientProfile({
                   <Activity className="h-4 w-4" />
                 </div>
                 <div className="text-brand-secondary text-[10px] font-semibold tracking-wider uppercase">
-                  Mobility
+                  {t("patient.profile.mobility")}
                 </div>
                 <div className="text-brand-dark text-xs font-semibold">
                   {patient?.medicalInfo?.mobilityStatus || "N/A"}
@@ -152,14 +154,14 @@ export function PatientProfile({
           <section className="border-brand-dark/10 rounded-2xl border bg-white p-5">
             <h3 className="text-brand-dark mb-4 flex items-center gap-2 text-sm font-bold tracking-tight">
               <Heart className="text-brand-secondary h-4 w-4" />
-              Medical Information
+              {t("patient.profile.medicalInfo")}
             </h3>
 
             {/* Allergies */}
             <div className="mb-4 flex flex-col gap-2">
               <div className="text-brand-dark mb-2 flex items-center gap-2 text-xs font-semibold">
                 <AlertCircle className="text-brand-dark h-3.5 w-3.5" />
-                Allergies
+                {t("patient.profile.allergies")}
               </div>
               {patient?.medicalInfo?.allergies &&
               patient.medicalInfo.allergies.length > 0 ? (
@@ -176,7 +178,7 @@ export function PatientProfile({
                 </div>
               ) : (
                 <p className="text-brand-secondary/60 text-xs">
-                  No allergies reported
+                  {t("patient.profile.noAllergies")}
                 </p>
               )}
             </div>
@@ -185,7 +187,7 @@ export function PatientProfile({
             <div className="mb-4 flex flex-col gap-2">
               <div className="text-brand-dark mb-2 flex items-center gap-2 text-xs font-semibold">
                 <Pill className="text-brand-blue h-3.5 w-3.5" />
-                Current Medications
+                {t("patient.profile.medications")}
               </div>
               {patient?.medicalInfo?.medications &&
               patient.medicalInfo.medications.length > 0 ? (
@@ -261,7 +263,7 @@ export function PatientProfile({
                     {patient?.address?.city}, {patient?.address?.state}{" "}
                     {patient?.address?.postalCode}
                     <br />
-                    {COUNTRIES.find(
+                    {getCountries(i18n.language).find(
                       (c) => c.value === patient?.address?.country,
                     )?.label ||
                       patient?.address?.country ||
@@ -344,7 +346,7 @@ export function PatientProfile({
                     Relationship
                   </div>
                   <div className="text-brand-secondary mt-0.5 text-xs">
-                    {RELATIONSHIPS.find(
+                    {getRelationships(i18n.language).find(
                       (r) =>
                         r.value === patient?.emergencyContact?.relationship,
                     )?.label ||

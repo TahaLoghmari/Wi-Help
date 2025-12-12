@@ -1,11 +1,13 @@
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui";
 import type { Control } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 interface AppointmentNotesProps {
   control: Control<any>;
 }
 
 export function AppointmentNotes({ control }: AppointmentNotesProps) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-2 rounded-2xl border border-slate-200 bg-white p-5">
       <FormField
@@ -14,12 +16,12 @@ export function AppointmentNotes({ control }: AppointmentNotesProps) {
         render={({ field }) => (
           <FormItem>
             <label className="block text-xs font-medium text-slate-700">
-              Additional Notes (Optional)
+              {t("patient.booking.notes.label")}
             </label>
             <FormControl>
               <textarea
                 className="focus:border-brand-blue focus:ring-brand-blue/50 w-full rounded-xl border border-slate-200 px-3 py-2 text-xs transition-all placeholder:text-slate-400 focus:ring-1 focus:outline-none"
-                placeholder="Enter any specific instructions for this appointment..."
+                placeholder={t("patient.booking.notes.placeholder")}
                 rows={3}
                 {...field}
               />

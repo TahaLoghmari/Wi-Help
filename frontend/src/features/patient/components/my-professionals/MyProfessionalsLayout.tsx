@@ -1,16 +1,17 @@
 import { MyProfessionalsCards } from "./MyProfessionalsCards";
+import { useTranslation } from "react-i18next";
 
 export function MyProfessionalsLayout() {
+  const { t } = useTranslation();
   return (
     <div className="flex h-full w-full flex-col gap-5 bg-[#fafafb] px-8 py-5">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-brand-dark text-sm font-semibold tracking-tight">
-            My Professionals
+            {t("patient.professionals.title")}
           </h3>
           <p className="mt-0.5 text-[11px] text-slate-500">
-            A quick overview of healthcare professionals you've connected with
-            for your care.
+            {t("patient.professionals.subtitle")}
           </p>
         </div>
         <button className="hover:border-brand-blue/70 hover:bg-brand-blue/5 hidden items-center gap-1.5 gap-x-1.5 gap-y-1.5 rounded-full border border-slate-200 bg-white pt-1.5 pr-2.5 pb-1.5 pl-2.5 text-[11px] text-slate-700 transition-colors sm:inline-flex">
@@ -31,7 +32,7 @@ export function MyProfessionalsLayout() {
             <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"></path>
             <circle cx="20" cy="10" r="2"></circle>
           </svg>
-          View all
+          {t("patient.professionals.viewAll")}
         </button>
       </div>
       <MyProfessionalsCards />

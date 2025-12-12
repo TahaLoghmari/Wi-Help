@@ -2,9 +2,11 @@ import { GetPatientProfessionals } from "@/features/patient";
 import { useNavigate, Link } from "@tanstack/react-router";
 import { Spinner } from "@/components";
 import { ROUTE_PATHS } from "@/config";
-import { SPECIALIZATIONS } from "@/features/auth/lib/authConstants";
+import { getSpecializations } from "@/features/auth/lib/authConstants";
+import { useTranslation } from "react-i18next";
 
 export function MyProfessionalsCards() {
+  const { t, i18n } = useTranslation();
   const {
     data,
     isLoading,
@@ -37,7 +39,7 @@ export function MyProfessionalsCards() {
   if (isError) {
     return (
       <div className="p-4 text-center text-red-500">
-        Error loading professionals.
+        {t("patient.professionals.error")}
       </div>
     );
   }
@@ -45,7 +47,7 @@ export function MyProfessionalsCards() {
   if (!professionals || professionals.length === 0) {
     return (
       <div className="p-4 text-center text-slate-500">
-        No professionals found.
+        {t("patient.professionals.notFound")}
       </div>
     );
   }
@@ -137,7 +139,7 @@ export function MyProfessionalsCards() {
                 <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
               </svg>
               <span className="font-medium text-slate-700">
-                {professional.experience} years
+                {professional.experience} {t("patient.professionals.years")}
               </span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -158,7 +160,7 @@ export function MyProfessionalsCards() {
                 <circle cx="20" cy="10" r="2" />
               </svg>
               <span className="font-medium text-slate-700">
-                {SPECIALIZATIONS.find(
+                {getSpecializations(i18n.language).find(
                   (spec) => spec.value === professional.specialization,
                 )?.label || professional.specialization}
               </span>
@@ -185,7 +187,7 @@ export function MyProfessionalsCards() {
               >
                 <path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"></path>
               </svg>
-              Message
+              {t("patient.professionals.message")}
             </Link>
             <button
               onClick={() =>
@@ -212,7 +214,7 @@ export function MyProfessionalsCards() {
                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
-              View Profile
+              {t("patient.professionals.viewProfile")}
             </button>
           </div>
         </article>

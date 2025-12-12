@@ -19,8 +19,10 @@ import { Form, Calendar } from "@/components";
 import { useState } from "react";
 import type z from "zod";
 import { ArrowLeft } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function BookAppointmentsLayout() {
+  const { t } = useTranslation();
   const form = useForm<z.infer<typeof bookAppointmentFormSchema>>({
     resolver: zodResolver(bookAppointmentFormSchema),
     defaultValues: bookAppointmentFormDefaults(),
@@ -43,7 +45,8 @@ export function BookAppointmentsLayout() {
     month: (selectedDate?.getMonth() || new Date().getMonth()) + 1,
   });
 
-  if (isProfessionalPending || isLoading) return <div>Loading..</div>;
+  if (isProfessionalPending || isLoading)
+    return <div>{t("patient.booking.loading")}</div>;
   // from the above data we get just the selected day
   const selectedDayData: DailyAvailabilityResponse | undefined =
     selectedDate && data

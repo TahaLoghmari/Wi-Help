@@ -5,7 +5,7 @@ import {
   GetPatientAppointments,
   type GetPatientAppointmentsDto,
 } from "@/features/patient";
-import { SPECIALIZATIONS } from "@/features/auth";
+import { getSpecializations } from "@/features/auth";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,10 +19,12 @@ import {
 import { Sheet, SheetContent, SheetClose } from "@/components/ui/sheet";
 import { X, Calendar } from "lucide-react";
 import { useAppNavigation } from "@/hooks";
+import { useTranslation } from "react-i18next";
 
 type AppointmentTab = "offered" | "confirmed" | "cancelled" | "completed";
 
 export function PatientAppointmentsTable() {
+  const { t, i18n } = useTranslation();
   const {
     data,
     isLoading,
@@ -91,24 +93,31 @@ export function PatientAppointmentsTable() {
     switch (activeTab) {
       case "offered":
         return {
-          title: "No offered appointments",
-          description:
-            "You don't have any pending appointment offers at the moment.",
+          title: t("patient.appointments.table.empty.offered.title"),
+          description: t(
+            "patient.appointments.table.empty.offered.description",
+          ),
         };
       case "confirmed":
         return {
-          title: "No confirmed appointments",
-          description: "You don't have any confirmed appointments yet.",
+          title: t("patient.appointments.table.empty.confirmed.title"),
+          description: t(
+            "patient.appointments.table.empty.confirmed.description",
+          ),
         };
       case "cancelled":
         return {
-          title: "No cancelled appointments",
-          description: "You don't have any cancelled appointments.",
+          title: t("patient.appointments.table.empty.cancelled.title"),
+          description: t(
+            "patient.appointments.table.empty.cancelled.description",
+          ),
         };
       case "completed":
         return {
-          title: "No completed appointments",
-          description: "You don't have any completed appointments yet.",
+          title: t("patient.appointments.table.empty.completed.title"),
+          description: t(
+            "patient.appointments.table.empty.completed.description",
+          ),
         };
     }
   };
@@ -315,7 +324,7 @@ export function PatientAppointmentsTable() {
                         </div>
                         {appointment.professional?.specialization && (
                           <div className="text-[11px] text-slate-500">
-                            {SPECIALIZATIONS.find(
+                            {getSpecializations(i18n.language).find(
                               (s) =>
                                 s.value ===
                                 appointment.professional?.specialization,

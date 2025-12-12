@@ -1,12 +1,16 @@
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui";
 import type { Control } from "react-hook-form";
 import { AppointmentUrgency as UrgencyEnum } from "@/features/professional";
+import { useTranslation } from "react-i18next";
 
 interface AppointmentUrgencySelectorProps {
   control: Control<any>;
 }
 
-export function AppointmentUrgencySelector({ control }: AppointmentUrgencySelectorProps) {
+export function AppointmentUrgencySelector({
+  control,
+}: AppointmentUrgencySelectorProps) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-2 rounded-2xl border border-slate-200 bg-white p-5">
       <FormField
@@ -15,7 +19,8 @@ export function AppointmentUrgencySelector({ control }: AppointmentUrgencySelect
         render={({ field }) => (
           <FormItem>
             <label className="block text-xs font-medium text-slate-700">
-              Urgency Level <span className="text-red-500">*</span>
+              {t("patient.booking.urgency.label")}{" "}
+              <span className="text-red-500">*</span>
             </label>
             <FormControl>
               <div className="mt-2 flex gap-2">
@@ -29,9 +34,9 @@ export function AppointmentUrgencySelector({ control }: AppointmentUrgencySelect
                   }`}
                 >
                   <div className="flex flex-col items-center gap-1">
-                    <span>Low</span>
+                    <span>{t("patient.booking.urgency.low")}</span>
                     <span className="text-[10px] text-slate-500">
-                      Routine check
+                      {t("patient.booking.urgency.routine")}
                     </span>
                   </div>
                 </button>
@@ -45,9 +50,9 @@ export function AppointmentUrgencySelector({ control }: AppointmentUrgencySelect
                   }`}
                 >
                   <div className="flex flex-col items-center gap-1">
-                    <span>Medium</span>
+                    <span>{t("patient.booking.urgency.medium")}</span>
                     <span className="text-[10px] text-slate-500">
-                      Within a week
+                      {t("patient.booking.urgency.week")}
                     </span>
                   </div>
                 </button>
@@ -61,9 +66,9 @@ export function AppointmentUrgencySelector({ control }: AppointmentUrgencySelect
                   }`}
                 >
                   <div className="flex flex-col items-center gap-1">
-                    <span>High</span>
+                    <span>{t("patient.booking.urgency.high")}</span>
                     <span className="text-[10px] text-slate-500">
-                      Urgent care
+                      {t("patient.booking.urgency.urgent")}
                     </span>
                   </div>
                 </button>

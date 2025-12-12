@@ -39,11 +39,12 @@ import {
   type VerificationDocumentDto,
 } from "@/features/professional";
 import { VerificationStatus } from "@/features/admin/types/adminTypes";
-import { COUNTRIES, SPECIALIZATIONS } from "@/features/auth";
+import { getCountries, getSpecializations } from "@/features/auth";
 import { Avatar, AvatarFallback, AvatarImage, Spinner } from "@/components";
 import { ReviewsList, GetProfessionalReviewStats } from "@/features/reviews";
 import { Medal } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type TabType = "overview" | "reviews" | "schedule";
 
@@ -176,6 +177,8 @@ function AwardCard({ award }: { award: GetAwardsDto }) {
 
 export function ProfileLayout() {
   const [activeTab, setActiveTab] = useState<TabType>("overview");
+  export function ProfileLayout() {
+  const { i18n } = useTranslation();
   const { data: professional, isLoading, isError } = GetCurrentProfessional();
   const { data: reviewStats } = GetProfessionalReviewStats(
     professional?.id ?? "",
@@ -264,7 +267,7 @@ export function ProfileLayout() {
                   </h2>
                   <p className="text-brand-secondary text-sm">
                     {
-                      SPECIALIZATIONS.find(
+                      getSpecializations(i18n.language).find(
                         (s) => s.value === professional?.specialization,
                       )?.label
                     }{" "}
@@ -392,7 +395,7 @@ export function ProfileLayout() {
                   </div>
                   <div className="text-brand-dark text-xs font-semibold">
                     {
-                      SPECIALIZATIONS.find(
+                      getSpecializations(i18n.language).find(
                         (s) => s.value === professional?.specialization,
                       )?.label
                     }
@@ -600,7 +603,7 @@ export function ProfileLayout() {
                       {professional?.address.state}{" "}
                       {professional?.address.postalCode}
                       <br />
-                      {COUNTRIES.find(
+                      {getCountries(i18n.language).find(
                         (c) => c.value === professional?.address?.country,
                       )?.label ?? professional?.address?.country}
                     </div>

@@ -1,8 +1,10 @@
 import { GetPatientAppointments } from "@/features/patient";
 import { useNavigate } from "@tanstack/react-router";
 import { ROUTE_PATHS } from "@/config/routes";
+import { useTranslation } from "react-i18next";
 
 export function AppointmentsStat() {
+  const { t } = useTranslation();
   const { data } = GetPatientAppointments();
   const navigate = useNavigate();
   const now = new Date();
@@ -21,7 +23,7 @@ export function AppointmentsStat() {
     <div className="relative flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-100">
       <div className="flex items-center justify-between">
         <div className="text-xs font-medium tracking-tight text-slate-600">
-          Upcoming Appointments
+          {t("patient.appointments.stats.upcoming.title")}
         </div>
         <button
           onClick={() => navigate({ to: ROUTE_PATHS.PATIENT.FINDPROFESSIONAL })}
@@ -43,7 +45,7 @@ export function AppointmentsStat() {
             <path d="M5 12h14"></path>
             <path d="M12 5v14"></path>
           </svg>
-          New
+          {t("patient.appointments.stats.upcoming.new")}
         </button>
       </div>
       <div className="flex items-baseline justify-between">
@@ -51,13 +53,15 @@ export function AppointmentsStat() {
           {upcomingAppointments.length}
         </div>
         <div className="text-[11px] text-slate-500">
-          {confirmedUpcoming} confirmed • {offeredUpcoming} offered
+          {confirmedUpcoming}{" "}
+          {t("patient.appointments.stats.upcoming.confirmed")} •{" "}
+          {offeredUpcoming} {t("patient.appointments.stats.upcoming.offered")}
         </div>
       </div>
       <div className="flex items-center justify-between border-t border-dashed border-slate-200 pt-1">
         <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
           <span className="bg-brand-blue inline-block h-2 w-2 rounded-full"></span>
-          This week
+          {t("patient.appointments.stats.upcoming.thisWeek")}
           <span className="font-medium text-slate-700">
             {
               upcomingAppointments.filter(
@@ -70,7 +74,7 @@ export function AppointmentsStat() {
         </div>
         <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
           <span className="bg-brand-light inline-block h-2 w-2 rounded-full"></span>
-          This month
+          {t("patient.appointments.stats.upcoming.thisMonth")}
           <span className="font-medium text-slate-700">
             {
               upcomingAppointments.filter(

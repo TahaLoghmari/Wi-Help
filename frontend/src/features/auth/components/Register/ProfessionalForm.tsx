@@ -2,9 +2,9 @@ import type { UseFormReturn } from "react-hook-form";
 import {
   useStepsStore,
   type registerFormSchema,
-  COUNTRIES,
+  getCountries,
   useRegisterProfessional,
-  SPECIALIZATIONS,
+  getSpecializations,
 } from "@/features/auth";
 import type z from "zod";
 import {
@@ -35,7 +35,7 @@ interface ProfessionalFormProps {
 }
 
 export function ProfessionalForm({ form }: ProfessionalFormProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { step, setStep } = useStepsStore();
   const registerProfessionalMutation = useRegisterProfessional();
   const [open, setOpen] = useState(false);
@@ -354,9 +354,9 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                           ></SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          {COUNTRIES.map((country, idx) => (
+                          {getCountries(i18n.language).map((country, idx) => (
                             <SelectItem key={idx} value={country.value}>
-                              {t(country.label)}
+                              {country.label}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -498,11 +498,13 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                         ></SelectValue>
                       </SelectTrigger>
                       <SelectContent>
-                        {SPECIALIZATIONS.map((specialization, idx) => (
-                          <SelectItem key={idx} value={specialization.value}>
-                            {t(specialization.label)}
-                          </SelectItem>
-                        ))}
+                        {getSpecializations(i18n.language).map(
+                          (specialization, idx) => (
+                            <SelectItem key={idx} value={specialization.value}>
+                              {specialization.label}
+                            </SelectItem>
+                          ),
+                        )}
                       </SelectContent>
                     </Select>
                   </FormControl>

@@ -1,7 +1,9 @@
 import { GetPatientAppointments } from "@/features/patient";
 import { Progress } from "@/components/ui/progress";
+import { useTranslation } from "react-i18next";
 
 export function TodayAppointmentsStat() {
+  const { t } = useTranslation();
   const { data, isLoading } = GetPatientAppointments();
   const today = new Date().toDateString();
   const todayAppointments =
@@ -29,10 +31,10 @@ export function TodayAppointmentsStat() {
     <div className="relative flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-100">
       <div className="flex items-center justify-between">
         <div className="text-xs font-medium tracking-tight text-slate-600">
-          Today's Appointments
+          {t("patient.appointments.stats.today.title")}
         </div>
         <span className="border-brand-cream bg-brand-cream/70 text-brand-dark inline-flex items-center rounded-full border px-2 py-0.5 text-[11px]">
-          Today
+          {t("patient.appointments.stats.today.badge")}
         </span>
       </div>
       <div className="flex items-baseline justify-between">
@@ -41,28 +43,28 @@ export function TodayAppointmentsStat() {
         </div>
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-500">
           <span>
-            Confirmed{" "}
+            {t("patient.appointments.stats.status.confirmed")}{" "}
             <span className="font-medium text-slate-800">
               {isLoading ? "-" : confirmedCount}
             </span>
           </span>
           <span className="h-3 w-px bg-slate-200"></span>
           <span>
-            Offered{" "}
+            {t("patient.appointments.stats.status.offered")}{" "}
             <span className="font-medium text-slate-800">
               {isLoading ? "-" : offeredCount}
             </span>
           </span>
           <span className="h-3 w-px bg-slate-200"></span>
           <span>
-            Cancelled{" "}
+            {t("patient.appointments.stats.status.cancelled")}{" "}
             <span className="font-medium text-slate-800">
               {isLoading ? "-" : cancelledCount}
             </span>
           </span>
           <span className="h-3 w-px bg-slate-200"></span>
           <span>
-            Completed{" "}
+            {t("patient.appointments.stats.status.completed")}{" "}
             <span className="font-medium text-slate-800">
               {isLoading ? "-" : completedCount}
             </span>
@@ -72,7 +74,8 @@ export function TodayAppointmentsStat() {
       <div className="mt-1 flex items-center gap-2">
         <Progress value={completedPercentage} className="flex-1" />
         <span className="text-[11px] text-slate-500">
-          {completedPercentage}% completed
+          {completedPercentage}
+          {t("patient.appointments.stats.today.completed")}
         </span>
       </div>
     </div>

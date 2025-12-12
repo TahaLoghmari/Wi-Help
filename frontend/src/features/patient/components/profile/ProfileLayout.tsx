@@ -1,8 +1,10 @@
 import { GetCurrentPatient } from "@/features/patient";
 import { PatientProfile } from "@/features/patient";
 import { Spinner } from "@/components/ui";
+import { useTranslation } from "react-i18next";
 
 export function ProfileLayout() {
+  const { t } = useTranslation();
   const { data: patient, isLoading, isError } = GetCurrentPatient();
 
   if (isLoading) {
@@ -15,7 +17,9 @@ export function ProfileLayout() {
 
   if (isError) {
     return (
-      <div className="p-4 text-center text-red-500">Error loading profile.</div>
+      <div className="p-4 text-center text-red-500">
+        {t("patient.profile.error")}
+      </div>
     );
   }
 

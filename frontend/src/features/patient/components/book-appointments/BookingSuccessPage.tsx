@@ -8,8 +8,10 @@ import {
   CardHeader,
   Button,
 } from "@/components/ui";
+import { useTranslation } from "react-i18next";
 
 export function BookingSuccessPage() {
+  const { t } = useTranslation();
   return (
     <div className="flex min-h-full w-full items-center justify-center bg-gray-50/50 p-4">
       <Card className="w-full max-w-md border-none shadow-lg">
@@ -19,11 +21,10 @@ export function BookingSuccessPage() {
           </div>
           <div className="space-y-2 text-center">
             <h1 className="text-brand-dark text-2xl font-bold tracking-tight">
-              Booking Confirmed!
+              {t("patient.booking.success.title")}
             </h1>
             <p className="text-muted-foreground px-4 text-sm">
-              Your appointment has been successfully scheduled. We've sent a
-              confirmation to your email.
+              {t("patient.booking.success.message")}
             </p>
           </div>
         </CardHeader>
@@ -38,13 +39,13 @@ export function BookingSuccessPage() {
           >
             <Link to={ROUTE_PATHS.PATIENT.APPOINTMENTS}>
               <Calendar className="mr-2 h-4 w-4" />
-              View My Appointments
+              {t("patient.booking.success.viewAppointments")}
             </Link>
           </Button>
           <Button asChild variant="outline" className="w-full" size="lg">
             <Link to={ROUTE_PATHS.PATIENT.FINDPROFESSIONAL}>
               <Search className="mr-2 h-4 w-4" />
-              Book Another Appointment
+              {t("patient.booking.success.bookAnother")}
             </Link>
           </Button>
         </CardFooter>

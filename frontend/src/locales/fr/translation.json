@@ -265,194 +265,281 @@
     "selectSpecialization": "S\u00e9lectionner la sp\u00e9cialisation",
     "experience": "Entrez l'exp\u00e9rience"
   },
-  "lists": {
-    "countries": {
-      "afghanistan": "Afghanistan",
-      "albania": "Albanie",
-      "algeria": "Algérie",
-      "andorra": "Andorre",
-      "angola": "Angola",
-      "argentina": "Argentine",
-      "armenia": "Arménie",
-      "australia": "Australie",
-      "austria": "Autriche",
-      "azerbaijan": "Azerbaïdjan",
-      "bahrain": "Bahreïn",
-      "bangladesh": "Bangladesh",
-      "belarus": "Biélorussie",
-      "belgium": "Belgique",
-      "belize": "Belize",
-      "benin": "Bénin",
-      "bhutan": "Bhoutan",
-      "bolivia": "Bolivie",
-      "bosniaAndHerzegovina": "Bosnie-Herzégovine",
-      "botswana": "Botswana",
-      "brazil": "Brésil",
-      "bruneiDarussalam": "Brunéi Darussalam",
-      "bulgaria": "Bulgarie",
-      "burkinaFaso": "Burkina Faso",
-      "burundi": "Burundi",
-      "cambodia": "Cambodge",
-      "cameroon": "Cameroun",
-      "canada": "Canada",
-      "capeVerde": "Cap-Vert",
-      "centralAfricanRepublic": "République centrafricaine",
-      "chad": "Tchad",
-      "chile": "Chili",
-      "china": "Chine",
-      "colombia": "Colombie",
-      "comoros": "Comores",
-      "congo": "Congo",
-      "costaRica": "Costa Rica",
-      "croatia": "Croatie",
-      "cuba": "Cuba",
-      "cyprus": "Chypre",
-      "czechRepublic": "République tchèque",
-      "denmark": "Danemark",
-      "djibouti": "Djibouti",
-      "dominicanRepublic": "République dominicaine",
-      "ecuador": "Équateur",
-      "egypt": "Égypte",
-      "elSalvador": "Salvador",
-      "estonia": "Estonie",
-      "ethiopia": "Éthiopie",
-      "finland": "Finlande",
-      "france": "France",
-      "gabon": "Gabon",
-      "gambia": "Gambie",
-      "georgia": "Géorgie",
-      "germany": "Allemagne",
-      "ghana": "Ghana",
-      "greece": "Grèce",
-      "guatemala": "Guatemala",
-      "guinea": "Guinée",
-      "guyana": "Guyana",
-      "haiti": "Haïti",
-      "hungary": "Hongrie",
-      "iceland": "Islande",
-      "india": "Inde",
-      "indonesia": "Indonésie",
-      "iran": "Iran",
-      "iraq": "Irak",
-      "ireland": "Irlande",
-      "italy": "Italie",
-      "jamaica": "Jamaïque",
-      "japan": "Japon",
-      "jordan": "Jordanie",
-      "kazakhstan": "Kazakhstan",
-      "kenya": "Kenya",
-      "kuwait": "Koweït",
-      "lebanon": "Liban",
-      "libya": "Libye",
-      "lithuania": "Lituanie",
-      "luxembourg": "Luxembourg",
-      "madagascar": "Madagascar",
-      "malawi": "Malawi",
-      "malaysia": "Malaisie",
-      "mali": "Mali",
-      "malta": "Malte",
-      "mexico": "Mexique",
-      "morocco": "Maroc",
-      "mozambique": "Mozambique",
-      "namibia": "Namibie",
-      "nepal": "Népal",
-      "netherlands": "Pays-Bas",
-      "newZealand": "Nouvelle-Zélande",
-      "nicaragua": "Nicaragua",
-      "niger": "Niger",
-      "nigeria": "Nigéria",
-      "norway": "Norvège",
-      "oman": "Oman",
-      "pakistan": "Pakistan",
-      "panama": "Panama",
-      "paraguay": "Paraguay",
-      "peru": "Pérou",
-      "philippines": "Philippines",
-      "poland": "Pologne",
-      "portugal": "Portugal",
-      "qatar": "Qatar",
-      "romania": "Roumanie",
-      "russia": "Russie",
-      "rwanda": "Rwanda",
-      "saudiArabia": "Arabie saoudite",
-      "senegal": "Sénégal",
-      "serbia": "Serbie",
-      "singapore": "Singapour",
-      "slovakia": "Slovaquie",
-      "slovenia": "Slovénie",
-      "southAfrica": "Afrique du Sud",
-      "southKorea": "Corée du Sud",
-      "spain": "Espagne",
-      "sriLanka": "Sri Lanka",
-      "sudan": "Soudan",
-      "sweden": "Suède",
-      "switzerland": "Suisse",
-      "syria": "Syrie",
-      "taiwan": "Taïwan",
-      "tanzania": "Tanzanie",
-      "thailand": "Thaïlande",
-      "tunisia": "Tunisie",
-      "turkey": "Turquie",
-      "ukraine": "Ukraine",
-      "unitedArabEmirates": "Émirats arabes unis",
-      "unitedKingdom": "Royaume-Uni",
-      "unitedStates": "États-Unis",
-      "uruguay": "Uruguay",
-      "uzbekistan": "Ouzbékistan",
-      "vietnam": "Vietnam",
-      "yemen": "Yémen",
-      "zambia": "Zambie",
-      "zimbabwe": "Zimbabwe"
+
+  "patient": {
+    "prescriptions": {
+      "loading": "Chargement des ordonnances...",
+      "error": "Erreur lors du chargement des ordonnances",
+      "title": "Mes Ordonnances",
+      "subtitle": "Vos dossiers d'ordonnances issus des consultations et rendez-vous.",
+      "table": {
+        "createdBy": "Créé par",
+        "title": "Titre",
+        "date": "Date",
+        "action": "Action"
+      },
+      "stats": {
+        "recent": "Ordonnances Récentes",
+        "last30Days": "30 derniers jours",
+        "thisWeek": "Cette semaine",
+        "receivedRecently": "Ordonnances reçues récemment",
+        "total": "Total des Ordonnances",
+        "allTime": "Tout le temps",
+        "history": "Votre historique d'ordonnances"
+      }
     },
-    "relationships": {
-      "parent": "Parent",
-      "child": "Enfant",
-      "spouse": "\u00c9poux/se",
-      "partner": "Partenaire",
-      "sibling": "Fr\u00e8re/S\u0153ur",
-      "grandparent": "Grand-parent",
-      "grandchild": "Petit-enfant",
-      "relative": "Parent",
-      "friend": "Ami",
-      "neighbor": "Voisin",
-      "caregiver": "Aidant",
-      "guardian": "Tuteur",
-      "doctor": "M\u00e9decin",
-      "nurse": "Infirmier/\u00e8re",
-      "colleague": "Coll\u00e8gue",
-      "other": "Autre"
+    "booking": {
+      "loading": "Chargement..",
+      "notes": {
+        "label": "Notes Supplémentaires (Optionnel)",
+        "placeholder": "Entrez des instructions spécifiques pour ce rendez-vous..."
+      },
+      "slots": {
+        "title": "Créneaux Horaires Disponibles",
+        "noSlots": "Aucun créneau disponible pour la date sélectionnée"
+      },
+      "button": {
+        "booking": "Réservation en cours...",
+        "book": "Réserver un rendez-vous"
+      },
+      "price": {
+        "session": "Prix de la séance :",
+        "range": "Fourchette de prix du professionnel :"
+      },
+      "urgency": {
+        "label": "Niveau d'urgence",
+        "low": "Faible",
+        "routine": "Contrôle de routine",
+        "medium": "Moyen",
+        "week": "Dans la semaine",
+        "high": "Élevé",
+        "urgent": "Soins urgents"
+      },
+      "success": {
+        "title": "Réservation Confirmée !",
+        "message": "Votre rendez-vous a été programmé avec succès. Nous avons envoyé une confirmation à votre email.",
+        "viewAppointments": "Voir mes rendez-vous",
+        "bookAnother": "Réserver un autre rendez-vous"
+      }
     },
-    "specializations": {
-      "generalPractitioner": "M\u00e9decin G\u00e9n\u00e9raliste",
-      "familyMedicine": "M\u00e9decine Familiale",
-      "internalMedicine": "M\u00e9decine Interne",
-      "generalSurgery": "Chirurgie G\u00e9n\u00e9rale",
-      "orthopedicSurgery": "Chirurgie Orthop\u00e9dique",
-      "neurosurgery": "Neurochirurgie",
-      "plasticSurgery": "Chirurgie Plastique",
-      "cardiothoracicSurgery": "Chirurgie Cardiothoracique",
-      "urology": "Urologie",
-      "radiology": "Radiologie",
-      "pathology": "Pathologie",
-      "emergencyMedicine": "M\u00e9decine d'Urgence",
-      "criticalCare": "Soins Intensifs",
-      "obstetricsAndGynecology": "Obst\u00e9trique et Gyn\u00e9cologie",
-      "pediatrics": "P\u00e9diatrie",
-      "psychiatry": "Psychiatrie",
-      "psychology": "Psychologie",
-      "cardiology": "Cardiologie",
-      "pulmonology": "Pneumologie",
-      "gastroenterology": "Gastro-ent\u00e9rologie",
-      "nephrology": "N\u00e9phrologie",
-      "endocrinology": "Endocrinologie",
-      "dermatology": "Dermatologie",
-      "ophthalmology": "Ophtalmologie",
-      "ent": "ORL",
-      "dentistry": "Dentisterie",
-      "physiotherapy": "Physioth\u00e9rapie",
-      "pharmacy": "Pharmacie",
-      "nursing": "Soins Infirmiers",
-      "other": "Autre"
+    "settings": {
+      "title": "Paramètres du compte",
+      "subtitle": "Gérez votre profil, vos documents de vérification et vos préférences de sécurité.",
+      "tabs": {
+        "profile": "Profil & Bio",
+        "security": "Sécurité"
+      },
+      "profile": {
+        "error": "Erreur lors du chargement du profil patient. Veuillez réessayer plus tard.",
+        "basicInfo": {
+          "title": "Informations de base",
+          "subtitle": "Détails principaux affichés sur votre profil public.",
+          "picture": {
+            "label": "Photo de profil",
+            "hint": "JPG, PNG jusqu'à 5 Mo.",
+            "upload": "Télécharger une nouvelle"
+          }
+        }
+      },
+      "security": {
+        "title": "Sécurité",
+        "subtitle": "Gardez votre compte sécurisé avec un mot de passe fort.",
+        "currentPassword": {
+          "label": "Mot de passe actuel",
+          "placeholder": "Entrez le mot de passe actuel"
+        },
+        "newPassword": {
+          "label": "Nouveau mot de passe",
+          "placeholder": "Au moins 6 caractères"
+        },
+        "confirmPassword": {
+          "label": "Confirmer le nouveau mot de passe",
+          "placeholder": "Entrez à nouveau le nouveau mot de passe"
+        },
+        "updateButton": "Mettre à jour le mot de passe",
+        "2fa": {
+          "title": "Authentification à deux facteurs",
+          "subtitle": "Ajoutez une couche de sécurité supplémentaire en utilisant SMS ou une application d'authentification.",
+          "comingSoon": "Bientôt disponible"
+        }
+      }
+    },
+    "profile": {
+      "error": "Erreur lors du chargement du profil.",
+      "back": "Retour",
+      "title": "Profil Patient",
+      "about": "À propos & Bio",
+      "noBio": "Aucune bio fournie pour le moment.",
+      "gender": "Genre",
+      "mobility": "Mobilité",
+      "medicalInfo": "Informations Médicales",
+      "allergies": "Allergies",
+      "noAllergies": "Aucune allergie signalée",
+      "medications": "Médicaments Actuels"
+    },
+    "professionals": {
+      "title": "Mes Professionnels",
+      "subtitle": "Un aperçu rapide des professionnels de santé avec lesquels vous avez été en contact.",
+      "viewAll": "Voir tout",
+      "error": "Erreur lors du chargement des professionnels.",
+      "notFound": "Aucun professionnel trouvé.",
+      "years": "ans",
+      "message": "Message",
+      "viewProfile": "Voir le profil",
+      "stats": {
+        "total": "Total des Professionnels",
+        "allTime": "Tout le temps",
+        "workedWith": "Professionnels avec qui vous avez travaillé"
+      }
+    },
+    "appointments": {
+      "table": {
+        "empty": {
+          "offered": {
+            "title": "Aucun rendez-vous proposé",
+            "description": "Vous n'avez aucune offre de rendez-vous en attente pour le moment."
+          },
+          "confirmed": {
+            "title": "Aucun rendez-vous confirmé",
+            "description": "Vous n'avez aucun rendez-vous confirmé."
+          },
+          "cancelled": {
+            "title": "Aucun rendez-vous annulé",
+            "description": "Vous n'avez aucun rendez-vous annulé."
+          },
+          "completed": {
+            "title": "Aucun rendez-vous terminé",
+            "description": "Vous n'avez aucun rendez-vous terminé."
+          }
+        }
+      },
+      "stats": {
+        "today": {
+          "title": "Rendez-vous d'aujourd'hui",
+          "badge": "Aujourd'hui",
+          "completed": "% terminé"
+        },
+        "total": {
+          "title": "Rendez-vous"
+        },
+        "upcoming": {
+          "title": "Rendez-vous à venir",
+          "new": "Nouveau",
+          "confirmed": "confirmé",
+          "offered": "proposé",
+          "thisWeek": "Cette semaine",
+          "thisMonth": "Ce mois-ci"
+        },
+        "status": {
+          "confirmed": "Confirmé",
+          "offered": "Proposé",
+          "cancelled": "Annulé",
+          "completed": "Terminé"
+        },
+        "professionals": {
+          "title": "Total des professionnels",
+          "all_time": "Tout le temps",
+          "description": "Professionnels avec qui vous avez travaillé"
+        }
+      }
+    },
+    "findProfessional": {
+      "verified": "Vérifié",
+      "pending": "En attente",
+      "book": "Réserver",
+      "viewProfile": "Voir le profil",
+      "error": "Erreur lors du chargement des professionnels.",
+      "title": "Professionnels",
+      "subtitle": "Affichage des infirmiers, physiothérapeutes et aidants..",
+      "sort": {
+        "label": "Trier par",
+        "recommended": "Recommandé",
+        "rating": "Meilleure note",
+        "availability": "Disponibilité la plus proche",
+        "price": "Prix le plus bas"
+      },
+      "pagination": {
+        "showing": "Affichage de",
+        "of": "sur",
+        "professionals": "professionnels.",
+        "loading": "Chargement...",
+        "loadMore": "Charger plus",
+        "noMore": "Plus de professionnels"
+      },
+      "filter": {
+        "search": {
+          "label": "Rechercher",
+          "placeholder": "Mot-clé, condition ou nom"
+        },
+        "location": {
+          "label": "Lieu",
+          "placeholder": "Tunis, Sousse..."
+        },
+        "price": {
+          "label": "Fourchette de prix"
+        }
+      }
+    },
+    "professionalProfile": {
+      "present": "Présent",
+      "status": {
+        "pendingReview": "En attente de révision",
+        "requiresAttention": "Nécessite une attention",
+        "notUploaded": "Non téléchargé",
+        "verified": "Vérifié",
+        "pending": "En attente",
+        "rejected": "Rejeté",
+        "label": "Statut"
+      },
+      "error": "Erreur lors du chargement du profil professionnel.",
+      "back": "Retour aux professionnels",
+      "specialist": "Spécialiste",
+      "reviews": "avis",
+      "tabs": {
+        "overview": "Aperçu",
+        "reviews": "Avis",
+        "schedule": "Emploi du temps"
+      },
+      "about": "À propos & Bio",
+      "specialty": "Spécialité",
+      "rate": "Tarif",
+      "perHour": "/h",
+      "experience": "Expérience",
+      "years": "Ans",
+      "specialties": "Spécialités & Focus",
+      "noExperience": "Aucune expérience professionnelle ajoutée",
+      "education": "Éducation",
+      "noEducation": "Aucun détail sur l'éducation ajouté",
+      "awards": "Prix & Reconnaissances",
+      "noAwards": "Aucun prix ou reconnaissance ajouté",
+      "contact": {
+        "title": "Coordonnées",
+        "address": "Adresse",
+        "email": "Email",
+        "phone": "Téléphone",
+        "dob": "Date de naissance"
+      },
+      "credentials": {
+        "title": "Identifiants",
+        "verified": "vérifié",
+        "diploma": "Diplôme",
+        "diplomaVerified": "Diplôme médical vérifié",
+        "license": "Licence professionnelle",
+        "licenseVerified": "Licence vérifiée",
+        "id": "Carte d'identité",
+        "idVerified": "Identité vérifiée",
+        "insurance": "Assurance responsabilité civile",
+        "insuranceVerified": "Assurance vérifiée"
+      },
+      "schedule": {
+        "title": "Disponibilité hebdomadaire",
+        "timeSlot": "créneau horaire",
+        "timeSlots": "créneaux horaires",
+        "notAvailable": "Non disponible",
+        "available": "Disponible",
+        "unavailable": "Indisponible",
+        "noSchedule": "Aucun emploi du temps configuré"
+      }
     }
   }
 }

@@ -39,14 +39,14 @@ import {
   UpdatePatient,
 } from "@/features/patient";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { COUNTRIES, RELATIONSHIPS } from "@/features/auth";
+import { getCountries, getRelationships } from "@/features/auth";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export function ProfileAndBio() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { data: patient, isLoading, isError } = GetCurrentPatient();
 
   if (isLoading) {
@@ -60,7 +60,7 @@ export function ProfileAndBio() {
   if (isError) {
     return (
       <div className="p-4 text-red-500">
-        Error loading patient profile. Please try again later.
+        {t("patient.settings.profile.error")}
       </div>
     );
   }
@@ -119,10 +119,10 @@ export function ProfileAndBio() {
           <header className="mb-2 flex cursor-pointer items-center justify-between select-none">
             <div className="">
               <h3 className="text-brand-dark text-xs font-semibold tracking-tight">
-                Basic Information
+                {t("patient.settings.profile.basicInfo.title")}
               </h3>
               <p className="mt-0.5 text-[11px] text-slate-500">
-                Core details shown on your public patient profile.
+                {t("patient.settings.profile.basicInfo.subtitle")}
               </p>
             </div>
             <button
@@ -164,10 +164,10 @@ export function ProfileAndBio() {
                 </Avatar>
                 <div className="flex flex-col gap-1 text-[11px] text-slate-600">
                   <p className="font-medium tracking-tight text-slate-900">
-                    Profile picture
+                    {t("patient.settings.profile.basicInfo.picture.label")}
                   </p>
                   <p className="text-[10px] text-slate-500">
-                    JPG, PNG up to 5MB.
+                    {t("patient.settings.profile.basicInfo.picture.hint")}
                   </p>
                 </div>
               </div>
@@ -196,7 +196,11 @@ export function ProfileAndBio() {
                             <path d="m17 8-5-5-5 5"></path>
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                           </svg>
-                          <span>Upload new</span>
+                          <span>
+                            {t(
+                              "patient.settings.profile.basicInfo.picture.upload",
+                            )}
+                          </span>
                           <input
                             {...field}
                             type="file"
@@ -345,9 +349,9 @@ export function ProfileAndBio() {
                           ></SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          {COUNTRIES.map((country, idx) => (
+                          {getCountries(i18n.language).map((country, idx) => (
                             <SelectItem key={idx} value={country.value}>
-                              {t(country.label)}
+                              {country.label}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -424,11 +428,13 @@ export function ProfileAndBio() {
                           ></SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          {RELATIONSHIPS.map((relationship, idx) => (
-                            <SelectItem key={idx} value={relationship.value}>
-                              {relationship.label}
-                            </SelectItem>
-                          ))}
+                          {getRelationships(i18n.language).map(
+                            (relationship, idx) => (
+                              <SelectItem key={idx} value={relationship.value}>
+                                {relationship.label}
+                              </SelectItem>
+                            ),
+                          )}
                         </SelectContent>
                       </Select>
                     </FormControl>

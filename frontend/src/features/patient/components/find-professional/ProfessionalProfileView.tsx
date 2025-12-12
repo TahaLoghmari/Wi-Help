@@ -26,7 +26,7 @@ import {
   CalendarDays,
 } from "lucide-react";
 import { useParams, useRouter } from "@tanstack/react-router";
-import { COUNTRIES, SPECIALIZATIONS } from "@/features/auth";
+import { getCountries, getSpecializations } from "@/features/auth";
 import { Avatar, AvatarFallback, AvatarImage, Spinner } from "@/components/ui";
 import {
   GetProfessional,
@@ -46,13 +46,16 @@ import {
 } from "@/features/professional";
 import { VerificationStatus } from "@/features/admin/types/adminTypes";
 import { ReviewsList, GetProfessionalReviewStats } from "@/features/reviews";
+import { useTranslation } from "react-i18next";
+import i18n from "@/config/i18n";
 
 type TabType = "overview" | "reviews" | "schedule";
 
 // Experience Card Component
 function ExperienceCard({ experience }: { experience: GetExperiencesDto }) {
+  const { t } = useTranslation();
   const yearRange = experience.isCurrentPosition
-    ? `${experience.startYear} – Present`
+    ? `${experience.startYear} – ${t("patient.professionalProfile.present")}`
     : `${experience.startYear} – ${experience.endYear}`;
 
   return (
@@ -98,8 +101,9 @@ function ExperienceCard({ experience }: { experience: GetExperiencesDto }) {
 
 // Education Card Component
 function EducationCard({ education }: { education: GetEducationsDto }) {
+  const { t } = useTranslation();
   const yearRange = education.isCurrentlyStudying
-    ? `${education.startYear} – Present`
+    ? `${education.startYear} – ${t("patient.professionalProfile.present")}`
     : `${education.startYear} – ${education.endYear}`;
 
   return (
@@ -188,6 +192,7 @@ function DocumentStatusBadge({
   title: string;
   verifiedText: string;
 }) {
+  const { t } = useTranslation();
   const isVerified = document?.status === DocumentStatus.Verified;
   const isPending = document?.status === DocumentStatus.Pending;
   const isRejected = document?.status === DocumentStatus.Rejected;
@@ -214,10 +219,10 @@ function DocumentStatusBadge({
             {isVerified
               ? verifiedText
               : isPending
-                ? "Pending Review"
+                ? t("patient.professionalProfile.status.pendingReview")
                 : isRejected
-                  ? "Requires Attention"
-                  : "Not Uploaded"}
+                  ? t("patient.professionalProfile.status.requiresAttention")
+                  : t("patient.professionalProfile.status.notUploaded")}
           </div>
         </div>
       </div>
@@ -233,12 +238,12 @@ function DocumentStatusBadge({
         }
         title={
           isVerified
-            ? "Verified"
+            ? t("patient.professionalProfile.status.verified")
             : isPending
-              ? "Pending"
+              ? t("patient.professionalProfile.status.pending")
               : isRejected
-                ? "Rejected"
-                : "Not Uploaded"
+                ? t("patient.professionalProfile.status.rejected")
+                : t("patient.professionalProfile.status.notUploaded")
         }
       >
         {isVerified ? (
@@ -256,6 +261,7 @@ function DocumentStatusBadge({
 }
 
 export function ProfessionalProfileView() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const router = useRouter();
   const { professionalId } = useParams({ strict: false });
@@ -318,7 +324,7 @@ export function ProfessionalProfileView() {
   if (isError) {
     return (
       <div className="p-8 text-center text-red-500">
-        Error loading professional profile.
+        {t("patient.professionalProfile.error")}
       </div>
     );
   }
@@ -331,7 +337,7 @@ export function ProfessionalProfileView() {
         className="group mb-2 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition-all hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 active:scale-95"
       >
         <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
-        Back to professionals
+        {t("patient.professionalProfile.back")}
       </button>
 
       {/* Profile Header Card */}
@@ -369,11 +375,11 @@ export function ProfessionalProfileView() {
                   </h2>
                   <p className="text-sm text-slate-500">
                     {
-                      SPECIALIZATIONS.find(
+                      getSpecializations(i18n.language).find(
                         (s) => s.value === professional?.specialization,
                       )?.label
                     }{" "}
-                    Specialist
+                    {t("patient.professionalProfile.specialist")}
                   </p>
                 </div>
               </div>
@@ -408,7 +414,8 @@ export function ProfessionalProfileView() {
                     {reviewStats?.averageRating?.toFixed(1) ?? "0.0"}
                   </span>
                   <span className="text-slate-400">
-                    ({reviewStats?.totalCount ?? 0} reviews)
+                    ({reviewStats?.totalCount ?? 0}{" "}
+                    {t("patient.professionalProfile.reviews")})
                   </span>
                 </div>
               </div>
@@ -429,7 +436,7 @@ export function ProfessionalProfileView() {
             }`}
             data-target="profile-content-overview"
           >
-            Overview
+            {t("patient.professionalProfile.tabs.overview")}
             <span
               className={`bg-brand-dark absolute bottom-0 left-0 h-0.5 w-full ${
                 activeTab === "overview" ? "" : "hidden"
@@ -445,7 +452,7 @@ export function ProfessionalProfileView() {
             }`}
             data-target="profile-content-reviews"
           >
-            Reviews
+            {t("patient.professionalProfile.tabs.reviews")}
             <span
               className={`bg-brand-dark absolute bottom-0 left-0 h-0.5 w-full ${
                 activeTab === "reviews" ? "" : "hidden"
@@ -461,7 +468,7 @@ export function ProfessionalProfileView() {
             }`}
             data-target="profile-content-schedule"
           >
-            Schedule
+            {t("patient.professionalProfile.tabs.schedule")}
             <span
               className={`bg-brand-dark absolute bottom-0 left-0 h-0.5 w-full ${
                 activeTab === "schedule" ? "" : "hidden"
@@ -480,7 +487,7 @@ export function ProfessionalProfileView() {
             <section className="border-brand-dark/10 rounded-2xl border bg-white p-5">
               <h3 className="text-brand-dark mb-4 flex items-center gap-2 text-sm font-bold tracking-tight">
                 <User className="text-brand-secondary h-4 w-4" />
-                About &amp; Bio
+                {t("patient.professionalProfile.about")}
               </h3>
               <div className="prose prose-sm text-brand-secondary mb-6 max-w-none text-xs leading-relaxed">
                 {professional?.bio}
@@ -493,11 +500,11 @@ export function ProfessionalProfileView() {
                     <Stethoscope className="h-4 w-4" />
                   </div>
                   <div className="text-brand-secondary text-[10px] font-semibold tracking-wider uppercase">
-                    Specialty
+                    {t("patient.professionalProfile.specialty")}
                   </div>
                   <div className="text-brand-dark text-xs font-semibold">
                     {
-                      SPECIALIZATIONS.find(
+                      getSpecializations(i18n.language).find(
                         (s) => s.value === professional?.specialization,
                       )?.label
                     }
@@ -508,10 +515,11 @@ export function ProfessionalProfileView() {
                     <DollarSign className="h-4 w-4" />
                   </div>
                   <div className="text-brand-secondary text-[10px] font-semibold tracking-wider uppercase">
-                    Rate
+                    {t("patient.professionalProfile.rate")}
                   </div>
                   <div className="text-brand-dark text-xs font-semibold">
-                    ${professional?.startPrice} - ${professional?.endPrice}/hr
+                    ${professional?.startPrice} - ${professional?.endPrice}
+                    {t("patient.professionalProfile.perHour")}
                   </div>
                 </div>
                 <div className="border-brand-dark/10 bg-brand-bg flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center">
@@ -519,10 +527,11 @@ export function ProfessionalProfileView() {
                     <Briefcase className="h-4 w-4" />
                   </div>
                   <div className="text-brand-secondary text-[10px] font-semibold tracking-wider uppercase">
-                    Experience
+                    {t("patient.professionalProfile.experience")}
                   </div>
                   <div className="text-brand-dark text-xs font-semibold">
-                    {professional?.experience} Years
+                    {professional?.experience}{" "}
+                    {t("patient.professionalProfile.years")}
                   </div>
                 </div>
                 {(() => {
@@ -534,15 +543,21 @@ export function ProfessionalProfileView() {
                   if (status === VerificationStatus.Verified) {
                     statusColor = "text-brand-teal";
                     StatusIcon = ShieldCheck;
-                    statusLabel = "Verified";
+                    statusLabel = t(
+                      "patient.professionalProfile.status.verified",
+                    );
                   } else if (status === VerificationStatus.Pending) {
                     statusColor = "text-brand-dark";
                     StatusIcon = Clock;
-                    statusLabel = "Pending";
+                    statusLabel = t(
+                      "patient.professionalProfile.status.pending",
+                    );
                   } else if (status === VerificationStatus.Rejected) {
                     statusColor = "text-red-500";
                     StatusIcon = XCircle;
-                    statusLabel = "Rejected";
+                    statusLabel = t(
+                      "patient.professionalProfile.status.rejected",
+                    );
                   }
 
                   return (
@@ -553,7 +568,7 @@ export function ProfessionalProfileView() {
                         <StatusIcon className="h-4 w-4" />
                       </div>
                       <div className="text-brand-secondary text-[10px] font-semibold tracking-wider uppercase">
-                        Status
+                        {t("patient.professionalProfile.status.label")}
                       </div>
                       <div className={`${statusColor} text-xs font-semibold`}>
                         {statusLabel}
@@ -568,7 +583,7 @@ export function ProfessionalProfileView() {
             <section className="border-brand-dark/10 rounded-2xl border bg-white p-5">
               <h3 className="text-brand-dark mb-4 flex items-center gap-2 text-sm font-bold tracking-tight">
                 <Layers className="text-brand-secondary h-4 w-4" />
-                Specialties &amp; Focus
+                {t("patient.professionalProfile.specialties")}
               </h3>
               <div className="flex flex-wrap gap-2">
                 {professional?.services.map((service, index) => (
@@ -591,7 +606,7 @@ export function ProfessionalProfileView() {
               <div className="mb-6 flex items-center justify-between">
                 <h3 className="text-brand-dark flex items-center gap-2 text-sm font-bold tracking-tight">
                   <Briefcase className="text-brand-secondary h-4 w-4" />
-                  Experience
+                  {t("patient.professionalProfile.experience")}
                 </h3>
               </div>
 
@@ -612,7 +627,7 @@ export function ProfessionalProfileView() {
                 <div className="border-brand-dark/20 flex flex-col items-center justify-center rounded-xl border border-dashed py-8 text-center">
                   <Briefcase className="text-brand-dark/20 mb-2 h-8 w-8" />
                   <p className="text-xs text-slate-400">
-                    No work experience added yet
+                    {t("patient.professionalProfile.noExperience")}
                   </p>
                 </div>
               )}
@@ -623,7 +638,7 @@ export function ProfessionalProfileView() {
               <div className="mb-6 flex items-center justify-between">
                 <h3 className="text-brand-dark flex items-center gap-2 text-sm font-bold tracking-tight">
                   <GraduationCap className="text-brand-secondary h-4 w-4" />
-                  Education
+                  {t("patient.professionalProfile.education")}
                 </h3>
               </div>
 
@@ -644,7 +659,7 @@ export function ProfessionalProfileView() {
                 <div className="border-brand-dark/20 flex flex-col items-center justify-center rounded-xl border border-dashed py-8 text-center">
                   <GraduationCap className="text-brand-dark/20 mb-2 h-8 w-8" />
                   <p className="text-xs text-slate-400">
-                    No education details added yet
+                    {t("patient.professionalProfile.noEducation")}
                   </p>
                 </div>
               )}
@@ -655,7 +670,7 @@ export function ProfessionalProfileView() {
               <div className="mb-6 flex items-center justify-between">
                 <h3 className="text-brand-dark flex items-center gap-2 text-sm font-bold tracking-tight">
                   <Medal className="text-brand-secondary h-4 w-4" />
-                  Awards &amp; Recognitions
+                  {t("patient.professionalProfile.awards")}
                 </h3>
               </div>
 
@@ -673,7 +688,7 @@ export function ProfessionalProfileView() {
                 <div className="border-brand-dark/20 flex flex-col items-center justify-center rounded-xl border border-dashed py-8 text-center">
                   <Medal className="text-brand-dark/20 mb-2 h-8 w-8" />
                   <p className="text-xs text-slate-400">
-                    No awards or recognitions added yet
+                    {t("patient.professionalProfile.noAwards")}
                   </p>
                 </div>
               )}
@@ -686,7 +701,7 @@ export function ProfessionalProfileView() {
             <section className="border-brand-dark/10 overflow-hidden rounded-2xl border bg-white">
               <div className="border-brand-dark/10 bg-brand-bg border-b px-5 py-3">
                 <h3 className="text-brand-dark text-xs font-bold tracking-tight">
-                  Contact Information
+                  {t("patient.professionalProfile.contact.title")}
                 </h3>
               </div>
               <div className="space-y-5 p-5">
@@ -696,7 +711,7 @@ export function ProfessionalProfileView() {
                   </div>
                   <div>
                     <div className="text-brand-dark text-xs font-semibold">
-                      Address
+                      {t("patient.professionalProfile.contact.address")}
                     </div>
                     <div className="text-brand-secondary mt-0.5 text-xs leading-snug">
                       {professional?.address.street}
@@ -705,7 +720,7 @@ export function ProfessionalProfileView() {
                       {professional?.address.state}{" "}
                       {professional?.address.postalCode}
                       <br />
-                      {COUNTRIES.find(
+                      {getCountries(i18n.language).find(
                         (c) => c.value === professional?.address?.country,
                       )?.label ?? professional?.address?.country}
                     </div>
@@ -717,7 +732,7 @@ export function ProfessionalProfileView() {
                   </div>
                   <div>
                     <div className="text-brand-dark text-xs font-semibold">
-                      Email
+                      {t("patient.professionalProfile.contact.email")}
                     </div>
                     <span className="text-brand-blue mt-0.5 block text-xs hover:underline">
                       {professional?.email}
@@ -730,7 +745,7 @@ export function ProfessionalProfileView() {
                   </div>
                   <div>
                     <div className="text-brand-dark text-xs font-semibold">
-                      Phone
+                      {t("patient.professionalProfile.contact.phone")}
                     </div>
                     <div className="text-brand-secondary mt-0.5 text-xs">
                       +216 {professional?.phoneNumber}
@@ -743,7 +758,7 @@ export function ProfessionalProfileView() {
                   </div>
                   <div>
                     <div className="text-brand-dark text-xs font-semibold">
-                      Date of Birth
+                      {t("patient.professionalProfile.contact.dob")}
                     </div>
                     <div className="text-brand-secondary mt-0.5 text-xs">
                       {professional?.dateOfBirth}
@@ -757,11 +772,12 @@ export function ProfessionalProfileView() {
             <section className="border-brand-dark/10 overflow-hidden rounded-2xl border bg-white">
               <div className="border-brand-dark/10 bg-brand-bg flex items-center justify-between border-b px-5 py-3">
                 <h3 className="text-brand-dark text-xs font-bold tracking-tight">
-                  Credentials
+                  {t("patient.professionalProfile.credentials.title")}
                 </h3>
                 {verifiedCount > 0 && (
                   <span className="border-brand-teal/20 bg-brand-teal/10 text-brand-teal rounded-full border px-2 py-0.5 text-[10px] font-medium">
-                    {verifiedCount} verified
+                    {verifiedCount}{" "}
+                    {t("patient.professionalProfile.credentials.verified")}
                   </span>
                 )}
               </div>
@@ -774,26 +790,36 @@ export function ProfessionalProfileView() {
                   <DocumentStatusBadge
                     document={documentsByType[DocumentType.Diploma]}
                     Icon={GraduationCap}
-                    title="Diploma"
-                    verifiedText="Medical Degree Verified"
+                    title={t("patient.professionalProfile.credentials.diploma")}
+                    verifiedText={t(
+                      "patient.professionalProfile.credentials.diplomaVerified",
+                    )}
                   />
                   <DocumentStatusBadge
                     document={documentsByType[DocumentType.ProfessionalLicense]}
                     Icon={FileBadge}
-                    title="Professional License"
-                    verifiedText="License Verified"
+                    title={t("patient.professionalProfile.credentials.license")}
+                    verifiedText={t(
+                      "patient.professionalProfile.credentials.licenseVerified",
+                    )}
                   />
                   <DocumentStatusBadge
                     document={documentsByType[DocumentType.Id]}
                     Icon={IdCard}
-                    title="ID Card"
-                    verifiedText="Identity Verified"
+                    title={t("patient.professionalProfile.credentials.id")}
+                    verifiedText={t(
+                      "patient.professionalProfile.credentials.idVerified",
+                    )}
                   />
                   <DocumentStatusBadge
                     document={documentsByType[DocumentType.Insurance]}
                     Icon={Shield}
-                    title="Liability Insurance"
-                    verifiedText="Insurance Verified"
+                    title={t(
+                      "patient.professionalProfile.credentials.insurance",
+                    )}
+                    verifiedText={t(
+                      "patient.professionalProfile.credentials.insuranceVerified",
+                    )}
                   />
                 </div>
               )}
@@ -815,7 +841,7 @@ export function ProfessionalProfileView() {
           <section className="border-brand-dark/10 rounded-2xl border bg-white p-5">
             <h3 className="text-brand-dark mb-6 flex items-center gap-2 text-sm font-bold tracking-tight">
               <CalendarDays className="text-brand-secondary h-4 w-4" />
-              Weekly Availability
+              {t("patient.professionalProfile.schedule.title")}
             </h3>
             {isLoadingSchedule ? (
               <div className="flex items-center justify-center py-8">
@@ -854,8 +880,10 @@ export function ProfessionalProfileView() {
                             </h4>
                             <p className="text-brand-secondary text-xs">
                               {isActive
-                                ? `${slots.length} time slot${slots.length !== 1 ? "s" : ""}`
-                                : "Not available"}
+                                ? `${slots.length} ${slots.length !== 1 ? t("patient.professionalProfile.schedule.timeSlots") : t("patient.professionalProfile.schedule.timeSlot")}`
+                                : t(
+                                    "patient.professionalProfile.schedule.notAvailable",
+                                  )}
                             </p>
                           </div>
                         </div>
@@ -866,7 +894,13 @@ export function ProfessionalProfileView() {
                               : "bg-brand-dark/5 text-brand-secondary/60"
                           }`}
                         >
-                          {isActive ? "Available" : "Unavailable"}
+                          {isActive
+                            ? t(
+                                "patient.professionalProfile.schedule.available",
+                              )
+                            : t(
+                                "patient.professionalProfile.schedule.unavailable",
+                              )}
                         </div>
                       </div>
                       {isActive && slots.length > 0 && (
@@ -890,7 +924,7 @@ export function ProfessionalProfileView() {
               <div className="border-brand-dark/20 flex flex-col items-center justify-center rounded-xl border border-dashed py-8 text-center">
                 <CalendarDays className="text-brand-dark/20 mb-2 h-8 w-8" />
                 <p className="text-xs text-slate-400">
-                  No schedule configured yet
+                  {t("patient.professionalProfile.schedule.noSchedule")}
                 </p>
               </div>
             )}

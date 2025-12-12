@@ -2,10 +2,12 @@ import {
   GetPatientPrescriptions,
   type GetPatientPrescriptionsDto,
 } from "../../hooks/GetPatientPrescriptions";
-import { SPECIALIZATIONS } from "@/features/auth";
+import { getSpecializations } from "@/features/auth";
 import { ExternalLink } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function PrescriptionsTable() {
+  const { t, i18n } = useTranslation();
   const {
     data,
     isLoading,
@@ -25,7 +27,7 @@ export function PrescriptionsTable() {
   if (isLoading) {
     return (
       <div className="p-4 text-center text-sm text-slate-500">
-        Loading prescriptions...
+        {t("patient.prescriptions.loading")}
       </div>
     );
   }
@@ -33,7 +35,7 @@ export function PrescriptionsTable() {
   if (error) {
     return (
       <div className="p-4 text-center text-sm text-red-500">
-        Error loading prescriptions
+        {t("patient.prescriptions.error")}
       </div>
     );
   }
@@ -43,10 +45,10 @@ export function PrescriptionsTable() {
       <div className="border-b border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-2 pl-4 sm:px-5">
         <div className="mb-2">
           <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
-            My Prescriptions
+            {t("patient.prescriptions.title")}
           </h2>
           <p className="mt-0.5 text-[11px] text-slate-500">
-            Your prescription records from consultations and appointments.
+            {t("patient.prescriptions.subtitle")}
           </p>
         </div>
       </div>
@@ -56,16 +58,16 @@ export function PrescriptionsTable() {
           <thead className="bg-white">
             <tr className="border-b border-slate-200">
               <th className="pt-2.5 pr-4 pb-2.5 pl-4 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Created by
+                {t("patient.prescriptions.table.createdBy")}
               </th>
               <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Title
+                {t("patient.prescriptions.table.title")}
               </th>
               <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Date
+                {t("patient.prescriptions.table.date")}
               </th>
               <th className="px-4 py-2.5 text-right text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Action
+                {t("patient.prescriptions.table.action")}
               </th>
             </tr>
           </thead>
@@ -132,7 +134,7 @@ export function PrescriptionsTable() {
                         </div>
                         {prescription.professional?.specialization && (
                           <div className="text-[11px] text-slate-500">
-                            {SPECIALIZATIONS.find(
+                            {getSpecializations(i18n.language).find(
                               (s) =>
                                 s.value ===
                                 prescription.professional?.specialization,

@@ -5,7 +5,7 @@ import {
   type GetAllAppointmentsDto,
   AppointmentStatus,
 } from "@/features/admin";
-import { SPECIALIZATIONS } from "@/features/auth/lib/authConstants";
+import { getSpecializations } from "@/features/auth/lib/authConstants";
 import {
   Select,
   SelectContent,
@@ -15,8 +15,10 @@ import {
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetClose } from "@/components/ui/sheet";
 import { X, Calendar, Stethoscope } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function AdminAppointmentsTable() {
+  const { i18n } = useTranslation();
   const {
     data,
     isLoading,
@@ -144,7 +146,7 @@ export function AdminAppointmentsTable() {
                           {appointment.professional.lastName}
                         </div>
                         <div className="text-[11px] text-slate-500">
-                          {SPECIALIZATIONS.find(
+                          {getSpecializations(i18n.language).find(
                             (s) =>
                               s.value ===
                               appointment.professional.specialization,
