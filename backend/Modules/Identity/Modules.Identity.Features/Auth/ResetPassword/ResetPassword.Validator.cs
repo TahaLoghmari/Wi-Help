@@ -1,0 +1,24 @@
+using FluentValidation;
+
+namespace Modules.Identity.Features.Auth.ResetPassword;
+
+public sealed class ResetPasswordValidator : AbstractValidator<ResetPasswordCommand>
+{
+    public ResetPasswordValidator()
+    {
+        RuleFor(x => x.Email)
+            .NotEmpty()
+            .EmailAddress();
+
+        RuleFor(x => x.Token)
+            .NotEmpty();
+
+        RuleFor(x => x.NewPassword)
+            .NotEmpty()
+            .MinimumLength(6);
+
+        RuleFor(x => x.ConfirmPassword)
+            .Equal(x => x.NewPassword)
+            .WithMessage("Passwords do not match.");
+    }
+}
