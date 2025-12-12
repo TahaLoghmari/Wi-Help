@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -14,6 +15,7 @@ import { Banknote, Shield, ExternalLink, X } from "lucide-react";
 import { FLOUCI_ICON } from "@/assets";
 
 export function Payment() {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [walletId, setWalletId] = useState("");
 
@@ -29,11 +31,10 @@ export function Payment() {
       <div className="flex flex-col gap-3 gap-x-3 gap-y-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="">
           <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
-            Payment Settings
+            {t("professional.payment.title")}
           </h2>
           <p className="mt-0.5 max-w-xl text-[11px] text-slate-500">
-            Manage your payment methods including Flouci Wallet ID and bank
-            account RIB.
+            {t("professional.payment.subtitle")}
           </p>
         </div>
       </div>
@@ -62,28 +63,31 @@ export function Payment() {
                 <div className="flex-1 space-y-2">
                   <div className="flex items-center gap-3">
                     <h3 className="text-brand-dark text-sm font-semibold transition-colors">
-                      Flouci
+                      {t("professional.payment.flouci.title")}
                     </h3>
                   </div>
                   <p className="text-muted-foreground text-xs">
-                    Connect your flouci wallet to receive payments seamlessly
-                    from clients
+                    {t("professional.payment.flouci.description")}
                   </p>
                   <div className="text-muted-foreground mt-3 flex items-center gap-4 text-xs">
                     <div className="flex items-center gap-1">
                       <Banknote className="h-3 w-3" aria-hidden="true" />
-                      <span>Instant payments</span>
+                      <span>
+                        {t("professional.payment.flouci.instantPayments")}
+                      </span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Shield className="h-3 w-3" aria-hidden="true" />
-                      <span>Secure transactions</span>
+                      <span>
+                        {t("professional.payment.flouci.secureTransactions")}
+                      </span>
                     </div>
                   </div>
                 </div>
                 <div className="shrink-0">
                   <AlertDialogTrigger asChild>
                     <Button className="hover:bg-brand-dark/80 bg-brand-dark relative overflow-hidden text-white transition-all duration-300">
-                      Connect Wallet
+                      {t("professional.payment.flouci.connectWallet")}
                       <ExternalLink
                         className="ml-2 h-4 w-4 transition-transform duration-300"
                         aria-hidden="true"
@@ -99,16 +103,18 @@ export function Payment() {
         <AlertDialogContent className="max-h-[90%] max-w-[calc(100%-2rem)] overflow-y-auto sm:max-w-[600px]">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-brand-dark">
-              Integrate With Flouci
+              {t("professional.payment.flouci.integrateTitle")}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Integrate your account with your Flouci Wallet.
+              {t("professional.payment.flouci.integrateDescription")}
             </AlertDialogDescription>
           </AlertDialogHeader>
 
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="space-y-2">
-              <Label htmlFor="walletId">Wallet Id</Label>
+              <Label htmlFor="walletId">
+                {t("professional.payment.flouci.walletId")}
+              </Label>
               <Input
                 type="text"
                 id="walletId"
@@ -124,7 +130,7 @@ export function Payment() {
                 type="submit"
                 className="bg-brand-dark hover:bg-brand-dark/90 text-white"
               >
-                Integrate
+                {t("professional.payment.flouci.integrateButton")}
               </Button>
             </div>
           </form>
@@ -135,7 +141,9 @@ export function Payment() {
             className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
           >
             <X aria-hidden="true" />
-            <span className="sr-only">Close</span>
+            <span className="sr-only">
+              {t("professional.payment.flouci.close")}
+            </span>
           </button>
         </AlertDialogContent>
       </AlertDialog>

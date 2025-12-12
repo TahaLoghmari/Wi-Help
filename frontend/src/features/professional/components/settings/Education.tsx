@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type z from "zod";
+import { useTranslation } from "react-i18next";
 import {
   Plus,
   Pencil,
@@ -51,6 +52,7 @@ function EducationForm({
   onCancel,
   isEditing = false,
 }: EducationFormProps) {
+  const { t } = useTranslation();
   const createEducationMutation = useCreateEducation();
   const updateEducationMutation = useUpdateEducation();
 
@@ -101,13 +103,15 @@ function EducationForm({
             render={({ field }) => (
               <FormItem className="flex flex-col gap-1">
                 <FormLabel className="block text-[10px] font-medium text-slate-600">
-                  Institution *
+                  {t("professional.settings.education.form.institution.label")}
                 </FormLabel>
                 <FormControl>
                   <input
                     type="text"
                     className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
-                    placeholder="e.g., Harvard Medical School"
+                    placeholder={t(
+                      "professional.settings.education.form.institution.placeholder",
+                    )}
                     {...field}
                   />
                 </FormControl>
@@ -121,13 +125,15 @@ function EducationForm({
             render={({ field }) => (
               <FormItem className="flex flex-col gap-1">
                 <FormLabel className="block text-[10px] font-medium text-slate-600">
-                  Degree *
+                  {t("professional.settings.education.form.degree.label")}
                 </FormLabel>
                 <FormControl>
                   <input
                     type="text"
                     className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
-                    placeholder="e.g., MD, PhD, Bachelor's"
+                    placeholder={t(
+                      "professional.settings.education.form.degree.placeholder",
+                    )}
                     {...field}
                   />
                 </FormControl>
@@ -143,13 +149,15 @@ function EducationForm({
             render={({ field }) => (
               <FormItem className="flex flex-col gap-1">
                 <FormLabel className="block text-[10px] font-medium text-slate-600">
-                  Field of Study
+                  {t("professional.settings.education.form.fieldOfStudy.label")}
                 </FormLabel>
                 <FormControl>
                   <input
                     type="text"
                     className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
-                    placeholder="e.g., Medicine, Cardiology"
+                    placeholder={t(
+                      "professional.settings.education.form.fieldOfStudy.placeholder",
+                    )}
                     {...field}
                     value={field.value ?? ""}
                   />
@@ -164,13 +172,15 @@ function EducationForm({
             render={({ field }) => (
               <FormItem className="flex flex-col gap-1">
                 <FormLabel className="block text-[10px] font-medium text-slate-600">
-                  Country
+                  {t("professional.settings.education.form.country.label")}
                 </FormLabel>
                 <FormControl>
                   <input
                     type="text"
                     className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
-                    placeholder="e.g., United States"
+                    placeholder={t(
+                      "professional.settings.education.form.country.placeholder",
+                    )}
                     {...field}
                     value={field.value ?? ""}
                   />
@@ -187,13 +197,15 @@ function EducationForm({
             render={({ field }) => (
               <FormItem className="flex flex-col gap-1">
                 <FormLabel className="block text-[10px] font-medium text-slate-600">
-                  Start Year *
+                  {t("professional.settings.education.form.startYear.label")}
                 </FormLabel>
                 <FormControl>
                   <input
                     type="text"
                     className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
-                    placeholder="e.g., 2018"
+                    placeholder={t(
+                      "professional.settings.education.form.startYear.placeholder",
+                    )}
                     {...field}
                   />
                 </FormControl>
@@ -207,13 +219,15 @@ function EducationForm({
             render={({ field }) => (
               <FormItem className="flex flex-col gap-1">
                 <FormLabel className="block text-[10px] font-medium text-slate-600">
-                  End Year
+                  {t("professional.settings.education.form.endYear.label")}
                 </FormLabel>
                 <FormControl>
                   <input
                     type="text"
                     className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none disabled:bg-slate-100 disabled:text-slate-400"
-                    placeholder="e.g., 2022"
+                    placeholder={t(
+                      "professional.settings.education.form.endYear.placeholder",
+                    )}
                     disabled={isCurrentlyStudying}
                     {...field}
                     value={isCurrentlyStudying ? "" : (field.value ?? "")}
@@ -236,7 +250,7 @@ function EducationForm({
                   />
                 </FormControl>
                 <FormLabel className="cursor-pointer text-[10px] font-normal text-slate-600">
-                  Currently studying
+                  {t("professional.settings.education.form.currentlyStudying")}
                 </FormLabel>
               </FormItem>
             )}
@@ -249,7 +263,7 @@ function EducationForm({
             className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] text-slate-600 transition-colors hover:bg-slate-50"
           >
             <X className="h-3.5 w-3.5" />
-            Cancel
+            {t("professional.settings.education.form.cancel")}
           </button>
           <button
             type="submit"
@@ -261,7 +275,9 @@ function EducationForm({
             ) : (
               <Save className="h-3.5 w-3.5" />
             )}
-            {isEditing ? "Update" : "Save"}
+            {isEditing
+              ? t("professional.settings.education.form.update")
+              : t("professional.settings.education.form.save")}
           </button>
         </div>
       </form>
@@ -276,8 +292,9 @@ interface EducationCardProps {
 }
 
 function EducationCard({ education, onEdit, onDelete }: EducationCardProps) {
+  const { t } = useTranslation();
   const dateRange = education.isCurrentlyStudying
-    ? `${education.startYear} – Present`
+    ? `${education.startYear} – ${t("professional.settings.education.present")}`
     : education.endYear
       ? `${education.startYear} – ${education.endYear}`
       : education.startYear;
@@ -335,6 +352,7 @@ function EducationCard({ education, onEdit, onDelete }: EducationCardProps) {
 }
 
 export function Education() {
+  const { t } = useTranslation();
   const { data: educations, isLoading } = useGetEducations();
   const deleteEducationMutation = useDeleteEducation();
   const [isAddingNew, setIsAddingNew] = useState(false);
@@ -363,10 +381,10 @@ export function Education() {
     <div className="space-y-3">
       <div className="mb-1 border-b border-slate-200 pb-3">
         <h3 className="text-brand-dark text-xs font-semibold tracking-tight">
-          Education
+          {t("professional.settings.education.title")}
         </h3>
         <p className="mt-0.5 text-[11px] text-slate-500">
-          Add your medical education and training history.
+          {t("professional.settings.education.subtitle")}
         </p>
       </div>
       <div className="mt-6 flex items-center justify-start">
@@ -377,7 +395,7 @@ export function Education() {
           className="text-brand-dark hover:border-brand-blue/70 hover:bg-brand-blue/10 inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-slate-50/80 px-2.5 py-1.5 text-[11px] transition-colors disabled:opacity-50"
         >
           <Plus className="h-3.5 w-3.5" />
-          Add education
+          {t("professional.settings.education.add")}
         </button>
       </div>
       <section className="flex flex-col gap-3 bg-white p-3 sm:p-4">
@@ -385,7 +403,7 @@ export function Education() {
           {isAddingNew && (
             <div className="border-brand-blue/30 bg-brand-blue/5 rounded-xl border p-3">
               <p className="text-brand-dark mb-3 text-[11px] font-medium">
-                Add New Education
+                {t("professional.settings.education.addNew")}
               </p>
               <EducationForm onCancel={() => setIsAddingNew(false)} />
             </div>
@@ -399,7 +417,7 @@ export function Education() {
                   className="border-brand-blue/30 bg-brand-blue/5 rounded-xl border p-3"
                 >
                   <p className="text-brand-dark mb-3 text-[11px] font-medium">
-                    Edit Education
+                    {t("professional.settings.education.edit")}
                   </p>
                   <EducationForm
                     education={education}
@@ -420,7 +438,7 @@ export function Education() {
             <div className="flex flex-col items-center justify-center rounded-2xl border border-slate-200 p-16 text-center">
               <GraduationCap className="mb-2 h-8 w-8 text-slate-300" />
               <p className="text-[11px] text-slate-500">
-                No education added yet. Click "Add education" to get started.
+                {t("professional.settings.education.empty")}
               </p>
             </div>
           ) : null}
@@ -428,8 +446,7 @@ export function Education() {
 
         {educations && educations.length > 0 && (
           <p className="mt-2 text-[10px] text-slate-400">
-            Use the Add button to include additional degrees or training
-            programs.
+            {t("professional.settings.education.hint")}
           </p>
         )}
       </section>
@@ -440,14 +457,17 @@ export function Education() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Education</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t("professional.settings.education.delete.title")}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this education entry? This action
-              cannot be undone.
+              {t("professional.settings.education.delete.description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>
+              {t("professional.settings.education.delete.cancel")}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               className="bg-rose-500 hover:bg-rose-600"
@@ -455,7 +475,7 @@ export function Education() {
               {deleteEducationMutation.isPending ? (
                 <Spinner className="h-4 w-4 border-2 border-white/30 border-t-white" />
               ) : (
-                "Delete"
+                t("professional.settings.education.delete.confirm")
               )}
             </AlertDialogAction>
           </AlertDialogFooter>

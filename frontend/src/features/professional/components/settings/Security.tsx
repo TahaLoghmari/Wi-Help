@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type z from "zod";
 import {
@@ -19,6 +20,7 @@ import {
 import { Key } from "lucide-react";
 
 export function Security() {
+  const { t } = useTranslation();
   const form = useForm<z.infer<typeof changePasswordFormSchema>>({
     resolver: zodResolver(changePasswordFormSchema),
     mode: "onChange",
@@ -50,10 +52,10 @@ export function Security() {
         >
           <div className="mb-1 border-slate-200 pb-3">
             <h3 className="text-brand-dark text-xs font-semibold tracking-tight">
-              Security
+              {t("professional.settings.security.title")}
             </h3>
             <p className="mt-0.5 text-[11px] text-slate-500">
-              Keep your account secure with a strong password.
+              {t("professional.settings.security.subtitle")}
             </p>
           </div>
           <div className="space-y-3">
@@ -63,13 +65,17 @@ export function Security() {
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-1">
                   <FormLabel className="block text-[11px] font-medium text-slate-700">
-                    Current password
+                    {t(
+                      "professional.settings.security.form.currentPassword.label",
+                    )}
                   </FormLabel>
                   <FormControl>
                     <input
                       type="password"
                       className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
-                      placeholder="Enter current password"
+                      placeholder={t(
+                        "professional.settings.security.form.currentPassword.placeholder",
+                      )}
                       {...field}
                     />
                   </FormControl>
@@ -84,13 +90,17 @@ export function Security() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      New password
+                      {t(
+                        "professional.settings.security.form.newPassword.label",
+                      )}
                     </FormLabel>
                     <FormControl>
                       <input
                         type="password"
                         className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
-                        placeholder="At least 6 characters"
+                        placeholder={t(
+                          "professional.settings.security.form.newPassword.placeholder",
+                        )}
                         {...field}
                       />
                     </FormControl>
@@ -104,13 +114,17 @@ export function Security() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      Confirm new password
+                      {t(
+                        "professional.settings.security.form.confirmNewPassword.label",
+                      )}
                     </FormLabel>
                     <FormControl>
                       <input
                         type="password"
                         className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
-                        placeholder="Re-enter new password"
+                        placeholder={t(
+                          "professional.settings.security.form.confirmNewPassword.placeholder",
+                        )}
                         {...field}
                       />
                     </FormControl>
@@ -132,7 +146,7 @@ export function Security() {
                 ) : (
                   <Key className="h-3.5 w-3.5 text-white" />
                 )}
-                Update password
+                {t("professional.settings.security.form.submit")}
               </button>
             </div>
           </div>

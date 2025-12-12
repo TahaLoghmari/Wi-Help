@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type z from "zod";
@@ -38,6 +39,7 @@ interface AwardFormProps {
 }
 
 function AwardForm({ award, onCancel, isEditing = false }: AwardFormProps) {
+  const { t } = useTranslation();
   const createAwardMutation = useCreateAward();
   const updateAwardMutation = useUpdateAward();
 
@@ -78,13 +80,15 @@ function AwardForm({ award, onCancel, isEditing = false }: AwardFormProps) {
             render={({ field }) => (
               <FormItem className="flex flex-col gap-1">
                 <FormLabel className="block text-[10px] font-medium text-slate-600">
-                  Title *
+                  {t("professional.settings.awards.form.title.label")}
                 </FormLabel>
                 <FormControl>
                   <input
                     type="text"
                     className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
-                    placeholder="e.g., Excellence in Patient Care Award"
+                    placeholder={t(
+                      "professional.settings.awards.form.title.placeholder",
+                    )}
                     {...field}
                   />
                 </FormControl>
@@ -98,13 +102,15 @@ function AwardForm({ award, onCancel, isEditing = false }: AwardFormProps) {
             render={({ field }) => (
               <FormItem className="flex flex-col gap-1">
                 <FormLabel className="block text-[10px] font-medium text-slate-600">
-                  Year Received *
+                  {t("professional.settings.awards.form.yearReceived.label")}
                 </FormLabel>
                 <FormControl>
                   <input
                     type="text"
                     className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
-                    placeholder="e.g., 2023"
+                    placeholder={t(
+                      "professional.settings.awards.form.yearReceived.placeholder",
+                    )}
                     maxLength={4}
                     {...field}
                   />
@@ -120,13 +126,15 @@ function AwardForm({ award, onCancel, isEditing = false }: AwardFormProps) {
           render={({ field }) => (
             <FormItem className="flex flex-col gap-1">
               <FormLabel className="block text-[10px] font-medium text-slate-600">
-                Issuing Organization
+                {t("professional.settings.awards.form.issuer.label")}
               </FormLabel>
               <FormControl>
                 <input
                   type="text"
                   className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
-                  placeholder="e.g., Heart & Vascular Center"
+                  placeholder={t(
+                    "professional.settings.awards.form.issuer.placeholder",
+                  )}
                   {...field}
                   value={field.value ?? ""}
                 />
@@ -141,13 +149,15 @@ function AwardForm({ award, onCancel, isEditing = false }: AwardFormProps) {
           render={({ field }) => (
             <FormItem className="flex flex-col gap-1">
               <FormLabel className="block text-[10px] font-medium text-slate-600">
-                Description
+                {t("professional.settings.awards.form.description.label")}
               </FormLabel>
               <FormControl>
                 <textarea
                   className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full resize-none rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
                   rows={3}
-                  placeholder="Describe the award and why you received it..."
+                  placeholder={t(
+                    "professional.settings.awards.form.description.placeholder",
+                  )}
                   {...field}
                   value={field.value ?? ""}
                 />
@@ -163,7 +173,7 @@ function AwardForm({ award, onCancel, isEditing = false }: AwardFormProps) {
             className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] text-slate-600 transition-colors hover:bg-slate-50"
           >
             <X className="h-3.5 w-3.5" />
-            Cancel
+            {t("professional.settings.awards.form.cancel")}
           </button>
           <button
             type="submit"
@@ -175,7 +185,9 @@ function AwardForm({ award, onCancel, isEditing = false }: AwardFormProps) {
             ) : (
               <Save className="h-3.5 w-3.5" />
             )}
-            {isEditing ? "Update" : "Save"}
+            {isEditing
+              ? t("professional.settings.awards.form.update")
+              : t("professional.settings.awards.form.save")}
           </button>
         </div>
       </form>
@@ -263,10 +275,10 @@ export function Awards() {
     <div className="space-y-3">
       <div className="mb-1 border-b border-slate-200 pb-3">
         <h3 className="text-brand-dark text-xs font-semibold tracking-tight">
-          Awards
+          {t("professional.settings.awards.title")}
         </h3>
         <p className="mt-0.5 text-[11px] text-slate-500">
-          Showcase professional awards and recognitions.
+          {t("professional.settings.awards.subtitle")}
         </p>
       </div>
       <div className="mt-6 flex items-center justify-start">
@@ -277,7 +289,7 @@ export function Awards() {
           className="text-brand-dark hover:border-brand-blue/70 hover:bg-brand-blue/10 inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-slate-50/80 px-2.5 py-1.5 text-[11px] transition-colors disabled:opacity-50"
         >
           <Plus className="h-3.5 w-3.5" />
-          Add award
+          {t("professional.settings.awards.add")}
         </button>
       </div>
       <section className="flex flex-col gap-3 bg-white p-3 sm:p-4">
@@ -285,7 +297,7 @@ export function Awards() {
           {isAddingNew && (
             <div className="border-brand-blue/30 bg-brand-blue/5 rounded-xl border p-3">
               <p className="text-brand-dark mb-3 text-[11px] font-medium">
-                Add New Award
+                {t("professional.settings.awards.addNew")}
               </p>
               <AwardForm onCancel={() => setIsAddingNew(false)} />
             </div>
@@ -299,7 +311,7 @@ export function Awards() {
                   className="border-brand-blue/30 bg-brand-blue/5 rounded-xl border p-3"
                 >
                   <p className="text-brand-dark mb-3 text-[11px] font-medium">
-                    Edit Award
+                    {t("professional.settings.awards.edit")}
                   </p>
                   <AwardForm
                     award={award}
@@ -320,7 +332,7 @@ export function Awards() {
             <div className="flex flex-col items-center justify-center rounded-2xl border border-slate-200 p-16 text-center">
               <Medal className="mb-2 h-8 w-8 text-slate-300" />
               <p className="text-[11px] text-slate-500">
-                No awards added yet. Click "Add award" to get started.
+                {t("professional.settings.awards.empty")}
               </p>
             </div>
           ) : null}
@@ -328,7 +340,7 @@ export function Awards() {
 
         {awards && awards.length > 0 && (
           <p className="mt-2 text-[10px] text-slate-400">
-            Use the Add button to include additional awards or recognitions.
+            {t("professional.settings.awards.hint")}
           </p>
         )}
       </section>
@@ -339,14 +351,17 @@ export function Awards() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Award</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t("professional.settings.awards.delete.title")}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this award? This action cannot be
-              undone.
+              {t("professional.settings.awards.delete.description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>
+              {t("professional.settings.awards.delete.cancel")}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               className="bg-rose-500 hover:bg-rose-600"
@@ -354,7 +369,7 @@ export function Awards() {
               {deleteAwardMutation.isPending ? (
                 <Spinner className="h-4 w-4 border-2 border-white/30 border-t-white" />
               ) : (
-                "Delete"
+                t("professional.settings.awards.delete.confirm")
               )}
             </AlertDialogAction>
           </AlertDialogFooter>

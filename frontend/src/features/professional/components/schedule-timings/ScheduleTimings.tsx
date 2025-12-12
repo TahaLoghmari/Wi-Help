@@ -9,6 +9,7 @@ import {
 } from "@/features/professional";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { scheduleFormSchema } from "../../lib/professionalValidationSchemas";
 import type { z } from "zod";
@@ -21,6 +22,7 @@ const TIME_OPTIONS = Array.from({ length: 24 }, (_, i) => {
 type ScheduleFormValues = z.infer<typeof scheduleFormSchema>;
 
 export function ScheduleTimings() {
+  const { t } = useTranslation();
   const { data: professional } = GetCurrentProfessional();
   const {
     data: currentSchedule,
@@ -80,7 +82,7 @@ export function ScheduleTimings() {
   if (isError) {
     return (
       <div className="p-4 text-center text-red-500">
-        Error loading schedule.
+        {t("professional.schedule.error")}
       </div>
     );
   }
@@ -136,10 +138,10 @@ export function ScheduleTimings() {
           </div>
           <div>
             <h2 className="text-brand-dark text-lg font-semibold tracking-tight">
-              Setup Schedule
+              {t("professional.schedule.title")}
             </h2>
             <p className="text-xs text-slate-500">
-              Configure your weekly availability and time slots.
+              {t("professional.schedule.subtitle")}
             </p>
           </div>
         </div>
@@ -147,9 +149,11 @@ export function ScheduleTimings() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {Object.keys(form.formState.errors).length > 0 && (
             <Alert variant={"destructive"}>
-              <AlertTitle>Validation Error</AlertTitle>
+              <AlertTitle>
+                {t("professional.schedule.validationError")}
+              </AlertTitle>
               <AlertDescription>
-                Please check the form for errors.
+                {t("professional.schedule.checkErrors")}
               </AlertDescription>
             </Alert>
           )}
@@ -183,8 +187,8 @@ export function ScheduleTimings() {
                     </h3>
                     <p className="text-xs text-slate-500">
                       {day.isActive
-                        ? `${day.availabilitySlots?.length || 0} time slot${(day.availabilitySlots?.length || 0) !== 1 ? "s" : ""} configured`
-                        : "Not available"}
+                        ? `${day.availabilitySlots?.length || 0} ${t("professional.schedule.slotsConfigured")}`
+                        : t("professional.schedule.notAvailable")}
                     </p>
                   </div>
                 </div>
@@ -218,7 +222,9 @@ export function ScheduleTimings() {
                             </option>
                           ))}
                         </select>
-                        <span className="text-xs text-slate-400">to</span>
+                        <span className="text-xs text-slate-400">
+                          {t("professional.schedule.to")}
+                        </span>
                         <select
                           value={slot.endTime}
                           onChange={(e) =>
@@ -253,7 +259,7 @@ export function ScheduleTimings() {
                     className="hover:border-brand-blue hover:bg-brand-blue/5 hover:text-brand-blue flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white py-2.5 text-xs font-medium text-slate-600 transition-all"
                   >
                     <Plus className="h-3.5 w-3.5" />
-                    Add Time Slot
+                    {t("professional.schedule.addSlot")}
                   </button>
                 </div>
               )}
@@ -267,7 +273,7 @@ export function ScheduleTimings() {
               className="bg-brand-dark hover:bg-brand-secondary inline-flex items-center justify-center gap-2 rounded-full px-6 py-2.5 text-xs font-medium text-white shadow-sm transition-colors disabled:opacity-50"
             >
               {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
-              Save Schedule
+              {t("professional.schedule.save")}
             </button>
           </div>
         </form>

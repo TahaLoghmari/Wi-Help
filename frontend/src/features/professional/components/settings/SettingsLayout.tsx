@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Awards,
   Education,
@@ -9,17 +10,17 @@ import {
 } from "@/features/professional";
 
 export function SettingsLayout() {
+  const { t } = useTranslation();
   const [tab, setTab] = useState("Profile & Bio");
   return (
     <div className="flex w-full flex-1 flex-col gap-5 overflow-auto bg-[#fafafb] px-8 py-5 transition-all duration-200">
       <div className="flex flex-col gap-3 gap-x-3 gap-y-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="">
           <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
-            Account Settings
+            {t("professional.settings.title")}
           </h2>
           <p className="mt-0.5 max-w-xl text-[11px] text-slate-500">
-            Manage your profile, verification documents, and security
-            preferences.
+            {t("professional.settings.subtitle")}
           </p>
         </div>
       </div>
@@ -45,7 +46,7 @@ export function SettingsLayout() {
               <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
               <circle cx="12" cy="7" r="4"></circle>
             </svg>
-            Profile &amp; Bio
+            {t("professional.settings.tabs.profile")}
           </button>
           <button
             className={`${tab === "Verification Documents" ? "bg-brand-dark text-white" : "hover:border-brand-blue/70 hover:bg-brand-blue/5 border border-slate-200 bg-white text-slate-700"} inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5`}
@@ -70,7 +71,7 @@ export function SettingsLayout() {
               <circle cx="9" cy="11" r="2"></circle>
               <rect x="2" y="5" width="20" height="14" rx="2"></rect>
             </svg>
-            Verification Documents
+            {t("professional.settings.tabs.verification")}
           </button>
           <button
             className={`${tab === "Education" ? "bg-brand-dark text-white" : "hover:border-brand-blue/70 hover:bg-brand-blue/5 border border-slate-200 bg-white text-slate-700"} inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5`}
@@ -92,7 +93,7 @@ export function SettingsLayout() {
               <path d="M12 7v14"></path>
               <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path>
             </svg>
-            Education
+            {t("professional.settings.tabs.education")}
           </button>
           <button
             className={`${tab === "Experience" ? "bg-brand-dark text-white" : "hover:border-brand-blue/70 hover:bg-brand-blue/5 border border-slate-200 bg-white text-slate-700"} inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5`}
@@ -117,7 +118,7 @@ export function SettingsLayout() {
               <path d="M8 15a6 6 0 0 0 12 0v-3"></path>
               <circle cx="20" cy="10" r="2"></circle>
             </svg>
-            Experience
+            {t("professional.settings.tabs.experience")}
           </button>
           <button
             className={`${tab === "Awards" ? "bg-brand-dark text-white" : "hover:border-brand-blue/70 hover:bg-brand-blue/5 border border-slate-200 bg-white text-slate-700"} inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5`}
@@ -143,7 +144,7 @@ export function SettingsLayout() {
               <circle cx="12" cy="17" r="5"></circle>
               <path d="M12 18v-2h-.5"></path>
             </svg>
-            Awards
+            {t("professional.settings.tabs.awards")}
           </button>
 
           <button
@@ -165,7 +166,7 @@ export function SettingsLayout() {
             >
               <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
             </svg>
-            Security
+            {t("professional.settings.tabs.security")}
           </button>
         </div>
         {tab === "Profile & Bio" && <ProfileAndBio />}

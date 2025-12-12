@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type z from "zod";
+import { useTranslation } from "react-i18next";
 import {
   Plus,
   Pencil,
@@ -52,6 +53,7 @@ function ExperienceForm({
   onCancel,
   isEditing = false,
 }: ExperienceFormProps) {
+  const { t } = useTranslation();
   const createExperienceMutation = useCreateExperience();
   const updateExperienceMutation = useUpdateExperience();
 
@@ -102,13 +104,15 @@ function ExperienceForm({
             render={({ field }) => (
               <FormItem className="flex flex-col gap-1">
                 <FormLabel className="block text-[10px] font-medium text-slate-600">
-                  Title / Role *
+                  {t("professional.settings.experience.form.title.label")}
                 </FormLabel>
                 <FormControl>
                   <input
                     type="text"
                     className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
-                    placeholder="e.g., Attending Cardiologist"
+                    placeholder={t(
+                      "professional.settings.experience.form.title.placeholder",
+                    )}
                     {...field}
                   />
                 </FormControl>
@@ -122,13 +126,17 @@ function ExperienceForm({
             render={({ field }) => (
               <FormItem className="flex flex-col gap-1">
                 <FormLabel className="block text-[10px] font-medium text-slate-600">
-                  Organization *
+                  {t(
+                    "professional.settings.experience.form.organization.label",
+                  )}
                 </FormLabel>
                 <FormControl>
                   <input
                     type="text"
                     className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
-                    placeholder="e.g., Heart & Vascular Center"
+                    placeholder={t(
+                      "professional.settings.experience.form.organization.placeholder",
+                    )}
                     {...field}
                   />
                 </FormControl>
@@ -143,13 +151,15 @@ function ExperienceForm({
           render={({ field }) => (
             <FormItem className="flex flex-col gap-1">
               <FormLabel className="block text-[10px] font-medium text-slate-600">
-                Location
+                {t("professional.settings.experience.form.location.label")}
               </FormLabel>
               <FormControl>
                 <input
                   type="text"
                   className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
-                  placeholder="e.g., Boston, MA"
+                  placeholder={t(
+                    "professional.settings.experience.form.location.placeholder",
+                  )}
                   {...field}
                   value={field.value ?? ""}
                 />
@@ -165,13 +175,15 @@ function ExperienceForm({
             render={({ field }) => (
               <FormItem className="flex flex-col gap-1">
                 <FormLabel className="block text-[10px] font-medium text-slate-600">
-                  Start Year *
+                  {t("professional.settings.experience.form.startYear.label")}
                 </FormLabel>
                 <FormControl>
                   <input
                     type="text"
                     className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
-                    placeholder="e.g., 2015"
+                    placeholder={t(
+                      "professional.settings.experience.form.startYear.placeholder",
+                    )}
                     {...field}
                   />
                 </FormControl>
@@ -185,13 +197,15 @@ function ExperienceForm({
             render={({ field }) => (
               <FormItem className="flex flex-col gap-1">
                 <FormLabel className="block text-[10px] font-medium text-slate-600">
-                  End Year
+                  {t("professional.settings.experience.form.endYear.label")}
                 </FormLabel>
                 <FormControl>
                   <input
                     type="text"
                     className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none disabled:bg-slate-100 disabled:text-slate-400"
-                    placeholder="e.g., 2020"
+                    placeholder={t(
+                      "professional.settings.experience.form.endYear.placeholder",
+                    )}
                     disabled={isCurrentPosition}
                     {...field}
                     value={isCurrentPosition ? "" : (field.value ?? "")}
@@ -214,7 +228,7 @@ function ExperienceForm({
                   />
                 </FormControl>
                 <FormLabel className="cursor-pointer text-[10px] font-normal text-slate-600">
-                  Current position
+                  {t("professional.settings.experience.form.currentPosition")}
                 </FormLabel>
               </FormItem>
             )}
@@ -226,13 +240,15 @@ function ExperienceForm({
           render={({ field }) => (
             <FormItem className="flex flex-col gap-1">
               <FormLabel className="block text-[10px] font-medium text-slate-600">
-                Description
+                {t("professional.settings.experience.form.description.label")}
               </FormLabel>
               <FormControl>
                 <textarea
                   className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full resize-none rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
                   rows={3}
-                  placeholder="Describe your responsibilities and achievements..."
+                  placeholder={t(
+                    "professional.settings.experience.form.description.placeholder",
+                  )}
                   {...field}
                   value={field.value ?? ""}
                 />
@@ -248,7 +264,7 @@ function ExperienceForm({
             className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] text-slate-600 transition-colors hover:bg-slate-50"
           >
             <X className="h-3.5 w-3.5" />
-            Cancel
+            {t("professional.settings.experience.form.cancel")}
           </button>
           <button
             type="submit"
@@ -260,7 +276,9 @@ function ExperienceForm({
             ) : (
               <Save className="h-3.5 w-3.5" />
             )}
-            {isEditing ? "Update" : "Save"}
+            {isEditing
+              ? t("professional.settings.experience.form.update")
+              : t("professional.settings.experience.form.save")}
           </button>
         </div>
       </form>
@@ -275,8 +293,9 @@ interface ExperienceCardProps {
 }
 
 function ExperienceCard({ experience, onEdit, onDelete }: ExperienceCardProps) {
+  const { t } = useTranslation();
   const dateRange = experience.isCurrentPosition
-    ? `${experience.startYear} – Present`
+    ? `${experience.startYear} – ${t("professional.settings.experience.present")}`
     : experience.endYear
       ? `${experience.startYear} – ${experience.endYear}`
       : experience.startYear;
@@ -338,6 +357,7 @@ function ExperienceCard({ experience, onEdit, onDelete }: ExperienceCardProps) {
 }
 
 export function Experience() {
+  const { t } = useTranslation();
   const { data: experiences, isLoading } = useGetExperiences();
   const deleteExperienceMutation = useDeleteExperience();
   const [isAddingNew, setIsAddingNew] = useState(false);
@@ -366,10 +386,10 @@ export function Experience() {
     <div className="space-y-3">
       <div className="mb-1 border-b border-slate-200 pb-3">
         <h3 className="text-brand-dark text-xs font-semibold tracking-tight">
-          Experience
+          {t("professional.settings.experience.title")}
         </h3>
         <p className="mt-0.5 text-[11px] text-slate-500">
-          Highlight your clinical and related work experience.
+          {t("professional.settings.experience.subtitle")}
         </p>
       </div>
       <div className="mt-6 flex items-center justify-start">
@@ -380,7 +400,7 @@ export function Experience() {
           className="text-brand-dark hover:border-brand-blue/70 hover:bg-brand-blue/10 inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-slate-50/80 px-2.5 py-1.5 text-[11px] transition-colors disabled:opacity-50"
         >
           <Plus className="h-3.5 w-3.5" />
-          Add experience
+          {t("professional.settings.experience.add")}
         </button>
       </div>
       <section className="flex flex-col gap-3 bg-white p-3 sm:p-4">
@@ -388,7 +408,7 @@ export function Experience() {
           {isAddingNew && (
             <div className="border-brand-blue/30 bg-brand-blue/5 rounded-xl border p-3">
               <p className="text-brand-dark mb-3 text-[11px] font-medium">
-                Add New Experience
+                {t("professional.settings.experience.addNew")}
               </p>
               <ExperienceForm onCancel={() => setIsAddingNew(false)} />
             </div>
@@ -402,7 +422,7 @@ export function Experience() {
                   className="border-brand-blue/30 bg-brand-blue/5 rounded-xl border p-3"
                 >
                   <p className="text-brand-dark mb-3 text-[11px] font-medium">
-                    Edit Experience
+                    {t("professional.settings.experience.edit")}
                   </p>
                   <ExperienceForm
                     experience={experience}
@@ -423,7 +443,7 @@ export function Experience() {
             <div className="flex flex-col items-center justify-center rounded-2xl border border-slate-200 p-16 text-center">
               <Briefcase className="mb-2 h-8 w-8 text-slate-300" />
               <p className="text-[11px] text-slate-500">
-                No experience added yet. Click "Add experience" to get started.
+                {t("professional.settings.experience.empty")}
               </p>
             </div>
           ) : null}
@@ -431,7 +451,7 @@ export function Experience() {
 
         {experiences && experiences.length > 0 && (
           <p className="mt-2 text-[10px] text-slate-400">
-            Use Add to include residency, fellowships, and other relevant roles.
+            {t("professional.settings.experience.hint")}
           </p>
         )}
       </section>
@@ -442,14 +462,17 @@ export function Experience() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Experience</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t("professional.settings.experience.delete.title")}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this experience entry? This action
-              cannot be undone.
+              {t("professional.settings.experience.delete.description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>
+              {t("professional.settings.experience.delete.cancel")}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               className="bg-rose-500 hover:bg-rose-600"
@@ -457,7 +480,7 @@ export function Experience() {
               {deleteExperienceMutation.isPending ? (
                 <Spinner className="h-4 w-4 border-2 border-white/30 border-t-white" />
               ) : (
-                "Delete"
+                t("professional.settings.experience.delete.confirm")
               )}
             </AlertDialogAction>
           </AlertDialogFooter>

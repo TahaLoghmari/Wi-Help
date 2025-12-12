@@ -541,5 +541,467 @@
         "noSchedule": "Aucun emploi du temps configuré"
       }
     }
+  },
+  "professional": {
+    "stats": {
+      "appointments": {
+        "title": "Rendez-vous",
+        "completed": "Terminés",
+        "confirmed": "Confirmés",
+        "offered": "Proposés",
+        "cancelled": "Annulés"
+      },
+      "today": {
+        "title": "Rendez-vous d'aujourd'hui",
+        "badge": "Aujourd'hui",
+        "completedPercentage": "% terminés"
+      },
+      "patients": {
+        "title": "Total Patients",
+        "allTime": "Tout le temps",
+        "active": "Patients actifs sous vos soins"
+      }
+    },
+    "appointments": {
+      "title": "Rendez-vous Patients",
+      "subtitle": "Gérez les rendez-vous à venir et d'aujourd'hui avec des actions rapides.",
+      "tabs": {
+        "offered": "Proposés",
+        "confirmed": "Confirmés",
+        "cancelled": "Annulés",
+        "completed": "Terminés"
+      },
+      "table": {
+        "patient": "Patient",
+        "date": "Date",
+        "purpose": "Motif",
+        "urgency": "Urgence",
+        "price": "Prix",
+        "actions": "Actions",
+        "unknownPatient": "Patient Inconnu",
+        "dob": "DDN :",
+        "patientId": "ID Patient :"
+      },
+      "empty": {
+        "offered": {
+          "title": "Aucun rendez-vous proposé",
+          "description": "Vous n'avez aucune offre de rendez-vous en attente pour le moment."
+        },
+        "confirmed": {
+          "title": "Aucun rendez-vous confirmé",
+          "description": "Vous n'avez pas encore de rendez-vous confirmés."
+        },
+        "cancelled": {
+          "title": "Aucun rendez-vous annulé",
+          "description": "Vous n'avez aucun rendez-vous annulé."
+        },
+        "completed": {
+          "title": "Aucun rendez-vous terminé",
+          "description": "Vous n'avez pas encore de rendez-vous terminés."
+        }
+      },
+      "loading": "Chargement des rendez-vous...",
+      "error": "Erreur lors du chargement des rendez-vous",
+      "dialogs": {
+        "upload": {
+          "title": "Cliquez pour télécharger ou glissez-déposez",
+          "subtitle": "PDF uniquement"
+        },
+        "prescriptionTitle": {
+          "label": "Titre de l'ordonnance (optionnel)",
+          "placeholder": "ex : Ordonnance de consultation générale"
+        },
+        "notes": {
+          "label": "Notes (optionnel)",
+          "placeholder": "Notes supplémentaires sur l'ordonnance..."
+        },
+        "cancel": "Annuler",
+        "complete": "Terminer le rendez-vous",
+        "completing": "Finalisation..."
+      }
+    },
+    "myPatients": {
+      "title": "Mes Patients",
+      "subtitle": "Un aperçu rapide des patients clés de votre panel avec des actions de communication directes.",
+      "viewAll": "Voir tout",
+      "error": "Erreur lors du chargement des patients.",
+      "empty": "Aucun patient trouvé.",
+      "card": {
+        "id": "ID : #",
+        "years": "ans",
+        "unknown": "Inconnu",
+        "viewProfile": "Voir le profil",
+        "message": "Message"
+      }
+    },
+    "schedule": {
+      "title": "Configurer l'emploi du temps",
+      "subtitle": "Configurez votre disponibilité hebdomadaire et vos créneaux horaires.",
+      "validationError": "Erreur de validation",
+      "checkErrors": "Veuillez vérifier le formulaire pour les erreurs.",
+      "slotsConfigured": "créneau(x) configuré(s)",
+      "notAvailable": "Non disponible",
+      "to": "à",
+      "addSlot": "Ajouter un créneau",
+      "save": "Enregistrer l'emploi du temps",
+      "error": "Erreur lors du chargement de l'emploi du temps."
+    },
+    "profile": {
+      "present": "Présent",
+      "error": "Erreur lors du chargement du profil.",
+      "specialist": "Spécialiste",
+      "reviewsCount": "avis",
+      "tabs": {
+        "overview": "Aperçu",
+        "reviews": "Avis",
+        "schedule": "Emploi du temps"
+      },
+      "about": "À propos & Bio",
+      "specialty": "Spécialité",
+      "rate": "Tarif",
+      "experience": "Expérience",
+      "years": "Ans",
+      "status": {
+        "label": "Statut",
+        "verified": "Vérifié",
+        "pending": "En attente",
+        "rejected": "Rejeté",
+        "unknown": "Inconnu"
+      },
+      "specialties": "Spécialités & Focus",
+      "noExperience": "Aucune expérience professionnelle ajoutée",
+      "education": "Éducation",
+      "noEducation": "Aucun détail sur l'éducation ajouté",
+      "awards": "Prix & Reconnaissances",
+      "noAwards": "Aucun prix ou reconnaissance ajouté",
+      "contact": {
+        "title": "Coordonnées",
+        "address": "Adresse",
+        "email": "Email",
+        "phone": "Téléphone",
+        "dob": "Date de naissance"
+      },
+      "credentials": {
+        "title": "Identifiants",
+        "verifiedCount": "vérifié",
+        "diploma": "Diplôme",
+        "diplomaVerified": "Diplôme médical vérifié",
+        "license": "Licence professionnelle",
+        "licenseVerified": "Licence vérifiée",
+        "id": "Carte d'identité",
+        "idVerified": "Identité vérifiée",
+        "insurance": "Assurance responsabilité civile",
+        "insuranceVerified": "Assurance vérifiée",
+        "pendingReview": "En attente de révision",
+        "requiresAttention": "Nécessite une attention",
+        "notUploaded": "Non téléchargé"
+      },
+      "schedule": {
+        "title": "Disponibilité hebdomadaire",
+        "timeSlot": "créneau horaire",
+        "timeSlots": "créneaux horaires",
+        "notAvailable": "Non disponible",
+        "available": "Disponible",
+        "unavailable": "Indisponible",
+        "noSchedule": "Aucun emploi du temps configuré"
+      }
+    },
+    "payment": {
+      "title": "Paramètres de paiement",
+      "subtitle": "Gérez vos méthodes de paiement, y compris l'ID du portefeuille Flouci et le RIB du compte bancaire.",
+      "flouci": {
+        "title": "Flouci",
+        "description": "Connectez votre portefeuille Flouci pour recevoir des paiements de manière transparente de la part des clients",
+        "instantPayments": "Paiements instantanés",
+        "secureTransactions": "Transactions sécurisées",
+        "connectWallet": "Connecter le portefeuille",
+        "integrateTitle": "Intégrer avec Flouci",
+        "integrateDescription": "Intégrez votre compte avec votre portefeuille Flouci.",
+        "walletId": "ID du portefeuille",
+        "integrateButton": "Intégrer",
+        "close": "Fermer"
+      }
+    },
+    "settings": {
+      "title": "Paramètres du compte",
+      "subtitle": "Gérez votre profil, vos documents de vérification et vos préférences de sécurité.",
+      "tabs": {
+        "profile": "Profil & Bio",
+        "verification": "Documents de vérification",
+        "education": "Éducation",
+        "experience": "Expérience",
+        "awards": "Prix",
+        "security": "Sécurité"
+      },
+      "profileAndBio": {
+        "title": "Informations de base",
+        "subtitle": "Détails principaux affichés sur votre profil professionnel public.",
+        "profilePicture": {
+          "label": "Photo de profil",
+          "hint": "JPG, PNG jusqu'à 5 Mo.",
+          "upload": "Télécharger une nouvelle",
+          "remove": "Supprimer"
+        },
+        "form": {
+          "firstName": {
+            "label": "Prénom",
+            "placeholder": "Entrez le prénom"
+          },
+          "lastName": {
+            "label": "Nom de famille",
+            "placeholder": "Entrez le nom de famille"
+          },
+          "phoneNumber": {
+            "label": "Numéro de téléphone",
+            "placeholder": "Entrez le numéro de téléphone"
+          },
+          "experience": {
+            "label": "Expérience",
+            "placeholder": "0"
+          },
+          "address": {
+            "state": {
+              "label": "État",
+              "placeholder": "Entrez l'état"
+            },
+            "country": {
+              "label": "Pays",
+              "placeholder": "Sélectionner le pays"
+            },
+            "city": {
+              "label": "Ville",
+              "placeholder": "Entrez la ville"
+            },
+            "postalCode": {
+              "label": "Code postal",
+              "placeholder": "Entrez le code postal"
+            },
+            "street": {
+              "label": "Rue",
+              "placeholder": "Entrez l'adresse de la rue"
+            }
+          },
+          "specialization": {
+            "label": "Spécialisation",
+            "placeholder": "Sélectionner la spécialisation"
+          },
+          "services": {
+            "label": "Services",
+            "add": "Ajouter un service...",
+            "search": "Rechercher des services...",
+            "notFound": "Aucun service trouvé."
+          },
+          "price": {
+            "start": "Prix de départ",
+            "end": "Prix de fin"
+          },
+          "bio": {
+            "label": "Bio",
+            "placeholder": "Courte introduction que les patients verront.",
+            "hint": "Visible par les patients sur votre profil public."
+          }
+        },
+        "save": "Enregistrer les modifications"
+      },
+      "verification": {
+        "title": "Documents de vérification",
+        "subtitle": "Téléchargez et gérez les documents utilisés pour vérifier votre identité professionnelle. Les mises à jour peuvent nécessiter un examen de conformité.",
+        "documents": {
+          "Diploma": {
+            "title": "Diplôme",
+            "description": "Diplôme médical"
+          },
+          "ProfessionalLicense": {
+            "title": "Licence professionnelle",
+            "description": "Licence d'État / nationale"
+          },
+          "Id": {
+            "title": "Carte d'identité",
+            "description": "Délivrée par le gouvernement"
+          },
+          "Insurance": {
+            "title": "Assurance",
+            "description": "Couverture professionnelle"
+          }
+        },
+        "status": {
+          "Verified": "Vérifié",
+          "Pending": "En attente de révision",
+          "Rejected": "Nécessite une attention",
+          "NotUploaded": "Non téléchargé"
+        },
+        "upload": {
+          "uploading": "Téléchargement...",
+          "clickToUpload": "Cliquez pour télécharger le document",
+          "sizeLimit": "PDF jusqu'à 5 Mo",
+          "viewLast": "Voir le dernier fichier téléchargé",
+          "error": {
+            "pdfOnly": "Veuillez télécharger un fichier PDF.",
+            "sizeExceeded": "La taille du document doit être de 5 Mo ou moins."
+          }
+        },
+        "info": {
+          "resetStatus": "Le téléchargement d'un nouveau document réinitialisera son statut à",
+          "pending": "En attente",
+          "review": "pendant que notre équipe de conformité examine la mise à jour.",
+          "time": "Temps d'examen typique : 1–2 jours ouvrables."
+        }
+      },
+      "education": {
+        "title": "Éducation",
+        "subtitle": "Ajoutez votre historique d'éducation médicale et de formation.",
+        "add": "Ajouter une éducation",
+        "addNew": "Ajouter une nouvelle éducation",
+        "edit": "Modifier l'éducation",
+        "empty": "Aucune éducation ajoutée pour le moment. Cliquez sur \"Ajouter une éducation\" pour commencer.",
+        "hint": "Utilisez le bouton Ajouter pour inclure des diplômes ou des programmes de formation supplémentaires.",
+        "present": "Présent",
+        "form": {
+          "institution": {
+            "label": "Institution *",
+            "placeholder": "ex : Faculté de Médecine de Tunis"
+          },
+          "degree": {
+            "label": "Diplôme *",
+            "placeholder": "ex : Doctorat, Licence"
+          },
+          "fieldOfStudy": {
+            "label": "Domaine d'étude",
+            "placeholder": "ex : Médecine, Cardiologie"
+          },
+          "country": {
+            "label": "Pays",
+            "placeholder": "ex : Tunisie"
+          },
+          "startYear": {
+            "label": "Année de début *",
+            "placeholder": "ex : 2018"
+          },
+          "endYear": {
+            "label": "Année de fin",
+            "placeholder": "ex : 2022"
+          },
+          "currentlyStudying": "Actuellement en études",
+          "cancel": "Annuler",
+          "update": "Mettre à jour",
+          "save": "Enregistrer"
+        },
+        "delete": {
+          "title": "Supprimer l'éducation",
+          "description": "Êtes-vous sûr de vouloir supprimer cette entrée d'éducation ? Cette action est irréversible.",
+          "confirm": "Supprimer",
+          "cancel": "Annuler"
+        }
+      },
+      "experience": {
+        "title": "Expérience",
+        "subtitle": "Mettez en avant votre expérience clinique et professionnelle connexe.",
+        "add": "Ajouter une expérience",
+        "addNew": "Ajouter une nouvelle expérience",
+        "edit": "Modifier l'expérience",
+        "empty": "Aucune expérience ajoutée pour le moment. Cliquez sur \"Ajouter une expérience\" pour commencer.",
+        "hint": "Utilisez Ajouter pour inclure la résidence, les bourses et d'autres rôles pertinents.",
+        "present": "Présent",
+        "form": {
+          "title": {
+            "label": "Titre / Rôle *",
+            "placeholder": "ex : Cardiologue traitant"
+          },
+          "organization": {
+            "label": "Organisation *",
+            "placeholder": "ex : Centre Cœur & Vasculaire"
+          },
+          "location": {
+            "label": "Lieu",
+            "placeholder": "ex : Tunis"
+          },
+          "startYear": {
+            "label": "Année de début *",
+            "placeholder": "ex : 2015"
+          },
+          "endYear": {
+            "label": "Année de fin",
+            "placeholder": "ex : 2020"
+          },
+          "currentPosition": "Poste actuel",
+          "description": {
+            "label": "Description",
+            "placeholder": "Décrivez vos responsabilités et réalisations..."
+          },
+          "cancel": "Annuler",
+          "update": "Mettre à jour",
+          "save": "Enregistrer"
+        },
+        "delete": {
+          "title": "Supprimer l'expérience",
+          "description": "Êtes-vous sûr de vouloir supprimer cette entrée d'expérience ? Cette action est irréversible.",
+          "confirm": "Supprimer",
+          "cancel": "Annuler"
+        }
+      },
+      "awards": {
+        "title": "Prix",
+        "subtitle": "Mettez en valeur vos prix et reconnaissances professionnels.",
+        "add": "Ajouter un prix",
+        "addNew": "Ajouter un nouveau prix",
+        "edit": "Modifier le prix",
+        "empty": "Aucun prix ajouté pour le moment. Cliquez sur \"Ajouter un prix\" pour commencer.",
+        "hint": "Utilisez le bouton Ajouter pour inclure des prix ou des reconnaissances supplémentaires.",
+        "form": {
+          "title": {
+            "label": "Titre *",
+            "placeholder": "ex : Prix d'Excellence en Soins aux Patients"
+          },
+          "yearReceived": {
+            "label": "Année de réception *",
+            "placeholder": "ex : 2023"
+          },
+          "issuer": {
+            "label": "Organisation émettrice",
+            "placeholder": "ex : Centre Cœur & Vasculaire"
+          },
+          "description": {
+            "label": "Description",
+            "placeholder": "Décrivez le prix et pourquoi vous l'avez reçu..."
+          },
+          "cancel": "Annuler",
+          "update": "Mettre à jour",
+          "save": "Enregistrer"
+        },
+        "delete": {
+          "title": "Supprimer le prix",
+          "description": "Êtes-vous sûr de vouloir supprimer ce prix ? Cette action est irréversible.",
+          "confirm": "Supprimer",
+          "cancel": "Annuler"
+        }
+      },
+      "security": {
+        "title": "Sécurité",
+        "subtitle": "Gardez votre compte sécurisé avec un mot de passe fort.",
+        "form": {
+          "currentPassword": {
+            "label": "Mot de passe actuel",
+            "placeholder": "Entrez le mot de passe actuel"
+          },
+          "newPassword": {
+            "label": "Nouveau mot de passe",
+            "placeholder": "Au moins 6 caractères"
+          },
+          "confirmNewPassword": {
+            "label": "Confirmer le nouveau mot de passe",
+            "placeholder": "Entrez à nouveau le nouveau mot de passe"
+          },
+          "submit": "Mettre à jour le mot de passe"
+        }
+      }
+    },
+    "pagination": {
+      "showing": "Affichage de",
+      "of": "sur",
+      "patients": "patients.",
+      "loadingMore": "Chargement...",
+      "loadMore": "Charger plus",
+      "noMore": "Plus de patients"
+    }
   }
 }

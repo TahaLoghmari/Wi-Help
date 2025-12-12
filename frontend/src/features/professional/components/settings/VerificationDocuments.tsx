@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Upload } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import {
   DocumentType,
   GetVerificationDocuments,
@@ -18,6 +19,7 @@ import { cn } from "@/lib";
 import { Spinner } from "@/components";
 
 export function VerificationDocuments() {
+  const { t } = useTranslation();
   const { data, isLoading } = GetVerificationDocuments();
   const uploadDocumentMutation = UploadVerificationDocument();
   const [uploadingType, setUploadingType] = useState<DocumentType | null>(null);
@@ -41,12 +43,16 @@ export function VerificationDocuments() {
 
       if (!file) return;
       if (file.type !== "application/pdf") {
-        toast.error("Please upload a PDF file.");
+        toast.error(
+          t("professional.settings.verification.upload.error.pdfOnly"),
+        );
         return;
       }
 
       if (file.size > MAX_FILE_SIZE) {
-        toast.error("Document size must be 5 MB or less.");
+        toast.error(
+          t("professional.settings.verification.upload.error.sizeExceeded"),
+        );
         return;
       }
 
@@ -75,16 +81,15 @@ export function VerificationDocuments() {
     <div className="space-y-4" id="settings-panel-verification">
       <div className="mb-1 border-b border-slate-200 pb-3">
         <h3 className="text-brand-dark text-xs font-semibold tracking-tight">
-          Verification Documents
+          {t("professional.settings.verification.title")}
         </h3>
         <p className="mt-0.5 text-xs text-slate-500">
-          Upload and manage the documents used to verify your professional
-          identity. Updates may require compliance review.
+          {t("professional.settings.verification.subtitle")}
         </p>
       </div>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-2">
-        {DOCUMENT_DEFINITIONS.map(({ type, title, description, Icon }) => {
+        {DOCUMENT_DEFINITIONS.map(({ type, Icon }) => {
           const document = documentsByType[type];
           const statusKey: StatusKey = document?.status ?? "NotUploaded";
           const statusStyle = STATUS_STYLES[statusKey];
@@ -102,9 +107,15 @@ export function VerificationDocuments() {
                   </span>
                   <div>
                     <p className="font-medium tracking-tight text-slate-900">
-                      {title}
+                      {t(
+                        `professional.settings.verification.documents.${type}.title`,
+                      )}
                     </p>
-                    <p className="text-[10px] text-slate-500">{description}</p>
+                    <p className="text-[10px] text-slate-500">
+                      {t(
+                        `professional.settings.verification.documents.${type}.description`,
+                      )}
+                    </p>
                   </div>
                 </div>
                 <span
@@ -116,7 +127,11 @@ export function VerificationDocuments() {
                   <span
                     className={cn("h-1.5 w-1.5 rounded-full", statusStyle.dot)}
                   />
-                  <span>{statusStyle.label}</span>
+                  <span>
+                    {t(
+                      `professional.settings.verification.status.${statusKey}`,
+                    )}
+                  </span>
                 </span>
               </div>
 
@@ -145,11 +160,15 @@ export function VerificationDocuments() {
                   <div className="flex flex-col">
                     <span className="text-brand-dark font-medium tracking-tight">
                       {isUploading
-                        ? "Uploading..."
-                        : "Click to upload document"}
+                        ? t(
+                            "professional.settings.verification.upload.uploading",
+                          )
+                        : t(
+                            "professional.settings.verification.upload.clickToUpload",
+                          )}
                     </span>
                     <span className="text-[10px] text-slate-500">
-                      PDF up to 5 MB
+                      {t("professional.settings.verification.upload.sizeLimit")}
                     </span>
                   </div>
                 </div>
@@ -160,7 +179,7 @@ export function VerificationDocuments() {
                     rel="noreferrer"
                     className="text-[10px] text-[#00799f] underline underline-offset-2"
                   >
-                    View last uploaded file
+                    {t("professional.settings.verification.upload.viewLast")}
                   </a>
                 )}
               </label>
@@ -191,13 +210,16 @@ export function VerificationDocuments() {
             </svg>
           </span>
           <p className="flex items-center gap-1 text-xs text-slate-500">
-            Uploading a new document will reset its status to
-            <span className="font-medium text-slate-700"> Pending</span>
-            while our compliance team reviews the update.
+            {t("professional.settings.verification.info.resetStatus")}
+            <span className="font-medium text-slate-700">
+              {" "}
+              {t("professional.settings.verification.info.pending")}
+            </span>
+            {t("professional.settings.verification.info.review")}
           </p>
         </div>
         <p className="text-[11px] text-slate-400">
-          Typical review time: 1–2 business days.
+          {t("professional.settings.verification.info.time")}
         </p>
       </div>
     </div>

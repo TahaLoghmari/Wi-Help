@@ -40,9 +40,10 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import i18n from "@/config/i18n";
 
 export function ProfileAndBio() {
-  const { i18n } = useTranslation();
+  const { t } = useTranslation();
   const { data: professional } = GetCurrentProfessional();
   const form = useForm<z.infer<typeof profileAndBioFormSchema>>({
     resolver: zodResolver(profileAndBioFormSchema),
@@ -97,10 +98,10 @@ export function ProfileAndBio() {
           <header className="mb-2 flex cursor-pointer items-center justify-between select-none">
             <div className="">
               <h3 className="text-brand-dark text-xs font-semibold tracking-tight">
-                Basic Information
+                {t("professional.settings.profileAndBio.title")}
               </h3>
               <p className="mt-0.5 text-[11px] text-slate-500">
-                Core details shown on your public professional profile.
+                {t("professional.settings.profileAndBio.subtitle")}
               </p>
             </div>
             <button
@@ -142,10 +143,14 @@ export function ProfileAndBio() {
                 </Avatar>
                 <div className="flex flex-col gap-1 text-[11px] text-slate-600">
                   <p className="font-medium tracking-tight text-slate-900">
-                    Profile picture
+                    {t(
+                      "professional.settings.profileAndBio.profilePicture.label",
+                    )}
                   </p>
                   <p className="text-[10px] text-slate-500">
-                    JPG, PNG up to 5MB.
+                    {t(
+                      "professional.settings.profileAndBio.profilePicture.hint",
+                    )}
                   </p>
                 </div>
               </div>
@@ -174,7 +179,11 @@ export function ProfileAndBio() {
                             <path d="m17 8-5-5-5 5"></path>
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                           </svg>
-                          <span>Upload new</span>
+                          <span>
+                            {t(
+                              "professional.settings.profileAndBio.profilePicture.upload",
+                            )}
+                          </span>
                           <input
                             {...field}
                             type="file"
@@ -212,7 +221,11 @@ export function ProfileAndBio() {
                     <path d="M18 6 6 18"></path>
                     <path d="m6 6 12 12"></path>
                   </svg>
-                  <span>Remove</span>
+                  <span>
+                    {t(
+                      "professional.settings.profileAndBio.profilePicture.remove",
+                    )}
+                  </span>
                 </button>
               </div>
             </div>
@@ -223,13 +236,17 @@ export function ProfileAndBio() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      First Name
+                      {t(
+                        "professional.settings.profileAndBio.form.firstName.label",
+                      )}
                     </FormLabel>
                     <FormControl>
                       <input
                         type="text"
                         className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
-                        placeholder="Enter first name"
+                        placeholder={t(
+                          "professional.settings.profileAndBio.form.firstName.placeholder",
+                        )}
                         {...field}
                       />
                     </FormControl>
@@ -244,13 +261,17 @@ export function ProfileAndBio() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      Last name
+                      {t(
+                        "professional.settings.profileAndBio.form.lastName.label",
+                      )}
                     </FormLabel>
                     <FormControl>
                       <input
                         type="text"
                         className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
-                        placeholder="Enter last name"
+                        placeholder={t(
+                          "professional.settings.profileAndBio.form.lastName.placeholder",
+                        )}
                         {...field}
                       />
                     </FormControl>
@@ -267,13 +288,17 @@ export function ProfileAndBio() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      Phone Number
+                      {t(
+                        "professional.settings.profileAndBio.form.phoneNumber.label",
+                      )}
                     </FormLabel>
                     <FormControl>
                       <input
                         type="tel"
                         className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
-                        placeholder="Enter phone number"
+                        placeholder={t(
+                          "professional.settings.profileAndBio.form.phoneNumber.placeholder",
+                        )}
                         {...field}
                       />
                     </FormControl>
@@ -288,13 +313,17 @@ export function ProfileAndBio() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      Experience
+                      {t(
+                        "professional.settings.profileAndBio.form.experience.label",
+                      )}
                     </FormLabel>
                     <FormControl>
                       <input
                         type="number"
                         className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
-                        placeholder="0"
+                        placeholder={t(
+                          "professional.settings.profileAndBio.form.experience.placeholder",
+                        )}
                         value={field.value ?? ""}
                         onChange={(e) =>
                           field.onChange(
@@ -315,13 +344,17 @@ export function ProfileAndBio() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      State
+                      {t(
+                        "professional.settings.profileAndBio.form.address.state.label",
+                      )}
                     </FormLabel>
                     <FormControl>
                       <input
                         type="text"
                         className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
-                        placeholder="Enter state"
+                        placeholder={t(
+                          "professional.settings.profileAndBio.form.address.state.placeholder",
+                        )}
                         {...field}
                       />
                     </FormControl>
@@ -335,7 +368,9 @@ export function ProfileAndBio() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      Country
+                      {t(
+                        "professional.settings.profileAndBio.form.address.country.label",
+                      )}
                     </FormLabel>
                     <FormControl>
                       <Select
@@ -345,7 +380,9 @@ export function ProfileAndBio() {
                         <SelectTrigger className="h-8! w-full rounded-lg! text-xs shadow-none [&>span]:text-[11px]">
                           <SelectValue
                             className="text-xs placeholder:text-xs"
-                            placeholder="Select Country"
+                            placeholder={t(
+                              "professional.settings.profileAndBio.form.address.country.placeholder",
+                            )}
                           ></SelectValue>
                         </SelectTrigger>
                         <SelectContent>
@@ -369,13 +406,17 @@ export function ProfileAndBio() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      City
+                      {t(
+                        "professional.settings.profileAndBio.form.address.city.label",
+                      )}
                     </FormLabel>
                     <FormControl>
                       <input
                         type="text"
                         className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
-                        placeholder="Enter city"
+                        placeholder={t(
+                          "professional.settings.profileAndBio.form.address.city.placeholder",
+                        )}
                         {...field}
                       />
                     </FormControl>
@@ -389,13 +430,17 @@ export function ProfileAndBio() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      Postal Code
+                      {t(
+                        "professional.settings.profileAndBio.form.address.postalCode.label",
+                      )}
                     </FormLabel>
                     <FormControl>
                       <input
                         type="text"
                         className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
-                        placeholder="Enter postal code"
+                        placeholder={t(
+                          "professional.settings.profileAndBio.form.address.postalCode.placeholder",
+                        )}
                         {...field}
                       />
                     </FormControl>
@@ -411,13 +456,17 @@ export function ProfileAndBio() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      Street
+                      {t(
+                        "professional.settings.profileAndBio.form.address.street.label",
+                      )}
                     </FormLabel>
                     <FormControl>
                       <input
                         type="text"
                         className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
-                        placeholder="Enter street address"
+                        placeholder={t(
+                          "professional.settings.profileAndBio.form.address.street.placeholder",
+                        )}
                         {...field}
                       />
                     </FormControl>
@@ -433,7 +482,9 @@ export function ProfileAndBio() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      Specialization
+                      {t(
+                        "professional.settings.profileAndBio.form.specialization.label",
+                      )}
                     </FormLabel>
                     <FormControl>
                       <Select
@@ -441,7 +492,11 @@ export function ProfileAndBio() {
                         onValueChange={field.onChange}
                       >
                         <SelectTrigger className="w-full text-xs shadow-none [&>span]:text-[11px]">
-                          <SelectValue placeholder="Select specialization" />
+                          <SelectValue
+                            placeholder={t(
+                              "professional.settings.profileAndBio.form.specialization.placeholder",
+                            )}
+                          />
                         </SelectTrigger>
                         <SelectContent>
                           {getSpecializations(i18n.language).map(
@@ -468,7 +523,9 @@ export function ProfileAndBio() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      Services
+                      {t(
+                        "professional.settings.profileAndBio.form.services.label",
+                      )}
                     </FormLabel>
                     <FormControl>
                       <Popover open={open} onOpenChange={setOpen}>
@@ -504,7 +561,9 @@ export function ProfileAndBio() {
                               </div>
                             ) : (
                               <p className="text-muted-foreground text-[11px]">
-                                Add service...
+                                {t(
+                                  "professional.settings.profileAndBio.form.services.add",
+                                )}
                               </p>
                             )}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -513,11 +572,17 @@ export function ProfileAndBio() {
                         <PopoverContent className="w-[300px] p-0">
                           <Command>
                             <CommandInput
-                              placeholder="Search services..."
+                              placeholder={t(
+                                "professional.settings.profileAndBio.form.services.search",
+                              )}
                               className="h-9"
                             />
                             <CommandList>
-                              <CommandEmpty>No service found.</CommandEmpty>
+                              <CommandEmpty>
+                                {t(
+                                  "professional.settings.profileAndBio.form.services.notFound",
+                                )}
+                              </CommandEmpty>
                               <CommandGroup>
                                 {getServicesForSpecialization(
                                   selectedSpecialization || "",
@@ -580,7 +645,9 @@ export function ProfileAndBio() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      Start price
+                      {t(
+                        "professional.settings.profileAndBio.form.price.start",
+                      )}
                     </FormLabel>
                     <FormControl>
                       <div className="flex items-center gap-1.5">
@@ -608,7 +675,7 @@ export function ProfileAndBio() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      End price
+                      {t("professional.settings.profileAndBio.form.price.end")}
                     </FormLabel>
                     <FormControl>
                       <div className="flex items-center gap-1.5">
@@ -638,19 +705,21 @@ export function ProfileAndBio() {
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-1">
                   <FormLabel className="block text-[11px] font-medium text-slate-700">
-                    Bio
+                    {t("professional.settings.profileAndBio.form.bio.label")}
                   </FormLabel>
                   <FormControl>
                     <textarea
                       className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full resize-none rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
-                      placeholder="Short introduction that patients will see."
+                      placeholder={t(
+                        "professional.settings.profileAndBio.form.bio.placeholder",
+                      )}
                       rows={4}
                       {...field}
                     />
                   </FormControl>
                   <FormMessage className="text-xs" />
                   <p className="mt-0.5 text-[10px] text-slate-400">
-                    Visible to patients on your public profile.
+                    {t("professional.settings.profileAndBio.form.bio.hint")}
                   </p>
                 </FormItem>
               )}
@@ -678,7 +747,7 @@ export function ProfileAndBio() {
                 <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"></path>
                 <path d="M7 3v4a1 1 0 0 0 1 1h7"></path>
               </svg>
-              Save changes
+              {t("professional.settings.profileAndBio.save")}
             </button>
           </div>
         </section>

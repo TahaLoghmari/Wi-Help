@@ -29,10 +29,12 @@ import {
 } from "@/components/ui/dialog";
 import { X, Calendar, Upload, FileText } from "lucide-react";
 import { useAppNavigation } from "@/hooks";
+import { useTranslation } from "react-i18next";
 
 type AppointmentTab = "offered" | "confirmed" | "cancelled" | "completed";
 
 export function AppointmentsTable() {
+  const { t } = useTranslation();
   const {
     data,
     isLoading,
@@ -167,24 +169,29 @@ export function AppointmentsTable() {
     switch (activeTab) {
       case "offered":
         return {
-          title: "No offered appointments",
-          description:
-            "You don't have any pending appointment offers at the moment.",
+          title: t("professional.appointments.empty.offered.title"),
+          description: t("professional.appointments.empty.offered.description"),
         };
       case "confirmed":
         return {
-          title: "No confirmed appointments",
-          description: "You don't have any confirmed appointments yet.",
+          title: t("professional.appointments.empty.confirmed.title"),
+          description: t(
+            "professional.appointments.empty.confirmed.description",
+          ),
         };
       case "cancelled":
         return {
-          title: "No cancelled appointments",
-          description: "You don't have any cancelled appointments.",
+          title: t("professional.appointments.empty.cancelled.title"),
+          description: t(
+            "professional.appointments.empty.cancelled.description",
+          ),
         };
       case "completed":
         return {
-          title: "No completed appointments",
-          description: "You don't have any completed appointments yet.",
+          title: t("professional.appointments.empty.completed.title"),
+          description: t(
+            "professional.appointments.empty.completed.description",
+          ),
         };
     }
   };
@@ -192,7 +199,7 @@ export function AppointmentsTable() {
   if (isLoading) {
     return (
       <div className="p-4 text-center text-sm text-slate-500">
-        Loading appointments...
+        {t("professional.appointments.loading")}
       </div>
     );
   }
@@ -200,7 +207,7 @@ export function AppointmentsTable() {
   if (error) {
     return (
       <div className="p-4 text-center text-sm text-red-500">
-        Error loading appointments
+        {t("professional.appointments.error")}
       </div>
     );
   }
@@ -214,10 +221,10 @@ export function AppointmentsTable() {
         <div className="mb-2 flex items-center justify-between">
           <div className="">
             <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
-              Patient Appointments
+              {t("professional.appointments.title")}
             </h2>
             <p className="mt-0.5 text-[11px] text-slate-500">
-              Manage upcoming and today’s appointments with quick actions.
+              {t("professional.appointments.subtitle")}
             </p>
           </div>
         </div>
@@ -237,7 +244,7 @@ export function AppointmentsTable() {
                 activeTab === "offered" ? "bg-brand-blue" : "bg-slate-300"
               }`}
             ></span>
-            Offered
+            {t("professional.appointments.tabs.offered")}
           </button>
           <button
             id="appt-tab-confirmed"
@@ -253,7 +260,7 @@ export function AppointmentsTable() {
                 activeTab === "confirmed" ? "bg-brand-blue" : "bg-slate-300"
               }`}
             ></span>
-            Confirmed
+            {t("professional.appointments.tabs.confirmed")}
           </button>
           <button
             id="appt-tab-cancelled"
@@ -269,7 +276,7 @@ export function AppointmentsTable() {
                 activeTab === "cancelled" ? "bg-brand-blue" : "bg-slate-300"
               }`}
             ></span>
-            Cancelled
+            {t("professional.appointments.tabs.cancelled")}
           </button>
           <button
             id="appt-tab-completed"
@@ -285,7 +292,7 @@ export function AppointmentsTable() {
                 activeTab === "completed" ? "bg-brand-blue" : "bg-slate-300"
               }`}
             ></span>
-            Completed
+            {t("professional.appointments.tabs.completed")}
           </button>
         </div>
       </div>
@@ -295,22 +302,22 @@ export function AppointmentsTable() {
           <thead className="bg-white">
             <tr className="border-b border-slate-200">
               <th className="pt-2.5 pr-4 pb-2.5 pl-4 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Patient
+                {t("professional.appointments.table.patient")}
               </th>
               <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Date
+                {t("professional.appointments.table.date")}
               </th>
               <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Purpose
+                {t("professional.appointments.table.purpose")}
               </th>
               <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Urgency
+                {t("professional.appointments.table.urgency")}
               </th>
               <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Price
+                {t("professional.appointments.table.price")}
               </th>
               <th className="px-4 py-2.5 text-right text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Actions
+                {t("professional.appointments.table.actions")}
               </th>
             </tr>
           </thead>
@@ -382,19 +389,20 @@ export function AppointmentsTable() {
                       </button>
                       <div className="">
                         <div className="text-xs font-medium tracking-tight text-slate-900">
-                          {appointment.patient?.firstName || "Unknown Patient"}
+                          {appointment.patient?.firstName ||
+                            t("professional.appointments.table.unknownPatient")}
                         </div>
                         <div className="text-[11px] text-slate-500">
                           {appointment.patient?.dateOfBirth ? (
                             <span>
-                              DOB:{" "}
+                              {t("professional.appointments.table.dob")}{" "}
                               {new Date(
                                 appointment.patient.dateOfBirth,
                               ).toLocaleDateString()}
                             </span>
                           ) : (
                             <span>
-                              Patient ID:{" "}
+                              {t("professional.appointments.table.patientId")}{" "}
                               {appointment.patientId.substring(0, 6)}
                             </span>
                           )}
@@ -823,9 +831,11 @@ export function AppointmentsTable() {
                     <div className="text-slate-500">
                       <Upload className="mx-auto h-8 w-8 text-slate-400" />
                       <p className="mt-2 text-sm">
-                        Click to upload or drag and drop
+                        {t("professional.appointments.dialogs.upload.title")}
                       </p>
-                      <p className="text-xs text-slate-400">PDF only</p>
+                      <p className="text-xs text-slate-400">
+                        {t("professional.appointments.dialogs.upload.subtitle")}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -834,13 +844,17 @@ export function AppointmentsTable() {
               {/* Prescription Title */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">
-                  Prescription Title (optional)
+                  {t(
+                    "professional.appointments.dialogs.prescriptionTitle.label",
+                  )}
                 </label>
                 <input
                   type="text"
                   value={prescriptionTitle}
                   onChange={(e) => setPrescriptionTitle(e.target.value)}
-                  placeholder="e.g., General Consultation Prescription"
+                  placeholder={t(
+                    "professional.appointments.dialogs.prescriptionTitle.placeholder",
+                  )}
                   className="focus:border-brand-blue focus:ring-brand-blue mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-1 focus:outline-none"
                 />
               </div>
@@ -848,12 +862,14 @@ export function AppointmentsTable() {
               {/* Prescription Notes */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">
-                  Notes (optional)
+                  {t("professional.appointments.dialogs.notes.label")}
                 </label>
                 <textarea
                   value={prescriptionNotes}
                   onChange={(e) => setPrescriptionNotes(e.target.value)}
-                  placeholder="Additional notes about the prescription..."
+                  placeholder={t(
+                    "professional.appointments.dialogs.notes.placeholder",
+                  )}
                   rows={3}
                   className="focus:border-brand-blue focus:ring-brand-blue mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-1 focus:outline-none"
                 />
@@ -865,7 +881,7 @@ export function AppointmentsTable() {
               onClick={() => setCompleteDialogOpen(false)}
               className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
             >
-              Cancel
+              {t("professional.appointments.dialogs.cancel")}
             </button>
             <button
               onClick={handleCompleteAppointment}
@@ -875,8 +891,8 @@ export function AppointmentsTable() {
               className="bg-brand-dark hover:bg-brand-dark/70 rounded-lg border px-4 py-2 text-sm font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
               {completeAppointmentMutation.isPending
-                ? "Completing..."
-                : "Complete Appointment"}
+                ? t("professional.appointments.dialogs.completing")
+                : t("professional.appointments.dialogs.complete")}
             </button>
           </DialogFooter>
         </DialogContent>

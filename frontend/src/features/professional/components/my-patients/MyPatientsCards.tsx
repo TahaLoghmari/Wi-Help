@@ -2,8 +2,10 @@ import { GetProfessionalPatients } from "@/features/professional";
 import { useNavigate, Link } from "@tanstack/react-router";
 import { Spinner } from "@/components";
 import { ROUTE_PATHS } from "@/config";
+import { useTranslation } from "react-i18next";
 
 export function MyPatientsCards() {
+  const { t } = useTranslation();
   const {
     data,
     isLoading,
@@ -36,14 +38,16 @@ export function MyPatientsCards() {
   if (isError) {
     return (
       <div className="p-4 text-center text-red-500">
-        Error loading patients.
+        {t("professional.myPatients.error")}
       </div>
     );
   }
 
   if (!patients || patients.length === 0) {
     return (
-      <div className="p-4 text-center text-slate-500">No patients found.</div>
+      <div className="p-4 text-center text-slate-500">
+        {t("professional.myPatients.empty")}
+      </div>
     );
   }
 
@@ -66,15 +70,21 @@ export function MyPatientsCards() {
                   {patient.firstName} {patient.lastName}
                 </h4>
                 <span className="border-brand-cream bg-brand-cream/60 text-brand-dark inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px]">
-                  ID: #{patient.id.substring(0, 8)}
+                  {t("professional.myPatients.card.id")}
+                  {patient.id.substring(0, 8)}
                 </span>
               </div>
               <p className="truncate text-[11px] text-slate-500">
-                {calculateAge(patient.dateOfBirth)} yrs •{" "}
+                {calculateAge(patient.dateOfBirth)}{" "}
+                {t("professional.myPatients.card.years")} •{" "}
                 {patient.gender.charAt(0).toUpperCase() +
                   patient.gender.slice(1)}{" "}
-                • {patient.address?.city || "Unknown"} •{" "}
-                {patient.address?.state || "Unknown"}
+                •{" "}
+                {patient.address?.city ||
+                  t("professional.myPatients.card.unknown")}{" "}
+                •{" "}
+                {patient.address?.state ||
+                  t("professional.myPatients.card.unknown")}
               </p>
             </div>
           </div>
@@ -137,7 +147,7 @@ export function MyPatientsCards() {
               >
                 <path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"></path>
               </svg>
-              Message
+              {t("professional.myPatients.card.message")}
             </Link>
             <button
               onClick={() =>
@@ -164,7 +174,7 @@ export function MyPatientsCards() {
                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
-              View Profile
+              {t("professional.myPatients.card.viewProfile")}
             </button>
           </div>
         </article>
@@ -172,14 +182,14 @@ export function MyPatientsCards() {
 
       <div className="col-span-full mt-4 flex items-center justify-between">
         <div className="text-[11px] text-slate-500">
-          Showing
+          {t("professional.myPatients.pagination.showing")}
           <span className="font-medium text-slate-700">
             {" "}
             {patients.length}{" "}
           </span>
-          of
+          {t("professional.myPatients.pagination.of")}
           <span className="font-medium text-slate-700"> {totalCount} </span>
-          patients.
+          {t("professional.myPatients.pagination.patients")}
         </div>
         <div className="flex items-center gap-1.5 text-[11px]">
           <button
@@ -188,10 +198,10 @@ export function MyPatientsCards() {
             className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-slate-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isFetchingNextPage
-              ? "Loading more..."
+              ? t("professional.myPatients.pagination.loadingMore")
               : hasNextPage
-                ? "Load More"
-                : "No more patients"}
+                ? t("professional.myPatients.pagination.loadMore")
+                : t("professional.myPatients.pagination.noMore")}
           </button>
         </div>
       </div>

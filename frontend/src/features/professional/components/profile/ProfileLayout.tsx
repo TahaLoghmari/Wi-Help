@@ -50,8 +50,9 @@ type TabType = "overview" | "reviews" | "schedule";
 
 // Experience Card Component
 function ExperienceCard({ experience }: { experience: GetExperiencesDto }) {
+  const { t } = useTranslation();
   const yearRange = experience.isCurrentPosition
-    ? `${experience.startYear} – Present`
+    ? `${experience.startYear} – ${t("professional.profile.present")}`
     : `${experience.startYear} – ${experience.endYear}`;
 
   return (
@@ -97,8 +98,9 @@ function ExperienceCard({ experience }: { experience: GetExperiencesDto }) {
 
 // Education Card Component
 function EducationCard({ education }: { education: GetEducationsDto }) {
+  const { t } = useTranslation();
   const yearRange = education.isCurrentlyStudying
-    ? `${education.startYear} – Present`
+    ? `${education.startYear} – ${t("professional.profile.present")}`
     : `${education.startYear} – ${education.endYear}`;
 
   return (
@@ -176,8 +178,8 @@ function AwardCard({ award }: { award: GetAwardsDto }) {
 }
 
 export function ProfileLayout() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabType>("overview");
-  export function ProfileLayout() {
   const { i18n } = useTranslation();
   const { data: professional, isLoading, isError } = GetCurrentProfessional();
   const { data: reviewStats } = GetProfessionalReviewStats(
@@ -226,7 +228,9 @@ export function ProfileLayout() {
 
   if (isError) {
     return (
-      <div className="p-4 text-center text-red-500">Error loading profile.</div>
+      <div className="p-4 text-center text-red-500">
+        {t("professional.profile.error")}
+      </div>
     );
   }
 
@@ -271,7 +275,7 @@ export function ProfileLayout() {
                         (s) => s.value === professional?.specialization,
                       )?.label
                     }{" "}
-                    Specialist
+                    {t("professional.profile.specialist")}
                   </p>
                 </div>
               </div>
@@ -306,7 +310,8 @@ export function ProfileLayout() {
                     {reviewStats?.averageRating}
                   </span>
                   <span className="text-brand-secondary/70">
-                    ({reviewStats?.totalCount} reviews)
+                    ({reviewStats?.totalCount}{" "}
+                    {t("professional.profile.reviewsCount")})
                   </span>
                 </div>
               </div>
@@ -327,7 +332,7 @@ export function ProfileLayout() {
             }`}
             data-target="profile-content-overview"
           >
-            Overview
+            {t("professional.profile.tabs.overview")}
             <span
               className={`bg-brand-dark absolute bottom-0 left-0 h-0.5 w-full ${
                 activeTab === "overview" ? "" : "hidden"
@@ -343,7 +348,7 @@ export function ProfileLayout() {
             }`}
             data-target="profile-content-reviews"
           >
-            Reviews
+            {t("professional.profile.tabs.reviews")}
             <span
               className={`bg-brand-dark absolute bottom-0 left-0 h-0.5 w-full ${
                 activeTab === "reviews" ? "" : "hidden"
@@ -359,7 +364,7 @@ export function ProfileLayout() {
             }`}
             data-target="profile-content-schedule"
           >
-            Schedule
+            {t("professional.profile.tabs.schedule")}
             <span
               className={`bg-brand-dark absolute bottom-0 left-0 h-0.5 w-full ${
                 activeTab === "schedule" ? "" : "hidden"
@@ -378,7 +383,7 @@ export function ProfileLayout() {
             <section className="border-brand-dark/10 rounded-2xl border bg-white p-5">
               <h3 className="text-brand-dark mb-4 flex items-center gap-2 text-sm font-bold tracking-tight">
                 <User className="text-brand-secondary h-4 w-4" />
-                About &amp; Bio
+                {t("professional.profile.about")}
               </h3>
               <div className="prose prose-sm text-brand-secondary mb-6 max-w-none text-xs leading-relaxed">
                 {professional?.bio}
@@ -391,7 +396,7 @@ export function ProfileLayout() {
                     <Stethoscope className="h-4 w-4" />
                   </div>
                   <div className="text-brand-secondary text-[10px] font-semibold tracking-wider uppercase">
-                    Specialty
+                    {t("professional.profile.specialty")}
                   </div>
                   <div className="text-brand-dark text-xs font-semibold">
                     {
@@ -406,7 +411,7 @@ export function ProfileLayout() {
                     <DollarSign className="h-4 w-4" />
                   </div>
                   <div className="text-brand-secondary text-[10px] font-semibold tracking-wider uppercase">
-                    Rate
+                    {t("professional.profile.rate")}
                   </div>
                   <div className="text-brand-dark text-xs font-semibold">
                     ${professional?.startPrice} - ${professional?.endPrice}/hr
@@ -417,30 +422,30 @@ export function ProfileLayout() {
                     <Briefcase className="h-4 w-4" />
                   </div>
                   <div className="text-brand-secondary text-[10px] font-semibold tracking-wider uppercase">
-                    Experience
+                    {t("professional.profile.experience")}
                   </div>
                   <div className="text-brand-dark text-xs font-semibold">
-                    {professional?.experience} Years
+                    {professional?.experience} {t("professional.profile.years")}
                   </div>
                 </div>
                 {(() => {
                   const status = professional?.verificationStatus;
                   let statusColor = "text-gray-500";
                   let StatusIcon = Shield;
-                  let statusLabel = "Unknown";
+                  let statusLabel = t("professional.profile.status.unknown");
 
                   if (status === VerificationStatus.Verified) {
                     statusColor = "text-brand-teal";
                     StatusIcon = ShieldCheck;
-                    statusLabel = "Verified";
+                    statusLabel = t("professional.profile.status.verified");
                   } else if (status === VerificationStatus.Pending) {
                     statusColor = "text-brand-dark";
                     StatusIcon = Clock;
-                    statusLabel = "Pending";
+                    statusLabel = t("professional.profile.status.pending");
                   } else if (status === VerificationStatus.Rejected) {
                     statusColor = "text-red-500";
                     StatusIcon = XCircle;
-                    statusLabel = "Rejected";
+                    statusLabel = t("professional.profile.status.rejected");
                   }
 
                   return (
@@ -451,7 +456,7 @@ export function ProfileLayout() {
                         <StatusIcon className="h-4 w-4" />
                       </div>
                       <div className="text-brand-secondary text-[10px] font-semibold tracking-wider uppercase">
-                        Status
+                        {t("professional.profile.status.label")}
                       </div>
                       <div className={`${statusColor} text-xs font-semibold`}>
                         {statusLabel}
@@ -466,7 +471,7 @@ export function ProfileLayout() {
             <section className="border-brand-dark/10 rounded-2xl border bg-white p-5">
               <h3 className="text-brand-dark mb-4 flex items-center gap-2 text-sm font-bold tracking-tight">
                 <Layers className="text-brand-secondary h-4 w-4" />
-                Specialties &amp; Focus
+                {t("professional.profile.specialties")}
               </h3>
               <div className="flex flex-wrap gap-2">
                 {professional?.services?.map((service, index) => (
@@ -489,7 +494,7 @@ export function ProfileLayout() {
               <div className="mb-6 flex items-center justify-between">
                 <h3 className="text-brand-dark flex items-center gap-2 text-sm font-bold tracking-tight">
                   <Briefcase className="text-brand-secondary h-4 w-4" />
-                  Experience
+                  {t("professional.profile.experience")}
                 </h3>
               </div>
 
@@ -510,7 +515,7 @@ export function ProfileLayout() {
                 <div className="border-brand-dark/20 flex flex-col items-center justify-center rounded-xl border border-dashed py-8 text-center">
                   <Briefcase className="text-brand-dark/20 mb-2 h-8 w-8" />
                   <p className="text-xs text-slate-400">
-                    No work experience added yet
+                    {t("professional.profile.noExperience")}
                   </p>
                 </div>
               )}
@@ -521,7 +526,7 @@ export function ProfileLayout() {
               <div className="mb-6 flex items-center justify-between">
                 <h3 className="text-brand-dark flex items-center gap-2 text-sm font-bold tracking-tight">
                   <GraduationCap className="text-brand-secondary h-4 w-4" />
-                  Education
+                  {t("professional.profile.education")}
                 </h3>
               </div>
 
@@ -542,7 +547,7 @@ export function ProfileLayout() {
                 <div className="border-brand-dark/20 flex flex-col items-center justify-center rounded-xl border border-dashed py-8 text-center">
                   <GraduationCap className="text-brand-dark/20 mb-2 h-8 w-8" />
                   <p className="text-xs text-slate-400">
-                    No education details added yet
+                    {t("professional.profile.noEducation")}
                   </p>
                 </div>
               )}
@@ -553,7 +558,7 @@ export function ProfileLayout() {
               <div className="mb-6 flex items-center justify-between">
                 <h3 className="text-brand-dark flex items-center gap-2 text-sm font-bold tracking-tight">
                   <Medal className="text-brand-secondary h-4 w-4" />
-                  Awards &amp; Recognitions
+                  {t("professional.profile.awards")}
                 </h3>
               </div>
 
@@ -571,7 +576,7 @@ export function ProfileLayout() {
                 <div className="border-brand-dark/20 flex flex-col items-center justify-center rounded-xl border border-dashed py-8 text-center">
                   <Medal className="text-brand-dark/20 mb-2 h-8 w-8" />
                   <p className="text-xs text-slate-400">
-                    No awards or recognitions added yet
+                    {t("professional.profile.noAwards")}
                   </p>
                 </div>
               )}
@@ -584,7 +589,7 @@ export function ProfileLayout() {
             <section className="border-brand-dark/10 overflow-hidden rounded-2xl border bg-white">
               <div className="border-brand-dark/10 bg-brand-bg border-b px-5 py-3">
                 <h3 className="text-brand-dark text-xs font-bold tracking-tight">
-                  Contact Information
+                  {t("professional.profile.contact.title")}
                 </h3>
               </div>
               <div className="space-y-5 p-5">
@@ -594,7 +599,7 @@ export function ProfileLayout() {
                   </div>
                   <div>
                     <div className="text-brand-dark text-xs font-semibold">
-                      Address
+                      {t("professional.profile.contact.address")}
                     </div>
                     <div className="text-brand-secondary mt-0.5 text-xs leading-snug">
                       {professional?.address.street}
@@ -615,7 +620,7 @@ export function ProfileLayout() {
                   </div>
                   <div>
                     <div className="text-brand-dark text-xs font-semibold">
-                      Email
+                      {t("professional.profile.contact.email")}
                     </div>
                     <span className="text-brand-blue mt-0.5 block text-xs hover:underline">
                       {professional?.email}
@@ -628,7 +633,7 @@ export function ProfileLayout() {
                   </div>
                   <div>
                     <div className="text-brand-dark text-xs font-semibold">
-                      Phone
+                      {t("professional.profile.contact.phone")}
                     </div>
                     <div className="text-brand-secondary mt-0.5 text-xs">
                       +216 {professional?.phoneNumber}
@@ -641,7 +646,7 @@ export function ProfileLayout() {
                   </div>
                   <div>
                     <div className="text-brand-dark text-xs font-semibold">
-                      Date of Birth
+                      {t("professional.profile.contact.dob")}
                     </div>
                     <div className="text-brand-secondary mt-0.5 text-xs">
                       {professional?.dateOfBirth}
@@ -655,11 +660,12 @@ export function ProfileLayout() {
             <section className="border-brand-dark/10 overflow-hidden rounded-2xl border bg-white">
               <div className="border-brand-dark/10 bg-brand-bg flex items-center justify-between border-b px-5 py-3">
                 <h3 className="text-brand-dark text-xs font-bold tracking-tight">
-                  Credentials
+                  {t("professional.profile.credentials.title")}
                 </h3>
                 {verifiedCount > 0 && (
                   <span className="border-brand-teal/20 bg-brand-teal/10 text-brand-teal rounded-full border px-2 py-0.5 text-[10px] font-medium">
-                    {verifiedCount} verified
+                    {verifiedCount}{" "}
+                    {t("professional.profile.credentials.verifiedCount")}
                   </span>
                 )}
               </div>
@@ -694,16 +700,24 @@ export function ProfileLayout() {
                           </div>
                           <div>
                             <div className="text-brand-dark text-xs font-medium">
-                              Diploma
+                              {t("professional.profile.credentials.diploma")}
                             </div>
                             <div className="text-brand-secondary text-[10px]">
                               {isVerified
-                                ? "Medical Degree Verified"
+                                ? t(
+                                    "professional.profile.credentials.diplomaVerified",
+                                  )
                                 : isPending
-                                  ? "Pending Review"
+                                  ? t(
+                                      "professional.profile.credentials.pendingReview",
+                                    )
                                   : isRejected
-                                    ? "Requires Attention"
-                                    : "Not Uploaded"}
+                                    ? t(
+                                        "professional.profile.credentials.requiresAttention",
+                                      )
+                                    : t(
+                                        "professional.profile.credentials.notUploaded",
+                                      )}
                             </div>
                           </div>
                         </div>
@@ -719,12 +733,14 @@ export function ProfileLayout() {
                           }
                           title={
                             isVerified
-                              ? "Verified"
+                              ? t("professional.profile.status.verified")
                               : isPending
-                                ? "Pending"
+                                ? t("professional.profile.status.pending")
                                 : isRejected
-                                  ? "Rejected"
-                                  : "Not Uploaded"
+                                  ? t("professional.profile.status.rejected")
+                                  : t(
+                                      "professional.profile.credentials.notUploaded",
+                                    )
                           }
                         >
                           {isVerified ? (
@@ -767,16 +783,24 @@ export function ProfileLayout() {
                           </div>
                           <div>
                             <div className="text-brand-dark text-xs font-medium">
-                              Professional License
+                              {t("professional.profile.credentials.license")}
                             </div>
                             <div className="text-brand-secondary text-[10px]">
                               {isVerified
-                                ? "License Verified"
+                                ? t(
+                                    "professional.profile.credentials.licenseVerified",
+                                  )
                                 : isPending
-                                  ? "Pending Review"
+                                  ? t(
+                                      "professional.profile.credentials.pendingReview",
+                                    )
                                   : isRejected
-                                    ? "Requires Attention"
-                                    : "Not Uploaded"}
+                                    ? t(
+                                        "professional.profile.credentials.requiresAttention",
+                                      )
+                                    : t(
+                                        "professional.profile.credentials.notUploaded",
+                                      )}
                             </div>
                           </div>
                         </div>
@@ -792,12 +816,14 @@ export function ProfileLayout() {
                           }
                           title={
                             isVerified
-                              ? "Verified"
+                              ? t("professional.profile.status.verified")
                               : isPending
-                                ? "Pending"
+                                ? t("professional.profile.status.pending")
                                 : isRejected
-                                  ? "Rejected"
-                                  : "Not Uploaded"
+                                  ? t("professional.profile.status.rejected")
+                                  : t(
+                                      "professional.profile.credentials.notUploaded",
+                                    )
                           }
                         >
                           {isVerified ? (
@@ -839,16 +865,24 @@ export function ProfileLayout() {
                           </div>
                           <div>
                             <div className="text-brand-dark text-xs font-medium">
-                              ID Card
+                              {t("professional.profile.credentials.id")}
                             </div>
                             <div className="text-brand-secondary text-[10px]">
                               {isVerified
-                                ? "ID Verified"
+                                ? t(
+                                    "professional.profile.credentials.idVerified",
+                                  )
                                 : isPending
-                                  ? "Pending Review"
+                                  ? t(
+                                      "professional.profile.credentials.pendingReview",
+                                    )
                                   : isRejected
-                                    ? "Requires Attention"
-                                    : "Not Uploaded"}
+                                    ? t(
+                                        "professional.profile.credentials.requiresAttention",
+                                      )
+                                    : t(
+                                        "professional.profile.credentials.notUploaded",
+                                      )}
                             </div>
                           </div>
                         </div>
@@ -864,12 +898,14 @@ export function ProfileLayout() {
                           }
                           title={
                             isVerified
-                              ? "Verified"
+                              ? t("professional.profile.status.verified")
                               : isPending
-                                ? "Pending"
+                                ? t("professional.profile.status.pending")
                                 : isRejected
-                                  ? "Rejected"
-                                  : "Not Uploaded"
+                                  ? t("professional.profile.status.rejected")
+                                  : t(
+                                      "professional.profile.credentials.notUploaded",
+                                    )
                           }
                         >
                           {isVerified ? (
@@ -911,16 +947,24 @@ export function ProfileLayout() {
                           </div>
                           <div>
                             <div className="text-brand-dark text-xs font-medium">
-                              Liability Insurance
+                              {t("professional.profile.credentials.insurance")}
                             </div>
                             <div className="text-brand-secondary text-[10px]">
                               {isVerified
-                                ? "Insurance Verified"
+                                ? t(
+                                    "professional.profile.credentials.insuranceVerified",
+                                  )
                                 : isPending
-                                  ? "Pending Review"
+                                  ? t(
+                                      "professional.profile.credentials.pendingReview",
+                                    )
                                   : isRejected
-                                    ? "Requires Attention"
-                                    : "Not Uploaded"}
+                                    ? t(
+                                        "professional.profile.credentials.requiresAttention",
+                                      )
+                                    : t(
+                                        "professional.profile.credentials.notUploaded",
+                                      )}
                             </div>
                           </div>
                         </div>
@@ -936,12 +980,14 @@ export function ProfileLayout() {
                           }
                           title={
                             isVerified
-                              ? "Verified"
+                              ? t("professional.profile.status.verified")
                               : isPending
-                                ? "Pending"
+                                ? t("professional.profile.status.pending")
                                 : isRejected
-                                  ? "Rejected"
-                                  : "Not Uploaded"
+                                  ? t("professional.profile.status.rejected")
+                                  : t(
+                                      "professional.profile.credentials.notUploaded",
+                                    )
                           }
                         >
                           {isVerified ? (
@@ -977,7 +1023,7 @@ export function ProfileLayout() {
           <section className="border-brand-dark/10 rounded-2xl border bg-white p-5">
             <h3 className="text-brand-dark mb-6 flex items-center gap-2 text-sm font-bold tracking-tight">
               <CalendarDays className="text-brand-secondary h-4 w-4" />
-              Weekly Availability
+              {t("professional.profile.schedule.title")}
             </h3>
             {isLoadingSchedule ? (
               <div className="flex items-center justify-center py-8">
@@ -1016,8 +1062,10 @@ export function ProfileLayout() {
                             </h4>
                             <p className="text-brand-secondary text-xs">
                               {isActive
-                                ? `${slots.length} time slot${slots.length !== 1 ? "s" : ""}`
-                                : "Not available"}
+                                ? `${slots.length} ${slots.length !== 1 ? t("professional.profile.schedule.timeSlots") : t("professional.profile.schedule.timeSlot")}`
+                                : t(
+                                    "professional.profile.schedule.notAvailable",
+                                  )}
                             </p>
                           </div>
                         </div>
@@ -1028,7 +1076,9 @@ export function ProfileLayout() {
                               : "bg-brand-dark/5 text-brand-secondary/60"
                           }`}
                         >
-                          {isActive ? "Available" : "Unavailable"}
+                          {isActive
+                            ? t("professional.profile.schedule.available")
+                            : t("professional.profile.schedule.unavailable")}
                         </div>
                       </div>
                       {isActive && slots.length > 0 && (
@@ -1052,7 +1102,7 @@ export function ProfileLayout() {
               <div className="border-brand-dark/20 flex flex-col items-center justify-center rounded-xl border border-dashed py-8 text-center">
                 <CalendarDays className="text-brand-dark/20 mb-2 h-8 w-8" />
                 <p className="text-xs text-slate-400">
-                  No schedule configured yet
+                  {t("professional.profile.schedule.noSchedule")}
                 </p>
               </div>
             )}

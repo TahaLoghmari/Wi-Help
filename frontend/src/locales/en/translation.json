@@ -541,5 +541,467 @@
         "noSchedule": "No schedule configured yet"
       }
     }
+  },
+  "professional": {
+    "stats": {
+      "appointments": {
+        "title": "Appointments",
+        "completed": "Completed",
+        "confirmed": "Confirmed",
+        "offered": "Offered",
+        "cancelled": "Cancelled"
+      },
+      "today": {
+        "title": "Today's Appointments",
+        "badge": "Today",
+        "completedPercentage": "% completed"
+      },
+      "patients": {
+        "title": "Total Patients",
+        "allTime": "All time",
+        "active": "Active patients under your care"
+      }
+    },
+    "appointments": {
+      "title": "Patient Appointments",
+      "subtitle": "Manage upcoming and today's appointments with quick actions.",
+      "tabs": {
+        "offered": "Offered",
+        "confirmed": "Confirmed",
+        "cancelled": "Cancelled",
+        "completed": "Completed"
+      },
+      "table": {
+        "patient": "Patient",
+        "date": "Date",
+        "purpose": "Purpose",
+        "urgency": "Urgency",
+        "price": "Price",
+        "actions": "Actions",
+        "unknownPatient": "Unknown Patient",
+        "dob": "DOB:",
+        "patientId": "Patient ID:"
+      },
+      "empty": {
+        "offered": {
+          "title": "No offered appointments",
+          "description": "You don't have any pending appointment offers at the moment."
+        },
+        "confirmed": {
+          "title": "No confirmed appointments",
+          "description": "You don't have any confirmed appointments yet."
+        },
+        "cancelled": {
+          "title": "No cancelled appointments",
+          "description": "You don't have any cancelled appointments."
+        },
+        "completed": {
+          "title": "No completed appointments",
+          "description": "You don't have any completed appointments yet."
+        }
+      },
+      "loading": "Loading appointments...",
+      "error": "Error loading appointments",
+      "dialogs": {
+        "upload": {
+          "title": "Click to upload or drag and drop",
+          "subtitle": "PDF only"
+        },
+        "prescriptionTitle": {
+          "label": "Prescription Title (Optional)",
+          "placeholder": "e.g. General Consultation Prescription"
+        },
+        "notes": {
+          "label": "Notes (Optional)",
+          "placeholder": "Additional notes on the prescription..."
+        },
+        "cancel": "Cancel",
+        "complete": "Complete Appointment",
+        "completing": "Completing..."
+      }
+    },
+    "myPatients": {
+      "title": "My Patients",
+      "subtitle": "A quick overview of key patients in your panel with direct communication actions.",
+      "viewAll": "View All",
+      "error": "Error loading patients.",
+      "empty": "No patients found.",
+      "card": {
+        "id": "ID: #",
+        "years": "years",
+        "unknown": "Unknown",
+        "viewProfile": "View Profile",
+        "message": "Message"
+      }
+    },
+    "schedule": {
+      "title": "Configure Schedule",
+      "subtitle": "Set up your weekly availability and time slots.",
+      "validationError": "Validation Error",
+      "checkErrors": "Please check the form for errors.",
+      "slotsConfigured": "slot(s) configured",
+      "notAvailable": "Not Available",
+      "to": "to",
+      "addSlot": "Add Slot",
+      "save": "Save Schedule",
+      "error": "Error loading schedule."
+    },
+    "profile": {
+      "present": "Present",
+      "error": "Error loading profile.",
+      "specialist": "Specialist",
+      "reviewsCount": "reviews",
+      "tabs": {
+        "overview": "Overview",
+        "reviews": "Reviews",
+        "schedule": "Schedule"
+      },
+      "about": "About & Bio",
+      "specialty": "Specialty",
+      "rate": "Rate",
+      "experience": "Experience",
+      "years": "Years",
+      "status": {
+        "label": "Status",
+        "verified": "Verified",
+        "pending": "Pending",
+        "rejected": "Rejected",
+        "unknown": "Unknown"
+      },
+      "specialties": "Specialties & Focus",
+      "noExperience": "No professional experience added",
+      "education": "Education",
+      "noEducation": "No education details added",
+      "awards": "Awards & Recognitions",
+      "noAwards": "No awards or recognitions added",
+      "contact": {
+        "title": "Contact Information",
+        "address": "Address",
+        "email": "Email",
+        "phone": "Phone",
+        "dob": "Date of Birth"
+      },
+      "credentials": {
+        "title": "Credentials",
+        "verifiedCount": "verified",
+        "diploma": "Diploma",
+        "diplomaVerified": "Medical Degree Verified",
+        "license": "Professional License",
+        "licenseVerified": "License Verified",
+        "id": "ID Card",
+        "idVerified": "Identity Verified",
+        "insurance": "Liability Insurance",
+        "insuranceVerified": "Insurance Verified",
+        "pendingReview": "Pending Review",
+        "requiresAttention": "Requires Attention",
+        "notUploaded": "Not Uploaded"
+      },
+      "schedule": {
+        "title": "Weekly Availability",
+        "timeSlot": "time slot",
+        "timeSlots": "time slots",
+        "notAvailable": "Not available",
+        "available": "Available",
+        "unavailable": "Unavailable",
+        "noSchedule": "No schedule configured"
+      }
+    },
+    "payment": {
+      "title": "Payment Settings",
+      "subtitle": "Manage your payment methods, including Flouci wallet ID and bank account RIB.",
+      "flouci": {
+        "title": "Flouci",
+        "description": "Connect your Flouci wallet to receive payments seamlessly from clients",
+        "instantPayments": "Instant payments",
+        "secureTransactions": "Secure transactions",
+        "connectWallet": "Connect Wallet",
+        "integrateTitle": "Integrate with Flouci",
+        "integrateDescription": "Integrate your account with your Flouci wallet.",
+        "walletId": "Wallet ID",
+        "integrateButton": "Integrate",
+        "close": "Close"
+      }
+    },
+    "settings": {
+      "title": "Account Settings",
+      "subtitle": "Manage your profile, verification documents, and security preferences.",
+      "tabs": {
+        "profile": "Profile & Bio",
+        "verification": "Verification",
+        "education": "Education",
+        "experience": "Experience",
+        "awards": "Awards",
+        "security": "Security"
+      },
+      "profileAndBio": {
+        "title": "Basic Information",
+        "subtitle": "Core details shown on your public professional profile.",
+        "profilePicture": {
+          "label": "Profile picture",
+          "hint": "JPG, PNG up to 5MB.",
+          "upload": "Upload new",
+          "remove": "Remove"
+        },
+        "form": {
+          "firstName": {
+            "label": "First Name",
+            "placeholder": "Enter first name"
+          },
+          "lastName": {
+            "label": "Last Name",
+            "placeholder": "Enter last name"
+          },
+          "phoneNumber": {
+            "label": "Phone Number",
+            "placeholder": "Enter phone number"
+          },
+          "experience": {
+            "label": "Experience",
+            "placeholder": "0"
+          },
+          "address": {
+            "state": {
+              "label": "State",
+              "placeholder": "Enter state"
+            },
+            "country": {
+              "label": "Country",
+              "placeholder": "Select country"
+            },
+            "city": {
+              "label": "City",
+              "placeholder": "Enter city"
+            },
+            "postalCode": {
+              "label": "Postal Code",
+              "placeholder": "Enter postal code"
+            },
+            "street": {
+              "label": "Street",
+              "placeholder": "Enter street address"
+            }
+          },
+          "specialization": {
+            "label": "Specialization",
+            "placeholder": "Select specialization"
+          },
+          "services": {
+            "label": "Services",
+            "add": "Add a service...",
+            "search": "Search services...",
+            "notFound": "No services found."
+          },
+          "price": {
+            "start": "Start Price",
+            "end": "End Price"
+          },
+          "bio": {
+            "label": "Bio",
+            "placeholder": "Short introduction that patients will see.",
+            "hint": "Visible to patients on your public profile."
+          }
+        },
+        "save": "Save Changes"
+      },
+      "verification": {
+        "title": "Verification Documents",
+        "subtitle": "Upload and manage documents used to verify your professional identity. Updates may require compliance review.",
+        "documents": {
+          "Diploma": {
+            "title": "Diploma",
+            "description": "Medical Degree"
+          },
+          "ProfessionalLicense": {
+            "title": "Professional License",
+            "description": "State / National License"
+          },
+          "Id": {
+            "title": "ID Card",
+            "description": "Government Issued"
+          },
+          "Insurance": {
+            "title": "Insurance",
+            "description": "Professional Coverage"
+          }
+        },
+        "status": {
+          "Verified": "Verified",
+          "Pending": "Pending Review",
+          "Rejected": "Requires Attention",
+          "NotUploaded": "Not Uploaded"
+        },
+        "upload": {
+          "uploading": "Uploading...",
+          "clickToUpload": "Click to upload document",
+          "sizeLimit": "PDF up to 5MB",
+          "viewLast": "View last uploaded file",
+          "error": {
+            "pdfOnly": "Please upload a PDF file.",
+            "sizeExceeded": "Document size must be 5MB or less."
+          }
+        },
+        "info": {
+          "resetStatus": "Uploading a new document will reset its status to",
+          "pending": "Pending",
+          "review": "while our compliance team reviews the update.",
+          "time": "Typical review time: 1–2 business days."
+        }
+      },
+      "education": {
+        "title": "Education",
+        "subtitle": "Add your medical education and training history.",
+        "add": "Add education",
+        "addNew": "Add New Education",
+        "edit": "Edit Education",
+        "empty": "No education added yet. Click \"Add education\" to get started.",
+        "hint": "Use the Add button to include additional degrees or training programs.",
+        "present": "Present",
+        "form": {
+          "institution": {
+            "label": "Institution *",
+            "placeholder": "e.g. Tunis Faculty of Medicine"
+          },
+          "degree": {
+            "label": "Degree *",
+            "placeholder": "e.g. Doctorate, Bachelor"
+          },
+          "fieldOfStudy": {
+            "label": "Field of Study",
+            "placeholder": "e.g. Medicine, Cardiology"
+          },
+          "country": {
+            "label": "Country",
+            "placeholder": "e.g. Tunisia"
+          },
+          "startYear": {
+            "label": "Start Year *",
+            "placeholder": "e.g. 2018"
+          },
+          "endYear": {
+            "label": "End Year",
+            "placeholder": "e.g. 2022"
+          },
+          "currentlyStudying": "Currently studying",
+          "cancel": "Cancel",
+          "update": "Update",
+          "save": "Save"
+        },
+        "delete": {
+          "title": "Delete Education",
+          "description": "Are you sure you want to delete this education entry? This action cannot be undone.",
+          "confirm": "Delete",
+          "cancel": "Cancel"
+        }
+      },
+      "experience": {
+        "title": "Experience",
+        "subtitle": "Highlight your clinical and related professional experience.",
+        "add": "Add experience",
+        "addNew": "Add New Experience",
+        "edit": "Edit Experience",
+        "empty": "No experience added yet. Click \"Add experience\" to get started.",
+        "hint": "Use Add to include residency, fellowships, and other relevant roles.",
+        "present": "Present",
+        "form": {
+          "title": {
+            "label": "Title / Role *",
+            "placeholder": "e.g. Attending Cardiologist"
+          },
+          "organization": {
+            "label": "Organization *",
+            "placeholder": "e.g. Heart & Vascular Center"
+          },
+          "location": {
+            "label": "Location",
+            "placeholder": "e.g. Tunis"
+          },
+          "startYear": {
+            "label": "Start Year *",
+            "placeholder": "e.g. 2015"
+          },
+          "endYear": {
+            "label": "End Year",
+            "placeholder": "e.g. 2020"
+          },
+          "currentPosition": "Current position",
+          "description": {
+            "label": "Description",
+            "placeholder": "Describe your responsibilities and achievements..."
+          },
+          "cancel": "Cancel",
+          "update": "Update",
+          "save": "Save"
+        },
+        "delete": {
+          "title": "Delete Experience",
+          "description": "Are you sure you want to delete this experience entry? This action cannot be undone.",
+          "confirm": "Delete",
+          "cancel": "Cancel"
+        }
+      },
+      "awards": {
+        "title": "Awards",
+        "subtitle": "Showcase professional awards and recognitions.",
+        "add": "Add award",
+        "addNew": "Add New Award",
+        "edit": "Edit Award",
+        "empty": "No awards added yet. Click \"Add award\" to get started.",
+        "hint": "Use the Add button to include additional awards or recognitions.",
+        "form": {
+          "title": {
+            "label": "Title *",
+            "placeholder": "e.g. Excellence in Patient Care Award"
+          },
+          "yearReceived": {
+            "label": "Year Received *",
+            "placeholder": "e.g. 2023"
+          },
+          "issuer": {
+            "label": "Issuing Organization",
+            "placeholder": "e.g. Heart & Vascular Center"
+          },
+          "description": {
+            "label": "Description",
+            "placeholder": "Describe the award and why you received it..."
+          },
+          "cancel": "Cancel",
+          "update": "Update",
+          "save": "Save"
+        },
+        "delete": {
+          "title": "Delete Award",
+          "description": "Are you sure you want to delete this award? This action cannot be undone.",
+          "confirm": "Delete",
+          "cancel": "Cancel"
+        }
+      },
+      "security": {
+        "title": "Security",
+        "subtitle": "Keep your account secure with a strong password.",
+        "form": {
+          "currentPassword": {
+            "label": "Current password",
+            "placeholder": "Enter current password"
+          },
+          "newPassword": {
+            "label": "New password",
+            "placeholder": "At least 6 characters"
+          },
+          "confirmNewPassword": {
+            "label": "Confirm new password",
+            "placeholder": "Re-enter new password"
+          },
+          "submit": "Update password"
+        }
+      }
+    },
+    "pagination": {
+      "showing": "Showing",
+      "of": "of",
+      "patients": "patients.",
+      "loadingMore": "Loading...",
+      "loadMore": "Load More",
+      "noMore": "No more patients"
+    }
   }
 }
