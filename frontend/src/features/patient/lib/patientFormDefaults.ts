@@ -17,7 +17,14 @@ export function ProfileAndBioFormDefaults(patient: PatientDto) {
     phoneNumber: patient.phoneNumber,
     address: patient.address,
     emergencyContact: patient.emergencyContact,
-    medicalInfo: patient.medicalInfo,
+    medicalInfo: patient.medicalInfo
+      ? {
+          chronicConditions: patient.medicalInfo.chronicConditions ?? [],
+          allergies: patient.medicalInfo.allergies ?? [],
+          medications: patient.medicalInfo.medications ?? [],
+          mobilityStatus: patient.medicalInfo.mobilityStatus ?? "Normal",
+        }
+      : undefined,
     bio: patient.bio,
     profilePicture: undefined,
   };

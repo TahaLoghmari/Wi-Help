@@ -14,7 +14,7 @@ export interface PatientDto {
   gender: string;
   address: Address;
   emergencyContact: EmergencyContact;
-  medicalInfo: MedicalInfo;
+  medicalInfo?: MedicalInfo;
   bio?: string;
   profilePictureUrl?: string;
 }
