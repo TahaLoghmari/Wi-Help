@@ -249,6 +249,7 @@ function AwardCard({ award, onEdit, onDelete }: AwardCardProps) {
 }
 
 export function Awards() {
+  const { t } = useTranslation();
   const { data: awards, isLoading } = useGetAwards();
   const deleteAwardMutation = useDeleteAward();
   const [isAddingNew, setIsAddingNew] = useState(false);

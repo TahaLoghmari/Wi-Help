@@ -4,6 +4,7 @@ import { StarRatingInput } from "@/features/reviews";
 import { useSubmitReview } from "@/features/reviews";
 import type { SubmitReviewRequest } from "@/features/reviews";
 import { GetProfessional } from "@/features/professional";
+import { useTranslation } from "react-i18next";
 
 interface SubmitReviewFormProps {
   professionalId: string;
@@ -16,6 +17,7 @@ export function SubmitReviewForm({
   professionalId,
   onSuccess,
 }: SubmitReviewFormProps) {
+  const { t } = useTranslation();
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
@@ -58,21 +60,20 @@ export function SubmitReviewForm({
     : "this professional";
 
   const remainingChars = MAX_COMMENT_LENGTH - comment.length;
-
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <h3 className="text-brand-dark text-xs font-semibold tracking-tight">
-          Write a review for {professionalName}
+          {t("reviews.form.title", { name: professionalName })}
         </h3>
         <p className="mt-0.5 text-[11px] text-slate-500">
-          Share your experience and help others make informed decisions.
+          {t("reviews.form.description")}
         </p>
       </div>
 
       <div className="space-y-1.5">
         <label className="block text-[11px] font-medium text-slate-700">
-          Rating
+          {t("reviews.form.rating")}
         </label>
         <StarRatingInput value={rating} onChange={setRating} />
       </div>
@@ -82,7 +83,7 @@ export function SubmitReviewForm({
           htmlFor="comment"
           className="block text-[11px] font-medium text-slate-700"
         >
-          Your review
+          {t("reviews.form.comment")}
         </label>
         <Textarea
           id="comment"
@@ -92,12 +93,12 @@ export function SubmitReviewForm({
               setComment(e.target.value);
             }
           }}
-          placeholder="Share your experience with this professional..."
+          placeholder={t("reviews.form.placeholder")}
           className="min-h-[100px] text-xs text-slate-700 placeholder:text-slate-400"
           rows={4}
         />
         <p className="text-[11px] text-slate-500">
-          {remainingChars} characters remaining
+          {t("reviews.form.remaining", { count: remainingChars })}
         </p>
       </div>
 
@@ -111,15 +112,7 @@ export function SubmitReviewForm({
           htmlFor="terms"
           className="cursor-pointer text-[11px] leading-relaxed text-slate-700"
         >
-          I have read and accept{" "}
-          <a
-            href="/terms"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-brand-blue font-medium hover:underline"
-          >
-            Terms & Conditions
-          </a>
+          {t("reviews.form.terms")}
         </label>
       </div>
 
@@ -131,7 +124,7 @@ export function SubmitReviewForm({
         className="bg-brand-dark hover:bg-brand-secondary w-full text-xs font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
         size="sm"
       >
-        {isPending ? "Submitting..." : "Submit Review"}
+        {isPending ? t("reviews.form.submitting") : t("reviews.form.submit")}
       </Button>
     </form>
   );

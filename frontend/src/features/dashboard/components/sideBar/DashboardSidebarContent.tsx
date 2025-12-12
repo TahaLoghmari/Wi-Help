@@ -7,11 +7,13 @@ import {
   useDashboardSidebarStateStore,
 } from "@/features/dashboard";
 import Icon2 from "@/assets/Icon-2.png";
+import { useTranslation } from "react-i18next";
 
 export function DashboardSidebarContent({ className }: { className?: string }) {
+  const { t } = useTranslation();
   const { data: user } = useCurrentUser();
   const { isSidebarOpen } = useDashboardSidebarStateStore();
-  const navigationData = getNavigationData(user!);
+  const navigationData = getNavigationData(user!, t);
   return (
     <div
       className={`flex h-svh flex-col transition-[width,height,margin,padding] duration-200 focus:outline-none ${isSidebarOpen ? "w-[287px]" : "w-14"} ${className}`}
@@ -24,7 +26,7 @@ export function DashboardSidebarContent({ className }: { className?: string }) {
           <div className="flex flex-col">
             <p className="text-xl font-bold">Wi Help</p>
             <p className="text-muted-foreground text-xs">
-              taking care of others is our priority
+              {t("dashboard.sidebar.slogan")}
             </p>
           </div>
         )}

@@ -994,14 +994,90 @@
           "submit": "Update password"
         }
       }
+    }
+  },
+  "pagination": {
+    "showing": "Showing",
+    "of": "of",
+    "patients": "patients.",
+    "loadingMore": "Loading...",
+    "loadMore": "Load More",
+    "noMore": "No more patients"
+  },
+  "dashboard": {
+    "sidebar": {
+      "slogan": "taking care of others is our priority",
+      "nav": {
+        "appointments": "Appointments",
+        "patients": "Patients",
+        "professionals": "Professionals",
+        "reviews": "Reviews",
+        "transactions": "Transactions",
+        "documents": "Documents",
+        "myPatients": "My Patients",
+        "scheduleTimings": "Schedule Timings",
+        "messages": "Messages",
+        "invoices": "Invoices",
+        "payment": "Payment",
+        "myProfessionals": "My Professionals",
+        "findProfessional": "Find Professional",
+        "prescriptions": "Prescriptions",
+        "billing": "Billing",
+        "settings": "Settings"
+      },
+      "logout": {
+        "title": "Are you sure you want to log out?",
+        "description": "Log out of Wi Help as {{email}}?",
+        "cancel": "Cancel",
+        "confirm": "Logout"
+      }
+    }
+  },
+  "messaging": {
+    "yesterday": "Yesterday",
+    "today": "Today",
+    "title": "Messages",
+    "searchPlaceholder": "Search conversations",
+    "noConversationsFound": "No conversations found",
+    "noConversationsYet": "No conversations yet",
+    "typeMessage": "Type a message... (Shift+Enter for new line)",
+    "send": "Send"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "description": "Stay on top of appointment changes, messages, and important clinical alerts.",
+    "markAllAsRead": "Mark all as read",
+    "filters": {
+      "all": "All",
+      "appointments": "Appointments",
+      "messages": "Messages"
     },
-    "pagination": {
-      "showing": "Showing",
-      "of": "of",
-      "patients": "patients.",
-      "loadingMore": "Loading...",
-      "loadMore": "Load More",
-      "noMore": "No more patients"
+    "empty": {
+      "all": "No notifications found.",
+      "appointments": "No appointment notifications found.",
+      "messages": "No message notifications found."
+    },
+    "error": "Failed to load notifications.",
+    "retry": "Retry",
+    "today": "Today",
+    "markAsRead": "Mark as read",
+    "new": "New"
+  },
+  "reviews": {
+    "title": "Patient Reviews",
+    "description": "Read feedback from patients and see their experiences.",
+    "error": "Error loading reviews. Please try again later.",
+    "empty": "No reviews yet.",
+    "form": {
+      "title": "Write a review for {{name}}",
+      "description": "Share your experience and help others make informed decisions.",
+      "rating": "Rating",
+      "comment": "Your review",
+      "placeholder": "Share your experience with this professional...",
+      "remaining": "{{count}} characters remaining",
+      "terms": "I have read and accept Terms & Conditions",
+      "submit": "Submit Review",
+      "submitting": "Submitting..."
     }
   }
 }

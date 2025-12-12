@@ -4,6 +4,7 @@ import { Spinner } from "@/components/ui/spinner";
 import type { ConversationDto } from "@/features/messaging";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useChatContext } from "@/features/messaging";
+import { useTranslation } from "react-i18next";
 
 interface ConversationListProps {
   conversations: ConversationDto[] | undefined;
@@ -22,6 +23,7 @@ export function ConversationList({
   searchQuery,
   onSearchChange,
 }: ConversationListProps) {
+  const { t } = useTranslation();
   const { onlineUserIds } = useChatContext();
   const formatLastActivity = (date: string) => {
     const activityDate = new Date(date);
@@ -29,7 +31,7 @@ export function ConversationList({
       return format(activityDate, "HH:mm");
     }
     if (isYesterday(activityDate)) {
-      return "Yesterday";
+      return t("messaging.yesterday");
     }
     return format(activityDate, "EEE");
   };
@@ -53,7 +55,7 @@ export function ConversationList({
       {/* Search */}
       <div className="border-b border-slate-200 px-4 py-3">
         <div className="mb-2 text-xs font-medium tracking-tight text-slate-700">
-          Messages
+          {t("messaging.title")}
         </div>
         <div className="bg-brand-bg focus-within:border-brand-blue/70 focus-within:ring-brand-blue/60 flex items-center rounded-full border border-slate-200 px-3 py-1.5 text-[11px] text-slate-500 transition-all focus-within:ring-1">
           <Search
@@ -62,7 +64,7 @@ export function ConversationList({
           />
           <input
             type="text"
-            placeholder="Search conversations"
+            placeholder={t("messaging.searchPlaceholder")}
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             className="flex-1 bg-transparent text-[11px] outline-none placeholder:text-slate-400"
@@ -81,7 +83,9 @@ export function ConversationList({
         {!isLoading &&
           (!filteredConversations || filteredConversations.length === 0) && (
             <div className="flex items-center justify-center px-4 py-10 text-center text-xs text-slate-500">
-              {searchQuery ? "No conversations found" : "No conversations yet"}
+              {searchQuery
+                ? t("messaging.noConversationsFound")
+                : t("messaging.noConversationsYet")}
             </div>
           )}
 

@@ -16,40 +16,41 @@ import {
   Receipt,
   FolderOpen,
 } from "lucide-react";
+import type { TFunction } from "i18next";
 
-export function getNavigationData(user: UserDto) {
+export function getNavigationData(user: UserDto, t: TFunction) {
   const isProfessional = user.role.toLowerCase() === "professional";
   const isPatient = user.role.toLowerCase() === "patient";
   const isAdmin = user.role.toLowerCase() === "admin";
 
   const adminNavMain = [
     {
-      title: "Appointments",
+      title: t("dashboard.sidebar.nav.appointments"),
       url: ROUTE_PATHS.ADMIN.APPOINTMENTS,
       icon: Calendar,
     },
     {
-      title: "Patients",
+      title: t("dashboard.sidebar.nav.patients"),
       url: ROUTE_PATHS.ADMIN.PATIENTS,
       icon: Users,
     },
     {
-      title: "Professionals",
+      title: t("dashboard.sidebar.nav.professionals"),
       url: ROUTE_PATHS.ADMIN.PROFESSIONALS,
       icon: UserCheck,
     },
     {
-      title: "Reviews",
+      title: t("dashboard.sidebar.nav.reviews"),
       url: ROUTE_PATHS.ADMIN.REVIEWS,
       icon: Star,
     },
     {
-      title: "Transactions",
+      title: t("dashboard.sidebar.nav.transactions"),
       url: ROUTE_PATHS.ADMIN.TRANSACTIONS,
       icon: Receipt,
     },
     {
-      title: "Documents",
+      title: t("dashboard.sidebar.nav.documents"),
       url: ROUTE_PATHS.ADMIN.DOCUMENTS,
       icon: FolderOpen,
     },
@@ -57,33 +58,33 @@ export function getNavigationData(user: UserDto) {
 
   const professionalNavMain = [
     {
-      title: "Appointments",
+      title: t("dashboard.sidebar.nav.appointments"),
       url: ROUTE_PATHS.PROFESSIONAL.APPOINTMENTS,
       icon: Calendar,
     },
     {
-      title: "My Patients",
+      title: t("dashboard.sidebar.nav.myPatients"),
       url: ROUTE_PATHS.PROFESSIONAL.MYPATIENTS,
       icon: Users,
     },
     {
-      title: "Schedule Timings",
+      title: t("dashboard.sidebar.nav.scheduleTimings"),
       url: ROUTE_PATHS.PROFESSIONAL.SCHEDULETIMINGS,
       icon: Clock,
     },
 
     {
-      title: "Messages",
+      title: t("dashboard.sidebar.nav.messages"),
       url: ROUTE_PATHS.PROFESSIONAL.MESSAGES,
       icon: MessageSquare,
     },
     {
-      title: "Invoices",
+      title: t("dashboard.sidebar.nav.invoices"),
       url: ROUTE_PATHS.PROFESSIONAL.INVOICES,
       icon: FileText,
     },
     {
-      title: "Payment",
+      title: t("dashboard.sidebar.nav.payment"),
       url: ROUTE_PATHS.PROFESSIONAL.PAYMENT,
       icon: CreditCard,
     },
@@ -91,32 +92,32 @@ export function getNavigationData(user: UserDto) {
 
   const patientNavMain = [
     {
-      title: "Appointments",
+      title: t("dashboard.sidebar.nav.appointments"),
       url: ROUTE_PATHS.PATIENT.APPOINTMENTS,
       icon: Calendar,
     },
     {
-      title: "My Professionals",
+      title: t("dashboard.sidebar.nav.myProfessionals"),
       url: ROUTE_PATHS.PATIENT.MYPROFESSIONALS,
       icon: Stethoscope,
     },
     {
-      title: "Find Professional",
+      title: t("dashboard.sidebar.nav.findProfessional"),
       url: ROUTE_PATHS.PATIENT.FINDPROFESSIONAL,
       icon: Search,
     },
     {
-      title: "Prescriptions",
+      title: t("dashboard.sidebar.nav.prescriptions"),
       url: ROUTE_PATHS.PATIENT.PRESCRIPTIONS,
       icon: Pill,
     },
     {
-      title: "Messages",
+      title: t("dashboard.sidebar.nav.messages"),
       url: ROUTE_PATHS.PATIENT.MESSAGES,
       icon: MessageSquare,
     },
     {
-      title: "Billing",
+      title: t("dashboard.sidebar.nav.billing"),
       url: ROUTE_PATHS.PATIENT.BILLING,
       icon: CreditCard,
     },
@@ -134,7 +135,7 @@ export function getNavigationData(user: UserDto) {
     navSecondary: !isAdmin
       ? [
           {
-            title: "Settings",
+            title: t("dashboard.sidebar.nav.settings"),
             url: isProfessional
               ? ROUTE_PATHS.PROFESSIONAL.SETTINGS
               : ROUTE_PATHS.PATIENT.SETTINGS,

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import type { KeyboardEvent } from "react";
 import { Send } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
+import { useTranslation } from "react-i18next";
 
 interface MessageInputProps {
   onSend: (content: string) => void;
@@ -17,6 +18,7 @@ export function MessageInput({
   isSending = false,
   onTyping,
 }: MessageInputProps) {
+  const { t } = useTranslation();
   const [message, setMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typingTimeoutRef = useRef<number | null>(null);
@@ -132,7 +134,7 @@ export function MessageInput({
             value={message}
             onChange={(e) => handleChange(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Type a message... (Shift+Enter for new line)"
+            placeholder={t("messaging.typeMessage")}
             className="max-h-32 flex-1 resize-none overflow-y-auto bg-transparent text-xs text-slate-800 outline-none placeholder:text-slate-400"
             disabled={isSending}
           />
@@ -147,7 +149,7 @@ export function MessageInput({
           ) : (
             <Send className="h-3.5 w-3.5 text-white" strokeWidth={1.5} />
           )}
-          Send
+          {t("messaging.send")}
         </button>
       </div>
     </div>

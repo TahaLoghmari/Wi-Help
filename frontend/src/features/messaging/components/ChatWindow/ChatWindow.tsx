@@ -12,6 +12,7 @@ import {
   useChatContext,
 } from "@/features/messaging";
 import { useChatHub } from "@/features/messaging/hooks/useChatHub";
+import { useTranslation } from "react-i18next";
 
 interface ChatWindowProps {
   conversation: ConversationDto | null;
@@ -30,6 +31,7 @@ export function ChatWindow({
   onLoadMore,
   hasMoreMessages,
 }: ChatWindowProps) {
+  const { t } = useTranslation();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [isTyping, setIsTyping] = useState(false);
@@ -57,10 +59,10 @@ export function ChatWindow({
   const formatDateHeader = (dateKey: string) => {
     const date = new Date(dateKey);
     if (isToday(date)) {
-      return "Today";
+      return t("messaging.today");
     }
     if (isYesterday(date)) {
-      return "Yesterday";
+      return t("messaging.yesterday");
     }
     return format(date, "MMMM d, yyyy");
   };

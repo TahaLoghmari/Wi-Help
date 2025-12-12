@@ -14,10 +14,12 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { formatDistanceToNow } from "date-fns";
 import { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 type NotificationFilter = "all" | "appointments" | "messages";
 
 export function Notifications() {
+  const { t } = useTranslation();
   const [activeFilter, setActiveFilter] = useState<NotificationFilter>("all");
 
   const {
@@ -100,11 +102,10 @@ export function Notifications() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
-            Notifications
+            {t("notifications.title")}
           </h2>
           <p className="mt-0.5 max-w-xl text-[11px] text-slate-500">
-            Stay on top of appointment changes, messages, and important clinical
-            alerts.
+            {t("notifications.description")}
           </p>
         </div>
         <div className="flex items-center gap-2 text-[11px]">
@@ -121,7 +122,7 @@ export function Notifications() {
                 strokeWidth={1.5}
               />
             )}
-            <span>Mark all as read</span>
+            <span>{t("notifications.markAllAsRead")}</span>
           </button>
         </div>
       </div>
@@ -140,7 +141,7 @@ export function Notifications() {
             className={`h-3.5 w-3.5 ${activeFilter === "all" ? "text-white" : "text-slate-500"}`}
             strokeWidth={1.5}
           />
-          <span>All</span>
+          <span>{t("notifications.filters.all")}</span>
           {getFilterCount("all") > 0 && (
             <span
               className={`ml-0.5 rounded-full px-1.5 py-0.5 text-[10px] ${
@@ -165,7 +166,7 @@ export function Notifications() {
             className={`h-3.5 w-3.5 ${activeFilter === "appointments" ? "text-white" : "text-slate-500"}`}
             strokeWidth={1.5}
           />
-          <span>Appointments</span>
+          <span>{t("notifications.filters.appointments")}</span>
           {getFilterCount("appointments") > 0 && (
             <span
               className={`ml-0.5 rounded-full px-1.5 py-0.5 text-[10px] ${
@@ -190,7 +191,7 @@ export function Notifications() {
             className={`h-3.5 w-3.5 ${activeFilter === "messages" ? "text-white" : "text-slate-500"}`}
             strokeWidth={1.5}
           />
-          <span>Messages</span>
+          <span>{t("notifications.filters.messages")}</span>
           {getFilterCount("messages") > 0 && (
             <span
               className={`ml-0.5 rounded-full px-1.5 py-0.5 text-[10px] ${
@@ -216,13 +217,13 @@ export function Notifications() {
         {isError && (
           <div className="flex flex-col items-center justify-center gap-2 py-10">
             <span className="text-muted-foreground text-sm">
-              Failed to load notifications.
+              {t("notifications.error")}
             </span>
             <button
               onClick={() => refetch()}
               className="text-brand-blue text-xs hover:underline"
             >
-              Retry
+              {t("notifications.retry")}
             </button>
           </div>
         )}
@@ -241,13 +242,10 @@ export function Notifications() {
               )}
             </div>
             <span className="text-muted-foreground text-sm">
-              No{" "}
-              {activeFilter === "appointments"
-                ? "appointment"
-                : activeFilter === "messages"
-                  ? "message"
-                  : ""}{" "}
-              notifications found.
+              {activeFilter === "all" && t("notifications.empty.all")}
+              {activeFilter === "appointments" &&
+                t("notifications.empty.appointments")}
+              {activeFilter === "messages" && t("notifications.empty.messages")}
             </span>
           </div>
         )}
@@ -256,7 +254,9 @@ export function Notifications() {
           <div className="space-y-2">
             <div className="mt-1 flex items-center gap-2 text-[11px] text-slate-500">
               <span className="h-px flex-1 bg-slate-200"></span>
-              <span className="tracking-wide uppercase">Today</span>
+              <span className="tracking-wide uppercase">
+                {t("notifications.today")}
+              </span>
               <span className="h-px flex-1 bg-slate-200"></span>
             </div>
 
@@ -306,11 +306,11 @@ export function Notifications() {
                                 className="text-brand-teal h-3 w-3"
                                 strokeWidth={1.5}
                               />
-                              Mark as read
+                              {t("notifications.markAsRead")}
                             </button>
                             <span className="border-brand-cream bg-brand-cream/60 text-brand-dark inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px]">
                               <span className="h-1.5 w-1.5 rounded-full bg-[#f97316]"></span>
-                              New
+                              {t("notifications.new")}
                             </span>
                           </>
                         )}

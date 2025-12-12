@@ -994,14 +994,90 @@
           "submit": "Mettre à jour le mot de passe"
         }
       }
+    }
+  },
+  "pagination": {
+    "showing": "Affichage de",
+    "of": "sur",
+    "patients": "patients.",
+    "loadingMore": "Chargement...",
+    "loadMore": "Charger plus",
+    "noMore": "Plus de patients"
+  },
+  "dashboard": {
+    "sidebar": {
+      "slogan": "prendre soin des autres est notre priorité",
+      "nav": {
+        "appointments": "Rendez-vous",
+        "patients": "Patients",
+        "professionals": "Professionnels",
+        "reviews": "Avis",
+        "transactions": "Transactions",
+        "documents": "Documents",
+        "myPatients": "Mes Patients",
+        "scheduleTimings": "Horaires",
+        "messages": "Messages",
+        "invoices": "Factures",
+        "payment": "Paiement",
+        "myProfessionals": "Mes Professionnels",
+        "findProfessional": "Trouver un Professionnel",
+        "prescriptions": "Ordonnances",
+        "billing": "Facturation",
+        "settings": "Paramètres"
+      },
+      "logout": {
+        "title": "Êtes-vous sûr de vouloir vous déconnecter ?",
+        "description": "Se déconnecter de Wi Help en tant que {{email}} ?",
+        "cancel": "Annuler",
+        "confirm": "Se déconnecter"
+      }
+    }
+  },
+  "messaging": {
+    "yesterday": "Hier",
+    "today": "Aujourd'hui",
+    "title": "Messages",
+    "searchPlaceholder": "Rechercher des conversations",
+    "noConversationsFound": "Aucune conversation trouvée",
+    "noConversationsYet": "Pas encore de conversations",
+    "typeMessage": "Tapez un message... (Maj+Entrée pour une nouvelle ligne)",
+    "send": "Envoyer"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "description": "Restez informé des changements de rendez-vous, des messages et des alertes cliniques importantes.",
+    "markAllAsRead": "Tout marquer comme lu",
+    "filters": {
+      "all": "Tout",
+      "appointments": "Rendez-vous",
+      "messages": "Messages"
     },
-    "pagination": {
-      "showing": "Affichage de",
-      "of": "sur",
-      "patients": "patients.",
-      "loadingMore": "Chargement...",
-      "loadMore": "Charger plus",
-      "noMore": "Plus de patients"
+    "empty": {
+      "all": "Aucune notification trouvée.",
+      "appointments": "Aucune notification de rendez-vous trouvée.",
+      "messages": "Aucune notification de message trouvée."
+    },
+    "error": "Échec du chargement des notifications.",
+    "retry": "Réessayer",
+    "today": "Aujourd'hui",
+    "markAsRead": "Marquer comme lu",
+    "new": "Nouveau"
+  },
+  "reviews": {
+    "title": "Avis des Patients",
+    "description": "Lisez les retours des patients et découvrez leurs expériences.",
+    "error": "Erreur lors du chargement des avis. Veuillez réessayer plus tard.",
+    "empty": "Pas encore d'avis.",
+    "form": {
+      "title": "Écrire un avis pour {{name}}",
+      "description": "Partagez votre expérience et aidez les autres à prendre des décisions éclairées.",
+      "rating": "Note",
+      "comment": "Votre avis",
+      "placeholder": "Partagez votre expérience avec ce professionnel...",
+      "remaining": "{{count}} caractères restants",
+      "terms": "J'ai lu et j'accepte les Conditions Générales",
+      "submit": "Soumettre l'avis",
+      "submitting": "Envoi en cours..."
     }
   }
 }

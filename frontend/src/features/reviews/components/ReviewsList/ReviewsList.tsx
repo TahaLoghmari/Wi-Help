@@ -7,12 +7,14 @@ import {
 import { useCurrentUser } from "@/features/auth";
 import { SubmitReviewForm } from "@/features/reviews";
 import { GetCurrentProfessional } from "@/features/professional";
+import { useTranslation } from "react-i18next";
 
 interface ReviewsListProps {
   professionalId: string;
 }
 
 export function ReviewsList({ professionalId }: ReviewsListProps) {
+  const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
   const isPatient = currentUser?.role?.toLowerCase() === "patient";
   const isProfessional = currentUser?.role?.toLowerCase() === "professional";
@@ -46,11 +48,10 @@ export function ReviewsList({ professionalId }: ReviewsListProps) {
       </div>
     );
   }
-
   if (isErrorReviews) {
     return (
       <div className="p-4 text-center text-xs text-red-500">
-        Error loading reviews. Please try again later.
+        {t("reviews.error")}
       </div>
     );
   }
@@ -64,10 +65,10 @@ export function ReviewsList({ professionalId }: ReviewsListProps) {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-brand-dark text-sm font-semibold tracking-tight">
-            Patient Reviews
+            {t("reviews.title")}
           </h3>
           <p className="mt-0.5 max-w-xl text-[11px] text-slate-500">
-            Read feedback from patients and see their experiences.
+            {t("reviews.description")}
           </p>
         </div>
         <div className="flex items-center gap-2 text-[11px]">
@@ -82,7 +83,7 @@ export function ReviewsList({ professionalId }: ReviewsListProps) {
       </div>
       {reviews.length === 0 ? (
         <div className="rounded-xl border border-slate-200 bg-white p-8 text-center">
-          <p className="text-xs text-slate-500">No reviews yet.</p>
+          <p className="text-xs text-slate-500">{t("reviews.empty")}</p>
         </div>
       ) : (
         <div className="space-y-3 pr-1">

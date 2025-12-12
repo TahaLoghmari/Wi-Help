@@ -11,8 +11,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useLogoutDialogStore } from "@/features/dashboard";
 import { useLogout } from "@/features/auth";
+import { useTranslation } from "react-i18next";
 
 export function DashboardSidebarLogoutButton() {
+  const { t } = useTranslation();
   const { data: user } = useCurrentUser();
   const { isOpen, setIsOpen } = useLogoutDialogStore();
   const logoutMutation = useLogout();
@@ -20,15 +22,19 @@ export function DashboardSidebarLogoutButton() {
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you sure you want to log out?</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t("dashboard.sidebar.logout.title")}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            Log out of Wi Help as {user?.email}?
+            {t("dashboard.sidebar.logout.description", { email: user?.email })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>
+            {t("dashboard.sidebar.logout.cancel")}
+          </AlertDialogCancel>
           <AlertDialogAction onClick={() => logoutMutation.mutate()}>
-            Logout
+            {t("dashboard.sidebar.logout.confirm")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
