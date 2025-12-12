@@ -56,8 +56,7 @@ export function ForgotPasswordForm() {
         />
         <Button
           type="submit"
-          className="w-full cursor-pointer bg-[#386d52] hover:bg-[#386d52]/90"
-          disabled={!form.formState.isValid || forgotPasswordMutation.isPending}
+          className="bg-brand-dark hover:bg-brand-secondary w-full cursor-pointer"
         >
           {forgotPasswordMutation.isPending ? (
             <Spinner className="h-5 w-5 border-2 invert" />
@@ -68,7 +67,7 @@ export function ForgotPasswordForm() {
         <div className="flex w-full cursor-pointer items-center justify-center">
           <Link
             to={ROUTE_PATHS.AUTH.LOGIN}
-            className="text-primary font-semibold text-sm"
+            className="text-brand-blue hover:text-brand-blue/90 text-sm font-semibold"
           >
             {t("auth.backToLogin")}
           </Link>

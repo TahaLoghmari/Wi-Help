@@ -13,14 +13,18 @@ import { Route as ForgotPasswordRoute } from "@/routes/auth/forgot-password";
 import { Link } from "@tanstack/react-router";
 import { ROUTE_PATHS } from "@/config/routes";
 import { useTranslation } from "react-i18next";
+import { cn } from "@/lib/utils";
 
-export function ForgotPasswordPage() {
+export function ForgotPasswordPage({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   const { t } = useTranslation();
   const forgotPasswordMutation = useForgotPassword();
   const { email } = ForgotPasswordRoute.useSearch();
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         {!email ? (
           <>
@@ -43,12 +47,12 @@ export function ForgotPasswordPage() {
                 {t("auth.forgotPasswordPage.checkEmailTitle")}
               </CardTitle>
               <CardDescription>
-                <p className="text-center text-sm mb-4">
+                <p className="mb-4 text-center text-sm">
                   {t("auth.forgotPasswordPage.emailSentTo")}{" "}
-                  <span className="font-bold text-[#386d52]">{email}</span>.{" "}
+                  <span className="text-brand-dark font-bold">{email}</span>.{" "}
                   {t("auth.forgotPasswordPage.clickLinkInstructions")}
                 </p>
-                <p className="text-center text-sm text-primary font-semibold">
+                <p className="text-primary text-center text-sm font-semibold">
                   {t("auth.forgotPasswordPage.checkSpamFolder")}
                 </p>
               </CardDescription>
@@ -57,8 +61,7 @@ export function ForgotPasswordPage() {
               <>
                 <Button
                   type="button"
-                  className="mb-2 w-full cursor-pointer bg-[#386d52] hover:bg-[#386d52]"
-                  disabled={forgotPasswordMutation.isPending}
+                  className="bg-brand-dark hover:bg-brand-secondary mb-2 w-full cursor-pointer"
                   onClick={() => {
                     forgotPasswordMutation.mutate({ email });
                     toast.success(t("auth.forgotPasswordPage.resendSuccess"));
@@ -83,6 +86,10 @@ export function ForgotPasswordPage() {
           </>
         )}
       </Card>
+      <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
+        {t("auth.termsAgreement")} <a href="#">{t("auth.termsOfService")}</a>{" "}
+        {t("common.and")} <a href="#">{t("auth.privacyPolicy")}</a>.
+      </div>
     </div>
   );
 }
