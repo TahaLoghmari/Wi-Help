@@ -13,9 +13,9 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import {
-  ALLERGIES,
-  CHRONIC_CONDITIONS,
-  MEDICATIONS,
+  getAllergies,
+  getChronicConditions,
+  getMedications,
   type PatientDto,
 } from "@/features/patient";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components";
@@ -171,8 +171,9 @@ export function PatientProfile({
                       key={index}
                       className="border-brand-dark/20 bg-brand-bg text-brand-secondary hover:bg-brand-dark/10 cursor-default rounded-full border px-2 py-1 text-[10px] font-medium transition-colors"
                     >
-                      {ALLERGIES.find((a) => a.value === allergy)?.label ||
-                        allergy}
+                      {getAllergies(i18n.language).find(
+                        (a) => a.value === allergy,
+                      )?.label || allergy}
                     </span>
                   ))}
                 </div>
@@ -197,14 +198,15 @@ export function PatientProfile({
                       key={index}
                       className="border-brand-dark/20 bg-brand-bg text-brand-secondary hover:bg-brand-dark/10 cursor-default rounded-full border px-2 py-1 text-[10px] font-medium transition-colors"
                     >
-                      {MEDICATIONS.find((m) => m.value === medication)?.label ||
-                        medication}
+                      {getMedications(i18n.language).find(
+                        (m) => m.value === medication,
+                      )?.label || medication}
                     </span>
                   ))}
                 </div>
               ) : (
                 <p className="text-brand-secondary/60 text-xs">
-                  No medications listed
+                  {t("patient.profile.noMedications")}
                 </p>
               )}
             </div>
@@ -213,7 +215,7 @@ export function PatientProfile({
             <div className="flex flex-col gap-2">
               <div className="text-brand-dark mb-2 flex items-center gap-2 text-xs font-semibold">
                 <Activity className="text-brand-teal h-3.5 w-3.5" />
-                Chronic Conditions
+                {t("patient.profile.chronicConditions")}
               </div>
               {patient?.medicalInfo?.chronicConditions &&
               patient.medicalInfo.chronicConditions.length > 0 ? (
@@ -224,15 +226,16 @@ export function PatientProfile({
                         key={index}
                         className="border-brand-dark/20 bg-brand-bg text-brand-secondary hover:bg-brand-dark/10 cursor-default rounded-full border px-2 py-1 text-[10px] font-medium transition-colors"
                       >
-                        {CHRONIC_CONDITIONS.find((c) => c.value === condition)
-                          ?.label || condition}
+                        {getChronicConditions(i18n.language).find(
+                          (c) => c.value === condition,
+                        )?.label || condition}
                       </span>
                     ),
                   )}
                 </div>
               ) : (
                 <p className="text-brand-secondary/60 text-xs">
-                  No chronic conditions reported
+                  {t("patient.profile.noChronicConditions")}
                 </p>
               )}
             </div>
@@ -245,7 +248,7 @@ export function PatientProfile({
           <section className="border-brand-dark/10 overflow-hidden rounded-2xl border bg-white">
             <div className="border-brand-dark/10 bg-brand-bg border-b px-5 py-3">
               <h3 className="text-brand-dark text-xs font-bold tracking-tight">
-                Contact Information
+                {t("patient.profile.contactInfo")}
               </h3>
             </div>
             <div className="space-y-5 p-5">
@@ -255,7 +258,7 @@ export function PatientProfile({
                 </div>
                 <div>
                   <div className="text-brand-dark text-xs font-semibold">
-                    Address
+                    {t("patient.profile.address")}
                   </div>
                   <div className="text-brand-secondary mt-0.5 text-xs leading-snug">
                     {patient?.address?.street || "N/A"}
@@ -277,7 +280,7 @@ export function PatientProfile({
                 </div>
                 <div>
                   <div className="text-brand-dark text-xs font-semibold">
-                    Email
+                    {t("patient.profile.email")}
                   </div>
                   <span className="text-brand-blue mt-0.5 block text-xs hover:underline">
                     {patient?.email}
@@ -290,7 +293,7 @@ export function PatientProfile({
                 </div>
                 <div>
                   <div className="text-brand-dark text-xs font-semibold">
-                    Phone
+                    {t("patient.profile.phone")}
                   </div>
                   <div className="text-brand-secondary mt-0.5 text-xs">
                     +216 {patient?.phoneNumber}
@@ -303,7 +306,7 @@ export function PatientProfile({
                 </div>
                 <div>
                   <div className="text-brand-dark text-xs font-semibold">
-                    Date of Birth
+                    {t("patient.profile.dob")}
                   </div>
                   <div className="text-brand-secondary mt-0.5 text-xs">
                     {patient?.dateOfBirth || "N/A"}
@@ -317,10 +320,10 @@ export function PatientProfile({
           <section className="border-brand-dark/10 overflow-hidden rounded-2xl border bg-white">
             <div className="border-brand-dark/10 bg-brand-bg flex items-center justify-between border-b px-5 py-3">
               <h3 className="text-brand-dark text-xs font-bold tracking-tight">
-                Emergency Contact
+                {t("patient.profile.emergencyContact")}
               </h3>
               <span className="border-brand-cream bg-brand-cream/50 text-brand-dark rounded-full border px-2 py-0.5 text-[10px] font-medium">
-                Important
+                {t("patient.profile.important")}
               </span>
             </div>
             <div className="space-y-4 p-5">
@@ -330,7 +333,7 @@ export function PatientProfile({
                 </div>
                 <div>
                   <div className="text-brand-dark text-xs font-semibold">
-                    Full Name
+                    {t("patient.profile.fullName")}
                   </div>
                   <div className="text-brand-secondary mt-0.5 text-xs">
                     {patient?.emergencyContact?.fullName || "N/A"}
@@ -343,7 +346,7 @@ export function PatientProfile({
                 </div>
                 <div>
                   <div className="text-brand-dark text-xs font-semibold">
-                    Relationship
+                    {t("patient.profile.relationship")}
                   </div>
                   <div className="text-brand-secondary mt-0.5 text-xs">
                     {getRelationships(i18n.language).find(

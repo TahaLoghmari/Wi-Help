@@ -25,8 +25,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { User } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function AdminPatientsTable() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const {
     data,
@@ -77,7 +79,7 @@ export function AdminPatientsTable() {
   if (isLoading) {
     return (
       <div className="p-4 text-center text-sm text-slate-500">
-        Loading patients...
+        {t("admin.patients.table.loading")}
       </div>
     );
   }
@@ -85,7 +87,7 @@ export function AdminPatientsTable() {
   if (error) {
     return (
       <div className="p-4 text-center text-sm text-red-500">
-        Error loading patients
+        {t("admin.patients.table.error")}
       </div>
     );
   }
@@ -96,10 +98,10 @@ export function AdminPatientsTable() {
         <div className="border-b border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-2 pl-4 sm:px-5">
           <div className="mb-2">
             <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
-              All Patients
+              {t("admin.patients.title")}
             </h2>
             <p className="mt-0.5 text-[11px] text-slate-500">
-              Manage patient accounts and access.
+              {t("admin.patients.subtitle")}
             </p>
           </div>
         </div>
@@ -109,25 +111,25 @@ export function AdminPatientsTable() {
             <thead className="bg-white">
               <tr className="border-b border-slate-200">
                 <th className="pt-2.5 pr-4 pb-2.5 pl-4 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Patient
+                  {t("admin.patients.table.patient")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Email
+                  {t("admin.patients.table.email")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Age
+                  {t("admin.patients.table.age")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Phone
+                  {t("admin.patients.table.phone")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Paid
+                  {t("admin.patients.table.paid")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Status
+                  {t("admin.patients.table.status")}
                 </th>
                 <th className="px-4 py-2.5 text-right text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Actions
+                  {t("admin.patients.table.actions")}
                 </th>
               </tr>
             </thead>
@@ -144,10 +146,10 @@ export function AdminPatientsTable() {
                       </div>
                       <div className="text-center">
                         <p className="text-sm font-medium text-slate-700">
-                          No patients
+                          {t("admin.patients.table.empty.title")}
                         </p>
                         <p className="mt-1 text-xs text-slate-500">
-                          No patients found in the system.
+                          {t("admin.patients.table.empty.description")}
                         </p>
                       </div>
                     </div>
@@ -202,10 +204,10 @@ export function AdminPatientsTable() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="active" className="text-green-700">
-                            Active
+                            {t("admin.patients.ban.active")}
                           </SelectItem>
                           <SelectItem value="banned" className="text-red-700">
-                            Banned
+                            {t("admin.patients.ban.banned")}
                           </SelectItem>
                         </SelectContent>
                       </Select>
@@ -216,7 +218,7 @@ export function AdminPatientsTable() {
                           onClick={() => handlePasswordEdit(patient)}
                           className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors"
                         >
-                          Edit Password
+                          {t("admin.patients.editPassword")}
                         </button>
                       </div>
                     </td>
@@ -229,14 +231,10 @@ export function AdminPatientsTable() {
 
         <div className="flex flex-col items-center justify-between gap-3 border-t border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-3 pl-4 sm:flex-row sm:px-5">
           <div className="text-[11px] text-slate-500">
-            Showing
-            <span className="font-medium text-slate-700">
-              {" "}
-              {patients.length}{" "}
-            </span>
-            of
-            <span className="font-medium text-slate-700"> {totalCount} </span>
-            patients.
+            {t("admin.patients.table.showing", {
+              count: patients.length,
+              total: totalCount,
+            })}
           </div>
           <button
             onClick={() => fetchNextPage()}
@@ -244,10 +242,10 @@ export function AdminPatientsTable() {
             className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-[11px] text-slate-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isFetchingNextPage
-              ? "Loading more..."
+              ? t("admin.patients.table.loadingMore")
               : hasNextPage
-                ? "Load More"
-                : "No more patients"}
+                ? t("admin.patients.table.loadMore")
+                : t("admin.patients.table.noMore")}
           </button>
         </div>
       </div>
@@ -256,20 +254,23 @@ export function AdminPatientsTable() {
       <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Password</DialogTitle>
+            <DialogTitle>{t("admin.patients.dialog.title")}</DialogTitle>
             <DialogDescription>
-              Set a new password for {selectedPatient?.firstName}{" "}
-              {selectedPatient?.lastName}
+              {t("admin.patients.dialog.description", {
+                name: `${selectedPatient?.firstName} ${selectedPatient?.lastName}`,
+              })}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-2 py-4">
-            <Label htmlFor="newPassword">New Password</Label>
+            <Label htmlFor="newPassword">
+              {t("admin.patients.dialog.label")}
+            </Label>
             <Input
               id="newPassword"
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="Enter new password"
+              placeholder={t("admin.patients.dialog.placeholder")}
             />
           </div>
           <DialogFooter>
@@ -277,15 +278,15 @@ export function AdminPatientsTable() {
               variant="outline"
               onClick={() => setPasswordDialogOpen(false)}
             >
-              Cancel
+              {t("admin.patients.dialog.cancel")}
             </Button>
             <Button
               onClick={handlePasswordSubmit}
               disabled={!newPassword || editPasswordMutation.isPending}
             >
               {editPasswordMutation.isPending
-                ? "Updating..."
-                : "Update Password"}
+                ? t("admin.patients.dialog.submitting")
+                : t("admin.patients.dialog.submit")}
             </Button>
           </DialogFooter>
         </DialogContent>

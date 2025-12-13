@@ -24,6 +24,7 @@ import { Link } from "@tanstack/react-router";
 import { ROUTE_PATHS } from "@/config/routes";
 import type { UserDto } from "@/features/auth";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 interface DashboardSidebarNavUserProps {
   user: UserDto;
@@ -37,12 +38,13 @@ export function DashboardSidebarNavUser({
   const isMobile = currentScreenSize < 768;
   const { setIsOpen } = useLogoutDialogStore();
   const { isSidebarOpen } = useDashboardSidebarStateStore();
+  const { t } = useTranslation();
   return (
     <div className="border-t p-4">
       <DropdownMenu>
         <DropdownMenuTrigger
           asChild
-          className={`hover:bg-sidebar-accent flex items-center gap-2 ${isSidebarOpen ? "p-2" : "p-0"} `}
+          className={`hover:bg-sidebar-accent rounded-md flex items-center gap-2 ${isSidebarOpen ? "p-2" : "p-0"} `}
         >
           <div>
             <Avatar className="h-8 w-8 rounded-lg">
@@ -137,7 +139,7 @@ export function DashboardSidebarNavUser({
           )}
           <DropdownMenuItem onSelect={() => setIsOpen(true)}>
             <IconLogout />
-            Log out
+            {t("dashboard.sidebar.logout.trigger")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

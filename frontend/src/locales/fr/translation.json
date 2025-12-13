@@ -375,7 +375,19 @@
       "medicalInfo": "Informations Médicales",
       "allergies": "Allergies",
       "noAllergies": "Aucune allergie signalée",
-      "medications": "Médicaments Actuels"
+      "medications": "Médicaments Actuels",
+      "noMedications": "Aucun médicament listé",
+      "chronicConditions": "Maladies Chroniques",
+      "noChronicConditions": "Aucune maladie chronique signalée",
+      "contactInfo": "Coordonnées",
+      "address": "Adresse",
+      "email": "Email",
+      "phone": "Téléphone",
+      "dob": "Date de naissance",
+      "emergencyContact": "Contact d'Urgence",
+      "important": "Important",
+      "fullName": "Nom complet",
+      "relationship": "Relation"
     },
     "professionals": {
       "title": "Mes Professionnels",
@@ -1006,7 +1018,7 @@
   },
   "dashboard": {
     "sidebar": {
-      "slogan": "prendre soin des autres est notre priorité",
+      "slogan": "taking care of others is our priority",
       "nav": {
         "appointments": "Rendez-vous",
         "patients": "Patients",
@@ -1026,6 +1038,7 @@
         "settings": "Paramètres"
       },
       "logout": {
+        "trigger": "Se déconnecter",
         "title": "Êtes-vous sûr de vouloir vous déconnecter ?",
         "description": "Se déconnecter de Wi Help en tant que {{email}} ?",
         "cancel": "Annuler",
@@ -1078,6 +1091,202 @@
       "terms": "J'ai lu et j'accepte les Conditions Générales",
       "submit": "Soumettre l'avis",
       "submitting": "Envoi en cours..."
+    }
+  },
+  "admin": {
+    "appointments": {
+      "title": "Rendez-vous",
+      "subtitle": "Gérer et surveiller tous les rendez-vous du système",
+      "status": {
+        "pending": "En attente",
+        "confirmed": "Confirmé",
+        "completed": "Terminé",
+        "cancelled": "Annulé"
+      },
+      "table": {
+        "doctor": "Médecin",
+        "patient": "Patient",
+        "time": "Heure du rendez-vous",
+        "status": "Statut",
+        "amount": "Montant",
+        "actions": "Actions",
+        "loading": "Chargement des rendez-vous...",
+        "error": "Erreur lors du chargement des rendez-vous",
+        "empty": {
+          "title": "Aucun rendez-vous",
+          "description": "Aucun rendez-vous trouvé dans le système."
+        },
+        "showing": "Affichage de {{count}} sur {{total}} rendez-vous.",
+        "loadMore": "Charger plus",
+        "loadingMore": "Chargement...",
+        "noMore": "Plus de rendez-vous",
+        "view": "Voir"
+      },
+      "view": "Voir les détails",
+      "details": {
+        "title": "Détails du rendez-vous",
+        "subtitle": "Examiner les informations complètes du rendez-vous",
+        "startTime": "Heure de début",
+        "endTime": "Heure de fin",
+        "status": "Statut",
+        "urgency": "Urgence",
+        "totalPrice": "Prix total",
+        "offeredAt": "Proposé le",
+        "confirmedAt": "Confirmé le",
+        "completedAt": "Terminé le",
+        "cancelledAt": "Annulé le",
+        "notes": "Objet / Notes",
+        "noNotes": "Aucune note fournie pour ce rendez-vous.",
+        "close": "Fermer"
+      }
+    },
+    "patients": {
+      "title": "Tous les patients",
+      "subtitle": "Gérer les comptes et l'accès des patients.",
+      "table": {
+        "patient": "Patient",
+        "email": "Email",
+        "age": "Âge",
+        "phone": "Téléphone",
+        "paid": "Payé",
+        "status": "Statut",
+        "actions": "Actions",
+        "loading": "Chargement des patients...",
+        "error": "Erreur lors du chargement des patients",
+        "empty": {
+          "title": "Aucun patient",
+          "description": "Aucun patient trouvé dans le système."
+        },
+        "showing": "Affichage de {{count}} sur {{total}} patients.",
+        "loadMore": "Charger plus",
+        "loadingMore": "Chargement...",
+        "noMore": "Plus de patients"
+      },
+      "editPassword": "Modifier le mot de passe",
+      "ban": {
+        "active": "Actif",
+        "banned": "Banni"
+      },
+      "dialog": {
+        "title": "Modifier le mot de passe",
+        "description": "Définir un nouveau mot de passe pour {{name}}",
+        "label": "Nouveau mot de passe",
+        "placeholder": "Entrer le nouveau mot de passe",
+        "cancel": "Annuler",
+        "submit": "Mettre à jour le mot de passe",
+        "submitting": "Mise à jour..."
+      }
+    },
+    "professionals": {
+      "title": "Tous les professionnels",
+      "subtitle": "Gérer les comptes professionnels et la vérification.",
+      "table": {
+        "professional": "Professionnel",
+        "email": "Email",
+        "specialization": "Spécialisation",
+        "verification": "Vérification",
+        "status": "Statut",
+        "actions": "Actions",
+        "loading": "Chargement des professionnels...",
+        "error": "Erreur lors du chargement des professionnels",
+        "empty": {
+          "title": "Aucun professionnel",
+          "description": "Aucun professionnel trouvé dans le système."
+        },
+        "showing": "Affichage de {{count}} sur {{total}} professionnels.",
+        "loadMore": "Charger plus",
+        "loadingMore": "Chargement...",
+        "noMore": "Plus de professionnels"
+      },
+      "editPassword": "Modifier le mot de passe",
+      "ban": {
+        "active": "Actif",
+        "banned": "Banni"
+      },
+      "verification": {
+        "pending": "En attente",
+        "verified": "Vérifié",
+        "rejected": "Rejeté"
+      },
+      "dialog": {
+        "title": "Modifier le mot de passe",
+        "description": "Définir un nouveau mot de passe pour {{name}}",
+        "label": "Nouveau mot de passe",
+        "placeholder": "Entrer le nouveau mot de passe",
+        "cancel": "Annuler",
+        "submit": "Mettre à jour le mot de passe",
+        "submitting": "Mise à jour..."
+      }
+    },
+    "reviews": {
+      "title": "Tous les avis",
+      "subtitle": "Gérer les avis des patients pour les professionnels.",
+      "table": {
+        "patient": "Patient",
+        "professional": "Professionnel",
+        "rating": "Note",
+        "description": "Description",
+        "date": "Date",
+        "actions": "Actions",
+        "loading": "Chargement des avis...",
+        "error": "Erreur lors du chargement des avis",
+        "empty": {
+          "title": "Aucun avis",
+          "description": "Aucun avis trouvé dans le système."
+        }
+      },
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cet avis ?",
+      "loadMore": "Charger plus d'avis",
+      "loadingMore": "Chargement..."
+    },
+    "documents": {
+      "title": "Documents de vérification",
+      "subtitle": "Examiner et gérer les documents de vérification des professionnels.",
+      "table": {
+        "professional": "Professionnel",
+        "license": "Licence médicale",
+        "id": "Pièce d'identité",
+        "accountStatus": "Statut du compte",
+        "diploma": "Diplôme",
+        "insurance": "Assurance",
+        "loadMore": "Charger plus de documents",
+        "loadingMore": "Chargement...",
+        "loading": "Chargement des documents...",
+        "error": "Erreur lors du chargement des documents",
+        "empty": {
+          "title": "Aucun document",
+          "description": "Aucun document trouvé dans le système."
+        }
+      },
+      "status": {
+        "placeholder": "Statut",
+        "pending": "En attente",
+        "verified": "Vérifié",
+        "rejected": "Rejeté"
+      }
+    },
+    "prescriptions": {
+      "title": "Ordonnances",
+      "subtitle": "Gérer les ordonnances des patients.",
+      "table": {
+        "patient": "Patient",
+        "professional": "Professionnel",
+        "title": "Titre",
+        "date": "Date",
+        "document": "Document",
+        "actions": "Actions",
+        "loading": "Chargement des ordonnances...",
+        "error": "Erreur lors du chargement des ordonnances",
+        "empty": {
+          "title": "Aucune ordonnance",
+          "description": "Aucune ordonnance trouvée dans le système."
+        }
+      },
+      "view": "Voir",
+      "noFile": "Aucun fichier",
+      "loadMore": "Charger plus d'ordonnances",
+      "loadingMore": "Chargement...",
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette ordonnance ?"
     }
   }
 }

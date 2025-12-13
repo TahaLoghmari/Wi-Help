@@ -17,8 +17,10 @@ import type {
   VerificationDocumentAdminDto,
   VerificationStatus,
 } from "@/features/admin";
+import { useTranslation } from "react-i18next";
 
 export function AdminDocumentsTable() {
+  const { t } = useTranslation();
   const {
     data,
     isLoading,
@@ -37,7 +39,7 @@ export function AdminDocumentsTable() {
   if (isLoading) {
     return (
       <div className="p-4 text-center text-sm text-slate-500">
-        Loading documents...
+        {t("admin.documents.table.loading")}
       </div>
     );
   }
@@ -45,7 +47,7 @@ export function AdminDocumentsTable() {
   if (error) {
     return (
       <div className="p-4 text-center text-sm text-red-500">
-        Error loading documents
+        {t("admin.documents.table.error")}
       </div>
     );
   }
@@ -92,12 +94,20 @@ export function AdminDocumentsTable() {
             }
           >
             <SelectTrigger className="h-6 w-[90px] text-[10px]">
-              <SelectValue placeholder="Status" />
+              <SelectValue
+                placeholder={t("admin.documents.status.placeholder")}
+              />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Pending">Pending</SelectItem>
-              <SelectItem value="Verified">Verified</SelectItem>
-              <SelectItem value="Rejected">Rejected</SelectItem>
+              <SelectItem value="Pending">
+                {t("admin.documents.status.pending")}
+              </SelectItem>
+              <SelectItem value="Verified">
+                {t("admin.documents.status.verified")}
+              </SelectItem>
+              <SelectItem value="Rejected">
+                {t("admin.documents.status.rejected")}
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -111,10 +121,10 @@ export function AdminDocumentsTable() {
         <div className="border-b border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-2 pl-4 sm:px-5">
           <div className="mb-2">
             <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
-              Verification Documents
+              {t("admin.documents.title")}
             </h2>
             <p className="mt-0.5 text-[11px] text-slate-500">
-              Review professional verification documents.
+              {t("admin.documents.subtitle")}
             </p>
           </div>
         </div>
@@ -124,22 +134,22 @@ export function AdminDocumentsTable() {
             <thead className="bg-white">
               <tr className="border-b border-slate-200">
                 <th className="pt-2.5 pr-4 pb-2.5 pl-4 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Professional
+                  {t("admin.documents.table.professional")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Account Status
+                  {t("admin.documents.table.accountStatus")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Diploma
+                  {t("admin.documents.table.diploma")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  License
+                  {t("admin.documents.table.license")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  ID Card
+                  {t("admin.documents.table.id")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Insurance
+                  {t("admin.documents.table.insurance")}
                 </th>
               </tr>
             </thead>
@@ -156,10 +166,10 @@ export function AdminDocumentsTable() {
                       </div>
                       <div className="text-center">
                         <p className="text-sm font-medium text-slate-700">
-                          No documents
+                          {t("admin.documents.table.empty.title")}
                         </p>
                         <p className="mt-1 text-xs text-slate-500">
-                          No verification documents found.
+                          {t("admin.documents.table.empty.description")}
                         </p>
                       </div>
                     </div>
@@ -200,12 +210,22 @@ export function AdminDocumentsTable() {
                         }
                       >
                         <SelectTrigger className="h-8 w-[110px] text-[11px]">
-                          <SelectValue placeholder="Status" />
+                          <SelectValue
+                            placeholder={t(
+                              "admin.documents.status.placeholder",
+                            )}
+                          />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Pending">Pending</SelectItem>
-                          <SelectItem value="Verified">Verified</SelectItem>
-                          <SelectItem value="Rejected">Rejected</SelectItem>
+                          <SelectItem value="Pending">
+                            {t("admin.documents.status.pending")}
+                          </SelectItem>
+                          <SelectItem value="Verified">
+                            {t("admin.documents.status.verified")}
+                          </SelectItem>
+                          <SelectItem value="Rejected">
+                            {t("admin.documents.status.rejected")}
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </td>
@@ -235,7 +255,9 @@ export function AdminDocumentsTable() {
               onClick={() => fetchNextPage()}
               disabled={isFetchingNextPage}
             >
-              {isFetchingNextPage ? "Loading more..." : "Load more documents"}
+              {isFetchingNextPage
+                ? t("admin.documents.table.loadingMore")
+                : t("admin.documents.table.loadMore")}
             </Button>
           </div>
         )}

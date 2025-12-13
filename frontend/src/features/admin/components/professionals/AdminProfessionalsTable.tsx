@@ -31,7 +31,7 @@ import { User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export function AdminProfessionalsTable() {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const {
     data,
@@ -90,7 +90,7 @@ export function AdminProfessionalsTable() {
   if (isLoading) {
     return (
       <div className="p-4 text-center text-sm text-slate-500">
-        Loading professionals...
+        {t("admin.professionals.table.loading")}
       </div>
     );
   }
@@ -98,7 +98,7 @@ export function AdminProfessionalsTable() {
   if (error) {
     return (
       <div className="p-4 text-center text-sm text-red-500">
-        Error loading professionals
+        {t("admin.professionals.table.error")}
       </div>
     );
   }
@@ -109,10 +109,10 @@ export function AdminProfessionalsTable() {
         <div className="border-b border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-2 pl-4 sm:px-5">
           <div className="mb-2">
             <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
-              All Professionals
+              {t("admin.professionals.title")}
             </h2>
             <p className="mt-0.5 text-[11px] text-slate-500">
-              Manage professional accounts and verification status.
+              {t("admin.professionals.subtitle")}
             </p>
           </div>
         </div>
@@ -122,16 +122,16 @@ export function AdminProfessionalsTable() {
             <thead className="bg-white">
               <tr className="border-b border-slate-200">
                 <th className="pt-2.5 pr-4 pb-2.5 pl-4 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Doctor
+                  {t("admin.professionals.table.professional")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Email
+                  {t("admin.professionals.table.email")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
                   Phone
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Specialization
+                  {t("admin.professionals.table.specialization")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
                   Created At
@@ -140,13 +140,13 @@ export function AdminProfessionalsTable() {
                   Earned
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Verification
+                  {t("admin.professionals.table.verification")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Status
+                  {t("admin.professionals.table.status")}
                 </th>
                 <th className="px-4 py-2.5 text-right text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Actions
+                  {t("admin.professionals.table.actions")}
                 </th>
               </tr>
             </thead>
@@ -163,10 +163,10 @@ export function AdminProfessionalsTable() {
                       </div>
                       <div className="text-center">
                         <p className="text-sm font-medium text-slate-700">
-                          No professionals
+                          {t("admin.professionals.table.empty.title")}
                         </p>
                         <p className="mt-1 text-xs text-slate-500">
-                          No professionals found in the system.
+                          {t("admin.professionals.table.empty.description")}
                         </p>
                       </div>
                     </div>
@@ -238,13 +238,13 @@ export function AdminProfessionalsTable() {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value={VerificationStatus.Pending}>
-                              Pending
+                              {t("admin.professionals.verification.pending")}
                             </SelectItem>
                             <SelectItem value={VerificationStatus.Verified}>
-                              Verified
+                              {t("admin.professionals.verification.verified")}
                             </SelectItem>
                             <SelectItem value={VerificationStatus.Rejected}>
-                              Rejected
+                              {t("admin.professionals.verification.rejected")}
                             </SelectItem>
                           </SelectContent>
                         </Select>
@@ -265,10 +265,10 @@ export function AdminProfessionalsTable() {
                               value="active"
                               className="text-green-700"
                             >
-                              Active
+                              {t("admin.professionals.ban.active")}
                             </SelectItem>
                             <SelectItem value="banned" className="text-red-700">
-                              Banned
+                              {t("admin.professionals.ban.banned")}
                             </SelectItem>
                           </SelectContent>
                         </Select>
@@ -279,7 +279,7 @@ export function AdminProfessionalsTable() {
                             onClick={() => handlePasswordEdit(professional)}
                             className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors"
                           >
-                            Edit Password
+                            {t("admin.professionals.editPassword")}
                           </button>
                         </div>
                       </td>
@@ -293,14 +293,10 @@ export function AdminProfessionalsTable() {
 
         <div className="flex flex-col items-center justify-between gap-3 border-t border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-3 pl-4 sm:flex-row sm:px-5">
           <div className="text-[11px] text-slate-500">
-            Showing
-            <span className="font-medium text-slate-700">
-              {" "}
-              {professionals.length}{" "}
-            </span>
-            of
-            <span className="font-medium text-slate-700"> {totalCount} </span>
-            professionals.
+            {t("admin.professionals.table.showing", {
+              count: professionals.length,
+              total: totalCount,
+            })}
           </div>
           <button
             onClick={() => fetchNextPage()}
@@ -308,10 +304,10 @@ export function AdminProfessionalsTable() {
             className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-[11px] text-slate-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isFetchingNextPage
-              ? "Loading more..."
+              ? t("admin.professionals.table.loadingMore")
               : hasNextPage
-                ? "Load More"
-                : "No more professionals"}
+                ? t("admin.professionals.table.loadMore")
+                : t("admin.professionals.table.noMore")}
           </button>
         </div>
       </div>
@@ -320,20 +316,23 @@ export function AdminProfessionalsTable() {
       <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Password</DialogTitle>
+            <DialogTitle>{t("admin.professionals.dialog.title")}</DialogTitle>
             <DialogDescription>
-              Set a new password for {selectedProfessional?.firstName}{" "}
-              {selectedProfessional?.lastName}
+              {t("admin.professionals.dialog.description", {
+                name: `${selectedProfessional?.firstName} ${selectedProfessional?.lastName}`,
+              })}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-2 py-4">
-            <Label htmlFor="newPassword">New Password</Label>
+            <Label htmlFor="newPassword">
+              {t("admin.professionals.dialog.label")}
+            </Label>
             <Input
               id="newPassword"
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="Enter new password"
+              placeholder={t("admin.professionals.dialog.placeholder")}
             />
           </div>
           <DialogFooter>
@@ -341,15 +340,15 @@ export function AdminProfessionalsTable() {
               variant="outline"
               onClick={() => setPasswordDialogOpen(false)}
             >
-              Cancel
+              {t("admin.professionals.dialog.cancel")}
             </Button>
             <Button
               onClick={handlePasswordSubmit}
               disabled={!newPassword || editPasswordMutation.isPending}
             >
               {editPasswordMutation.isPending
-                ? "Updating..."
-                : "Update Password"}
+                ? t("admin.professionals.dialog.submitting")
+                : t("admin.professionals.dialog.submit")}
             </Button>
           </DialogFooter>
         </DialogContent>

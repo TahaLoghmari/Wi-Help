@@ -5,8 +5,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { FileText, Trash2 } from "lucide-react";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 export function AdminPrescriptionsTable() {
+  const { t } = useTranslation();
   const {
     data,
     isLoading,
@@ -21,7 +23,7 @@ export function AdminPrescriptionsTable() {
   const prescriptions = data?.pages.flatMap((page) => page.items) || [];
 
   const handleDelete = (prescriptionId: string) => {
-    if (confirm("Are you sure you want to delete this prescription?")) {
+    if (confirm(t("admin.prescriptions.deleteConfirm"))) {
       deleteMutation.mutate(prescriptionId);
     }
   };
@@ -29,7 +31,7 @@ export function AdminPrescriptionsTable() {
   if (isLoading) {
     return (
       <div className="p-4 text-center text-sm text-slate-500">
-        Loading prescriptions...
+        {t("admin.prescriptions.table.loading")}
       </div>
     );
   }
@@ -37,7 +39,7 @@ export function AdminPrescriptionsTable() {
   if (error) {
     return (
       <div className="p-4 text-center text-sm text-red-500">
-        Error loading prescriptions
+        {t("admin.prescriptions.table.error")}
       </div>
     );
   }
@@ -48,10 +50,10 @@ export function AdminPrescriptionsTable() {
         <div className="border-b border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-2 pl-4 sm:px-5">
           <div className="mb-2">
             <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
-              Prescriptions
+              {t("admin.prescriptions.title")}
             </h2>
             <p className="mt-0.5 text-[11px] text-slate-500">
-              Manage patient prescriptions.
+              {t("admin.prescriptions.subtitle")}
             </p>
           </div>
         </div>
@@ -61,22 +63,22 @@ export function AdminPrescriptionsTable() {
             <thead className="bg-white">
               <tr className="border-b border-slate-200">
                 <th className="pt-2.5 pr-4 pb-2.5 pl-4 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Patient
+                  {t("admin.prescriptions.table.patient")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Professional
+                  {t("admin.prescriptions.table.professional")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Title
+                  {t("admin.prescriptions.table.title")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Date
+                  {t("admin.prescriptions.table.date")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Document
+                  {t("admin.prescriptions.table.document")}
                 </th>
                 <th className="px-4 py-2.5 text-right text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Actions
+                  {t("admin.prescriptions.table.actions")}
                 </th>
               </tr>
             </thead>
@@ -93,10 +95,10 @@ export function AdminPrescriptionsTable() {
                       </div>
                       <div className="text-center">
                         <p className="text-sm font-medium text-slate-700">
-                          No prescriptions
+                          {t("admin.prescriptions.table.empty.title")}
                         </p>
                         <p className="mt-1 text-xs text-slate-500">
-                          No prescriptions found in the system.
+                          {t("admin.prescriptions.table.empty.description")}
                         </p>
                       </div>
                     </div>
@@ -163,11 +165,13 @@ export function AdminPrescriptionsTable() {
                             rel="noopener noreferrer"
                           >
                             <FileText className="h-3.5 w-3.5" />
-                            View
+                            {t("admin.prescriptions.view")}
                           </a>
                         </Button>
                       ) : (
-                        <span className="text-slate-400 italic">No file</span>
+                        <span className="text-slate-400 italic">
+                          {t("admin.prescriptions.noFile")}
+                        </span>
                       )}
                     </td>
                     <td className="px-4 py-3.5 text-right sm:px-5">
@@ -195,8 +199,8 @@ export function AdminPrescriptionsTable() {
               disabled={isFetchingNextPage}
             >
               {isFetchingNextPage
-                ? "Loading more..."
-                : "Load more prescriptions"}
+                ? t("admin.prescriptions.loadingMore")
+                : t("admin.prescriptions.loadMore")}
             </Button>
           </div>
         )}

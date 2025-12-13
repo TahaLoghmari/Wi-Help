@@ -375,7 +375,19 @@
       "medicalInfo": "Medical Information",
       "allergies": "Allergies",
       "noAllergies": "No allergies reported",
-      "medications": "Current Medications"
+      "medications": "Current Medications",
+      "noMedications": "No medications listed",
+      "chronicConditions": "Chronic Conditions",
+      "noChronicConditions": "No chronic conditions reported",
+      "contactInfo": "Contact Information",
+      "address": "Address",
+      "email": "Email",
+      "phone": "Phone",
+      "dob": "Date of Birth",
+      "emergencyContact": "Emergency Contact",
+      "important": "Important",
+      "fullName": "Full Name",
+      "relationship": "Relationship"
     },
     "professionals": {
       "title": "My Professionals",
@@ -1026,6 +1038,7 @@
         "settings": "Settings"
       },
       "logout": {
+        "trigger": "Log out",
         "title": "Are you sure you want to log out?",
         "description": "Log out of Wi Help as {{email}}?",
         "cancel": "Cancel",
@@ -1078,6 +1091,202 @@
       "terms": "I have read and accept Terms & Conditions",
       "submit": "Submit Review",
       "submitting": "Submitting..."
+    }
+  },
+  "admin": {
+    "appointments": {
+      "title": "Appointments",
+      "subtitle": "Manage and monitor all system appointments",
+      "status": {
+        "pending": "Pending",
+        "confirmed": "Confirmed",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      },
+      "table": {
+        "doctor": "Doctor",
+        "patient": "Patient",
+        "time": "Appointment Time",
+        "status": "Status",
+        "amount": "Amount",
+        "actions": "Actions",
+        "loading": "Loading appointments...",
+        "error": "Error loading appointments",
+        "empty": {
+          "title": "No appointments",
+          "description": "No appointments found in the system."
+        },
+        "showing": "Showing {{count}} of {{total}} appointments.",
+        "loadMore": "Load More",
+        "loadingMore": "Loading more...",
+        "noMore": "No more appointments",
+        "view": "View"
+      },
+      "view": "View Details",
+      "details": {
+        "title": "Appointment Details",
+        "subtitle": "Review full appointment information",
+        "startTime": "Start Time",
+        "endTime": "End Time",
+        "status": "Status",
+        "urgency": "Urgency",
+        "totalPrice": "Total Price",
+        "offeredAt": "Offered At",
+        "confirmedAt": "Confirmed At",
+        "completedAt": "Completed At",
+        "cancelledAt": "Cancelled At",
+        "notes": "Purpose / Notes",
+        "noNotes": "No notes provided for this appointment.",
+        "close": "Close"
+      }
+    },
+    "patients": {
+      "title": "All Patients",
+      "subtitle": "Manage patient accounts and access.",
+      "table": {
+        "patient": "Patient",
+        "email": "Email",
+        "age": "Age",
+        "phone": "Phone",
+        "paid": "Paid",
+        "status": "Status",
+        "actions": "Actions",
+        "loading": "Loading patients...",
+        "error": "Error loading patients",
+        "empty": {
+          "title": "No patients",
+          "description": "No patients found in the system."
+        },
+        "showing": "Showing {{count}} of {{total}} patients.",
+        "loadMore": "Load More",
+        "loadingMore": "Loading more...",
+        "noMore": "No more patients"
+      },
+      "editPassword": "Edit Password",
+      "ban": {
+        "active": "Active",
+        "banned": "Banned"
+      },
+      "dialog": {
+        "title": "Edit Password",
+        "description": "Set a new password for {{name}}",
+        "label": "New Password",
+        "placeholder": "Enter new password",
+        "cancel": "Cancel",
+        "submit": "Update Password",
+        "submitting": "Updating..."
+      }
+    },
+    "professionals": {
+      "title": "All Professionals",
+      "subtitle": "Manage professional accounts and verification.",
+      "table": {
+        "professional": "Professional",
+        "email": "Email",
+        "specialization": "Specialization",
+        "verification": "Verification",
+        "status": "Status",
+        "actions": "Actions",
+        "loading": "Loading professionals...",
+        "error": "Error loading professionals",
+        "empty": {
+          "title": "No professionals",
+          "description": "No professionals found in the system."
+        },
+        "showing": "Showing {{count}} of {{total}} professionals.",
+        "loadMore": "Load More",
+        "loadingMore": "Loading more...",
+        "noMore": "No more professionals"
+      },
+      "editPassword": "Edit Password",
+      "ban": {
+        "active": "Active",
+        "banned": "Banned"
+      },
+      "verification": {
+        "pending": "Pending",
+        "verified": "Verified",
+        "rejected": "Rejected"
+      },
+      "dialog": {
+        "title": "Edit Password",
+        "description": "Set a new password for {{name}}",
+        "label": "New Password",
+        "placeholder": "Enter new password",
+        "cancel": "Cancel",
+        "submit": "Update Password",
+        "submitting": "Updating..."
+      }
+    },
+    "reviews": {
+      "title": "All Reviews",
+      "subtitle": "Manage patient reviews for professionals.",
+      "table": {
+        "patient": "Patient",
+        "professional": "Professional",
+        "rating": "Rating",
+        "description": "Description",
+        "date": "Date",
+        "actions": "Actions",
+        "loading": "Loading reviews...",
+        "error": "Error loading reviews",
+        "empty": {
+          "title": "No reviews",
+          "description": "No reviews found in the system."
+        }
+      },
+      "deleteConfirm": "Are you sure you want to delete this review?",
+      "loadMore": "Load more reviews",
+      "loadingMore": "Loading more..."
+    },
+    "documents": {
+      "title": "Verification Documents",
+      "subtitle": "Review and manage professional verification documents.",
+      "table": {
+        "professional": "Professional",
+        "license": "Medical License",
+        "id": "Government ID",
+        "accountStatus": "Account Status",
+        "diploma": "Diploma",
+        "insurance": "Insurance",
+        "loadMore": "Load more documents",
+        "loadingMore": "Loading more...",
+        "loading": "Loading documents...",
+        "error": "Error loading documents",
+        "empty": {
+          "title": "No documents",
+          "description": "No documents found in the system."
+        }
+      },
+      "status": {
+        "placeholder": "Status",
+        "pending": "Pending",
+        "verified": "Verified",
+        "rejected": "Rejected"
+      }
+    },
+    "prescriptions": {
+      "title": "Prescriptions",
+      "subtitle": "Manage patient prescriptions.",
+      "table": {
+        "patient": "Patient",
+        "professional": "Professional",
+        "title": "Title",
+        "date": "Date",
+        "document": "Document",
+        "actions": "Actions",
+        "loading": "Loading prescriptions...",
+        "error": "Error loading prescriptions",
+        "empty": {
+          "title": "No prescriptions",
+          "description": "No prescriptions found in the system."
+        }
+      },
+      "view": "View",
+      "noFile": "No file",
+      "loadMore": "Load more prescriptions",
+      "loadingMore": "Loading more...",
+      "deleteConfirm": "Are you sure you want to delete this prescription?"
     }
   }
 }

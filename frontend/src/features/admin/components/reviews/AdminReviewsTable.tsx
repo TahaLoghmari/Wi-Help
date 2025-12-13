@@ -5,8 +5,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Star, Trash2, MessageSquare } from "lucide-react";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 export function AdminReviewsTable() {
+  const { t } = useTranslation();
   const {
     data,
     isLoading,
@@ -21,7 +23,7 @@ export function AdminReviewsTable() {
   const reviews = data?.pages.flatMap((page) => page.items) || [];
 
   const handleDelete = (reviewId: string) => {
-    if (confirm("Are you sure you want to delete this review?")) {
+    if (confirm(t("admin.reviews.deleteConfirm"))) {
       deleteMutation.mutate(reviewId);
     }
   };
@@ -29,7 +31,7 @@ export function AdminReviewsTable() {
   if (isLoading) {
     return (
       <div className="p-4 text-center text-sm text-slate-500">
-        Loading reviews...
+        {t("admin.reviews.table.loading")}
       </div>
     );
   }
@@ -37,7 +39,7 @@ export function AdminReviewsTable() {
   if (error) {
     return (
       <div className="p-4 text-center text-sm text-red-500">
-        Error loading reviews
+        {t("admin.reviews.table.error")}
       </div>
     );
   }
@@ -48,10 +50,10 @@ export function AdminReviewsTable() {
         <div className="border-b border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-2 pl-4 sm:px-5">
           <div className="mb-2">
             <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
-              All Reviews
+              {t("admin.reviews.title")}
             </h2>
             <p className="mt-0.5 text-[11px] text-slate-500">
-              Manage patient reviews for professionals.
+              {t("admin.reviews.subtitle")}
             </p>
           </div>
         </div>
@@ -61,22 +63,22 @@ export function AdminReviewsTable() {
             <thead className="bg-white">
               <tr className="border-b border-slate-200">
                 <th className="pt-2.5 pr-4 pb-2.5 pl-4 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Patient
+                  {t("admin.reviews.table.patient")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Professional
+                  {t("admin.reviews.table.professional")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Rating
+                  {t("admin.reviews.table.rating")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Description
+                  {t("admin.reviews.table.description")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Date
+                  {t("admin.reviews.table.date")}
                 </th>
                 <th className="px-4 py-2.5 text-right text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Actions
+                  {t("admin.reviews.table.actions")}
                 </th>
               </tr>
             </thead>
@@ -93,10 +95,10 @@ export function AdminReviewsTable() {
                       </div>
                       <div className="text-center">
                         <p className="text-sm font-medium text-slate-700">
-                          No reviews
+                          {t("admin.reviews.table.empty.title")}
                         </p>
                         <p className="mt-1 text-xs text-slate-500">
-                          No reviews found in the system.
+                          {t("admin.reviews.table.empty.description")}
                         </p>
                       </div>
                     </div>
@@ -181,7 +183,9 @@ export function AdminReviewsTable() {
               onClick={() => fetchNextPage()}
               disabled={isFetchingNextPage}
             >
-              {isFetchingNextPage ? "Loading more..." : "Load more reviews"}
+              {isFetchingNextPage
+                ? t("admin.reviews.loadingMore")
+                : t("admin.reviews.loadMore")}
             </Button>
           </div>
         )}

@@ -29,9 +29,9 @@ import {
 import { useForm } from "react-hook-form";
 import type z from "zod";
 import {
-  ALLERGIES,
-  CHRONIC_CONDITIONS,
-  MEDICATIONS,
+  getAllergies,
+  getChronicConditions,
+  getMedications,
   MOBILITY_STATUSES,
   ProfileAndBioFormDefaults,
   profileAndBioFormSchema,
@@ -522,8 +522,9 @@ export function ProfileAndBio() {
                                     key={allergie}
                                     className="text-[11px]"
                                   >
-                                    {ALLERGIES.find((a) => a.value === allergie)
-                                      ?.label || allergie}
+                                    {getAllergies(i18n.language).find(
+                                      (a) => a.value === allergie,
+                                    )?.label || allergie}
                                   </Badge>
                                 ))}
 
@@ -550,7 +551,7 @@ export function ProfileAndBio() {
                             <CommandList>
                               <CommandEmpty>No allergie found.</CommandEmpty>
                               <CommandGroup>
-                                {ALLERGIES.map((allergie) => (
+                                {getAllergies(i18n.language).map((allergie) => (
                                   <CommandItem
                                     key={allergie.value}
                                     value={allergie.value}
@@ -635,7 +636,7 @@ export function ProfileAndBio() {
                                       key={chronicCondition}
                                       className="text-[11px]"
                                     >
-                                      {CHRONIC_CONDITIONS.find(
+                                      {getChronicConditions(i18n.language).find(
                                         (cc) => cc.value === chronicCondition,
                                       )?.label || chronicCondition}
                                     </Badge>
@@ -666,48 +667,50 @@ export function ProfileAndBio() {
                                 No chronic condition found.
                               </CommandEmpty>
                               <CommandGroup>
-                                {CHRONIC_CONDITIONS.map((chronicCondition) => (
-                                  <CommandItem
-                                    key={chronicCondition.value}
-                                    value={chronicCondition.value}
-                                    onSelect={(currentValue) => {
-                                      const currentValues = Array.isArray(
-                                        field.value,
-                                      )
-                                        ? field.value
-                                        : [];
-                                      const isSelected =
-                                        currentValues.includes(currentValue);
+                                {getChronicConditions(i18n.language).map(
+                                  (chronicCondition) => (
+                                    <CommandItem
+                                      key={chronicCondition.value}
+                                      value={chronicCondition.value}
+                                      onSelect={(currentValue) => {
+                                        const currentValues = Array.isArray(
+                                          field.value,
+                                        )
+                                          ? field.value
+                                          : [];
+                                        const isSelected =
+                                          currentValues.includes(currentValue);
 
-                                      if (isSelected) {
-                                        field.onChange(
-                                          currentValues.filter(
-                                            (v) => v !== currentValue,
-                                          ),
-                                        );
-                                      } else {
-                                        field.onChange([
-                                          ...currentValues,
-                                          currentValue,
-                                        ]);
-                                      }
-                                      setOpenChronicConditions(true);
-                                    }}
-                                  >
-                                    {chronicCondition.label}
-                                    <Check
-                                      className={cn(
-                                        "ml-auto",
-                                        Array.isArray(field.value) &&
-                                          field.value.includes(
-                                            chronicCondition.value,
-                                          )
-                                          ? "opacity-100"
-                                          : "opacity-0",
-                                      )}
-                                    />
-                                  </CommandItem>
-                                ))}
+                                        if (isSelected) {
+                                          field.onChange(
+                                            currentValues.filter(
+                                              (v) => v !== currentValue,
+                                            ),
+                                          );
+                                        } else {
+                                          field.onChange([
+                                            ...currentValues,
+                                            currentValue,
+                                          ]);
+                                        }
+                                        setOpenChronicConditions(true);
+                                      }}
+                                    >
+                                      {chronicCondition.label}
+                                      <Check
+                                        className={cn(
+                                          "ml-auto",
+                                          Array.isArray(field.value) &&
+                                            field.value.includes(
+                                              chronicCondition.value,
+                                            )
+                                            ? "opacity-100"
+                                            : "opacity-0",
+                                        )}
+                                      />
+                                    </CommandItem>
+                                  ),
+                                )}
                               </CommandGroup>
                             </CommandList>
                           </Command>
@@ -753,7 +756,7 @@ export function ProfileAndBio() {
                                     key={medication}
                                     className="text-[11px]"
                                   >
-                                    {MEDICATIONS.find(
+                                    {getMedications(i18n.language).find(
                                       (m) => m.value === medication,
                                     )?.label || medication}
                                   </Badge>
@@ -782,46 +785,50 @@ export function ProfileAndBio() {
                             <CommandList>
                               <CommandEmpty>No medication found.</CommandEmpty>
                               <CommandGroup>
-                                {MEDICATIONS.map((medication) => (
-                                  <CommandItem
-                                    key={medication.value}
-                                    value={medication.value}
-                                    onSelect={(currentValue) => {
-                                      const currentValues = Array.isArray(
-                                        field.value,
-                                      )
-                                        ? field.value
-                                        : [];
-                                      const isSelected =
-                                        currentValues.includes(currentValue);
+                                {getMedications(i18n.language).map(
+                                  (medication) => (
+                                    <CommandItem
+                                      key={medication.value}
+                                      value={medication.value}
+                                      onSelect={(currentValue) => {
+                                        const currentValues = Array.isArray(
+                                          field.value,
+                                        )
+                                          ? field.value
+                                          : [];
+                                        const isSelected =
+                                          currentValues.includes(currentValue);
 
-                                      if (isSelected) {
-                                        field.onChange(
-                                          currentValues.filter(
-                                            (v) => v !== currentValue,
-                                          ),
-                                        );
-                                      } else {
-                                        field.onChange([
-                                          ...currentValues,
-                                          currentValue,
-                                        ]);
-                                      }
-                                      setOpenMedications(true);
-                                    }}
-                                  >
-                                    {medication.label}
-                                    <Check
-                                      className={cn(
-                                        "ml-auto",
-                                        Array.isArray(field.value) &&
-                                          field.value.includes(medication.value)
-                                          ? "opacity-100"
-                                          : "opacity-0",
-                                      )}
-                                    />
-                                  </CommandItem>
-                                ))}
+                                        if (isSelected) {
+                                          field.onChange(
+                                            currentValues.filter(
+                                              (v) => v !== currentValue,
+                                            ),
+                                          );
+                                        } else {
+                                          field.onChange([
+                                            ...currentValues,
+                                            currentValue,
+                                          ]);
+                                        }
+                                        setOpenMedications(true);
+                                      }}
+                                    >
+                                      {medication.label}
+                                      <Check
+                                        className={cn(
+                                          "ml-auto",
+                                          Array.isArray(field.value) &&
+                                            field.value.includes(
+                                              medication.value,
+                                            )
+                                            ? "opacity-100"
+                                            : "opacity-0",
+                                        )}
+                                      />
+                                    </CommandItem>
+                                  ),
+                                )}
                               </CommandGroup>
                             </CommandList>
                           </Command>

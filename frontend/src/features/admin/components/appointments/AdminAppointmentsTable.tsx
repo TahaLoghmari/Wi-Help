@@ -18,7 +18,7 @@ import { X, Calendar, Stethoscope } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export function AdminAppointmentsTable() {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const {
     data,
     isLoading,
@@ -52,7 +52,7 @@ export function AdminAppointmentsTable() {
   if (isLoading) {
     return (
       <div className="p-4 text-center text-sm text-slate-500">
-        Loading appointments...
+        {t("admin.appointments.table.loading")}
       </div>
     );
   }
@@ -60,7 +60,7 @@ export function AdminAppointmentsTable() {
   if (error) {
     return (
       <div className="p-4 text-center text-sm text-red-500">
-        Error loading appointments
+        {t("admin.appointments.table.error")}
       </div>
     );
   }
@@ -70,10 +70,10 @@ export function AdminAppointmentsTable() {
       <div className="border-b border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-2 pl-4 sm:px-5">
         <div className="mb-2">
           <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
-            All Appointments
+            {t("admin.appointments.title")}
           </h2>
           <p className="mt-0.5 text-[11px] text-slate-500">
-            Manage and monitor all system appointments.
+            {t("admin.appointments.subtitle")}
           </p>
         </div>
       </div>
@@ -83,22 +83,22 @@ export function AdminAppointmentsTable() {
           <thead className="bg-white">
             <tr className="border-b border-slate-200">
               <th className="pt-2.5 pr-4 pb-2.5 pl-4 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Doctor
+                {t("admin.appointments.table.doctor")}
               </th>
               <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Patient
+                {t("admin.appointments.table.patient")}
               </th>
               <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Appointment Time
+                {t("admin.appointments.table.time")}
               </th>
               <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Status
+                {t("admin.appointments.table.status")}
               </th>
               <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Amount
+                {t("admin.appointments.table.amount")}
               </th>
               <th className="px-4 py-2.5 text-right text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Actions
+                {t("admin.appointments.table.actions")}
               </th>
             </tr>
           </thead>
@@ -115,10 +115,10 @@ export function AdminAppointmentsTable() {
                     </div>
                     <div className="text-center">
                       <p className="text-sm font-medium text-slate-700">
-                        No appointments
+                        {t("admin.appointments.table.empty.title")}
                       </p>
                       <p className="mt-1 text-xs text-slate-500">
-                        No appointments found in the system.
+                        {t("admin.appointments.table.empty.description")}
                       </p>
                     </div>
                   </div>
@@ -196,16 +196,16 @@ export function AdminAppointmentsTable() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value={AppointmentStatus.Offered}>
-                          Offered
+                          {t("admin.appointments.status.pending")}
                         </SelectItem>
                         <SelectItem value={AppointmentStatus.Confirmed}>
-                          Confirmed
+                          {t("admin.appointments.status.confirmed")}
                         </SelectItem>
                         <SelectItem value={AppointmentStatus.Completed}>
-                          Completed
+                          {t("admin.appointments.status.completed")}
                         </SelectItem>
                         <SelectItem value={AppointmentStatus.Cancelled}>
-                          Cancelled
+                          {t("admin.appointments.status.cancelled")}
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -218,7 +218,7 @@ export function AdminAppointmentsTable() {
                       onClick={() => handleView(appointment)}
                       className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors"
                     >
-                      View
+                      {t("admin.appointments.table.view")}
                     </button>
                   </td>
                 </tr>
@@ -230,14 +230,10 @@ export function AdminAppointmentsTable() {
 
       <div className="flex flex-col items-center justify-between gap-3 border-t border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-3 pl-4 sm:flex-row sm:px-5">
         <div className="text-[11px] text-slate-500">
-          Showing
-          <span className="font-medium text-slate-700">
-            {" "}
-            {appointments.length}{" "}
-          </span>
-          of
-          <span className="font-medium text-slate-700"> {totalCount} </span>
-          appointments.
+          {t("admin.appointments.table.showing", {
+            count: appointments.length,
+            total: totalCount,
+          })}
         </div>
         <button
           onClick={() => fetchNextPage()}
@@ -245,10 +241,10 @@ export function AdminAppointmentsTable() {
           className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-[11px] text-slate-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isFetchingNextPage
-            ? "Loading more..."
+            ? t("admin.appointments.table.loadingMore")
             : hasNextPage
-              ? "Load More"
-              : "No more appointments"}
+              ? t("admin.appointments.table.loadMore")
+              : t("admin.appointments.table.noMore")}
         </button>
       </div>
 
@@ -264,10 +260,10 @@ export function AdminAppointmentsTable() {
               <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-100 bg-white/90 px-6 py-5 backdrop-blur-sm">
                 <div>
                   <h2 className="text-brand-dark text-lg font-bold tracking-tight">
-                    Appointment Details
+                    {t("admin.appointments.details.title")}
                   </h2>
                   <p className="mt-0.5 text-xs font-medium text-slate-500">
-                    Review full appointment information
+                    {t("admin.appointments.details.subtitle")}
                   </p>
                 </div>
                 <SheetClose className="-mr-2 rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-600">
@@ -342,7 +338,7 @@ export function AdminAppointmentsTable() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="rounded-2xl border border-slate-100 bg-white p-3">
                     <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                      Start Time
+                      {t("admin.appointments.details.startTime")}
                     </span>
                     <div className="mt-1 flex items-center gap-2">
                       <div className="bg-brand-secondary h-8 w-1 rounded-full"></div>
@@ -365,7 +361,7 @@ export function AdminAppointmentsTable() {
                   </div>
                   <div className="rounded-2xl border border-slate-100 bg-white p-3">
                     <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                      End Time
+                      {t("admin.appointments.details.endTime")}
                     </span>
                     <div className="mt-1 flex items-center gap-2">
                       <div className="bg-brand-secondary h-8 w-1 rounded-full"></div>
@@ -392,7 +388,7 @@ export function AdminAppointmentsTable() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
-                      Status
+                      {t("admin.appointments.details.status")}
                     </label>
                     <div>
                       <span
@@ -404,7 +400,7 @@ export function AdminAppointmentsTable() {
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
-                      Urgency
+                      {t("admin.appointments.details.urgency")}
                     </label>
                     <div>
                       <span
@@ -420,7 +416,7 @@ export function AdminAppointmentsTable() {
                 <div className="rounded-2xl border border-slate-200 bg-slate-50/30 p-4">
                   <div className="mb-4 flex items-center justify-between">
                     <span className="text-xs font-semibold text-slate-600">
-                      Total Price
+                      {t("admin.appointments.details.totalPrice")}
                     </span>
                     <span className="text-brand-dark text-xl font-bold">
                       ${selectedAppointment.price.toFixed(2)}
@@ -431,7 +427,7 @@ export function AdminAppointmentsTable() {
                     {selectedAppointment.offeredAt && (
                       <div>
                         <div className="text-[10px] font-medium tracking-wide text-slate-400 uppercase">
-                          Offered At
+                          {t("admin.appointments.details.offeredAt")}
                         </div>
                         <div className="mt-0.5 text-xs font-medium text-slate-700">
                           {new Date(
@@ -443,7 +439,7 @@ export function AdminAppointmentsTable() {
                     {selectedAppointment.confirmedAt && (
                       <div>
                         <div className="text-[10px] font-medium tracking-wide text-slate-400 uppercase">
-                          Confirmed At
+                          {t("admin.appointments.details.confirmedAt")}
                         </div>
                         <div className="mt-0.5 text-xs font-medium text-slate-700">
                           {new Date(
@@ -455,7 +451,7 @@ export function AdminAppointmentsTable() {
                     {selectedAppointment.completedAt && (
                       <div>
                         <div className="text-[10px] font-medium tracking-wide text-slate-400 uppercase">
-                          Completed At
+                          {t("admin.appointments.details.completedAt")}
                         </div>
                         <div className="mt-0.5 text-xs font-medium text-slate-700">
                           {new Date(
@@ -467,7 +463,7 @@ export function AdminAppointmentsTable() {
                     {selectedAppointment.cancelledAt && (
                       <div>
                         <div className="text-[10px] font-medium tracking-wide text-slate-400 uppercase">
-                          Cancelled At
+                          {t("admin.appointments.details.cancelledAt")}
                         </div>
                         <div className="mt-0.5 text-xs font-medium text-slate-700">
                           {new Date(
@@ -482,11 +478,11 @@ export function AdminAppointmentsTable() {
                 {/* Notes */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
-                    Purpose / Notes
+                    {t("admin.appointments.details.notes")}
                   </label>
                   <div className="w-full rounded-2xl border border-slate-200 bg-white p-4 text-xs leading-relaxed text-slate-600 italic">
                     {selectedAppointment.notes ||
-                      "No notes provided for this appointment."}
+                      t("admin.appointments.details.noNotes")}
                   </div>
                 </div>
               </div>
@@ -494,7 +490,7 @@ export function AdminAppointmentsTable() {
               {/* Footer */}
               <div className="sticky bottom-0 z-10 flex gap-3 bg-white p-6">
                 <SheetClose className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 transition-all hover:border-slate-300 hover:bg-slate-50">
-                  Close
+                  {t("admin.appointments.details.close")}
                 </SheetClose>
               </div>
             </div>
