@@ -186,7 +186,7 @@ export function AdminPatientsTable() {
                       {patient.age}
                     </td>
                     <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
-                      {patient.phoneNumber || "N/A"}
+                      {patient.phoneNumber || t("common.notAvailable")}
                     </td>
                     <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-800 sm:px-5">
                       ${patient.totalPaid.toFixed(2)}

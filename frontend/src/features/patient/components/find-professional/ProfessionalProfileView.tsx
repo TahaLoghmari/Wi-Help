@@ -37,6 +37,7 @@ import {
   useGetProfessionalDocuments,
   GetSchedule,
   DAYS,
+  getTranslatedDay,
   DocumentType,
   DocumentStatus,
   type GetEducationsDto,
@@ -876,7 +877,7 @@ export function ProfessionalProfileView() {
                           </div>
                           <div>
                             <h4 className="text-brand-dark text-sm font-semibold">
-                              {day}
+                              {getTranslatedDay(t, day)}
                             </h4>
                             <p className="text-brand-secondary text-xs">
                               {isActive

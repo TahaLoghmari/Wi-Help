@@ -238,7 +238,7 @@ export function ProfileAndBio() {
                     <path d="M18 6 6 18"></path>
                     <path d="m6 6 12 12"></path>
                   </svg>
-                  <span>Remove</span>
+                  <span>{t("common.remove")}</span>
                 </button>
               </div>
             </div>
@@ -249,13 +249,15 @@ export function ProfileAndBio() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      First Name
+                      {t("patient.settings.profile.basicInfo.firstName")}
                     </FormLabel>
                     <FormControl>
                       <input
                         type="text"
                         className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
-                        placeholder="Enter first name"
+                        placeholder={t(
+                          "patient.settings.profile.basicInfo.firstNamePlaceholder",
+                        )}
                         {...field}
                       />
                     </FormControl>
@@ -270,13 +272,15 @@ export function ProfileAndBio() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      Last name
+                      {t("patient.settings.profile.basicInfo.lastName")}
                     </FormLabel>
                     <FormControl>
                       <input
                         type="text"
                         className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
-                        placeholder="Enter last name"
+                        placeholder={t(
+                          "patient.settings.profile.basicInfo.lastNamePlaceholder",
+                        )}
                         {...field}
                       />
                     </FormControl>
@@ -291,13 +295,15 @@ export function ProfileAndBio() {
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-1">
                   <FormLabel className="block text-[11px] font-medium text-slate-700">
-                    Phone Number
+                    {t("patient.settings.profile.basicInfo.phoneNumber")}
                   </FormLabel>
                   <FormControl>
                     <input
                       type="tel"
                       className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
-                      placeholder="Enter phone number"
+                      placeholder={t(
+                        "patient.settings.profile.basicInfo.phoneNumberPlaceholder",
+                      )}
                       {...field}
                     />
                   </FormControl>

@@ -133,7 +133,7 @@ export function PatientProfile({
                   {patient?.gender
                     ? patient.gender.charAt(0).toUpperCase() +
                       patient.gender.slice(1).toLowerCase()
-                    : "N/A"}
+                    : t("common.notAvailable")}
                 </div>
               </div>
               <div className="border-brand-dark/10 bg-brand-bg flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center">
@@ -144,7 +144,8 @@ export function PatientProfile({
                   {t("patient.profile.mobility")}
                 </div>
                 <div className="text-brand-dark text-xs font-semibold">
-                  {patient?.medicalInfo?.mobilityStatus || "N/A"}
+                  {patient?.medicalInfo?.mobilityStatus ||
+                    t("common.notAvailable")}
                 </div>
               </div>
             </div>
@@ -261,7 +262,7 @@ export function PatientProfile({
                     {t("patient.profile.address")}
                   </div>
                   <div className="text-brand-secondary mt-0.5 text-xs leading-snug">
-                    {patient?.address?.street || "N/A"}
+                    {patient?.address?.street || t("common.notAvailable")}
                     <br />
                     {patient?.address?.city}, {patient?.address?.state}{" "}
                     {patient?.address?.postalCode}
@@ -309,7 +310,7 @@ export function PatientProfile({
                     {t("patient.profile.dob")}
                   </div>
                   <div className="text-brand-secondary mt-0.5 text-xs">
-                    {patient?.dateOfBirth || "N/A"}
+                    {patient?.dateOfBirth || t("common.notAvailable")}
                   </div>
                 </div>
               </div>
@@ -336,7 +337,8 @@ export function PatientProfile({
                     {t("patient.profile.fullName")}
                   </div>
                   <div className="text-brand-secondary mt-0.5 text-xs">
-                    {patient?.emergencyContact?.fullName || "N/A"}
+                    {patient?.emergencyContact?.fullName ||
+                      t("common.notAvailable")}
                   </div>
                 </div>
               </div>
@@ -354,7 +356,7 @@ export function PatientProfile({
                         r.value === patient?.emergencyContact?.relationship,
                     )?.label ||
                       patient?.emergencyContact?.relationship ||
-                      "N/A"}
+                      t("common.notAvailable")}
                   </div>
                 </div>
               </div>
@@ -364,10 +366,12 @@ export function PatientProfile({
                 </div>
                 <div>
                   <div className="text-brand-dark text-xs font-semibold">
-                    Phone Number
+                    {t("patient.profile.phoneNumber")}
                   </div>
                   <div className="text-brand-secondary mt-0.5 text-xs">
-                    +216 {patient?.emergencyContact?.phoneNumber || "N/A"}
+                    +216{" "}
+                    {patient?.emergencyContact?.phoneNumber ||
+                      t("common.notAvailable")}
                   </div>
                 </div>
               </div>

@@ -100,10 +100,10 @@ export function PrescriptionsTable() {
                     </div>
                     <div className="text-center">
                       <p className="text-sm font-medium text-slate-700">
-                        No prescriptions yet
+                        {t("patient.prescriptions.empty.title")}
                       </p>
                       <p className="mt-1 text-xs text-slate-500">
-                        Your prescriptions will appear here after appointments.
+                        {t("patient.prescriptions.empty.description")}
                       </p>
                     </div>
                   </div>
@@ -211,10 +211,10 @@ export function PrescriptionsTable() {
             className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-slate-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isFetchingNextPage
-              ? "Loading more..."
+              ? t("patient.prescriptions.pagination.loadingMore")
               : hasNextPage
-                ? "Load More"
-                : "No more prescriptions"}
+                ? t("patient.prescriptions.pagination.loadMore")
+                : t("patient.prescriptions.pagination.noMore")}
           </button>
         </div>
       </div>

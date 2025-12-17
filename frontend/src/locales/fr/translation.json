@@ -159,7 +159,28 @@
     "continue": "Continuer vers l'\u00e9tape suivante",
     "register": "S'inscrire",
     "selectDate": "S\u00e9lectionner une date",
-    "name": "Nom"
+    "name": "Nom",
+    "accept": "Accepter",
+    "cancel": "Annuler",
+    "view": "Voir",
+    "complete": "Terminer",
+    "close": "Fermer",
+    "showing": "Affichage de",
+    "of": "sur",
+    "loadingMore": "Chargement...",
+    "noMore": "Plus de",
+    "notAvailable": "N/D",
+    "unknown": "Inconnu",
+    "remove": "Supprimer",
+    "days": {
+      "monday": "Lundi",
+      "tuesday": "Mardi",
+      "wednesday": "Mercredi",
+      "thursday": "Jeudi",
+      "friday": "Vendredi",
+      "saturday": "Samedi",
+      "sunday": "Dimanche"
+    }
   },
   "auth": {
     "welcomeBack": "Bienvenue",
@@ -278,6 +299,12 @@
         "date": "Date",
         "action": "Action"
       },
+      "empty": {
+        "title": "Aucune ordonnance pour le moment",
+        "description": "Vos ordonnances apparaîtront ici après les rendez-vous."
+      },
+      "prescription": "Ordonnance",
+      "view": "Voir",
       "stats": {
         "recent": "Ordonnances Récentes",
         "last30Days": "30 derniers jours",
@@ -286,6 +313,11 @@
         "total": "Total des Ordonnances",
         "allTime": "Tout le temps",
         "history": "Votre historique d'ordonnances"
+      },
+      "pagination": {
+        "loadMore": "Charger Plus",
+        "loadingMore": "Chargement...",
+        "noMore": "Plus d'ordonnances"
       }
     },
     "booking": {
@@ -338,7 +370,13 @@
             "label": "Photo de profil",
             "hint": "JPG, PNG jusqu'à 5 Mo.",
             "upload": "Télécharger une nouvelle"
-          }
+          },
+          "firstName": "Prénom",
+          "firstNamePlaceholder": "Entrez le prénom",
+          "lastName": "Nom",
+          "lastNamePlaceholder": "Entrez le nom",
+          "phoneNumber": "Numéro de téléphone",
+          "phoneNumberPlaceholder": "Entrez le numéro de téléphone"
         }
       },
       "security": {
@@ -383,6 +421,7 @@
       "address": "Adresse",
       "email": "Email",
       "phone": "Téléphone",
+      "phoneNumber": "Numéro de téléphone",
       "dob": "Date de naissance",
       "emergencyContact": "Contact d'Urgence",
       "important": "Important",
@@ -398,13 +437,23 @@
       "years": "ans",
       "message": "Message",
       "viewProfile": "Voir le profil",
+      "card": {
+        "professionalAlt": "Professionnel"
+      },
       "stats": {
         "total": "Total des Professionnels",
         "allTime": "Tout le temps",
         "workedWith": "Professionnels avec qui vous avez travaillé"
+      },
+      "pagination": {
+        "loadMore": "Charger Plus",
+        "loadingMore": "Chargement...",
+        "noMore": "Plus de professionnels"
       }
     },
     "appointments": {
+      "title": "Mes rendez-vous",
+      "subtitle": "Gérez les rendez-vous à venir et d'aujourd'hui avec des actions rapides.",
       "table": {
         "empty": {
           "offered": {
@@ -423,8 +472,59 @@
             "title": "Aucun rendez-vous terminé",
             "description": "Vous n'avez aucun rendez-vous terminé."
           }
-        }
+        },
+        "professional": "Professionnel",
+        "date": "Date",
+        "purpose": "Motif",
+        "urgency": "Urgence",
+        "price": "Prix",
+        "actions": "Actions"
       },
+      "tabs": {
+        "offered": "Proposés",
+        "confirmed": "Confirmés",
+        "cancelled": "Annulés",
+        "completed": "Terminés"
+      },
+      "loading": "Chargement des rendez-vous...",
+      "error": "Erreur lors du chargement des rendez-vous",
+      "actions": {
+        "view": "Voir",
+        "cancel": "Annuler"
+      },
+      "sheet": {
+        "title": "Détails du rendez-vous",
+        "subtitle": "Examiner les informations complètes du rendez-vous",
+        "startTime": "Heure de début",
+        "endTime": "Heure de fin",
+        "status": "Statut",
+        "urgency": "Urgence",
+        "totalPrice": "Prix total",
+        "offeredAt": "Proposé le",
+        "confirmedAt": "Confirmé le",
+        "completedAt": "Terminé le",
+        "cancelledAt": "Annulé le",
+        "purposeNotes": "Objet / Notes",
+        "noNotes": "Aucune note fournie pour ce rendez-vous.",
+        "close": "Fermer",
+        "professionalId": "ID Professionnel:"
+      },
+      "confirmDialogs": {
+        "cancelTitle": "Annuler le rendez-vous",
+        "cancelDescription": "Êtes-vous sûr de vouloir annuler ce rendez-vous?",
+        "cancelling": "Annulation...",
+        "cancelAction": "Annuler le rendez-vous"
+      },
+      "pagination": {
+        "showing": "Affichage de",
+        "of": "sur",
+        "appointments": "rendez-vous.",
+        "loadMore": "Charger plus",
+        "loadingMore": "Chargement...",
+        "noMore": "Plus de rendez-vous"
+      },
+      "noPurpose": "Aucun objectif spécifié",
+      "unknownProfessional": "Professionnel inconnu",
       "stats": {
         "today": {
           "title": "Rendez-vous d'aujourd'hui",
@@ -629,8 +729,50 @@
         },
         "cancel": "Annuler",
         "complete": "Terminer le rendez-vous",
-        "completing": "Finalisation..."
-      }
+        "completing": "Finalisation...",
+        "prescriptionPdfRequired": "PDF de l'ordonnance",
+        "markCompleteTitle": "Marquer le rendez-vous comme terminé",
+        "markCompleteDescription": "Téléchargez un PDF d'ordonnance pour terminer ce rendez-vous. Cette ordonnance sera disponible pour le patient."
+      },
+      "actions": {
+        "accept": "Accepter",
+        "cancel": "Annuler",
+        "view": "Voir",
+        "complete": "Terminer",
+        "close": "Fermer"
+      },
+      "sheet": {
+        "title": "Détails du rendez-vous",
+        "subtitle": "Examiner les informations complètes du rendez-vous",
+        "startTime": "Heure de début",
+        "endTime": "Heure de fin",
+        "status": "Statut",
+        "urgency": "Urgence",
+        "totalPrice": "Prix total",
+        "offeredAt": "Proposé le",
+        "confirmedAt": "Confirmé le",
+        "completedAt": "Terminé le",
+        "cancelledAt": "Annulé le",
+        "purposeNotes": "Objet / Notes",
+        "noNotes": "Aucune note fournie pour ce rendez-vous."
+      },
+      "confirmDialogs": {
+        "acceptTitle": "Accepter le rendez-vous",
+        "acceptDescription": "Êtes-vous sûr de vouloir accepter ce rendez-vous?",
+        "cancelTitle": "Annuler le rendez-vous",
+        "cancelDescription": "Êtes-vous sûr de vouloir annuler ce rendez-vous?",
+        "cancelling": "Annulation...",
+        "cancelAction": "Annuler le rendez-vous"
+      },
+      "pagination": {
+        "showing": "Affichage de",
+        "of": "sur",
+        "appointments": "rendez-vous.",
+        "loadMore": "Charger plus",
+        "loadingMore": "Chargement...",
+        "noMore": "Plus de rendez-vous"
+      },
+      "noPurpose": "Aucun objectif spécifié"
     },
     "myPatients": {
       "title": "Mes Patients",
@@ -643,7 +785,8 @@
         "years": "ans",
         "unknown": "Inconnu",
         "viewProfile": "Voir le profil",
-        "message": "Message"
+        "message": "Message",
+        "patientAlt": "Patient"
       }
     },
     "schedule": {
@@ -1053,8 +1196,18 @@
     "searchPlaceholder": "Rechercher des conversations",
     "noConversationsFound": "Aucune conversation trouvée",
     "noConversationsYet": "Pas encore de conversations",
+    "noMessagesYet": "Pas encore de messages",
     "typeMessage": "Tapez un message... (Maj+Entrée pour une nouvelle ligne)",
-    "send": "Envoyer"
+    "send": "Envoyer",
+    "you": "Vous",
+    "deleteMessage": "Supprimer le message",
+    "deleteDialog": {
+      "title": "Supprimer le Message",
+      "description": "Êtes-vous sûr de vouloir supprimer ce message ? Cette action ne peut pas être annulée.",
+      "cancel": "Annuler",
+      "delete": "Supprimer",
+      "deleting": "Suppression..."
+    }
   },
   "notifications": {
     "title": "Notifications",
@@ -1090,7 +1243,13 @@
       "remaining": "{{count}} caractères restants",
       "terms": "J'ai lu et j'accepte les Conditions Générales",
       "submit": "Soumettre l'avis",
-      "submitting": "Envoi en cours..."
+      "submitting": "Envoi en cours...",
+      "fallbackProfessionalName": "ce professionnel"
+    },
+    "reply": {
+      "prefix": "Réponse de {{name}}",
+      "fallbackProfessionalTitle": "Professionnel",
+      "fallbackUser": "Utilisateur"
     }
   },
   "admin": {
@@ -1183,7 +1342,10 @@
       "table": {
         "professional": "Professionnel",
         "email": "Email",
+        "phone": "Téléphone",
         "specialization": "Spécialisation",
+        "createdAt": "Créé le",
+        "earned": "Revenus",
         "verification": "Vérification",
         "status": "Statut",
         "actions": "Actions",

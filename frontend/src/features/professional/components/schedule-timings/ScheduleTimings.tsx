@@ -6,6 +6,7 @@ import {
   GetSchedule,
   SetupSchedule,
   GetCurrentProfessional,
+  getTranslatedDay,
 } from "@/features/professional";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -183,7 +184,7 @@ export function ScheduleTimings() {
                   </button>
                   <div>
                     <h3 className="text-brand-dark text-sm font-semibold">
-                      {day.dayOfWeek}
+                      {getTranslatedDay(t, day.dayOfWeek)}
                     </h3>
                     <p className="text-xs text-slate-500">
                       {day.isActive

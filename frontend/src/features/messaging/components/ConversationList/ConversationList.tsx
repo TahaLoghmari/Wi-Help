@@ -147,7 +147,7 @@ export function ConversationList({
                         <p className="truncate text-[11px] text-slate-600">
                           {conversation.lastMessage
                             ? conversation.lastMessage.content
-                            : "No messages yet"}
+                            : t("messaging.noMessagesYet")}
                         </p>
                         {conversation.unreadCount > 0 && (
                           <span className="bg-brand-dark inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[10px] text-white">

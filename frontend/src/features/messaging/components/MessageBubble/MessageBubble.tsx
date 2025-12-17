@@ -13,6 +13,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useTranslation } from "react-i18next";
 
 interface MessageBubbleProps {
   message: MessageDto;
@@ -27,6 +28,7 @@ export function MessageBubble({
   senderName,
   conversationId,
 }: MessageBubbleProps) {
+  const { t } = useTranslation();
   const formattedTime = format(new Date(message.createdAt), "HH:mm");
   const [showDelete, setShowDelete] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -91,7 +93,7 @@ export function MessageBubble({
             onClick={handleDelete}
             disabled={deleteMessageMutation.isPending}
             className="absolute top-1/2 -left-8 -translate-y-1/2 rounded p-1 transition-colors hover:bg-slate-100"
-            title="Delete message"
+            title={t("messaging.deleteMessage")}
           >
             <Trash2 className="h-3.5 w-3.5 text-slate-500" />
           </button>
@@ -101,20 +103,25 @@ export function MessageBubble({
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Message</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t("messaging.deleteDialog.title")}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this message? This action cannot
-              be undone.
+              {t("messaging.deleteDialog.description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>
+              {t("messaging.deleteDialog.cancel")}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDelete}
               disabled={deleteMessageMutation.isPending}
               className="bg-brand-dark hover:bg-brand-dark/90 text-white"
             >
-              {deleteMessageMutation.isPending ? "Deleting..." : "Delete"}
+              {deleteMessageMutation.isPending
+                ? t("messaging.deleteDialog.deleting")
+                : t("messaging.deleteDialog.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

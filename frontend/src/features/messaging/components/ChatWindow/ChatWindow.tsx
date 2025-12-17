@@ -232,7 +232,7 @@ export function ChatWindow({
               {dateMessages.map((message) => {
                 const isOwnMessage = message.senderId === currentUserId;
                 const senderName = isOwnMessage
-                  ? "You"
+                  ? t("messaging.you")
                   : conversation.otherParticipantFirstName;
 
                 return (

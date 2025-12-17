@@ -20,7 +20,7 @@ export function MyPatientsCards() {
   const navigate = useNavigate();
 
   const calculateAge = (dob: string) => {
-    if (!dob) return "N/A";
+    if (!dob) return t("common.notAvailable");
     const birthDate = new Date(dob);
     const ageDifMs = Date.now() - birthDate.getTime();
     const ageDate = new Date(ageDifMs);
@@ -61,7 +61,7 @@ export function MyPatientsCards() {
           <div className="items:center flex gap-3">
             <img
               src={patient.profilePictureUrl}
-              alt="Patient"
+              alt={t("professional.myPatients.card.patientAlt")}
               className="h-10 w-10 rounded-full border border-slate-200 object-cover"
             />
             <div className="min-w-0 flex-1">

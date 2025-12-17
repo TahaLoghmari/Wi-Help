@@ -125,7 +125,7 @@ export function PatientAppointmentsTable() {
   if (isLoading) {
     return (
       <div className="p-4 text-center text-sm text-slate-500">
-        Loading appointments...
+        {t("patient.appointments.loading")}
       </div>
     );
   }
@@ -133,7 +133,7 @@ export function PatientAppointmentsTable() {
   if (error) {
     return (
       <div className="p-4 text-center text-sm text-red-500">
-        Error loading appointments
+        {t("patient.appointments.error")}
       </div>
     );
   }
@@ -147,10 +147,10 @@ export function PatientAppointmentsTable() {
         <div className="mb-2 flex items-center justify-between">
           <div className="">
             <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
-              My Appointments
+              {t("patient.appointments.title")}
             </h2>
             <p className="mt-0.5 text-[11px] text-slate-500">
-              Manage upcoming and today’s appointments with quick actions.
+              {t("patient.appointments.subtitle")}
             </p>
           </div>
         </div>
@@ -170,7 +170,7 @@ export function PatientAppointmentsTable() {
                 activeTab === "offered" ? "bg-brand-blue" : "bg-slate-300"
               }`}
             ></span>
-            Offered
+            {t("patient.appointments.tabs.offered")}
           </button>
           <button
             id="appt-tab-confirmed"
@@ -186,7 +186,7 @@ export function PatientAppointmentsTable() {
                 activeTab === "confirmed" ? "bg-brand-blue" : "bg-slate-300"
               }`}
             ></span>
-            Confirmed
+            {t("patient.appointments.tabs.confirmed")}
           </button>
           <button
             id="appt-tab-cancelled"
@@ -202,7 +202,7 @@ export function PatientAppointmentsTable() {
                 activeTab === "cancelled" ? "bg-brand-blue" : "bg-slate-300"
               }`}
             ></span>
-            Cancelled
+            {t("patient.appointments.tabs.cancelled")}
           </button>
           <button
             id="appt-tab-completed"
@@ -218,7 +218,7 @@ export function PatientAppointmentsTable() {
                 activeTab === "completed" ? "bg-brand-blue" : "bg-slate-300"
               }`}
             ></span>
-            Completed
+            {t("patient.appointments.tabs.completed")}
           </button>
         </div>
       </div>
@@ -228,22 +228,22 @@ export function PatientAppointmentsTable() {
           <thead className="bg-white">
             <tr className="border-b border-slate-200">
               <th className="pt-2.5 pr-4 pb-2.5 pl-4 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Professional
+                {t("patient.appointments.table.professional")}
               </th>
               <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Date
+                {t("patient.appointments.table.date")}
               </th>
               <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Purpose
+                {t("patient.appointments.table.purpose")}
               </th>
               <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Urgency
+                {t("patient.appointments.table.urgency")}
               </th>
               <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Price
+                {t("patient.appointments.table.price")}
               </th>
               <th className="px-4 py-2.5 text-right text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                Actions
+                {t("patient.appointments.table.actions")}
               </th>
             </tr>
           </thead>
@@ -320,7 +320,7 @@ export function PatientAppointmentsTable() {
                         <div className="text-xs font-medium tracking-tight text-slate-900">
                           {appointment.professional
                             ? `${appointment.professional.firstName} ${appointment.professional.lastName}`
-                            : "Unknown Professional"}
+                            : t("patient.appointments.unknownProfessional")}
                         </div>
                         {appointment.professional?.specialization && (
                           <div className="text-[11px] text-slate-500">
@@ -344,7 +344,7 @@ export function PatientAppointmentsTable() {
                   <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
                     {appointment.notes || (
                       <span className="text-slate-400 italic">
-                        No purpose specified
+                        {t("patient.appointments.noPurpose")}
                       </span>
                     )}
                   </td>
@@ -370,7 +370,7 @@ export function PatientAppointmentsTable() {
                         onClick={() => handleView(appointment)}
                         className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors"
                       >
-                        View
+                        {t("patient.appointments.actions.view")}
                       </button>
                       {(appointment.status === AppointmentStatus.Offered ||
                         appointment.status === AppointmentStatus.Confirmed) && (
@@ -379,7 +379,7 @@ export function PatientAppointmentsTable() {
                           disabled={cancelAppointmentMutation.isPending}
                           className="inline-flex items-center rounded-full border border-red-200 bg-white px-2 py-1 text-[11px] text-red-700 transition-colors hover:border-red-300 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
                         >
-                          Cancel
+                          {t("patient.appointments.actions.cancel")}
                         </button>
                       )}
                     </div>
@@ -393,14 +393,14 @@ export function PatientAppointmentsTable() {
 
       <div className="flex flex-col items-center justify-between gap-3 gap-x-3 gap-y-3 border-t border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-3 pl-4 sm:flex-row sm:px-5">
         <div className="text-[11px] text-slate-500">
-          Showing
+          {t("patient.appointments.pagination.showing")}
           <span className="font-medium text-slate-700">
             {" "}
             {appointments.length}{" "}
           </span>
-          of
+          {t("patient.appointments.pagination.of")}
           <span className="font-medium text-slate-700"> {totalCount} </span>
-          appointments.
+          {t("patient.appointments.pagination.appointments")}
         </div>
         <div className="flex items-center gap-1.5 text-[11px]">
           <button
@@ -409,10 +409,10 @@ export function PatientAppointmentsTable() {
             className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-slate-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isFetchingNextPage
-              ? "Loading more..."
+              ? t("patient.appointments.pagination.loadingMore")
               : hasNextPage
-                ? "Load More"
-                : "No more appointments"}
+                ? t("patient.appointments.pagination.loadMore")
+                : t("patient.appointments.pagination.noMore")}
           </button>
         </div>
       </div>
@@ -429,10 +429,10 @@ export function PatientAppointmentsTable() {
               <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-100 bg-white/90 px-6 py-5 backdrop-blur-sm">
                 <div>
                   <h2 className="text-brand-dark text-lg font-bold tracking-tight">
-                    Appointment Details
+                    {t("patient.appointments.sheet.title")}
                   </h2>
                   <p className="mt-0.5 text-xs font-medium text-slate-500">
-                    Review full appointment information
+                    {t("patient.appointments.sheet.subtitle")}
                   </p>
                 </div>
                 <SheetClose className="-mr-2 rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-600">
@@ -459,13 +459,13 @@ export function PatientAppointmentsTable() {
                   <div className="min-w-0 flex-1">
                     <h3 className="truncate text-sm font-bold text-slate-900">
                       {selectedAppointment.professional?.firstName ||
-                        "Unknown Professional"}
+                        t("patient.appointments.unknownProfessional")}
                     </h3>
                     <div className="mt-1 flex flex-col gap-0.5">
                       <div className="flex items-center gap-1.5 text-xs text-slate-500">
                         <Calendar className="h-3 w-3" />
                         <span>
-                          Professional ID:{" "}
+                          {t("patient.appointments.sheet.professionalId")}{" "}
                           {selectedAppointment.professionalId.substring(0, 8)}
                         </span>
                       </div>
@@ -477,7 +477,7 @@ export function PatientAppointmentsTable() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="rounded-2xl border border-slate-100 bg-white p-3">
                     <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                      Start Time
+                      {t("patient.appointments.sheet.startTime")}
                     </span>
                     <div className="mt-1 flex items-center gap-2">
                       <div className="bg-brand-secondary h-8 w-1 rounded-full"></div>
@@ -500,7 +500,7 @@ export function PatientAppointmentsTable() {
                   </div>
                   <div className="rounded-2xl border border-slate-100 bg-white p-3">
                     <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                      End Time
+                      {t("patient.appointments.sheet.endTime")}
                     </span>
                     <div className="mt-1 flex items-center gap-2">
                       <div className="bg-brand-secondary h-8 w-1 rounded-full"></div>
@@ -527,7 +527,7 @@ export function PatientAppointmentsTable() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
-                      Status
+                      {t("patient.appointments.sheet.status")}
                     </label>
                     <div>
                       <span
@@ -539,7 +539,7 @@ export function PatientAppointmentsTable() {
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
-                      Urgency
+                      {t("patient.appointments.sheet.urgency")}
                     </label>
                     <div>
                       <span
@@ -555,7 +555,7 @@ export function PatientAppointmentsTable() {
                 <div className="rounded-2xl border border-slate-200 bg-slate-50/30 p-4">
                   <div className="mb-4 flex items-center justify-between">
                     <span className="text-xs font-semibold text-slate-600">
-                      Total Price
+                      {t("patient.appointments.sheet.totalPrice")}
                     </span>
                     <span className="text-brand-dark text-xl font-bold">
                       ${selectedAppointment.price.toFixed(2)}
@@ -566,7 +566,7 @@ export function PatientAppointmentsTable() {
                     {selectedAppointment.offeredAt && (
                       <div>
                         <div className="text-[10px] font-medium tracking-wide text-slate-400 uppercase">
-                          Offered At
+                          {t("patient.appointments.sheet.offeredAt")}
                         </div>
                         <div className="mt-0.5 text-xs font-medium text-slate-700">
                           {new Date(
@@ -578,7 +578,7 @@ export function PatientAppointmentsTable() {
                     {selectedAppointment.confirmedAt && (
                       <div>
                         <div className="text-[10px] font-medium tracking-wide text-slate-400 uppercase">
-                          Confirmed At
+                          {t("patient.appointments.sheet.confirmedAt")}
                         </div>
                         <div className="mt-0.5 text-xs font-medium text-slate-700">
                           {new Date(
@@ -590,7 +590,7 @@ export function PatientAppointmentsTable() {
                     {selectedAppointment.completedAt && (
                       <div>
                         <div className="text-[10px] font-medium tracking-wide text-slate-400 uppercase">
-                          Completed At
+                          {t("patient.appointments.sheet.completedAt")}
                         </div>
                         <div className="mt-0.5 text-xs font-medium text-slate-700">
                           {new Date(
@@ -602,7 +602,7 @@ export function PatientAppointmentsTable() {
                     {selectedAppointment.cancelledAt && (
                       <div>
                         <div className="text-[10px] font-medium tracking-wide text-slate-400 uppercase">
-                          Cancelled At
+                          {t("patient.appointments.sheet.cancelledAt")}
                         </div>
                         <div className="mt-0.5 text-xs font-medium text-slate-700">
                           {new Date(
@@ -617,11 +617,11 @@ export function PatientAppointmentsTable() {
                 {/* Notes */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
-                    Purpose / Notes
+                    {t("patient.appointments.sheet.purposeNotes")}
                   </label>
                   <div className="w-full rounded-2xl border border-slate-200 bg-white p-4 text-xs leading-relaxed text-slate-600 italic">
                     {selectedAppointment.notes ||
-                      "No notes provided for this appointment."}
+                      t("patient.appointments.sheet.noNotes")}
                   </div>
                 </div>
               </div>
@@ -629,7 +629,7 @@ export function PatientAppointmentsTable() {
               {/* Footer */}
               <div className="sticky bottom-0 z-10 flex gap-3 border-t border-slate-100 bg-white p-6">
                 <SheetClose className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 transition-all hover:border-slate-300 hover:bg-slate-50">
-                  Close
+                  {t("patient.appointments.sheet.close")}
                 </SheetClose>
               </div>
             </div>
@@ -641,21 +641,25 @@ export function PatientAppointmentsTable() {
       <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Cancel Appointment</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t("patient.appointments.confirmDialogs.cancelTitle")}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to cancel this appointment?
+              {t("patient.appointments.confirmDialogs.cancelDescription")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>
+              {t("patient.appointments.actions.cancel")}
+            </AlertDialogCancel>
             <AlertDialogAction
               className="border border-red-600 bg-red-600 text-white hover:bg-red-700"
               onClick={handleConfirmCancel}
               disabled={cancelAppointmentMutation.isPending}
             >
               {cancelAppointmentMutation.isPending
-                ? "Cancelling..."
-                : "Cancel Appointment"}
+                ? t("patient.appointments.confirmDialogs.cancelling")
+                : t("patient.appointments.confirmDialogs.cancelAction")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

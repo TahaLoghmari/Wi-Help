@@ -57,7 +57,7 @@ export function SubmitReviewForm({
 
   const professionalName = professional
     ? `Dr. ${professional.firstName} ${professional.lastName}`
-    : "this professional";
+    : t("reviews.form.fallbackProfessionalName");
 
   const remainingChars = MAX_COMMENT_LENGTH - comment.length;
   return (

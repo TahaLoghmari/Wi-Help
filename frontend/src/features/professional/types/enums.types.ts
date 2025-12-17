@@ -36,6 +36,36 @@ export const DAYS = [
 ] as const;
 export type DayOfWeek = (typeof DAYS)[number];
 
+// Helper function to get translated day names
+export const getTranslatedDays = (t: (key: string) => string): string[] => {
+  return [
+    t("common.days.monday"),
+    t("common.days.tuesday"),
+    t("common.days.wednesday"),
+    t("common.days.thursday"),
+    t("common.days.friday"),
+    t("common.days.saturday"),
+    t("common.days.sunday"),
+  ];
+};
+
+// Helper function to get translated day name by day of week
+export const getTranslatedDay = (
+  t: (key: string) => string,
+  day: DayOfWeek,
+): string => {
+  const dayMap: Record<DayOfWeek, string> = {
+    Monday: t("common.days.monday"),
+    Tuesday: t("common.days.tuesday"),
+    Wednesday: t("common.days.wednesday"),
+    Thursday: t("common.days.thursday"),
+    Friday: t("common.days.friday"),
+    Saturday: t("common.days.saturday"),
+    Sunday: t("common.days.sunday"),
+  };
+  return dayMap[day];
+};
+
 export interface DayAvailabilityDto {
   dayOfWeek: DayOfWeek;
   isActive: boolean;

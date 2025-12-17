@@ -12,6 +12,7 @@ import {
   useDeleteReview,
 } from "@/features/reviews";
 import { useCurrentUser } from "@/features/auth";
+import { useTranslation } from "react-i18next";
 
 interface ReviewCardProps {
   review: GetProfessionalReviewsDto;
@@ -23,6 +24,7 @@ export function ReviewCard({
   review,
   showReplyInput = false,
 }: ReviewCardProps) {
+  const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
   const isProfessional = currentUser?.role?.toLowerCase() === "professional";
   const isPatient = currentUser?.role?.toLowerCase() === "patient";
@@ -238,9 +240,13 @@ export function ReviewCard({
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-medium text-slate-800">
                     {reply.isProfessional
-                      ? `Reply from ${reply.userFirstName ? `Dr. ${reply.userFirstName} ${reply.userLastName || ""}`.trim() : "Professional"}`
+                      ? t("reviews.reply.prefix", {
+                          name: reply.userFirstName
+                            ? `Dr. ${reply.userFirstName} ${reply.userLastName || ""}`.trim()
+                            : t("reviews.reply.fallbackProfessionalTitle"),
+                        })
                       : `${reply.userFirstName || ""} ${reply.userLastName || ""}`.trim() ||
-                        "User"}
+                        t("reviews.reply.fallbackUser")}
                   </span>
                   <span className="text-[10px] text-slate-400">
                     {formatDistanceToNow(new Date(reply.createdAt), {

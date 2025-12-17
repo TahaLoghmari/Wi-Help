@@ -159,7 +159,28 @@
     "continue": "Continue to Next Step",
     "register": "Register",
     "selectDate": "Select date",
-    "name": "Name"
+    "name": "Name",
+    "accept": "Accept",
+    "cancel": "Cancel",
+    "view": "View",
+    "complete": "Complete",
+    "close": "Close",
+    "showing": "Showing",
+    "of": "of",
+    "loadingMore": "Loading more...",
+    "noMore": "No more",
+    "notAvailable": "N/A",
+    "unknown": "Unknown",
+    "remove": "Remove",
+    "days": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    }
   },
   "auth": {
     "welcomeBack": "Welcome back",
@@ -278,6 +299,12 @@
         "date": "Date",
         "action": "Action"
       },
+      "empty": {
+        "title": "No prescriptions yet",
+        "description": "Your prescriptions will appear here after appointments."
+      },
+      "prescription": "Prescription",
+      "view": "View",
       "stats": {
         "recent": "Recent Prescriptions",
         "last30Days": "Last 30 Days",
@@ -286,6 +313,11 @@
         "total": "Total Prescriptions",
         "allTime": "All time",
         "history": "Your prescription history"
+      },
+      "pagination": {
+        "loadMore": "Load More",
+        "loadingMore": "Loading more...",
+        "noMore": "No more prescriptions"
       }
     },
     "booking": {
@@ -338,7 +370,13 @@
             "label": "Profile picture",
             "hint": "JPG, PNG up to 5MB.",
             "upload": "Upload new"
-          }
+          },
+          "firstName": "First Name",
+          "firstNamePlaceholder": "Enter first name",
+          "lastName": "Last Name",
+          "lastNamePlaceholder": "Enter last name",
+          "phoneNumber": "Phone Number",
+          "phoneNumberPlaceholder": "Enter phone number"
         }
       },
       "security": {
@@ -383,6 +421,7 @@
       "address": "Address",
       "email": "Email",
       "phone": "Phone",
+      "phoneNumber": "Phone Number",
       "dob": "Date of Birth",
       "emergencyContact": "Emergency Contact",
       "important": "Important",
@@ -398,13 +437,23 @@
       "years": "years",
       "message": "Message",
       "viewProfile": "View Profile",
+      "card": {
+        "professionalAlt": "Professional"
+      },
       "stats": {
         "total": "Total Professionals",
         "allTime": "All time",
         "workedWith": "Professionals you've worked with"
+      },
+      "pagination": {
+        "loadMore": "Load More",
+        "loadingMore": "Loading more...",
+        "noMore": "No more professionals"
       }
     },
     "appointments": {
+      "title": "My Appointments",
+      "subtitle": "Manage upcoming and today's appointments with quick actions.",
       "table": {
         "empty": {
           "offered": {
@@ -423,8 +472,59 @@
             "title": "No completed appointments",
             "description": "You don't have any completed appointments."
           }
-        }
+        },
+        "professional": "Professional",
+        "date": "Date",
+        "purpose": "Purpose",
+        "urgency": "Urgency",
+        "price": "Price",
+        "actions": "Actions"
       },
+      "tabs": {
+        "offered": "Offered",
+        "confirmed": "Confirmed",
+        "cancelled": "Cancelled",
+        "completed": "Completed"
+      },
+      "loading": "Loading appointments...",
+      "error": "Error loading appointments",
+      "actions": {
+        "view": "View",
+        "cancel": "Cancel"
+      },
+      "sheet": {
+        "title": "Appointment Details",
+        "subtitle": "Review full appointment information",
+        "startTime": "Start Time",
+        "endTime": "End Time",
+        "status": "Status",
+        "urgency": "Urgency",
+        "totalPrice": "Total Price",
+        "offeredAt": "Offered At",
+        "confirmedAt": "Confirmed At",
+        "completedAt": "Completed At",
+        "cancelledAt": "Cancelled At",
+        "purposeNotes": "Purpose / Notes",
+        "noNotes": "No notes provided for this appointment.",
+        "close": "Close",
+        "professionalId": "Professional ID:"
+      },
+      "confirmDialogs": {
+        "cancelTitle": "Cancel Appointment",
+        "cancelDescription": "Are you sure you want to cancel this appointment?",
+        "cancelling": "Cancelling...",
+        "cancelAction": "Cancel Appointment"
+      },
+      "pagination": {
+        "showing": "Showing",
+        "of": "of",
+        "appointments": "appointments.",
+        "loadMore": "Load More",
+        "loadingMore": "Loading more...",
+        "noMore": "No more appointments"
+      },
+      "noPurpose": "No purpose specified",
+      "unknownProfessional": "Unknown Professional",
       "stats": {
         "today": {
           "title": "Today's Appointments",
@@ -629,8 +729,50 @@
         },
         "cancel": "Cancel",
         "complete": "Complete Appointment",
-        "completing": "Completing..."
-      }
+        "completing": "Completing...",
+        "prescriptionPdfRequired": "Prescription PDF",
+        "markCompleteTitle": "Mark Appointment as Completed",
+        "markCompleteDescription": "Upload a prescription PDF to complete this appointment. This prescription will be available to the patient."
+      },
+      "actions": {
+        "accept": "Accept",
+        "cancel": "Cancel",
+        "view": "View",
+        "complete": "Complete",
+        "close": "Close"
+      },
+      "sheet": {
+        "title": "Appointment Details",
+        "subtitle": "Review full appointment information",
+        "startTime": "Start Time",
+        "endTime": "End Time",
+        "status": "Status",
+        "urgency": "Urgency",
+        "totalPrice": "Total Price",
+        "offeredAt": "Offered At",
+        "confirmedAt": "Confirmed At",
+        "completedAt": "Completed At",
+        "cancelledAt": "Cancelled At",
+        "purposeNotes": "Purpose / Notes",
+        "noNotes": "No notes provided for this appointment."
+      },
+      "confirmDialogs": {
+        "acceptTitle": "Accept Appointment",
+        "acceptDescription": "Are you sure you want to accept this appointment?",
+        "cancelTitle": "Cancel Appointment",
+        "cancelDescription": "Are you sure you want to cancel this appointment?",
+        "cancelling": "Cancelling...",
+        "cancelAction": "Cancel Appointment"
+      },
+      "pagination": {
+        "showing": "Showing",
+        "of": "of",
+        "appointments": "appointments.",
+        "loadMore": "Load More",
+        "loadingMore": "Loading more...",
+        "noMore": "No more appointments"
+      },
+      "noPurpose": "No purpose specified"
     },
     "myPatients": {
       "title": "My Patients",
@@ -643,7 +785,8 @@
         "years": "years",
         "unknown": "Unknown",
         "viewProfile": "View Profile",
-        "message": "Message"
+        "message": "Message",
+        "patientAlt": "Patient"
       }
     },
     "schedule": {
@@ -1053,8 +1196,18 @@
     "searchPlaceholder": "Search conversations",
     "noConversationsFound": "No conversations found",
     "noConversationsYet": "No conversations yet",
+    "noMessagesYet": "No messages yet",
     "typeMessage": "Type a message... (Shift+Enter for new line)",
-    "send": "Send"
+    "send": "Send",
+    "you": "You",
+    "deleteMessage": "Delete message",
+    "deleteDialog": {
+      "title": "Delete Message",
+      "description": "Are you sure you want to delete this message? This action cannot be undone.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleting": "Deleting..."
+    }
   },
   "notifications": {
     "title": "Notifications",
@@ -1090,7 +1243,13 @@
       "remaining": "{{count}} characters remaining",
       "terms": "I have read and accept Terms & Conditions",
       "submit": "Submit Review",
-      "submitting": "Submitting..."
+      "submitting": "Submitting...",
+      "fallbackProfessionalName": "this professional"
+    },
+    "reply": {
+      "prefix": "Reply from {{name}}",
+      "fallbackProfessionalTitle": "Professional",
+      "fallbackUser": "User"
     }
   },
   "admin": {
@@ -1183,7 +1342,10 @@
       "table": {
         "professional": "Professional",
         "email": "Email",
+        "phone": "Phone",
         "specialization": "Specialization",
+        "createdAt": "Created At",
+        "earned": "Earned",
         "verification": "Verification",
         "status": "Status",
         "actions": "Actions",

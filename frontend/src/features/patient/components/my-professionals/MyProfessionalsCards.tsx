@@ -21,7 +21,7 @@ export function MyProfessionalsCards() {
   const navigate = useNavigate();
 
   const calculateAge = (dob: string) => {
-    if (!dob) return "N/A";
+    if (!dob) return t("common.notAvailable");
     const birthDate = new Date(dob);
     const ageDifMs = Date.now() - birthDate.getTime();
     const ageDate = new Date(ageDifMs);
@@ -62,7 +62,7 @@ export function MyProfessionalsCards() {
           <div className="items:center flex gap-3">
             <img
               src={professional.profilePictureUrl}
-              alt="Professional"
+              alt={t("patient.professionals.card.professionalAlt")}
               className="h-10 w-10 rounded-full border border-slate-200 object-cover"
             />
             <div className="min-w-0 flex-1">
@@ -78,8 +78,8 @@ export function MyProfessionalsCards() {
                 {calculateAge(professional.dateOfBirth)} yrs •{" "}
                 {professional.gender.charAt(0).toUpperCase() +
                   professional.gender.slice(1)}{" "}
-                • {professional.address?.city || "Unknown"} •{" "}
-                {professional.address?.state || "Unknown"}
+                • {professional.address?.city || t("common.unknown")} •{" "}
+                {professional.address?.state || t("common.unknown")}
               </p>
             </div>
           </div>
@@ -238,10 +238,10 @@ export function MyProfessionalsCards() {
             className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-slate-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isFetchingNextPage
-              ? "Loading more..."
+              ? t("patient.professionals.pagination.loadingMore")
               : hasNextPage
-                ? "Load More"
-                : "No more professionals"}
+                ? t("patient.professionals.pagination.loadMore")
+                : t("patient.professionals.pagination.noMore")}
           </button>
         </div>
       </div>

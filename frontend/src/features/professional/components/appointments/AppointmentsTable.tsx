@@ -420,7 +420,7 @@ export function AppointmentsTable() {
                   <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
                     {appointment.notes || (
                       <span className="text-slate-400 italic">
-                        No purpose specified
+                        {t("professional.appointments.noPurpose")}
                       </span>
                     )}
                   </td>
@@ -449,14 +449,14 @@ export function AppointmentsTable() {
                             disabled={respondToAppointmentMutation.isPending}
                             className="border-brand-dark bg-brand-dark hover:bg-brand-secondary inline-flex items-center rounded-full border px-2 py-1 text-[11px] text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                           >
-                            Accept
+                            {t("professional.appointments.actions.accept")}
                           </button>
                           <button
                             onClick={() => handleCancel(appointment)}
                             disabled={respondToAppointmentMutation.isPending}
                             className="inline-flex items-center rounded-full border border-red-200 bg-white px-2 py-1 text-[11px] text-red-700 transition-colors hover:border-red-300 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
                           >
-                            Cancel
+                            {t("professional.appointments.actions.cancel")}
                           </button>
                         </>
                       )}
@@ -467,14 +467,14 @@ export function AppointmentsTable() {
                             disabled={completeAppointmentMutation.isPending}
                             className="border-brand-dark bg-brand-dark hover:bg-brand-secondary inline-flex items-center rounded-full border px-2 py-1 text-[11px] text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                           >
-                            Complete
+                            {t("professional.appointments.actions.complete")}
                           </button>
                           <button
                             onClick={() => handleCancel(appointment)}
                             disabled={cancelAppointmentMutation.isPending}
                             className="inline-flex items-center rounded-full border border-red-200 bg-white px-2 py-1 text-[11px] text-red-700 transition-colors hover:border-red-300 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
                           >
-                            Cancel
+                            {t("professional.appointments.actions.cancel")}
                           </button>
                         </>
                       )}
@@ -482,7 +482,7 @@ export function AppointmentsTable() {
                         onClick={() => handleView(appointment)}
                         className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700 transition-colors"
                       >
-                        View
+                        {t("professional.appointments.actions.view")}
                       </button>
                     </div>
                   </td>
@@ -495,14 +495,14 @@ export function AppointmentsTable() {
 
       <div className="flex flex-col items-center justify-between gap-3 gap-x-3 gap-y-3 border-t border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-3 pl-4 sm:flex-row sm:px-5">
         <div className="text-[11px] text-slate-500">
-          Showing
+          {t("professional.appointments.pagination.showing")}
           <span className="font-medium text-slate-700">
             {" "}
             {appointments.length}{" "}
           </span>
-          of
+          {t("professional.appointments.pagination.of")}
           <span className="font-medium text-slate-700"> {totalCount} </span>
-          appointments.
+          {t("professional.appointments.pagination.appointments")}
         </div>
         <div className="flex items-center gap-1.5 text-[11px]">
           <button
@@ -511,10 +511,10 @@ export function AppointmentsTable() {
             className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-slate-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isFetchingNextPage
-              ? "Loading more..."
+              ? t("professional.appointments.pagination.loadingMore")
               : hasNextPage
-                ? "Load More"
-                : "No more appointments"}
+                ? t("professional.appointments.pagination.loadMore")
+                : t("professional.appointments.pagination.noMore")}
           </button>
         </div>
       </div>
@@ -531,10 +531,10 @@ export function AppointmentsTable() {
               <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-100 bg-white/90 px-6 py-5 backdrop-blur-sm">
                 <div>
                   <h2 className="text-brand-dark text-lg font-bold tracking-tight">
-                    Appointment Details
+                    {t("professional.appointments.sheet.title")}
                   </h2>
                   <p className="mt-0.5 text-xs font-medium text-slate-500">
-                    Review full appointment information
+                    {t("professional.appointments.sheet.subtitle")}
                   </p>
                 </div>
                 <SheetClose className="-mr-2 rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-600">
@@ -579,7 +579,7 @@ export function AppointmentsTable() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="rounded-2xl border border-slate-100 bg-white p-3">
                     <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                      Start Time
+                      {t("professional.appointments.sheet.startTime")}
                     </span>
                     <div className="mt-1 flex items-center gap-2">
                       <div className="bg-brand-secondary h-8 w-1 rounded-full"></div>
@@ -602,7 +602,7 @@ export function AppointmentsTable() {
                   </div>
                   <div className="rounded-2xl border border-slate-100 bg-white p-3">
                     <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                      End Time
+                      {t("professional.appointments.sheet.endTime")}
                     </span>
                     <div className="mt-1 flex items-center gap-2">
                       <div className="bg-brand-secondary h-8 w-1 rounded-full"></div>
@@ -629,7 +629,7 @@ export function AppointmentsTable() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
-                      Status
+                      {t("professional.appointments.sheet.status")}
                     </label>
                     <div>
                       <span
@@ -641,7 +641,7 @@ export function AppointmentsTable() {
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
-                      Urgency
+                      {t("professional.appointments.sheet.urgency")}
                     </label>
                     <div>
                       <span
@@ -657,7 +657,7 @@ export function AppointmentsTable() {
                 <div className="rounded-2xl border border-slate-200 bg-slate-50/30 p-4">
                   <div className="mb-4 flex items-center justify-between">
                     <span className="text-xs font-semibold text-slate-600">
-                      Total Price
+                      {t("professional.appointments.sheet.totalPrice")}
                     </span>
                     <span className="text-brand-dark text-xl font-bold">
                       ${selectedAppointment.price.toFixed(2)}
@@ -668,7 +668,7 @@ export function AppointmentsTable() {
                     {selectedAppointment.offeredAt && (
                       <div>
                         <div className="text-[10px] font-medium tracking-wide text-slate-400 uppercase">
-                          Offered At
+                          {t("professional.appointments.sheet.offeredAt")}
                         </div>
                         <div className="mt-0.5 text-xs font-medium text-slate-700">
                           {new Date(
@@ -680,7 +680,7 @@ export function AppointmentsTable() {
                     {selectedAppointment.confirmedAt && (
                       <div>
                         <div className="text-[10px] font-medium tracking-wide text-slate-400 uppercase">
-                          Confirmed At
+                          {t("professional.appointments.sheet.confirmedAt")}
                         </div>
                         <div className="mt-0.5 text-xs font-medium text-slate-700">
                           {new Date(
@@ -692,7 +692,7 @@ export function AppointmentsTable() {
                     {selectedAppointment.completedAt && (
                       <div>
                         <div className="text-[10px] font-medium tracking-wide text-slate-400 uppercase">
-                          Completed At
+                          {t("professional.appointments.sheet.completedAt")}
                         </div>
                         <div className="mt-0.5 text-xs font-medium text-slate-700">
                           {new Date(
@@ -704,7 +704,7 @@ export function AppointmentsTable() {
                     {selectedAppointment.cancelledAt && (
                       <div>
                         <div className="text-[10px] font-medium tracking-wide text-slate-400 uppercase">
-                          Cancelled At
+                          {t("professional.appointments.sheet.cancelledAt")}
                         </div>
                         <div className="mt-0.5 text-xs font-medium text-slate-700">
                           {new Date(
@@ -719,11 +719,11 @@ export function AppointmentsTable() {
                 {/* Notes */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
-                    Purpose / Notes
+                    {t("professional.appointments.sheet.purposeNotes")}
                   </label>
                   <div className="w-full rounded-2xl border border-slate-200 bg-white p-4 text-xs leading-relaxed text-slate-600 italic">
                     {selectedAppointment.notes ||
-                      "No notes provided for this appointment."}
+                      t("professional.appointments.sheet.noNotes")}
                   </div>
                 </div>
               </div>
@@ -731,7 +731,7 @@ export function AppointmentsTable() {
               {/* Footer */}
               <div className="sticky bottom-0 z-10 flex gap-3 border-t border-slate-100 bg-white p-6">
                 <SheetClose className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 transition-all hover:border-slate-300 hover:bg-slate-50">
-                  Close
+                  {t("professional.appointments.actions.close")}
                 </SheetClose>
               </div>
             </div>
@@ -743,18 +743,22 @@ export function AppointmentsTable() {
       <AlertDialog open={acceptDialogOpen} onOpenChange={setAcceptDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Accept Appointment</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t("professional.appointments.confirmDialogs.acceptTitle")}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to accept this appointment?
+              {t("professional.appointments.confirmDialogs.acceptDescription")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>
+              {t("professional.appointments.dialogs.cancel")}
+            </AlertDialogCancel>
             <AlertDialogAction
               className="bg-brand-dark"
               onClick={handleConfirmAppointment}
             >
-              Accept
+              {t("professional.appointments.actions.accept")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -764,13 +768,17 @@ export function AppointmentsTable() {
       <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Cancel Appointment</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t("professional.appointments.confirmDialogs.cancelTitle")}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to cancel this appointment?
+              {t("professional.appointments.confirmDialogs.cancelDescription")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>
+              {t("professional.appointments.dialogs.cancel")}
+            </AlertDialogCancel>
             <AlertDialogAction
               className="border border-red-600 bg-red-600 text-white hover:bg-red-700"
               onClick={handleCancelAppointment}
@@ -781,8 +789,8 @@ export function AppointmentsTable() {
             >
               {respondToAppointmentMutation.isPending ||
               cancelAppointmentMutation.isPending
-                ? "Cancelling..."
-                : "Cancel Appointment"}
+                ? t("professional.appointments.confirmDialogs.cancelling")
+                : t("professional.appointments.confirmDialogs.cancelAction")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -792,10 +800,11 @@ export function AppointmentsTable() {
       <Dialog open={completeDialogOpen} onOpenChange={setCompleteDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Mark Appointment as Completed</DialogTitle>
+            <DialogTitle>
+              {t("professional.appointments.dialogs.markCompleteTitle")}
+            </DialogTitle>
             <DialogDescription>
-              Upload a prescription PDF to complete this appointment. This
-              prescription will be available to the patient.
+              {t("professional.appointments.dialogs.markCompleteDescription")}
             </DialogDescription>
           </DialogHeader>
           {selectedAppointment && (
@@ -803,7 +812,10 @@ export function AppointmentsTable() {
               {/* File Upload */}
               <div className="space-y-2">
                 <label className="mb-2 text-sm font-medium text-slate-700">
-                  Prescription PDF <span className="text-red-500">*</span>
+                  {t(
+                    "professional.appointments.dialogs.prescriptionPdfRequired",
+                  )}{" "}
+                  <span className="text-red-500">*</span>
                 </label>
                 <div
                   onClick={() => fileInputRef.current?.click()}

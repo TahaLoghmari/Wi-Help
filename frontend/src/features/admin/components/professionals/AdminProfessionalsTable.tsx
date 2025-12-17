@@ -128,16 +128,16 @@ export function AdminProfessionalsTable() {
                   {t("admin.professionals.table.email")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Phone
+                  {t("admin.professionals.table.phone")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
                   {t("admin.professionals.table.specialization")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Created At
+                  {t("admin.professionals.table.createdAt")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
-                  Earned
+                  {t("admin.professionals.table.earned")}
                 </th>
                 <th className="px-4 py-2.5 text-[11px] font-medium tracking-wide text-slate-500 uppercase sm:px-5">
                   {t("admin.professionals.table.verification")}
@@ -206,7 +206,7 @@ export function AdminProfessionalsTable() {
                         {professional.email}
                       </td>
                       <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
-                        {professional.phoneNumber || "N/A"}
+                        {professional.phoneNumber || t("common.notAvailable")}
                       </td>
                       <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
                         <div className="text-xs text-slate-500">

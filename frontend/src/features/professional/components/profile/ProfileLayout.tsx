@@ -33,6 +33,7 @@ import {
   DocumentType,
   DocumentStatus,
   DAYS,
+  getTranslatedDay,
   type GetEducationsDto,
   type GetExperiencesDto,
   type GetAwardsDto,
@@ -1058,7 +1059,7 @@ export function ProfileLayout() {
                           </div>
                           <div>
                             <h4 className="text-brand-dark text-sm font-semibold">
-                              {day}
+                              {getTranslatedDay(t, day)}
                             </h4>
                             <p className="text-brand-secondary text-xs">
                               {isActive
