@@ -210,7 +210,7 @@ export function ReviewCard({
                 className={`h-3.5 w-3.5 ${review.isLiked ? "fill-current" : ""}`}
                 strokeWidth={1.5}
               />
-              <span>Like</span>
+              <span>{t("reviews.likeAction")}</span>
             </button>
           )}
           {canReply && (
@@ -219,14 +219,17 @@ export function ReviewCard({
               className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1 text-slate-700 transition-colors"
             >
               <Reply className="h-3.5 w-3.5 text-slate-500" strokeWidth={1.5} />
-              <span>Reply</span>
+              <span>{t("reviews.replyAction")}</span>
             </button>
           )}
         </div>
         <div className="text-[11px] text-slate-500">
-          {review.likesCount} {review.likesCount === 1 ? "like" : "likes"} •{" "}
+          {review.likesCount}{" "}
+          {review.likesCount === 1 ? t("reviews.like") : t("reviews.likes")} •{" "}
           {review.repliesCount}{" "}
-          {review.repliesCount === 1 ? "reply" : "replies"}
+          {review.repliesCount === 1
+            ? t("reviews.reply")
+            : t("reviews.replies")}
         </div>
       </div>
 
@@ -240,13 +243,13 @@ export function ReviewCard({
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-medium text-slate-800">
                     {reply.isProfessional
-                      ? t("reviews.reply.prefix", {
+                      ? t("reviews.replyInfo.prefix", {
                           name: reply.userFirstName
                             ? `Dr. ${reply.userFirstName} ${reply.userLastName || ""}`.trim()
-                            : t("reviews.reply.fallbackProfessionalTitle"),
+                            : t("reviews.replyInfo.fallbackProfessionalTitle"),
                         })
                       : `${reply.userFirstName || ""} ${reply.userLastName || ""}`.trim() ||
-                        t("reviews.reply.fallbackUser")}
+                        t("reviews.replyInfo.fallbackUser")}
                   </span>
                   <span className="text-[10px] text-slate-400">
                     {formatDistanceToNow(new Date(reply.createdAt), {

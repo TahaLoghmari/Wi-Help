@@ -3,6 +3,7 @@ import {
   Inbox,
   CalendarClock,
   MessageCircle,
+  Star,
 } from "lucide-react";
 import {
   GetNotifications,
@@ -16,7 +17,7 @@ import { formatDistanceToNow } from "date-fns";
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-type NotificationFilter = "all" | "appointments" | "messages";
+type NotificationFilter = "all" | "appointments" | "messages" | "reviews";
 
 export function Notifications() {
   const { t } = useTranslation();
@@ -60,6 +61,12 @@ export function Notifications() {
       );
     }
 
+    if (activeFilter === "reviews") {
+      return allNotifications.filter(
+        (notification) => notification.type === NotificationType.newReview,
+      );
+    }
+
     return allNotifications;
   }, [allNotifications, activeFilter]);
 
@@ -87,6 +94,14 @@ export function Notifications() {
       return allNotifications.filter(
         (notification) =>
           notification.type === NotificationType.newMessage &&
+          !notification.isRead,
+      ).length;
+    }
+
+    if (filter === "reviews") {
+      return allNotifications.filter(
+        (notification) =>
+          notification.type === NotificationType.newReview &&
           !notification.isRead,
       ).length;
     }
@@ -204,6 +219,31 @@ export function Notifications() {
             </span>
           )}
         </button>
+        <button
+          onClick={() => setActiveFilter("reviews")}
+          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 transition-colors ${
+            activeFilter === "reviews"
+              ? "bg-brand-dark hover:bg-brand-secondary text-white"
+              : "hover:border-brand-blue/70 hover:bg-brand-blue/5 border border-slate-200 bg-white text-slate-700"
+          }`}
+        >
+          <Star
+            className={`h-3.5 w-3.5 ${activeFilter === "reviews" ? "text-white" : "text-slate-500"}`}
+            strokeWidth={1.5}
+          />
+          <span>{t("notifications.filters.reviews")}</span>
+          {getFilterCount("reviews") > 0 && (
+            <span
+              className={`ml-0.5 rounded-full px-1.5 py-0.5 text-[10px] ${
+                activeFilter === "reviews"
+                  ? "bg-white/20 text-white"
+                  : "bg-slate-100 text-slate-700"
+              }`}
+            >
+              {getFilterCount("reviews")}
+            </span>
+          )}
+        </button>
       </div>
 
       {/* Notifications List */}
@@ -240,12 +280,16 @@ export function Notifications() {
               {activeFilter === "messages" && (
                 <MessageCircle className="h-6 w-6" strokeWidth={1.5} />
               )}
+              {activeFilter === "reviews" && (
+                <Star className="h-6 w-6" strokeWidth={1.5} />
+              )}
             </div>
             <span className="text-muted-foreground text-sm">
               {activeFilter === "all" && t("notifications.empty.all")}
               {activeFilter === "appointments" &&
                 t("notifications.empty.appointments")}
               {activeFilter === "messages" && t("notifications.empty.messages")}
+              {activeFilter === "reviews" && t("notifications.empty.reviews")}
             </span>
           </div>
         )}

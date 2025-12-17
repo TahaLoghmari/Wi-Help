@@ -1220,12 +1220,14 @@
     "filters": {
       "all": "Tout",
       "appointments": "Rendez-vous",
-      "messages": "Messages"
+      "messages": "Messages",
+      "reviews": "Avis"
     },
     "empty": {
       "all": "Aucune notification trouvée.",
       "appointments": "Aucune notification de rendez-vous trouvée.",
-      "messages": "Aucune notification de message trouvée."
+      "messages": "Aucune notification de message trouvée.",
+      "reviews": "Aucune notification d'avis trouvée."
     },
     "error": "Échec du chargement des notifications.",
     "retry": "Réessayer",
@@ -1244,7 +1246,11 @@
     "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cet avis?",
     "edit": "Modifier l'avis",
     "delete": "Supprimer l'avis",
+    "likeAction": "J'aime",
+    "like": "j'aime",
+    "likes": "j'aime",
     "replyAction": "Répondre",
+    "reply": "réponse",
     "replies": "réponses",
     "replyPlaceholder": "Écrivez votre réponse...",
     "writeReviewPlaceholder": "Écrivez votre avis...",
@@ -1267,7 +1273,7 @@
       "fallbackProfessionalName": "ce professionnel",
       "fallbackPatientName": "ce patient"
     },
-    "reply": {
+    "replyInfo": {
       "prefix": "Réponse de {{name}}",
       "fallbackProfessionalTitle": "Professionnel",
       "fallbackUser": "Utilisateur"

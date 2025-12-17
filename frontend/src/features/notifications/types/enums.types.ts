@@ -6,6 +6,7 @@ export const NotificationType = {
   appointmentCompleted: "appointmentCompleted",
   newPrescription: "newPrescription",
   newMessage: "newMessage",
+  newReview: "newReview",
 } as const;
 
 export type NotificationType =

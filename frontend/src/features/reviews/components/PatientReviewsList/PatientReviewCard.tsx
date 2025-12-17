@@ -200,39 +200,38 @@ export function PatientReviewCard({
           {canLike && (
             <button
               onClick={handleLike}
-              className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 transition-colors ${
+              className={`inline-flex items-center gap-1 rounded-full border px-2 py-1 transition-colors ${
                 review.isLiked
-                  ? "border-red-200 bg-red-50 text-red-600"
-                  : "border-slate-200 bg-white text-slate-700 hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                  ? "border-brand-blue/70 bg-brand-blue/5 text-brand-blue"
+                  : "hover:border-brand-blue/70 hover:bg-brand-blue/5 border-slate-200 bg-white text-slate-700"
               }`}
             >
               <Heart
-                className={`h-3 w-3 ${review.isLiked ? "fill-current" : ""}`}
+                className={`h-3.5 w-3.5 ${review.isLiked ? "fill-current" : ""}`}
                 strokeWidth={1.5}
               />
-              <span className="font-medium">{review.likesCount}</span>
+              <span>{t("reviews.likeAction")}</span>
             </button>
           )}
 
           {canReply && !isEditing && (
             <button
               onClick={() => setShowReplyInputState(!showReplyInputState)}
-              className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-slate-700 transition-colors hover:bg-slate-50"
+              className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1 text-slate-700 transition-colors"
             >
-              <Reply className="h-3 w-3" strokeWidth={1.5} />
-              <span className="font-medium">{t("reviews.replyAction")}</span>
+              <Reply className="h-3.5 w-3.5 text-slate-500" strokeWidth={1.5} />
+              <span>{t("reviews.replyAction")}</span>
             </button>
           )}
         </div>
-
-        {review.repliesCount > 0 && (
-          <span className="text-[11px] text-slate-500">
-            {review.repliesCount}{" "}
-            {review.repliesCount === 1
-              ? t("reviews.replyAction")
-              : t("reviews.replies")}
-          </span>
-        )}
+        <div className="text-[11px] text-slate-500">
+          {review.likesCount}{" "}
+          {review.likesCount === 1 ? t("reviews.like") : t("reviews.likes")} •{" "}
+          {review.repliesCount}{" "}
+          {review.repliesCount === 1
+            ? t("reviews.reply")
+            : t("reviews.replies")}
+        </div>
       </div>
 
       {/* Reply Input */}
