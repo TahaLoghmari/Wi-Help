@@ -28,6 +28,13 @@ export function useReplyToReview() {
       queryClient.invalidateQueries({
         queryKey: ["professional-review-stats"],
       });
+      // Invalidate patient reviews queries
+      queryClient.invalidateQueries({
+        queryKey: ["patient-reviews"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["patient-review-stats"],
+      });
       toast.success("Reply added!");
     },
     onError: (error) => handleApiError({ apiError: error }),

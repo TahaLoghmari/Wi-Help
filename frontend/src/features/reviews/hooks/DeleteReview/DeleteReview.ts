@@ -23,7 +23,13 @@ export function useDeleteReview() {
       queryClient.invalidateQueries({
         queryKey: ["professional-review-stats"],
       });
-      toast.success("Review deleted successfully!");
+      queryClient.invalidateQueries({
+        queryKey: ["patient-reviews"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["patient-review-stats"],
+      });
+      toast.success("Review deleted!");
     },
     onError: (error) => handleApiError({ apiError: error }),
   });

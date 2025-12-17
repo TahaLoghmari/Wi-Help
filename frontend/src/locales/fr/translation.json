@@ -426,7 +426,11 @@
       "emergencyContact": "Contact d'Urgence",
       "important": "Important",
       "fullName": "Nom complet",
-      "relationship": "Relation"
+      "relationship": "Relation",
+      "tabs": {
+        "overview": "Aperçu",
+        "reviews": "Avis"
+      }
     },
     "professionals": {
       "title": "Mes Professionnels",
@@ -1232,19 +1236,36 @@
   "reviews": {
     "title": "Avis des Patients",
     "description": "Lisez les retours des patients et découvrez leurs expériences.",
+    "patientReviewsTitle": "Avis des Professionnels",
+    "patientReviewsDescription": "Lisez les retours des professionnels sur ce patient.",
+    "patientReviewsEmpty": "Pas encore d'avis de professionnels.",
     "error": "Erreur lors du chargement des avis. Veuillez réessayer plus tard.",
     "empty": "Pas encore d'avis.",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cet avis?",
+    "edit": "Modifier l'avis",
+    "delete": "Supprimer l'avis",
+    "replyAction": "Répondre",
+    "replies": "réponses",
+    "replyPlaceholder": "Écrivez votre réponse...",
+    "writeReviewPlaceholder": "Écrivez votre avis...",
+    "patientBadge": "Patient",
+    "submitSuccess": "Avis soumis avec succès!",
+    "submitError": "Échec de la soumission de l'avis. Veuillez réessayer.",
     "form": {
       "title": "Écrire un avis pour {{name}}",
       "description": "Partagez votre expérience et aidez les autres à prendre des décisions éclairées.",
+      "patientReviewTitle": "Écrire un avis pour {{name}}",
+      "patientReviewDescription": "Partagez votre expérience de travail avec ce patient.",
+      "patientReviewPlaceholder": "Partagez votre expérience de travail avec ce patient...",
       "rating": "Note",
       "comment": "Votre avis",
       "placeholder": "Partagez votre expérience avec ce professionnel...",
-      "remaining": "{{count}} caractères restants",
-      "terms": "J'ai lu et j'accepte les Conditions Générales",
-      "submit": "Soumettre l'avis",
+      "charactersRemaining": "caractères restants",
+      "termsAgreement": "J'ai lu et j'accepte les Conditions Générales",
+      "submitReview": "Soumettre l'avis",
       "submitting": "Envoi en cours...",
-      "fallbackProfessionalName": "ce professionnel"
+      "fallbackProfessionalName": "ce professionnel",
+      "fallbackPatientName": "ce patient"
     },
     "reply": {
       "prefix": "Réponse de {{name}}",

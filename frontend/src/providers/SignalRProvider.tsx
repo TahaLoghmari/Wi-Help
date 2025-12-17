@@ -124,12 +124,24 @@ export const SignalRProvider = ({
           queryClient.invalidateQueries({
             queryKey: ["professional-profile"],
           });
+          queryClient.invalidateQueries({
+            queryKey: ["professional-reviews"],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["professional-review-stats"],
+          });
         } else if (notification.role === "Patient") {
           queryClient.invalidateQueries({
             queryKey: ["patient-appointments"],
           });
           queryClient.invalidateQueries({
             queryKey: ["conversations"],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["patient-reviews"],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["patient-review-stats"],
           });
         } else if (notification.role === "Admin") {
           queryClient.invalidateQueries({

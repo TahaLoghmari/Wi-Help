@@ -426,7 +426,11 @@
       "emergencyContact": "Emergency Contact",
       "important": "Important",
       "fullName": "Full Name",
-      "relationship": "Relationship"
+      "relationship": "Relationship",
+      "tabs": {
+        "overview": "Overview",
+        "reviews": "Reviews"
+      }
     },
     "professionals": {
       "title": "My Professionals",
@@ -1232,19 +1236,36 @@
   "reviews": {
     "title": "Patient Reviews",
     "description": "Read feedback from patients and see their experiences.",
+    "patientReviewsTitle": "Professional Reviews",
+    "patientReviewsDescription": "Read feedback from professionals about this patient.",
+    "patientReviewsEmpty": "No professional reviews yet.",
     "error": "Error loading reviews. Please try again later.",
     "empty": "No reviews yet.",
+    "deleteConfirm": "Are you sure you want to delete this review?",
+    "edit": "Edit review",
+    "delete": "Delete review",
+    "replyAction": "Reply",
+    "replies": "replies",
+    "replyPlaceholder": "Write your reply...",
+    "writeReviewPlaceholder": "Write your review...",
+    "patientBadge": "Patient",
+    "submitSuccess": "Review submitted successfully!",
+    "submitError": "Failed to submit review. Please try again.",
     "form": {
       "title": "Write a review for {{name}}",
       "description": "Share your experience and help others make informed decisions.",
+      "patientReviewTitle": "Write a review for {{name}}",
+      "patientReviewDescription": "Share your experience working with this patient.",
+      "patientReviewPlaceholder": "Share your experience working with this patient...",
       "rating": "Rating",
       "comment": "Your review",
       "placeholder": "Share your experience with this professional...",
-      "remaining": "{{count}} characters remaining",
-      "terms": "I have read and accept Terms & Conditions",
-      "submit": "Submit Review",
+      "charactersRemaining": "characters remaining",
+      "termsAgreement": "I have read and accept Terms & Conditions",
+      "submitReview": "Submit Review",
       "submitting": "Submitting...",
-      "fallbackProfessionalName": "this professional"
+      "fallbackProfessionalName": "this professional",
+      "fallbackPatientName": "this patient"
     },
     "reply": {
       "prefix": "Reply from {{name}}",

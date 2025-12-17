@@ -24,7 +24,13 @@ export function useUpdateReview() {
       queryClient.invalidateQueries({
         queryKey: ["professional-review-stats"],
       });
-      toast.success("Review updated successfully!");
+      queryClient.invalidateQueries({
+        queryKey: ["patient-reviews"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["patient-review-stats"],
+      });
+      toast.success("Review updated!");
     },
     onError: (error) => handleApiError({ apiError: error }),
   });
