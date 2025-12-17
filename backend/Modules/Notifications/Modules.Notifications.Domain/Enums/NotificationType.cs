@@ -11,5 +11,6 @@ public enum NotificationType
     newMessage,
     accountStatusUpdated,
     documentStatusUpdated,
-    appointmentStatusUpdated
+    appointmentStatusUpdated,
+    newReview
 }

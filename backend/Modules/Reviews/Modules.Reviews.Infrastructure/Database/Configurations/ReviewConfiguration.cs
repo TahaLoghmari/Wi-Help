@@ -22,11 +22,14 @@ public class ReviewConfiguration : IEntityTypeConfiguration<Review>
         builder.Property(r => r.Rating)
             .IsRequired();
 
+        builder.Property(r => r.Type)
+            .IsRequired();
+
         builder.Property(r => r.CreatedAt).IsRequired();
         builder.Property(r => r.UpdatedAt).IsRequired();
 
-        // Ensure a patient can only have one review per professional
-        builder.HasIndex(r => new { r.PatientId, r.ProfessionalId })
+        // Ensure a reviewer can only have one review per reviewee with the same type
+        builder.HasIndex(r => new { r.PatientId, r.ProfessionalId, r.Type })
             .IsUnique();
     }
 }

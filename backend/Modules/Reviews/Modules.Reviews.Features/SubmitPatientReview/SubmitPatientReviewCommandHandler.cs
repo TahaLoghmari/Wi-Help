@@ -10,21 +10,23 @@ using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
 using Modules.Notifications.PublicApi;
 using Modules.Notifications.Domain.Enums;
+using Modules.Identity.PublicApi;
 
-namespace Modules.Reviews.Features.SubmitReview;
+namespace Modules.Reviews.Features.SubmitPatientReview;
 
-public class SubmitReviewCommandHandler(
+public class SubmitPatientReviewCommandHandler(
     ReviewsDbContext reviewsDbContext,
-    ILogger<SubmitReviewCommandHandler> logger,
+    ILogger<SubmitPatientReviewCommandHandler> logger,
     IPatientsModuleApi patientsModuleApi,
     IProfessionalModuleApi professionalModuleApi,
-    INotificationsModuleApi notificationsModuleApi) : ICommandHandler<SubmitReviewCommand>
+    INotificationsModuleApi notificationsModuleApi,
+    IIdentityModuleApi identityModuleApi) : ICommandHandler<SubmitPatientReviewCommand>
 {
-    public async Task<Result> Handle(SubmitReviewCommand command, CancellationToken cancellationToken)
+    public async Task<Result> Handle(SubmitPatientReviewCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation(
-            "Submitting review for patient {PatientId} to professional {ProfessionalId} with rating {Rating}",
-            command.PatientId, command.ProfessionalId, command.Rating);
+            "Submitting review for professional {ProfessionalId} to patient {PatientId} with rating {Rating}",
+            command.ProfessionalId, command.PatientId, command.Rating);
 
         // Validate rating
         if (command.Rating < 1 || command.Rating > 5)
@@ -67,14 +69,14 @@ public class SubmitReviewCommandHandler(
             .FirstOrDefaultAsync(
                 r => r.PatientId == command.PatientId && 
                      r.ProfessionalId == command.ProfessionalId &&
-                     r.Type == ReviewType.ProfessionalReview,
+                     r.Type == ReviewType.PatientReview,
                 cancellationToken);
 
         if (existingReview != null)
         {
             logger.LogWarning(
-                "Review already exists for patient {PatientId} and professional {ProfessionalId}",
-                command.PatientId, command.ProfessionalId);
+                "Review already exists for professional {ProfessionalId} and patient {PatientId}",
+                command.ProfessionalId, command.PatientId);
             return Result.Failure(ReviewErrors.AlreadyExists(command.PatientId, command.ProfessionalId));
         }
 
@@ -83,27 +85,34 @@ public class SubmitReviewCommandHandler(
             command.ProfessionalId,
             command.Comment,
             command.Rating,
-            ReviewType.ProfessionalReview);
+            ReviewType.PatientReview);
 
         reviewsDbContext.Reviews.Add(review);
         await reviewsDbContext.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("Review submitted with ID {ReviewId}", review.Id);
+        logger.LogInformation("Patient review submitted with ID {ReviewId}", review.Id);
 
-        // Send notification to the professional
-        var professional = professionalResult.Value.First();
+        // Send notification to the patient
         var patient = patientsResult.Value.First();
-        var patientName = $"{patient.FirstName} {patient.LastName}";
+        var professional = professionalResult.Value.First();
+        var professionalName = $"{professional.FirstName} {professional.LastName}";
+
+        // Get patient's userId
+        var userResult = await identityModuleApi.GetUserByIdAsync(patient.UserId, cancellationToken);
+        if (!userResult.IsSuccess)
+        {
+            logger.LogWarning("Failed to fetch user details for notification: {Error}", userResult.Error);
+            return Result.Success(); // Still return success as the review was saved
+        }
 
         await notificationsModuleApi.AddNotificationAsync(
-            professional.UserId.ToString(),
-            "Professional",
+            patient.UserId.ToString(),
+            "Patient",
             "New Review Received",
-            $"{patientName} has left you a {command.Rating}-star review.",
+            $"{professionalName} has left you a {command.Rating}-star review.",
             NotificationType.newReview,
             cancellationToken);
 
         return Result.Success();
     }
 }
-

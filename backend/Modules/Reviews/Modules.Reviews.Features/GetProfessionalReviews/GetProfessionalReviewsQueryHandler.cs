@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Modules.Reviews.Domain.Entities;
+using Modules.Reviews.Domain.Enums;
 using Modules.Reviews.Infrastructure.Database;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
@@ -24,7 +25,7 @@ public sealed class GetProfessionalReviewsQueryHandler(
     {
         IQueryable<Review> baseQuery = dbContext.Reviews
             .AsNoTracking()
-            .Where(r => r.ProfessionalId == query.ProfessionalId)
+            .Where(r => r.ProfessionalId == query.ProfessionalId && r.Type == ReviewType.ProfessionalReview)
             .OrderByDescending(r => r.CreatedAt);
 
         // Pagination

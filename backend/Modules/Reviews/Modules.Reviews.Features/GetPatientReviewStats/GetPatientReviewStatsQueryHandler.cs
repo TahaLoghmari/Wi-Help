@@ -1,28 +1,27 @@
 using Microsoft.EntityFrameworkCore;
-using Modules.Reviews.Domain.Entities;
 using Modules.Reviews.Domain.Enums;
 using Modules.Reviews.Infrastructure.Database;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 
-namespace Modules.Reviews.Features.GetProfessionalReviewStats;
+namespace Modules.Reviews.Features.GetPatientReviewStats;
 
-public sealed class GetProfessionalReviewStatsQueryHandler(
+public sealed class GetPatientReviewStatsQueryHandler(
     ReviewsDbContext dbContext)
-    : IQueryHandler<GetProfessionalReviewStatsQuery, GetProfessionalReviewStatsDto>
+    : IQueryHandler<GetPatientReviewStatsQuery, GetPatientReviewStatsDto>
 {
-    public async Task<Result<GetProfessionalReviewStatsDto>> Handle(
-        GetProfessionalReviewStatsQuery query,
+    public async Task<Result<GetPatientReviewStatsDto>> Handle(
+        GetPatientReviewStatsQuery query,
         CancellationToken cancellationToken)
     {
         var reviews = await dbContext.Reviews
             .AsNoTracking()
-            .Where(r => r.ProfessionalId == query.ProfessionalId && r.Type == ReviewType.ProfessionalReview)
+            .Where(r => r.PatientId == query.PatientId && r.Type == ReviewType.PatientReview)
             .ToListAsync(cancellationToken);
 
         if (reviews.Count == 0)
         {
-            return Result<GetProfessionalReviewStatsDto>.Success(new GetProfessionalReviewStatsDto(
+            return Result<GetPatientReviewStatsDto>.Success(new GetPatientReviewStatsDto(
                 AverageRating: 0,
                 TotalCount: 0));
         }
@@ -30,9 +29,8 @@ public sealed class GetProfessionalReviewStatsQueryHandler(
         var averageRating = reviews.Average(r => r.Rating);
         var totalCount = reviews.Count;
 
-        return Result<GetProfessionalReviewStatsDto>.Success(new GetProfessionalReviewStatsDto(
+        return Result<GetPatientReviewStatsDto>.Success(new GetPatientReviewStatsDto(
             AverageRating: Math.Round(averageRating, 1),
             TotalCount: totalCount));
     }
 }
-

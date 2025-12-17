@@ -18,6 +18,7 @@
     <ProjectReference Include="..\..\Patients\Modules.Patients.PublicApi\Modules.Patients.PublicApi.csproj" />
     <ProjectReference Include="..\..\Identity\Modules.Identity.PublicApi\Modules.Identity.PublicApi.csproj" />
     <ProjectReference Include="..\..\Professionals\Modules.Professionals.PublicApi\Modules.Professionals.PublicApi.csproj" />
+    <ProjectReference Include="..\..\Notifications\Modules.Notifications.PublicApi\Modules.Notifications.PublicApi.csproj" />
     <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Infrastructure\Modules.Common.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>

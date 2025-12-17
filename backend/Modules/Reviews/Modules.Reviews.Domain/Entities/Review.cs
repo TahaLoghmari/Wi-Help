@@ -1,3 +1,5 @@
+using Modules.Reviews.Domain.Enums;
+
 namespace Modules.Reviews.Domain.Entities;
 
 public class Review
@@ -7,6 +9,7 @@ public class Review
     public Guid ProfessionalId { get; private set; }
     public string Comment { get; private set; } = string.Empty;
     public int Rating { get; private set; }
+    public ReviewType Type { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
 
@@ -16,13 +19,15 @@ public class Review
         Guid patientId,
         Guid professionalId,
         string comment,
-        int rating)
+        int rating,
+        ReviewType type)
     {
         Id = Guid.NewGuid();
         PatientId = patientId;
         ProfessionalId = professionalId;
         Comment = comment;
         Rating = rating;
+        Type = type;
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
     }
