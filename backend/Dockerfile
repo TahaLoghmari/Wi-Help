@@ -59,6 +59,7 @@ COPY Modules/Reviews/Modules.Reviews.Features/Modules.Reviews.Features.csproj ./
 COPY Modules/Reviews/Modules.Reviews.Infrastructure/Modules.Reviews.Infrastructure.csproj ./Modules/Reviews/Modules.Reviews.Infrastructure/
 COPY Modules/Reviews/Modules.Reviews.PublicApi/Modules.Reviews.PublicApi.csproj ./Modules/Reviews/Modules.Reviews.PublicApi/
 COPY Modules/Common/Modules.Common.Features/Modules.Common.Features.csproj ./Modules/Common/Modules.Common.Features/
+COPY Modules/Common/Modules.Common.Infrastructure/Modules.Common.Infrastructure.csproj ./Modules/Common/Modules.Common.Infrastructure/
 
 # Restore dependencies
 RUN dotnet restore "backend.sln"
@@ -148,4 +149,3 @@ WORKDIR /app/backend.Host
 
 # Use the compiled DLL for debugging support
 ENTRYPOINT ["dotnet", "bin/Debug/net9.0/backend.Host.dll"]
-
