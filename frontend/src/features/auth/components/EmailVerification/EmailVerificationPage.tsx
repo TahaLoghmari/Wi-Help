@@ -39,14 +39,6 @@ export function EmailVerificationPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
-          {/* <div className="flex w-full items-center justify-center rounded-lg border border-[#386d52] p-4">
-            <p className="text-sm">
-              <strong className="text-[#386d52]">
-                {t("auth.emailVerificationPage.noteLabel")}
-              </strong>{" "}
-              {t("auth.emailVerificationPage.noteDescription")}
-            </p>
-          </div> */}
           <div
             className={`group text-brand-dark flex items-center rounded-md bg-[#fcf4d4] px-3 py-3`}
           >
