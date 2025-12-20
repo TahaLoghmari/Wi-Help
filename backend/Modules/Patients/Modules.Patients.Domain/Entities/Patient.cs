@@ -20,7 +20,7 @@ public class Patient
         Id = Guid.NewGuid();
         UserId = userId;
         EmergencyContact = contact;
-        MedicalInfo = new MedicalInfo(new List<string>(), new List<string>(), new List<string>(), MobilityStatus.Normal);
+        MedicalInfo = MedicalInfo.Create(null, null, null, null);
         Bio = "";
     }
     

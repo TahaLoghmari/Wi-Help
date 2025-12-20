@@ -8,9 +8,9 @@ public record EmergencyContact
     private EmergencyContact() { }
 
     public EmergencyContact(
-        string fullName,
-        string phoneNumber,
-        string relationship)
+        string fullName = "",
+        string phoneNumber = "",
+        string relationship = "")
     {
         FullName = fullName;
         PhoneNumber = phoneNumber;

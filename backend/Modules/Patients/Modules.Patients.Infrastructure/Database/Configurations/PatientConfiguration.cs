@@ -26,10 +26,21 @@ public class PatientConfiguration : IEntityTypeConfiguration<Patient>
 
         builder.OwnsOne(p => p.MedicalInfo, medicalInfo =>
         {
-            medicalInfo.Property(m => m.MobilityStatus).IsRequired(false);
-            medicalInfo.Property(m => m.ChronicConditions).IsRequired(false);
-            medicalInfo.Property(m => m.Allergies).IsRequired(false);
-            medicalInfo.Property(m => m.Medications).IsRequired(false);
+            medicalInfo.Property(m => m.MobilityStatus)
+                .HasColumnName("mobility_status")
+                .IsRequired(false);
+            
+            medicalInfo.Property(m => m.ChronicConditions)
+                .HasColumnName("chronic_conditions")
+                .IsRequired(false);
+            
+            medicalInfo.Property(m => m.Allergies)
+                .HasColumnName("allergies")
+                .IsRequired(false);
+            
+            medicalInfo.Property(m => m.Medications)
+                .HasColumnName("medications")
+                .IsRequired(false);
         });
 
         builder.Navigation(p => p.MedicalInfo).IsRequired(true);

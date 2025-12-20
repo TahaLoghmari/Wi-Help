@@ -10,11 +10,11 @@ public record Address
     private Address() { }
 
     public Address(
-        string street,
-        string city,
-        string postalCode,
-        string country,
-        string state)
+        string street = "",
+        string city = "",
+        string postalCode = "",
+        string country = "",
+        string state = "")
     {
         Street = street;
         City = city;
