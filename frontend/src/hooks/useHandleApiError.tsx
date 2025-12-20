@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import i18n from "i18next";
 
 interface handleApiErrorProps {
-  apiError: ProblemDetailsDto;
+  apiError: ProblemDetailsDto | Error;
   email?: string;
 }
 
@@ -22,6 +22,20 @@ export function handleApiError({ apiError, email }: handleApiErrorProps) {
     });
     return;
   }
+
+  if (apiError instanceof Error) {
+    const description = i18n.exists("errors.defaultErrorDescription")
+      ? t("errors.defaultErrorDescription")
+      : "An unexpected error occurred.";
+
+    toast.error(apiError.message || "An error occurred", {
+      description: (
+        <p className="text-muted-foreground text-xs">{description}</p>
+      ),
+    });
+    return;
+  }
+
   toast.error(apiError.title, {
     description: (
       <div className="flex flex-1 flex-col gap-2">

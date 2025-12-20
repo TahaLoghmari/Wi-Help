@@ -105,7 +105,17 @@ export function ProfileAndBio() {
               country: string;
             })
           : undefined,
+      medicalInfo: credentials.medicalInfo
+        ? {
+            ...credentials.medicalInfo,
+            mobilityStatus:
+              credentials.medicalInfo.mobilityStatus === ""
+                ? null
+                : credentials.medicalInfo.mobilityStatus,
+          }
+        : undefined,
     };
+    // @ts-ignore
     updatePatientMutation.mutate(cleanedCredentials);
   };
 
@@ -259,6 +269,7 @@ export function ProfileAndBio() {
                           "patient.settings.profile.basicInfo.firstNamePlaceholder",
                         )}
                         {...field}
+                        value={field.value ?? ""}
                       />
                     </FormControl>
                     <FormMessage className="text-xs" />
@@ -282,6 +293,7 @@ export function ProfileAndBio() {
                           "patient.settings.profile.basicInfo.lastNamePlaceholder",
                         )}
                         {...field}
+                        value={field.value ?? ""}
                       />
                     </FormControl>
                     <FormMessage className="text-xs" />
@@ -305,6 +317,7 @@ export function ProfileAndBio() {
                         "patient.settings.profile.basicInfo.phoneNumberPlaceholder",
                       )}
                       {...field}
+                      value={field.value ?? ""}
                     />
                   </FormControl>
                   <FormMessage className="text-xs" />
@@ -892,6 +905,7 @@ export function ProfileAndBio() {
                       placeholder="Short introduction that patients will see."
                       rows={4}
                       {...field}
+                      value={field.value ?? ""}
                     />
                   </FormControl>
                   <FormMessage className="text-xs" />

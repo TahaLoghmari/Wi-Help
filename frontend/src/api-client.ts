@@ -80,14 +80,19 @@ export async function request<T>(
   if (!response.ok) {
     // Only try to parse JSON if there's content
     const contentType = response.headers.get("content-type");
-    if (contentType && contentType.includes("application/json")) {
+    if (
+      contentType &&
+      (contentType.includes("application/json") ||
+        contentType.includes("application/problem+json"))
+    ) {
+      let problemDetails: ProblemDetailsDto;
       try {
-        const problemDetails: ProblemDetailsDto = await response.json();
-        throw problemDetails;
+        problemDetails = await response.json();
       } catch (e) {
         // If JSON parsing fails, throw a generic error
         throw new Error(`Request failed with status ${response.status}`);
       }
+      throw problemDetails;
     } else {
       throw new Error(`Request failed with status ${response.status}`);
     }

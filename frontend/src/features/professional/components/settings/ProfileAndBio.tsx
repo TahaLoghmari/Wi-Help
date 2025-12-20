@@ -248,6 +248,7 @@ export function ProfileAndBio() {
                           "professional.settings.profileAndBio.form.firstName.placeholder",
                         )}
                         {...field}
+                        value={field.value ?? ""}
                       />
                     </FormControl>
                     <FormMessage className="text-xs" />
@@ -273,6 +274,7 @@ export function ProfileAndBio() {
                           "professional.settings.profileAndBio.form.lastName.placeholder",
                         )}
                         {...field}
+                        value={field.value ?? ""}
                       />
                     </FormControl>
                     <FormMessage className="text-xs" />
@@ -300,6 +302,7 @@ export function ProfileAndBio() {
                           "professional.settings.profileAndBio.form.phoneNumber.placeholder",
                         )}
                         {...field}
+                        value={field.value ?? ""}
                       />
                     </FormControl>
                     <FormMessage className="text-xs" />
@@ -715,6 +718,7 @@ export function ProfileAndBio() {
                       )}
                       rows={4}
                       {...field}
+                      value={field.value ?? ""}
                     />
                   </FormControl>
                   <FormMessage className="text-xs" />
