@@ -1,4 +1,5 @@
-
 export interface GetProfessionalRequest {
-    professionalId: string;
+  professionalId: string;
+  requesterLatitude?: number;
+  requesterLongitude?: number;
 }

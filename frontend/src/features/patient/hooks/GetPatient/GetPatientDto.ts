@@ -15,4 +15,5 @@ export interface GetPatientDto {
   medicalInfo: MedicalInfo;
   bio?: string;
   profilePictureUrl?: string;
+  distanceKm?: number | null;
 }

@@ -24,7 +24,7 @@ export const SignalRProvider = ({
 
   // Location manager: checks freshness and requests geolocation when needed
   // Only runs when user is authenticated and not loading
-  useLocationManager(!isUserLoading && !!currentUser, currentUser?.id);
+  useLocationManager(!isUserLoading && !!currentUser, currentUser);
 
   useEffect(() => {
     // Wait for user loading to complete before deciding

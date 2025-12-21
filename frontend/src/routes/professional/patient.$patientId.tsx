@@ -6,8 +6,9 @@ import { PatientReviewsList } from "@/features/reviews";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui";
-import { ShieldCheck, User, ArrowLeft } from "lucide-react";
+import { ShieldCheck, User, ArrowLeft, Navigation2 } from "lucide-react";
 import { useRouter } from "@tanstack/react-router";
+import { useCurrentUser } from "@/features/auth";
 
 export const Route = createFileRoute(ROUTE_PATHS.PROFESSIONAL.PATIENT_PROFILE)({
   component: PatientProfileRoute,
@@ -21,11 +22,16 @@ function PatientProfileRoute() {
   const router = useRouter();
   const { patientId } = useParams({ strict: false });
   const [activeTab, setActiveTab] = useState<TabType>("overview");
+  const { data: currentUser } = useCurrentUser();
   const {
     data: patient,
     isLoading,
     isError,
-  } = GetPatient({ patientId: patientId! });
+  } = GetPatient({
+    patientId: patientId!,
+    requesterLatitude: currentUser?.location?.latitude,
+    requesterLongitude: currentUser?.location?.longitude,
+  });
 
   if (isLoading) {
     return <ContentLoading />;
@@ -99,6 +105,16 @@ function PatientProfileRoute() {
                       : ""}
                   </span>
                 </div>
+                {patient?.distanceKm !== undefined &&
+                  patient?.distanceKm !== null && (
+                    <div className="text-brand-blue flex items-center gap-1.5 rounded-md border border-blue-100 bg-blue-50 px-2.5 py-1 text-xs font-medium">
+                      <Navigation2 className="h-3.5 w-3.5" />
+                      <span>
+                        {patient.distanceKm}{" "}
+                        {t("professional.patientProfile.kmAway", "km away")}
+                      </span>
+                    </div>
+                  )}
               </div>
             </div>
           </div>

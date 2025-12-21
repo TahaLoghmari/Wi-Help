@@ -5,4 +5,7 @@ export interface GetProfessionalsRequest {
   availability?: string;
   page: number;
   pageSize: number;
+  userLatitude?: number;
+  userLongitude?: number;
+  maxDistanceKm?: number;
 }

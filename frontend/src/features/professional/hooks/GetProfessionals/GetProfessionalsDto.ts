@@ -18,4 +18,5 @@ export interface GetProfessionalsDto {
   bio?: string;
   isVerified: boolean;
   profilePictureUrl?: string;
+  distanceKm?: number;
 }

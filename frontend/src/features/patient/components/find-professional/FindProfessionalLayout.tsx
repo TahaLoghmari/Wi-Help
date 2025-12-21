@@ -4,7 +4,7 @@ import {
   type GetProfessionalsDto,
 } from "@/features/professional";
 import { Avatar, AvatarFallback, AvatarImage, Spinner } from "@/components/ui";
-import { CalendarPlus, MapPin, User } from "lucide-react";
+import { CalendarPlus, MapPin, Navigation2, User } from "lucide-react";
 import { getSpecializations } from "@/features/auth";
 import { Link } from "@tanstack/react-router";
 import { useAppNavigation } from "@/hooks";
@@ -83,6 +83,12 @@ function ProfessionalCard({ professional }: ProfessionalCardProps) {
               {professional.address.city}, {professional.address.state}
             </span>
           </div>
+          {professional.distanceKm !== undefined && professional.distanceKm !== null && (
+            <div className="flex items-center gap-1 text-brand-blue font-medium">
+              <Navigation2 className="h-3.5 w-3.5" />
+              <span>{professional.distanceKm} km {t("patient.findProfessional.away", "away")}</span>
+            </div>
+          )}
           <div className="flex items-center gap-2 text-[11px] text-slate-700">
             <svg
               width="24"

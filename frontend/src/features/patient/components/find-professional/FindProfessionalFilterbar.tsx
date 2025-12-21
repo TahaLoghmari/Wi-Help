@@ -1,15 +1,54 @@
 import { useProfessionalFiltersStore } from "@/features/patient";
-import { Slider } from "@/components/ui";
+import { Slider, Switch } from "@/components/ui";
 import { useTranslation } from "react-i18next";
+import { Navigation2 } from "lucide-react";
+import { useCurrentUser, useLocationManager } from "@/features/auth";
+import { useEffect } from "react";
 
 export function FindProfessionalFilterbar() {
   const { t } = useTranslation();
-  const { search, location, maxPrice, setSearch, setLocation, setMaxPrice } =
-    useProfessionalFiltersStore();
+  const { data: currentUser } = useCurrentUser();
+  const { requestLocation } = useLocationManager(!!currentUser, currentUser);
+
+  const {
+    search,
+    location,
+    maxPrice,
+    distanceFilterEnabled,
+    maxDistanceKm,
+    setSearch,
+    setLocation,
+    setMaxPrice,
+    setDistanceFilterEnabled,
+    setMaxDistanceKm,
+  } = useProfessionalFiltersStore();
+
+  const hasLocation = !!currentUser?.location;
+
+  // Automatically enable distance filter if user has location
+  useEffect(() => {
+    if (hasLocation) {
+      setDistanceFilterEnabled(true);
+    }
+  }, [hasLocation, setDistanceFilterEnabled]);
+
+  const handleToggleChange = (enabled: boolean) => {
+    if (enabled) {
+      if (hasLocation) {
+        setDistanceFilterEnabled(true);
+      } else {
+        requestLocation(() => {
+          setDistanceFilterEnabled(true);
+        });
+      }
+    } else {
+      setDistanceFilterEnabled(false);
+    }
+  };
 
   return (
     <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-100 sm:p-5">
-      <div className="grid items-center gap-3 lg:grid-cols-3">
+      <div className="grid items-center gap-3 lg:grid-cols-4">
         <div className="space-y-1">
           <label className="block text-[11px] font-medium text-slate-700">
             {t("patient.findProfessional.filter.search.label")}
@@ -70,17 +109,55 @@ export function FindProfessionalFilterbar() {
             {t("patient.findProfessional.filter.price.label")}
           </label>
           <div className="mb-1 flex items-center justify-between text-[10px] text-slate-600">
-            <span>25 TND</span>
+            <span>30 TND</span>
             <span>{maxPrice} TND</span>
           </div>
           <Slider
-            min={25}
+            min={30}
             max={200}
             step={1}
             value={[maxPrice]}
             onValueChange={(value) => setMaxPrice(value[0])}
             className="w-full"
           />
+        </div>
+
+        {/* Distance Filter */}
+        <div className="space-y-1">
+          <div className="flex items-center justify-between">
+            <label className="flex items-center gap-1.5 text-[11px] font-medium text-slate-700">
+              <Navigation2 className="h-3.5 w-3.5" />
+              {t("patient.findProfessional.filter.distance.label", "Distance")}
+            </label>
+            <Switch
+              checked={distanceFilterEnabled}
+              onCheckedChange={handleToggleChange}
+              className="scale-75"
+            />
+          </div>
+          {distanceFilterEnabled ? (
+            <>
+              <div className="mb-1 flex items-center justify-between text-[10px] text-slate-600">
+                <span>5 km</span>
+                <span>{maxDistanceKm} km</span>
+              </div>
+              <Slider
+                min={5}
+                max={100}
+                step={5}
+                value={[maxDistanceKm]}
+                onValueChange={(value) => setMaxDistanceKm(value[0])}
+                className="w-full"
+              />
+            </>
+          ) : (
+            <p className="text-[10px] text-slate-400">
+              {t(
+                "patient.findProfessional.filter.distance.enable",
+                "Enable to filter by distance",
+              )}
+            </p>
+          )}
         </div>
       </div>
     </div>

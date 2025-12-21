@@ -9,6 +9,7 @@ export interface UserDto {
   address: Address;
   profilePictureUrl: string;
   role: string;
+  location?: LocationCoordinates | null;
 }
 
 export interface Address {
@@ -23,6 +24,13 @@ export interface EmergencyContact {
   fullName: string;
   phoneNumber: string;
   relationship: string;
+}
+
+export interface LocationCoordinates {
+  latitude: number;
+  longitude: number;
+  accuracy: number;
+  timestamp: string;
 }
 
 export interface LoginUserDto {
@@ -83,11 +91,4 @@ export interface ForgotPasswordState {
 
 export interface GoogleAuthResponseDto {
   authorizationUrl: string;
-}
-
-export interface LocationCoordinates {
-  latitude: number;
-  longitude: number;
-  accuracy: number;
-  timestamp: string;
 }

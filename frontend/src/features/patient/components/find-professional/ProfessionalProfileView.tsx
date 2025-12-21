@@ -24,9 +24,14 @@ import {
   ArrowLeft,
   Medal,
   CalendarDays,
+  Navigation2,
 } from "lucide-react";
 import { useParams, useRouter } from "@tanstack/react-router";
-import { getCountries, getSpecializations } from "@/features/auth";
+import {
+  getCountries,
+  getSpecializations,
+  useCurrentUser,
+} from "@/features/auth";
 import { Avatar, AvatarFallback, AvatarImage, Spinner } from "@/components/ui";
 import {
   GetProfessional,
@@ -266,12 +271,17 @@ export function ProfessionalProfileView() {
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const router = useRouter();
   const { professionalId } = useParams({ strict: false });
+  const { data: currentUser } = useCurrentUser();
 
   const {
     data: professional,
     isLoading,
     isError,
-  } = GetProfessional({ professionalId: professionalId! });
+  } = GetProfessional({
+    professionalId: professionalId!,
+    requesterLatitude: currentUser?.location?.latitude,
+    requesterLongitude: currentUser?.location?.longitude,
+  });
 
   const { data: reviewStats } = GetProfessionalReviewStats(professionalId!);
 
@@ -419,6 +429,16 @@ export function ProfessionalProfileView() {
                     {t("patient.professionalProfile.reviews")})
                   </span>
                 </div>
+                {professional?.distanceKm !== undefined &&
+                  professional?.distanceKm !== null && (
+                    <div className="text-brand-blue flex items-center gap-1.5 rounded-md border border-blue-100 bg-blue-50 px-2.5 py-1 text-xs font-medium">
+                      <Navigation2 className="h-3.5 w-3.5" />
+                      <span>
+                        {professional.distanceKm}{" "}
+                        {t("patient.professionalProfile.kmAway", "km away")}
+                      </span>
+                    </div>
+                  )}
               </div>
             </div>
           </div>

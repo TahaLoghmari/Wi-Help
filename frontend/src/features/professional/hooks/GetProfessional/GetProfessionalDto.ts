@@ -20,4 +20,5 @@ export interface GetProfessionalDto {
   isVerified: boolean;
   profilePictureUrl: string;
   verificationStatus: VerificationStatus;
+  distanceKm?: number | null;
 }

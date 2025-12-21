@@ -4,14 +4,26 @@ import { api } from "@/api-client";
 import type { GetPatientDto, GetPatientRequest } from "@/features/patient";
 
 const getPatient = (request: GetPatientRequest) => {
-  return api.get<GetPatientDto>(
-    API_ENDPOINTS.PATIENTS.GET_PATIENT_BY_ID(request.patientId),
-  );
+  const params = new URLSearchParams();
+  if (request.requesterLatitude !== undefined) {
+    params.append("requesterLatitude", request.requesterLatitude.toString());
+  }
+  if (request.requesterLongitude !== undefined) {
+    params.append("requesterLongitude", request.requesterLongitude.toString());
+  }
+  const queryString = params.toString();
+  const url = `${API_ENDPOINTS.PATIENTS.GET_PATIENT_BY_ID(request.patientId)}${queryString ? `?${queryString}` : ""}`;
+  return api.get<GetPatientDto>(url);
 };
 
 export function GetPatient(request: GetPatientRequest) {
   return useQuery<GetPatientDto>({
-    queryKey: ["patient", request.patientId],
+    queryKey: [
+      "patient",
+      request.patientId,
+      request.requesterLatitude,
+      request.requesterLongitude,
+    ],
     queryFn: () => getPatient(request),
   });
 }

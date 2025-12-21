@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api-client";
 import { API_ENDPOINTS } from "@/config/endpoints";
 import type { LocationCoordinates } from "@/features/auth/types";
@@ -11,7 +11,12 @@ const updateLocation = (coordinates: LocationCoordinates) => {
 };
 
 export function useUpdateLocation() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: updateLocation,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+    },
   });
 }
