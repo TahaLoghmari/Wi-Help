@@ -73,6 +73,54 @@ using (var scope = app.Services.CreateScope())
     var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
     await IdentityDataSeeder.SeedAdminUserAsync(userManager, configuration);
 
+    // Seed professional users
+    var professionalUserIds = await IdentityDataSeeder.SeedProfessionalUsersAsync(userManager);
+
+    // Seed professionals
+    var professionalsData = new List<(Guid UserId, string Specialization, int Experience)>
+    {
+        (professionalUserIds[0], "criticalCare", 11),
+        (professionalUserIds[1], "criticalCare", 7)
+    };
+    var professionalIdsMap = await Modules.Professionals.Infrastructure.Database.ProfessionalDataSeeder.SeedProfessionalsAsync(professionalsDbContext, professionalsData);
+
+    foreach (var (userId, professionalId) in professionalIdsMap)
+    {
+        var user = await userManager.FindByIdAsync(userId.ToString());
+        if (user != null)
+        {
+            var claims = await userManager.GetClaimsAsync(user);
+            if (!claims.Any(c => c.Type == "ProfessionalId"))
+            {
+                await userManager.AddClaimAsync(user, new System.Security.Claims.Claim("ProfessionalId", professionalId.ToString()));
+            }
+        }
+    }
+
+    // Seed patient users
+    var patientUserIds = await IdentityDataSeeder.SeedPatientUsersAsync(userManager);
+
+    // Seed patients
+    var patientsData = new List<(Guid UserId, Modules.Patients.Domain.ValueObjects.EmergencyContact EmergencyContact)>
+    {
+        (patientUserIds[0], new Modules.Patients.Domain.ValueObjects.EmergencyContact("Sami Ben Youssef", "+216 98 442 109", "friend")),
+        (patientUserIds[1], new Modules.Patients.Domain.ValueObjects.EmergencyContact("Yassine Karray", "+216 97 560 882", "friend"))
+    };
+    var patientIdsMap = await Modules.Patients.Infrastructure.Database.PatientDataSeeder.SeedPatientsAsync(patientsDbContext, patientsData);
+
+    foreach (var (userId, patientId) in patientIdsMap)
+    {
+        var user = await userManager.FindByIdAsync(userId.ToString());
+        if (user != null)
+        {
+            var claims = await userManager.GetClaimsAsync(user);
+            if (!claims.Any(c => c.Type == "PatientId"))
+            {
+                await userManager.AddClaimAsync(user, new System.Security.Claims.Claim("PatientId", patientId.ToString()));
+            }
+        }
+    }
+
     var supabaseService = scope.ServiceProvider.GetRequiredService<SupabaseService>();
     await supabaseService.InitializeAsync();
 }
