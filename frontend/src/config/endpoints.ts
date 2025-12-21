@@ -15,6 +15,7 @@ export const API_ENDPOINTS = {
     BAN_USER: (userId: string) => `/identity/users/${userId}/ban`,
     ADMIN_CHANGE_PASSWORD: (userId: string) =>
       `/identity/users/${userId}/password`,
+    UPDATE_LOCATION: "/users/location",
   },
   PROFESSIONALS: {
     REGISTER_PROFESSIONAL: "/professionals/register",

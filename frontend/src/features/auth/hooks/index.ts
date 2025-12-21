@@ -8,3 +8,5 @@ export * from "./useResetPassword";
 export * from "./useSendConfirmationEmail";
 export * from "./useLogout";
 export * from "./useChangePassword";
+export * from "./useUpdateLocation";
+export * from "./useLocationManager";

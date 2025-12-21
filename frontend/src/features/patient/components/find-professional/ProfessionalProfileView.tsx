@@ -587,7 +587,7 @@ export function ProfessionalProfileView() {
                 {t("patient.professionalProfile.specialties")}
               </h3>
               <div className="flex flex-wrap gap-2">
-                {professional?.services.map((service, index) => (
+                {professional?.services?.map((service, index) => (
                   <span
                     key={index}
                     className="border-brand-dark/10 bg-brand-dark/5 text-brand-dark hover:bg-brand-dark/10 cursor-default rounded-full border px-3 py-1.5 text-xs font-medium transition-colors"

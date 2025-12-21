@@ -84,3 +84,10 @@ export interface ForgotPasswordState {
 export interface GoogleAuthResponseDto {
   authorizationUrl: string;
 }
+
+export interface LocationCoordinates {
+  latitude: number;
+  longitude: number;
+  accuracy: number;
+  timestamp: string;
+}

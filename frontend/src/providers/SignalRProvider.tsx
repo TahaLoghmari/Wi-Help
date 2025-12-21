@@ -10,7 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { NotificationDto } from "@/features/notifications";
 import { API_ENDPOINTS } from "@/config/endpoints";
 import { env } from "@/config/env";
-import { useCurrentUser } from "@/features/auth";
+import { useCurrentUser, useLocationManager } from "@/features/auth";
 
 export const SignalRProvider = ({
   children,
@@ -21,6 +21,10 @@ export const SignalRProvider = ({
   const queryClient = useQueryClient();
   const connectionRef = useRef<HubConnection | null>(null);
   const isStoppingRef = useRef(false);
+
+  // Location manager: checks freshness and requests geolocation when needed
+  // Only runs when user is authenticated and not loading
+  useLocationManager(!isUserLoading && !!currentUser, currentUser?.id);
 
   useEffect(() => {
     // Wait for user loading to complete before deciding
