@@ -13,6 +13,7 @@ public sealed class User : IdentityUser<Guid>
     public DateTime DateOfBirth { get; private set; } = DateTime.MinValue;
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; private set; } = DateTime.UtcNow;
+    public Coordinates? Location { get; private set; }
     public ICollection<RefreshToken> RefreshTokens { get; } = new List<RefreshToken>();
 
     private User()
@@ -67,6 +68,15 @@ public sealed class User : IdentityUser<Guid>
         if ( !string.IsNullOrWhiteSpace(profilePictureUrl) )
             ProfilePictureUrl = profilePictureUrl;
         
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// Updates user location with new coordinates.
+    /// </summary>
+    public void UpdateLocation(Coordinates coordinates)
+    {
+        Location = coordinates;
         UpdatedAt = DateTime.UtcNow;
     }
 }

@@ -9,6 +9,10 @@ public static class IdentityErrors
         "Identity.UserNotFound",
         "User not found.");
 
+    public static Error UserNotFound(string userId) => Error.NotFound(
+        "Identity.UserNotFound",
+        $"User with ID '{userId}' not found.");
+
     public static Error UserLockedOut() => Error.Problem(
         "Identity.UserLockedOut",
         "Your account has been banned. Please contact support.");

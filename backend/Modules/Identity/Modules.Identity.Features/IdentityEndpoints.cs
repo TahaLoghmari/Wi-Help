@@ -12,4 +12,5 @@ public static class IdentityEndpoints
     public const string ChangePassword = "auth/change-password";
     public const string BanUser = "identity/users/{userId}/ban";
     public const string AdminChangePassword = "identity/users/{userId}/password";
+    public const string UpdateLocation = "users/location";
 }

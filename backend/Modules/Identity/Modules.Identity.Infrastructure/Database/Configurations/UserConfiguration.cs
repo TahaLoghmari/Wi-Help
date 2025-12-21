@@ -44,6 +44,15 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.UpdatedAt)
             .IsRequired(false);
 
+        // Configure Coordinates as owned type (stored in same table with prefixed columns)
+        builder.OwnsOne(u => u.Location, location =>
+        {
+            location.Property(l => l.Latitude).HasColumnName("location_latitude");
+            location.Property(l => l.Longitude).HasColumnName("location_longitude");
+            location.Property(l => l.Accuracy).HasColumnName("location_accuracy");
+            location.Property(l => l.Timestamp).HasColumnName("location_timestamp");
+        });
+
         builder.HasMany(u => u.RefreshTokens)
             .WithOne(rt => rt.User)
             .HasForeignKey(rt => rt.UserId)
