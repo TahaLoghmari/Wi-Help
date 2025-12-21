@@ -17,8 +17,8 @@
       "totalRevenue": "Total Revenue",
       "revenueGrowth": "+18.3%",
       "revenueAmount": "6,900",
-      "currency": "DT",
-      "revenueComparison": "vs 4,300 DT last month",
+      "currency": "TND",
+      "revenueComparison": "vs 4,300 TND last month",
       "activePatients": "Active Patients",
       "patientsCount": "149",
       "newPatients": "+12",
@@ -453,6 +453,11 @@
         "loadMore": "Load More",
         "loadingMore": "Loading more...",
         "noMore": "No more professionals"
+      },
+      "emptyState": {
+        "title": "No professionals yet",
+        "description": "You haven't connected with any healthcare professionals yet. Your professional connections will appear here once you book an appointment.",
+        "action": "Find Professionals"
       }
     },
     "appointments": {
@@ -589,11 +594,17 @@
         },
         "location": {
           "label": "Location",
-          "placeholder": "Tunis, Sousse..."
+          "placeholder": "Tunis, Sousse...",
+          "requestMessage": "Location Access Needed",
+          "requestDescription": "Please allow location access so we can show professionals near you."
         },
         "price": {
           "label": "Price range"
         }
+      },
+      "emptyState": {
+        "title": "No professionals found",
+        "description": "We couldn't find any professionals matching your search criteria. Try adjusting your filters or search terms."
       }
     },
     "professionalProfile": {
@@ -784,6 +795,10 @@
       "viewAll": "View All",
       "error": "Error loading patients.",
       "empty": "No patients found.",
+      "emptyState": {
+        "title": "No patients yet",
+        "description": "You don't have any patients in your panel yet. Patients will appear here once they book appointments with you."
+      },
       "card": {
         "id": "ID: #",
         "years": "years",
@@ -791,6 +806,14 @@
         "viewProfile": "View Profile",
         "message": "Message",
         "patientAlt": "Patient"
+      },
+      "pagination": {
+        "showing": "Showing",
+        "of": "of",
+        "patients": "patients",
+        "loadingMore": "Loading more...",
+        "loadMore": "Load More",
+        "noMore": "No more patients"
       }
     },
     "schedule": {

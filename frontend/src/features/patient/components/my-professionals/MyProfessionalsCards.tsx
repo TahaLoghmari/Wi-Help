@@ -1,9 +1,10 @@
 import { GetPatientProfessionals } from "@/features/patient";
 import { useNavigate, Link } from "@tanstack/react-router";
-import { Spinner } from "@/components";
+import { Spinner, EmptyState } from "@/components";
 import { ROUTE_PATHS } from "@/config";
 import { getSpecializations } from "@/features/auth/lib/authConstants";
 import { useTranslation } from "react-i18next";
+import { User } from "lucide-react";
 
 export function MyProfessionalsCards() {
   const { t, i18n } = useTranslation();
@@ -46,8 +47,17 @@ export function MyProfessionalsCards() {
 
   if (!professionals || professionals.length === 0) {
     return (
-      <div className="p-4 text-center text-slate-500">
-        {t("patient.professionals.notFound")}
+      <div className="col-span-full flex h-[50vh] flex-col items-center justify-center">
+        <EmptyState
+          icon={User}
+          title={t("patient.professionals.emptyState.title")}
+          description={t("patient.professionals.emptyState.description")}
+          action={{
+            label: t("patient.professionals.emptyState.action"),
+            onClick: () => navigate({ to: ROUTE_PATHS.PATIENT.FINDPROFESSIONAL }),
+          }}
+          className="border-none bg-transparent shadow-none"
+        />
       </div>
     );
   }

@@ -219,7 +219,7 @@ export function AdminProfessionalsTable() {
                         {new Date(professional.createdAt).toLocaleDateString()}
                       </td>
                       <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-800 sm:px-5">
-                        ${professional.totalEarned.toFixed(2)}
+                        {professional.totalEarned.toFixed(2)} TND
                       </td>
                       <td className="px-4 py-3.5 whitespace-nowrap sm:px-5">
                         <Select

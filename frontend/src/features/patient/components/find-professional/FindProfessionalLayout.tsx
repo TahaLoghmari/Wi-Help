@@ -1,10 +1,22 @@
 import { FindProfessionalFilterbar } from "@/features/patient";
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Spinner,
+  EmptyState,
+} from "@/components/ui";
+import {
   GetProfessionals,
   type GetProfessionalsDto,
 } from "@/features/professional";
-import { Avatar, AvatarFallback, AvatarImage, Spinner } from "@/components/ui";
-import { CalendarPlus, MapPin, Navigation2, User } from "lucide-react";
+import {
+  CalendarPlus,
+  MapPin,
+  Navigation2,
+  User,
+  Search,
+} from "lucide-react";
 import { getSpecializations } from "@/features/auth";
 import { Link } from "@tanstack/react-router";
 import { useAppNavigation } from "@/hooks";
@@ -106,7 +118,7 @@ function ProfessionalCard({ professional }: ProfessionalCardProps) {
               <path d="M176 176C176 211.3 147.3 240 112 240L112 400C147.3 400 176 428.7 176 464L464 464C464 428.7 492.7 400 528 400L528 240C492.7 240 464 211.3 464 176L176 176zM64 192C64 156.7 92.7 128 128 128L512 128C547.3 128 576 156.7 576 192L576 448C576 483.3 547.3 512 512 512L128 512C92.7 512 64 483.3 64 448L64 192zM320 208C381.9 208 432 258.1 432 320C432 381.9 381.9 432 320 432C258.1 432 208 381.9 208 320C208 258.1 258.1 208 320 208zM304 252C293 252 284 261 284 272C284 281.7 290.9 289.7 300 291.6L300 340L296 340C285 340 276 349 276 360C276 371 285 380 296 380L344 380C355 380 364 371 364 360C364 349 355 340 344 340L340 340L340 272C340 261 331 252 320 252L304 252z" />
             </svg>
             <span className="font-semibold">
-              ${professional?.startPrice} – ${professional?.endPrice}
+              {professional?.startPrice} – {professional?.endPrice} TND
             </span>
           </div>
         </div>
@@ -204,16 +216,30 @@ export function FindProfessionalLayout() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {professionals?.map((professional) => (
-              <ProfessionalCard
-                key={professional.id}
-                professional={professional}
-              />
-            ))}
-          </div>
 
-          <div className="flex items-center justify-between pt-4">
+          {professionals.length === 0 ? (
+            <div className="flex h-[50vh] flex-col items-center justify-center">
+              <EmptyState
+                icon={Search}
+                title={t("patient.findProfessional.emptyState.title")}
+                description={t(
+                  "patient.findProfessional.emptyState.description",
+                )}
+                className="border-none bg-transparent shadow-none"
+              />
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {professionals.map((professional) => (
+                  <ProfessionalCard
+                    key={professional.id}
+                    professional={professional}
+                  />
+                ))}
+              </div>
+
+              <div className="flex items-center justify-between pt-4">
             <div className="text-[11px] text-slate-500">
               {t("patient.findProfessional.pagination.showing")}
               <span className="font-medium text-slate-700">
@@ -237,7 +263,9 @@ export function FindProfessionalLayout() {
                     : t("patient.findProfessional.pagination.noMore")}
               </button>
             </div>
-          </div>
+            </div>
+            </>
+          )}
         </>
       )}
     </div>

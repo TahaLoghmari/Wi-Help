@@ -1,8 +1,9 @@
 import { GetProfessionalPatients } from "@/features/professional";
 import { useNavigate, Link } from "@tanstack/react-router";
-import { Spinner } from "@/components";
+import { Spinner, EmptyState } from "@/components";
 import { ROUTE_PATHS } from "@/config";
 import { useTranslation } from "react-i18next";
+import { Users } from "lucide-react";
 
 export function MyPatientsCards() {
   const { t } = useTranslation();
@@ -45,8 +46,13 @@ export function MyPatientsCards() {
 
   if (!patients || patients.length === 0) {
     return (
-      <div className="p-4 text-center text-slate-500">
-        {t("professional.myPatients.empty")}
+      <div className="col-span-full flex h-[50vh] flex-col items-center justify-center">
+        <EmptyState
+          icon={Users}
+          title={t("professional.myPatients.emptyState.title")}
+          description={t("professional.myPatients.emptyState.description")}
+          className="border-none bg-transparent shadow-none"
+        />
       </div>
     );
   }

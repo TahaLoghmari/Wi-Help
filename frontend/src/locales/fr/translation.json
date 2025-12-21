@@ -17,8 +17,8 @@
       "totalRevenue": "Revenus Totaux",
       "revenueGrowth": "+18.3%",
       "revenueAmount": "6,900",
-      "currency": "DT",
-      "revenueComparison": "vs 4,300 DT le mois dernier",
+      "currency": "TND",
+      "revenueComparison": "vs 4,300 TND le mois dernier",
       "activePatients": "Patients Actifs",
       "patientsCount": "149",
       "newPatients": "+12",
@@ -589,7 +589,9 @@
         },
         "location": {
           "label": "Lieu",
-          "placeholder": "Tunis, Sousse..."
+          "placeholder": "Tunis, Sousse...",
+          "requestMessage": "Accès à la localisation requis",
+          "requestDescription": "Veuillez autoriser l'accès à la localisation pour que nous puissions afficher les professionnels près de chez vous."
         },
         "price": {
           "label": "Fourchette de prix"
@@ -791,6 +793,14 @@
         "viewProfile": "Voir le profil",
         "message": "Message",
         "patientAlt": "Patient"
+      },
+      "pagination": {
+        "showing": "Affichage de",
+        "of": "sur",
+        "patients": "patients",
+        "loadingMore": "Chargement...",
+        "loadMore": "Charger Plus",
+        "noMore": "Plus de patients"
       }
     },
     "schedule": {

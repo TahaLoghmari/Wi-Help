@@ -211,7 +211,7 @@ export function AdminAppointmentsTable() {
                     </Select>
                   </td>
                   <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-800 sm:px-5">
-                    ${appointment.price.toFixed(2)}
+                    {appointment.price.toFixed(2)} TND
                   </td>
                   <td className="px-4 py-3.5 text-right whitespace-nowrap sm:px-5">
                     <button
@@ -419,7 +419,7 @@ export function AdminAppointmentsTable() {
                       {t("admin.appointments.details.totalPrice")}
                     </span>
                     <span className="text-brand-dark text-xl font-bold">
-                      ${selectedAppointment.price.toFixed(2)}
+                      {selectedAppointment.price.toFixed(2)} TND
                     </span>
                   </div>
                   <div className="my-2 h-px bg-slate-200"></div>

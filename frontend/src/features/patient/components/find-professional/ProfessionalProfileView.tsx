@@ -26,13 +26,13 @@ import {
   CalendarDays,
   Navigation2,
 } from "lucide-react";
-import { useParams, useRouter } from "@tanstack/react-router";
+import { useParams, useRouter, Link } from "@tanstack/react-router";
 import {
   getCountries,
   getSpecializations,
   useCurrentUser,
 } from "@/features/auth";
-import { Avatar, AvatarFallback, AvatarImage, Spinner } from "@/components/ui";
+import { Avatar, AvatarFallback, AvatarImage, Spinner, Button } from "@/components/ui";
 import {
   GetProfessional,
   getServicesForSpecialization,
@@ -393,6 +393,18 @@ export function ProfessionalProfileView() {
                     {t("patient.professionalProfile.specialist")}
                   </p>
                 </div>
+                <Button
+                  className="border-brand-dark/10 bg-brand-bg text-brand-secondary flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-sm hover:bg-brand-dark/5"
+                  asChild
+                >
+                  <Link
+                    to="/patient/book/$professionalId"
+                    params={{ professionalId: professionalId! }}
+                  >
+                    {t("patient.booking.button.book")}
+                    <Calendar className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
               </div>
 
               {/* Key Stats Row */}
@@ -539,7 +551,7 @@ export function ProfessionalProfileView() {
                     {t("patient.professionalProfile.rate")}
                   </div>
                   <div className="text-brand-dark text-xs font-semibold">
-                    ${professional?.startPrice} - ${professional?.endPrice}
+                    {professional?.startPrice} - {professional?.endPrice} TND
                     {t("patient.professionalProfile.perHour")}
                   </div>
                 </div>
@@ -786,6 +798,7 @@ export function ProfessionalProfileView() {
                     </div>
                   </div>
                 </div>
+
               </div>
             </section>
 

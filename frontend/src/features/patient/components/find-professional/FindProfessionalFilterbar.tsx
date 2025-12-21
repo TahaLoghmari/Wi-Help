@@ -1,9 +1,9 @@
 import { useProfessionalFiltersStore } from "@/features/patient";
 import { Slider, Switch } from "@/components/ui";
 import { useTranslation } from "react-i18next";
-import { Navigation2 } from "lucide-react";
 import { useCurrentUser, useLocationManager } from "@/features/auth";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 export function FindProfessionalFilterbar() {
   const { t } = useTranslation();
@@ -37,6 +37,14 @@ export function FindProfessionalFilterbar() {
       if (hasLocation) {
         setDistanceFilterEnabled(true);
       } else {
+        toast.info(
+          t("patient.findProfessional.filter.location.requestMessage"),
+          {
+            description: t(
+              "patient.findProfessional.filter.location.requestDescription",
+            ),
+          },
+        );
         requestLocation(() => {
           setDistanceFilterEnabled(true);
         });
@@ -126,7 +134,6 @@ export function FindProfessionalFilterbar() {
         <div className="space-y-1">
           <div className="flex items-center justify-between">
             <label className="flex items-center gap-1.5 text-[11px] font-medium text-slate-700">
-              <Navigation2 className="h-3.5 w-3.5" />
               {t("patient.findProfessional.filter.distance.label", "Distance")}
             </label>
             <Switch
