@@ -45,4 +45,24 @@ public record Coordinates
     /// Checks if coordinates are stale (older than specified duration).
     /// </summary>
     public bool IsStale(TimeSpan maxAge) => DateTime.UtcNow - Timestamp > maxAge;
+
+    /// <summary>
+    /// Calculates the distance to another set of coordinates in kilometers.
+    /// </summary>
+    public double DistanceTo(double targetLatitude, double targetLongitude)
+    {
+        const double EarthRadiusKm = 6371.0;
+        var dLat = DegreesToRadians(targetLatitude - Latitude);
+        var dLon = DegreesToRadians(targetLongitude - Longitude);
+
+        var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                Math.Cos(DegreesToRadians(Latitude)) * Math.Cos(DegreesToRadians(targetLatitude)) *
+                Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+
+        var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+
+        return EarthRadiusKm * c;
+    }
+
+    private static double DegreesToRadians(double degrees) => degrees * Math.PI / 180.0;
 }

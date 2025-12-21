@@ -36,6 +36,8 @@ public class Professional
         Specialization = specialization;
         IsVerified = false;
         VerificationStatus = VerificationStatus.Pending;
+        StartPrice = 30;
+        EndPrice = 120;
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
     }

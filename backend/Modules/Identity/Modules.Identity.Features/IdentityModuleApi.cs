@@ -83,7 +83,8 @@ public class IdentityModuleApi(
             user.PhoneNumber!,
             user.Address,
             user.ProfilePictureUrl,
-            user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTimeOffset.UtcNow);
+            user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTimeOffset.UtcNow,
+            user.Location);
 
         logger.LogInformation("User retrieved successfully for UserId: {UserId}", userId);
 
@@ -151,7 +152,8 @@ public class IdentityModuleApi(
             user.PhoneNumber!,
             user.Address,
             user.ProfilePictureUrl,
-            user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTimeOffset.UtcNow)).ToList();
+            user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTimeOffset.UtcNow,
+            user.Location)).ToList();
 
         logger.LogInformation("Retrieved {Count} users", userResponses.Count);
 
@@ -292,7 +294,8 @@ public class IdentityModuleApi(
             user.PhoneNumber!,
             user.Address,
             user.ProfilePictureUrl,
-            user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTimeOffset.UtcNow
+            user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTimeOffset.UtcNow,
+            user.Location
         )).ToList();
 
         logger.LogInformation("Retrieved {Count} users with role {Role}", userDtos.Count, role);

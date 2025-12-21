@@ -40,6 +40,17 @@ public sealed class GetProfessionalQueryHandler(
 
         var user = userResult.Value;
 
+        // Calculate distance if requester coordinates are provided and professional has location
+        double? distanceKm = null;
+        if (query.RequesterLatitude.HasValue && 
+            query.RequesterLongitude.HasValue && 
+            user.Location is not null)
+        {
+            distanceKm = Math.Round(user.Location.DistanceTo(
+                query.RequesterLatitude.Value,
+                query.RequesterLongitude.Value), 1);
+        }
+
         var profileDto = new GetProfessionalDto(
             professional.Id,
             professional.UserId,
@@ -58,7 +69,8 @@ public sealed class GetProfessionalQueryHandler(
             professional.Bio,
             professional.IsVerified,
             user.ProfilePictureUrl,
-            professional.VerificationStatus);
+            professional.VerificationStatus,
+            distanceKm);
 
         return Result<GetProfessionalDto>.Success(profileDto);
     }

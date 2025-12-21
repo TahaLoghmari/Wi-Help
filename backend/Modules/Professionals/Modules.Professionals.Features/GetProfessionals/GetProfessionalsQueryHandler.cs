@@ -27,27 +27,8 @@ public sealed class GetProfessionalsQueryHandler(
 
         if (query.MaxPrice.HasValue)
         {
-            professionalsQuery = professionalsQuery.Where(p => p.EndPrice <= query.MaxPrice.Value);
+            professionalsQuery = professionalsQuery.Where(p => p.EndPrice <= query.MaxPrice.Value || p.EndPrice == null );
         }
-
-        // Availability Filter
-        // if (!string.IsNullOrEmpty(query.Availability) && query.Availability != "Any time")
-        // {
-        //     var today = DateTime.UtcNow.DayOfWeek;
-        //     if (query.Availability == "Today")
-        //     {
-        //         professionalsQuery = professionalsQuery.Where(p => p.AvailabilityDays.Any(d => d.DayOfWeek == today && d.IsActive));
-        //     }
-        //     else if (query.Availability == "Within 24h")
-        //     {
-        //         var tomorrow = DateTime.UtcNow.AddDays(1).DayOfWeek;
-        //         professionalsQuery = professionalsQuery.Where(p => p.AvailabilityDays.Any(d => (d.DayOfWeek == today || d.DayOfWeek == tomorrow) && d.IsActive));
-        //     }
-        //     else if (query.Availability == "This week")
-        //     {
-        //         professionalsQuery = professionalsQuery.Where(p => p.AvailabilityDays.Any(d => d.IsActive));
-        //     }
-        // }
 
         var professionals = await professionalsQuery.ToListAsync(cancellationToken);
 
@@ -72,7 +53,12 @@ public sealed class GetProfessionalsQueryHandler(
         }
 
         var users = usersResult.Value.ToDictionary(u => u.Id);
-        var professionalDtos = new List<GetProfessionalDto>();
+        
+        // Check if distance filtering is enabled
+        bool distanceFilterEnabled = query.UserLatitude.HasValue && 
+                                      query.UserLongitude.HasValue;
+        
+        var professionalDtos = new List<(GetProfessionalDto Dto, double? Distance)>();
 
         foreach (var professional in professionals)
         {
@@ -93,7 +79,28 @@ public sealed class GetProfessionalsQueryHandler(
 
                 if (matchesSearch && matchesLocation)
                 {
-                    professionalDtos.Add(new GetProfessionalDto(
+                    double? distanceKm = null;
+                    
+                    // Calculate distance if user coordinates provided and professional has location
+                    if (distanceFilterEnabled && user.Location is not null)
+                    {
+                        distanceKm = user.Location.DistanceTo(
+                            query.UserLatitude!.Value,
+                            query.UserLongitude!.Value);
+                        
+                        // Skip if outside max distance
+                        if (query.MaxDistanceKm.HasValue && distanceKm > query.MaxDistanceKm.Value)
+                        {
+                            continue;
+                        }
+                    }
+                    // If distance filter is enabled but professional has no location, exclude them
+                    else if (distanceFilterEnabled && user.Location is null)
+                    {
+                        continue;
+                    }
+
+                    var dto = new GetProfessionalDto(
                         professional.Id,
                         professional.UserId,
                         user.FirstName,
@@ -111,7 +118,10 @@ public sealed class GetProfessionalsQueryHandler(
                         professional.Bio,
                         professional.IsVerified,
                         user.ProfilePictureUrl,
-                        professional.VerificationStatus));
+                        professional.VerificationStatus,
+                        distanceKm.HasValue ? Math.Round(distanceKm.Value, 1) : null);
+                    
+                    professionalDtos.Add((dto, distanceKm));
                 }
             }
             else
@@ -120,10 +130,23 @@ public sealed class GetProfessionalsQueryHandler(
             }
         }
 
+        // Sort by distance if distance filtering is active
+        IEnumerable<GetProfessionalDto> sortedDtos;
+        if (distanceFilterEnabled)
+        {
+            sortedDtos = professionalDtos
+                .OrderBy(x => x.Distance ?? double.MaxValue)
+                .Select(x => x.Dto);
+        }
+        else
+        {
+            sortedDtos = professionalDtos.Select(x => x.Dto);
+        }
+
         logger.LogInformation("Retrieved {Count} professionals", professionalDtos.Count);
 
         var totalCount = professionalDtos.Count;
-        var items = professionalDtos.Skip((query.Page - 1) * query.PageSize).Take(query.PageSize).ToList();
+        var items = sortedDtos.Skip((query.Page - 1) * query.PageSize).Take(query.PageSize).ToList();
 
         return Result<PaginationResultDto<GetProfessionalDto>>.Success(new PaginationResultDto<GetProfessionalDto>
         {

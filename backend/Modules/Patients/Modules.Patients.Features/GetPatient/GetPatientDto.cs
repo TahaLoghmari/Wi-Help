@@ -16,4 +16,5 @@ public sealed record GetPatientDto(
     EmergencyContact EmergencyContact,
     MedicalInfo MedicalInfo,
     string? Bio,
-    string? ProfilePictureUrl);
+    string? ProfilePictureUrl,
+    double? DistanceKm = null);

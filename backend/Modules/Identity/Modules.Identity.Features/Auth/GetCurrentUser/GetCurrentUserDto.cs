@@ -12,4 +12,5 @@ public sealed record GetCurrentUserDto(
     string Email,
     Address Address,
     string Role,
-    string? ProfilePictureUrl);
+    string? ProfilePictureUrl,
+    Coordinates? Location);

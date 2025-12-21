@@ -12,4 +12,5 @@ public record UserDto(
     string PhoneNumber,
     Address Address,
     string? ProfilePictureUrl,
-    bool IsBanned);
+    bool IsBanned,
+    Coordinates? Location);

@@ -38,6 +38,17 @@ public sealed class GetPatientQueryHandler(
 
         var user = userResult.Value;
 
+        // Calculate distance if requester coordinates are provided and patient has location
+        double? distanceKm = null;
+        if (query.RequesterLatitude.HasValue && 
+            query.RequesterLongitude.HasValue && 
+            user.Location is not null)
+        {
+            distanceKm = Math.Round(user.Location.DistanceTo(
+                query.RequesterLatitude.Value,
+                query.RequesterLongitude.Value), 1);
+        }
+
         var profileDto = new GetPatientDto(
             patient.Id,
             patient.UserId,
@@ -51,7 +62,8 @@ public sealed class GetPatientQueryHandler(
             patient.EmergencyContact,
             patient.MedicalInfo,
             patient.Bio,
-            user.ProfilePictureUrl);
+            user.ProfilePictureUrl,
+            distanceKm);
 
         return Result<GetPatientDto>.Success(profileDto);
     }

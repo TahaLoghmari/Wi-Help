@@ -94,9 +94,17 @@ app.MapHub<NotificationHub>("/hubs/notifications");
 app.MapHub<ChatHub>("/hubs/chat");
 
 // Schedule recurring jobs
-RecurringJob.AddOrUpdate<MessageStatusUpdateJob>(
-    "mark-messages-delivered",
-    job => job.MarkMessagesAsDeliveredForOnlineUsers(default),
-    Cron.Minutely);
+try
+{
+    RecurringJob.AddOrUpdate<MessageStatusUpdateJob>(
+        "mark-messages-delivered",
+        job => job.MarkMessagesAsDeliveredForOnlineUsers(default),
+        Cron.Minutely);
+}
+catch (Exception ex)
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "Failed to schedule recurring job 'mark-messages-delivered'");
+}
 
 await app.RunAsync();

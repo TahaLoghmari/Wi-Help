@@ -16,7 +16,10 @@ internal sealed class GetProfessional : IEndpoint
                 IQueryHandler<GetProfessionalQuery, GetProfessionalDto> handler,
                 CancellationToken cancellationToken) =>
             {
-                GetProfessionalQuery query = new GetProfessionalQuery(request.ProfessionalId);
+                GetProfessionalQuery query = new GetProfessionalQuery(
+                    request.ProfessionalId,
+                    request.RequesterLatitude,
+                    request.RequesterLongitude);
                 Result<GetProfessionalDto> result = await handler.Handle(query, cancellationToken);
 
                 return result.Match(
@@ -29,5 +32,7 @@ internal sealed class GetProfessional : IEndpoint
     private class Request
     {
         public Guid ProfessionalId { get; set; }
+        public double? RequesterLatitude { get; init; }
+        public double? RequesterLongitude { get; init; }
     }
 }

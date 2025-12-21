@@ -11,4 +11,7 @@ public sealed record GetProfessionalsQuery(
     decimal? MaxPrice,
     string? Availability,
     int Page,
-    int PageSize) : IQuery<PaginationResultDto<GetProfessionalDto>>;
+    int PageSize,
+    double? UserLatitude = null,
+    double? UserLongitude = null,
+    double? MaxDistanceKm = null) : IQuery<PaginationResultDto<GetProfessionalDto>>;

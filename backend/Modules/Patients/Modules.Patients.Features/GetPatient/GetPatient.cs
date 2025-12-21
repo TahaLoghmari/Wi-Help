@@ -15,7 +15,10 @@ internal sealed class GetPatient : IEndpoint
                 IQueryHandler<GetPatientQuery, GetPatientDto> handler,
                 CancellationToken cancellationToken) =>
             {
-                GetPatientQuery query = new GetPatientQuery(request.PatientId);
+                GetPatientQuery query = new GetPatientQuery(
+                    request.PatientId,
+                    request.RequesterLatitude,
+                    request.RequesterLongitude);
                 Result<GetPatientDto> result = await handler.Handle(query, cancellationToken);
 
                 return result.Match(
@@ -29,5 +32,7 @@ internal sealed class GetPatient : IEndpoint
     private record Request
     {
         public Guid PatientId { get; init; }
+        public double? RequesterLatitude { get; init; }
+        public double? RequesterLongitude { get; init; }
     }
 }

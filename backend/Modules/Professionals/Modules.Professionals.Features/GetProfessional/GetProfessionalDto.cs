@@ -21,4 +21,5 @@ public sealed record GetProfessionalDto(
     string? Bio,
     bool IsVerified,
     string? ProfilePictureUrl,
-    VerificationStatus VerificationStatus);
+    VerificationStatus VerificationStatus,
+    double? DistanceKm = null);

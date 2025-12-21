@@ -24,7 +24,10 @@ internal sealed class GetProfessionals : IEndpoint
                     request.MaxPrice,
                     request.Availability,
                     request.Page,
-                    request.PageSize);
+                    request.PageSize,
+                    request.UserLatitude,
+                    request.UserLongitude,
+                    request.MaxDistanceKm);
                 Result<PaginationResultDto<GetProfessionalDto>> result = await handler.Handle(query, cancellationToken);
 
                 return result.Match(Results.Ok, CustomResults.Problem);
@@ -39,5 +42,8 @@ internal sealed class GetProfessionals : IEndpoint
         public string? Availability { get; init; }
         public int Page { get; init; } = 1;
         public int PageSize { get; init; } = 10;
+        public double? UserLatitude { get; init; }
+        public double? UserLongitude { get; init; }
+        public double? MaxDistanceKm { get; init; }
     }
 }
