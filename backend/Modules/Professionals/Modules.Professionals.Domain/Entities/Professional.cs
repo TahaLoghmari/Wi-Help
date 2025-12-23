@@ -7,8 +7,7 @@ public class Professional
 {
     public Guid Id { get; private set; }
     public Guid UserId { get; private set; }
-    public int? StartPrice { get; private set; }
-    public int? EndPrice { get; private set; }
+    public int? VisitPrice { get; private set; }
     public string? Bio { get; set; } 
     public string Specialization { get; set; } = string.Empty;
     public int Experience { get; private set; }
@@ -36,8 +35,7 @@ public class Professional
         Specialization = specialization;
         IsVerified = false;
         VerificationStatus = VerificationStatus.Pending;
-        StartPrice = 30;
-        EndPrice = 120;
+        VisitPrice = 30; // Default visit price
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
     }
@@ -53,8 +51,7 @@ public class Professional
         string? specialization = null,
         List<string>? services = null,
         int? experience = null,
-        int? startPrice = null,
-        int? endPrice = null,
+        int? visitPrice = null,
         string? bio = null)
     {
         if (!string.IsNullOrWhiteSpace(specialization))
@@ -65,11 +62,10 @@ public class Professional
         if (experience.HasValue)
             Experience = experience.Value;
         
-        if (startPrice.HasValue)
-            StartPrice = startPrice.Value;
-        
-        if (endPrice.HasValue)
-            EndPrice = endPrice.Value;
+        if (visitPrice.HasValue)
+            VisitPrice = visitPrice.Value;
+            
+        if (bio != null) 
             Bio = bio;
         
         UpdatedAt = DateTime.UtcNow;

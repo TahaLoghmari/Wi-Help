@@ -23,10 +23,7 @@ public class ProfessionalConfiguration : IEntityTypeConfiguration<Professional>
         builder.Property(p => p.Experience)
             .IsRequired();
 
-        builder.Property(p => p.StartPrice)
-            .IsRequired(false);
-        
-        builder.Property(p => p.EndPrice)
+        builder.Property(p => p.VisitPrice)
             .IsRequired(false);
 
         builder.Property(p => p.Bio)

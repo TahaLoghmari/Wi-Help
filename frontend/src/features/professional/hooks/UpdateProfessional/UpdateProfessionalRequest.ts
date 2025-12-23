@@ -8,8 +8,7 @@ export interface UpdateProfessionalRequest {
   specialization?: string | null;
   services?: string[] | null;
   experience?: number | null;
-  startPrice?: number | null;
-  endPrice?: number | null;
+  visitPrice?: number | null;
   bio?: string | null;
   profilePicture?: File | null;
 }

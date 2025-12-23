@@ -337,6 +337,7 @@
       },
       "price": {
         "session": "Prix de la séance :",
+        "visitPrice": "Prix de la visite",
         "range": "Fourchette de prix du professionnel :"
       },
       "urgency": {
@@ -623,6 +624,7 @@
       "specialty": "Spécialité",
       "rate": "Tarif",
       "perHour": "/h",
+      "perVisit": "/visite",
       "experience": "Expérience",
       "years": "Ans",
       "specialties": "Spécialités & Focus",
@@ -962,8 +964,7 @@
             "notFound": "Aucun service trouvé."
           },
           "price": {
-            "start": "Prix de départ",
-            "end": "Prix de fin"
+            "visit": "Prix de la visite"
           },
           "bio": {
             "label": "Bio",

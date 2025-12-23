@@ -14,8 +14,7 @@ export interface GetCurrentProfessionalDto {
   specialization: string;
   services: string[];
   experience: number;
-  startPrice: number;
-  endPrice: number;
+  visitPrice: number;
   bio: string;
   isVerified: boolean;
   profilePictureUrl: string;

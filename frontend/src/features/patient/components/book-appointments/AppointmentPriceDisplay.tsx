@@ -22,8 +22,7 @@ export function AppointmentPriceDisplay({
         </span>
       </div>
       <p className="mt-1 text-xs text-gray-500">
-        {t("patient.booking.price.range")} {professional.startPrice} -{" "}
-        {professional.endPrice} TND
+        {t("patient.booking.price.visitPrice")}: {professional.visitPrice} TND
       </p>
     </div>
   );

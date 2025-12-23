@@ -36,8 +36,7 @@ internal sealed class UpdateProfessional : IEndpoint
                     request.Specialization,
                     request.Services,
                     request.Experience,
-                    request.StartPrice,
-                    request.EndPrice,
+                    request.VisitPrice,
                     request.Bio,
                     request.ProfilePicture);
 
@@ -58,8 +57,7 @@ internal sealed class UpdateProfessional : IEndpoint
         public string? Specialization { get; set; }
         public List<string>? Services { get; set; }
         public int? Experience { get; set; }
-        public int? StartPrice { get; set; }
-        public int? EndPrice { get; set; }
+        public int? VisitPrice { get; set; }
         public string? Bio { get; set; }
         public IFormFile? ProfilePicture { get; set; }
     }

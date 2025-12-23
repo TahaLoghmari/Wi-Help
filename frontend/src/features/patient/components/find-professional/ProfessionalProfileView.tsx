@@ -553,8 +553,8 @@ export function ProfessionalProfileView() {
                     {t("patient.professionalProfile.rate")}
                   </div>
                   <div className="text-brand-dark text-xs font-semibold">
-                    {professional?.startPrice} - {professional?.endPrice} TND
-                    {t("patient.professionalProfile.perHour")}
+                    {professional?.visitPrice} TND
+                    {t("patient.professionalProfile.perVisit")}
                   </div>
                 </div>
                 <div className="border-brand-dark/10 bg-brand-bg flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center">

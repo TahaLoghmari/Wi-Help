@@ -76,8 +76,7 @@ public sealed class UpdateProfessionalCommandHandler(
                 command.Specialization,
                 command.Services,
                 command.Experience,
-                command.StartPrice,
-                command.EndPrice,
+                command.VisitPrice,
                 command.Bio);
 
             await dbContext.SaveChangesAsync(cancellationToken);

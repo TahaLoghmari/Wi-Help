@@ -9,8 +9,7 @@ export function ProfileAndBioFormDefaults(professional: ProfessionalDto) {
     address: professional.address,
     specialization: professional.specialization,
     services: professional.services,
-    startPrice: professional.startPrice,
-    endPrice: professional.endPrice,
+    visitPrice: professional.visitPrice,
     bio: professional.bio,
     profilePicture: undefined,
   };

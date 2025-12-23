@@ -27,7 +27,7 @@ public sealed class GetProfessionalsQueryHandler(
 
         if (query.MaxPrice.HasValue)
         {
-            professionalsQuery = professionalsQuery.Where(p => p.EndPrice <= query.MaxPrice.Value || p.EndPrice == null );
+            professionalsQuery = professionalsQuery.Where(p => p.VisitPrice <= query.MaxPrice.Value || p.VisitPrice == null );
         }
 
         var professionals = await professionalsQuery.ToListAsync(cancellationToken);
@@ -113,8 +113,7 @@ public sealed class GetProfessionalsQueryHandler(
                         professional.Specialization,
                         professional.Services,
                         professional.Experience,
-                        professional.StartPrice,
-                        professional.EndPrice,
+                        professional.VisitPrice,
                         professional.Bio,
                         professional.IsVerified,
                         user.ProfilePictureUrl,

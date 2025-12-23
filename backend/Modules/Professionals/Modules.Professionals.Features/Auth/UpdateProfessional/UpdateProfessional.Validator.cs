@@ -94,29 +94,11 @@ public class UpdateProfessionalCommandValidator : AbstractValidator<UpdateProfes
             .LessThanOrEqualTo(60)
             .WithMessage("Years of experience cannot exceed 60");
 
-        RuleFor(x => x.StartPrice)
+        RuleFor(x => x.VisitPrice)
             .NotNull()
-            .WithMessage("Start price is required")
+            .WithMessage("Visit price is required")
             .GreaterThanOrEqualTo(0)
-            .WithMessage("Start price must be greater than or equal to 0");
-
-        RuleFor(x => x.EndPrice)
-            .NotNull()
-            .WithMessage("End price is required")
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("End price must be greater than or equal to 0");
-
-        RuleFor(x => x)
-            .Must(x => !x.StartPrice.HasValue || !x.EndPrice.HasValue || x.EndPrice >= x.StartPrice)
-            .WithMessage("End price must be greater than or equal to start price");
-
-
-        When(x => x.StartPrice.HasValue && x.EndPrice.HasValue, () =>
-        {
-            RuleFor(x => x)
-                .Must(cmd => cmd.EndPrice >= cmd.StartPrice)
-                .WithMessage("End price must be greater than or equal to start price");
-        });
+            .WithMessage("Visit price must be greater than or equal to 0");
 
         When(x => !string.IsNullOrWhiteSpace(x.Bio), () =>
         {

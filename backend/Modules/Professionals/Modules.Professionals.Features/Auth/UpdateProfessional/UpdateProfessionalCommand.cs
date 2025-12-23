@@ -13,7 +13,6 @@ public sealed record UpdateProfessionalCommand(
     string? Specialization,
     List<string>? Services,
     int? Experience,
-    int? StartPrice,
-    int? EndPrice,
+    int? VisitPrice,
     string? Bio,
     IFormFile? ProfilePicture) : ICommand;

@@ -49,8 +49,7 @@ public class ProfessionalModuleApi(
             professional.Specialization,
             professional.Services,
             professional.Experience,
-            professional.StartPrice,
-            professional.EndPrice,
+            professional.VisitPrice,
             professional.Bio,
             professional.IsVerified,
             user.ProfilePictureUrl
@@ -99,8 +98,7 @@ public class ProfessionalModuleApi(
                 p.Specialization,
                 p.Services,
                 p.Experience,
-                p.StartPrice,
-                p.EndPrice,
+                p.VisitPrice,
                 p.Bio,
                 p.IsVerified,
                 user.ProfilePictureUrl

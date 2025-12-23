@@ -92,7 +92,7 @@ export function BookAppointmentsLayout() {
       setValue("price", 0);
     }
   };
-  const price = (professional!.startPrice + professional!.endPrice) / 2;
+  const price = professional!.visitPrice;
   const onSubmit = async (
     credentials: z.infer<typeof bookAppointmentFormSchema>,
   ) => {
@@ -182,8 +182,7 @@ export function BookAppointmentsLayout() {
                   </span>
                 </div>
                 <p className="mt-1 text-[10px] text-slate-500">
-                  Professional range: {professional.startPrice} -{" "}
-                  {professional.endPrice} TND
+                  {t("patient.booking.price.visitPrice")}: {professional.visitPrice} TND
                 </p>
               </div>
             )}

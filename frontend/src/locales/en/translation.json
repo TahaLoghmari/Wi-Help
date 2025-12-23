@@ -337,6 +337,7 @@
       },
       "price": {
         "session": "Session Price:",
+        "visitPrice": "Visit Price",
         "range": "Professional's price range:"
       },
       "urgency": {
@@ -632,6 +633,7 @@
       "specialty": "Specialty",
       "rate": "Rate",
       "perHour": "/hr",
+      "perVisit": "/visit",
       "experience": "Experience",
       "years": "Years",
       "specialties": "Specialties & Focus",
@@ -975,8 +977,7 @@
             "notFound": "No services found."
           },
           "price": {
-            "start": "Start Price",
-            "end": "End Price"
+            "visit": "Visit Price"
           },
           "bio": {
             "label": "Bio",

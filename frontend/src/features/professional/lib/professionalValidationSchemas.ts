@@ -54,26 +54,14 @@ export const profileAndBioFormSchema = z
       .min(1, { message: "Specialization is required." })
       .max(50, { message: "Specialization must be at most 50 characters." }),
     services: z.array(z.string()).nullish(),
-    startPrice: z
-      .number({ message: "Start price must be a number." })
-      .nonnegative({ message: "Start price cannot be negative." }),
-    endPrice: z
-      .number({ message: "End price must be a number." })
-      .nonnegative({ message: "End price cannot be negative." }),
+    visitPrice: z
+      .number({ message: "Visit price must be a number." })
+      .nonnegative({ message: "Visit price cannot be negative." }),
     bio: z
       .string()
       .max(1000, { message: "Bio must be at most 1000 characters." })
       .nullish(),
-  })
-  .refine(
-    (data) => {
-      return data.endPrice >= data.startPrice;
-    },
-    {
-      message: "End price must be greater than or equal to start price.",
-      path: ["endPrice"],
-    },
-  );
+  });
 
 // Award validation schema
 export const awardFormSchema = z.object({

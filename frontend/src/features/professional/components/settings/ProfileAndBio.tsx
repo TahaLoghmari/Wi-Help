@@ -645,45 +645,15 @@ export function ProfileAndBio() {
             <div className="grid gap-3 sm:grid-cols-2">
               <FormField
                 control={form.control}
-                name="startPrice"
+                name="visitPrice"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      {t(
-                        "professional.settings.profileAndBio.form.price.start",
-                      )}
+                      {t("professional.settings.profileAndBio.form.price.visit")}
                     </FormLabel>
                     <FormControl>
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[11px] text-slate-500">$</span>
-                        <input
-                          type="number"
-                          className="focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
-                          placeholder="0"
-                          value={field.value ?? ""}
-                          onChange={(e) =>
-                            field.onChange(
-                              e.target.value ? Number(e.target.value) : 0,
-                            )
-                          }
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage className="text-xs" />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="endPrice"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col gap-1">
-                    <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      {t("professional.settings.profileAndBio.form.price.end")}
-                    </FormLabel>
-                    <FormControl>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[11px] text-slate-500">$</span>
+                        <span className="text-[11px] text-slate-500">TND</span>
                         <input
                           type="number"
                           className="focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
