@@ -209,12 +209,9 @@ export function VerificationDocuments() {
               <path d="M12 8h.01"></path>
             </svg>
           </span>
-          <p className="flex items-center gap-1 text-xs text-slate-500">
-            {t("professional.settings.verification.info.resetStatus")}
-            <span className="font-medium text-slate-700">
-              {" "}
-              {t("professional.settings.verification.info.pending")}
-            </span>
+          <p className="flex gap-1 text-xs text-slate-500">
+            {t("professional.settings.verification.info.resetStatus")}{" "}
+            {t("professional.settings.verification.info.pending")}{" "}
             {t("professional.settings.verification.info.review")}
           </p>
         </div>

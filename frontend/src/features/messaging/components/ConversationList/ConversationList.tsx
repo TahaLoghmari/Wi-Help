@@ -51,7 +51,7 @@ export function ConversationList({
   });
 
   return (
-    <aside className="flex w-72 flex-col border-r border-slate-200 bg-white lg:w-80">
+    <aside className="flex h-full w-full flex-col border-r border-slate-200 bg-white">
       {/* Search */}
       <div className="border-b border-slate-200 px-4 py-3">
         <div className="mb-2 text-xs font-medium tracking-tight text-slate-700">

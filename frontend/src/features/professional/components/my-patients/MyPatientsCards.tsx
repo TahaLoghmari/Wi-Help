@@ -1,6 +1,6 @@
 import { GetProfessionalPatients } from "@/features/professional";
 import { useNavigate, Link } from "@tanstack/react-router";
-import { Spinner, EmptyState } from "@/components";
+import { Spinner, EmptyState, Avatar, AvatarImage, AvatarFallback } from "@/components";
 import { ROUTE_PATHS } from "@/config";
 import { useTranslation } from "react-i18next";
 import { Users } from "lucide-react";
@@ -58,18 +58,26 @@ export function MyPatientsCards() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
       {patients.map((patient, index) => (
         <article
           key={index}
           className="hover:border-brand-blue/70 flex h-45 flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-100 transition-all hover:shadow-md hover:shadow-slate-100"
         >
           <div className="items:center flex gap-3">
-            <img
-              src={patient.profilePictureUrl}
-              alt={t("professional.myPatients.card.patientAlt")}
-              className="h-10 w-10 rounded-full border border-slate-200 object-cover"
-            />
+            <Avatar className="h-10 w-10 border-4 border-white bg-white">
+                <AvatarImage
+                  className="object-cover"
+                  src={patient?.profilePictureUrl}
+                  alt={patient?.firstName}
+                />
+                <AvatarFallback className="rounded-full text-lg">
+                  {patient?.firstName && patient?.lastName
+                    ? patient.firstName.charAt(0).toUpperCase() +
+                      patient.lastName.charAt(0).toUpperCase()
+                    : "U"}
+                </AvatarFallback>
+              </Avatar>
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between gap-2">
                 <h4 className="truncate text-xs font-medium tracking-tight text-slate-900">

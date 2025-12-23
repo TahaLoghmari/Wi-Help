@@ -8,6 +8,6 @@ const getEnvVar = (key: string, defaultValue?: string): string => {
 
 export const env = {
   apiUrl: getEnvVar("VITE_API_URL", "http://localhost:5000"),
-  isDevelopment: import.meta.env.ENVIRONMENT == "DEVELOPEMENT",
-  isProduction: import.meta.env.ENVIRONMENT == "PRODUCTION",
+  isDevelopment: import.meta.env.MODE === "development",
+  isProduction: import.meta.env.MODE === "production",
 } as const;

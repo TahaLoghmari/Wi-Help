@@ -14,6 +14,8 @@ import {
 import { useChatHub } from "@/features/messaging/hooks/useChatHub";
 import { useTranslation } from "react-i18next";
 
+import { Menu } from "lucide-react";
+
 interface ChatWindowProps {
   conversation: ConversationDto | null;
   messages: MessageDto[] | undefined;
@@ -21,6 +23,7 @@ interface ChatWindowProps {
   currentUserId: string;
   onLoadMore?: () => void;
   hasMoreMessages?: boolean;
+  onToggleSidebar?: () => void;
 }
 
 export function ChatWindow({
@@ -30,6 +33,7 @@ export function ChatWindow({
   currentUserId,
   onLoadMore,
   hasMoreMessages,
+  onToggleSidebar,
 }: ChatWindowProps) {
   const { t } = useTranslation();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -148,6 +152,12 @@ export function ChatWindow({
     return (
       <section className="bg-brand-bg flex flex-1 flex-col items-center justify-center">
         <div className="text-center">
+             <button
+            onClick={onToggleSidebar}
+            className="mb-4 inline-flex items-center justify-center rounded-full bg-white p-3 text-slate-500 shadow-sm transition-colors hover:bg-slate-50 lg:hidden"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
           <p className="text-sm text-slate-500">
             Select a conversation to start messaging
           </p>
@@ -167,6 +177,12 @@ export function ChatWindow({
       {/* Chat Header */}
       <div className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 sm:px-6">
         <div className="flex items-center gap-3">
+          <button
+            onClick={onToggleSidebar}
+            className="-ml-2 rounded-full p-2 text-slate-500 hover:bg-slate-100 lg:hidden"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
           <Avatar className="h-9 w-9">
             <AvatarImage
               src={conversation.otherParticipantProfilePictureUrl || undefined}

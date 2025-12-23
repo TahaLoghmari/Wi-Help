@@ -126,8 +126,9 @@ export function ProfileAndBio() {
             </button>
           </header>
           <div className="flex flex-col gap-3">
-            <div className="my-4 flex items-center justify-between">
-              <div className="flex items-center gap-4">
+            {/* Pfp Configuration setion */}
+            <div className="my-4 flex flex-col items-center justify-between gap-4 sm:flex-row sm:items-center">
+              <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
                 <Avatar className="h-20 w-20">
                   <AvatarImage
                     className="object-cover"
@@ -154,7 +155,7 @@ export function ProfileAndBio() {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-2 text-[11px] sm:justify-end">
+              <div className="flex flex-wrap justify-center gap-2 text-[11px] sm:justify-end">
                 <FormField
                   control={form.control}
                   name="profilePicture"
