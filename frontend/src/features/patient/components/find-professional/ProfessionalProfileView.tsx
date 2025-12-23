@@ -393,18 +393,20 @@ export function ProfessionalProfileView() {
                     {t("patient.professionalProfile.specialist")}
                   </p>
                 </div>
-                <Button
-                  className="border-brand-dark/10 bg-brand-bg text-brand-secondary flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-sm hover:bg-brand-dark/5"
-                  asChild
-                >
-                  <Link
-                    to="/patient/book/$professionalId"
-                    params={{ professionalId: professionalId! }}
+                {currentUser?.role !== "Admin" && (
+                  <Button
+                    className="border-brand-dark/10 bg-brand-bg text-brand-secondary flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-sm hover:bg-brand-dark/5"
+                    asChild
                   >
-                    {t("patient.booking.button.book")}
-                    <Calendar className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
+                    <Link
+                      to="/patient/book/$professionalId"
+                      params={{ professionalId: professionalId! }}
+                    >
+                      {t("patient.booking.button.book")}
+                      <Calendar className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                )}
               </div>
 
               {/* Key Stats Row */}

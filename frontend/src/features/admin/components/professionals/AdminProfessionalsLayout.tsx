@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 export function AdminProfessionalsLayout() {
   const { t } = useTranslation();
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 p-6 overflow-auto">
       <div>
         <h1 className="text-brand-dark text-2xl font-bold tracking-tight">
           {t("admin.professionals.title")}

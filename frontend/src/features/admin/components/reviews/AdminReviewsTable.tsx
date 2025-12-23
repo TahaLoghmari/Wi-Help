@@ -3,6 +3,17 @@ import {
   useDeleteReviewForAdmin,
 } from "@/features/admin/hooks";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Star, Trash2, MessageSquare } from "lucide-react";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
@@ -22,12 +33,6 @@ export function AdminReviewsTable() {
 
   const reviews = data?.pages.flatMap((page) => page.items) || [];
 
-  const handleDelete = (reviewId: string) => {
-    if (confirm(t("admin.reviews.deleteConfirm"))) {
-      deleteMutation.mutate(reviewId);
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="p-4 text-center text-sm text-slate-500">
@@ -46,7 +51,7 @@ export function AdminReviewsTable() {
 
   return (
     <>
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-auto">
         <div className="border-b border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-2 pl-4 sm:px-5">
           <div className="mb-2">
             <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
@@ -160,14 +165,33 @@ export function AdminReviewsTable() {
                       {format(new Date(review.date), "MMM d, yyyy")}
                     </td>
                     <td className="px-4 py-3.5 text-right sm:px-5">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-slate-400 hover:text-red-600"
-                        onClick={() => handleDelete(review.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-slate-400 hover:text-red-600"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="bg-white">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Review</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              {t("admin.reviews.deleteConfirm")}
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => deleteMutation.mutate(review.id)}
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </td>
                   </tr>
                 ))

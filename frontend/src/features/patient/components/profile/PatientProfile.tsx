@@ -44,7 +44,7 @@ export function PatientProfile({
       : "U";
 
   return (
-    <section className="mb-6 flex-1 space-y-6">
+    <section className="mb-6 flex-1 space-y-6 ">
       {showBackButton && (
         <button
           onClick={() => router.history.back()}
