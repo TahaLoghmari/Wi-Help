@@ -38,7 +38,7 @@ export function TodayAppointmentsStat() {
         </span>
       </div>
       <div className="flex items-baseline justify-between">
-        <div className="text-brand-dark text-2xl font-semibold tracking-tight">
+        <div className="text-brand-dark text-2xl font-semibold tracking-tight mr-4">
           {isLoading ? "..." : todayAppointments.length}
         </div>
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-500">

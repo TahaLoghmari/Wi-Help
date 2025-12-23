@@ -142,7 +142,7 @@ export function PatientAppointmentsTable() {
   const emptyState = getEmptyStateMessage();
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-100">
+    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-100">
       <div className="border-b border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-2 pl-4 sm:px-5">
         <div className="mb-2 flex items-center justify-between">
           <div className="">
@@ -155,11 +155,11 @@ export function PatientAppointmentsTable() {
           </div>
         </div>
 
-        <div className="flex items-center gap-1 pb-1 text-xs">
+        <div className="flex items-center gap-1 overflow-x-auto pb-1 text-xs whitespace-nowrap scrollbar-hide">
           <button
             id="appt-tab-offered"
             onClick={() => setActiveTab("offered")}
-            className={`relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-medium transition-colors ${
+            className={`relative inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 font-medium transition-colors ${
               activeTab === "offered"
                 ? "text-brand-dark border-slate-200 bg-white"
                 : "border-transparent text-slate-500 hover:border-slate-200 hover:bg-white"
@@ -175,7 +175,7 @@ export function PatientAppointmentsTable() {
           <button
             id="appt-tab-confirmed"
             onClick={() => setActiveTab("confirmed")}
-            className={`relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 transition-colors ${
+            className={`relative inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 transition-colors ${
               activeTab === "confirmed"
                 ? "text-brand-dark border-slate-200 bg-white font-medium"
                 : "border-transparent text-slate-500 hover:border-slate-200 hover:bg-white"
@@ -191,7 +191,7 @@ export function PatientAppointmentsTable() {
           <button
             id="appt-tab-cancelled"
             onClick={() => setActiveTab("cancelled")}
-            className={`relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 transition-colors ${
+            className={`relative inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 transition-colors ${
               activeTab === "cancelled"
                 ? "text-brand-dark border-slate-200 bg-white font-medium"
                 : "border-transparent text-slate-500 hover:border-slate-200 hover:bg-white"
@@ -207,7 +207,7 @@ export function PatientAppointmentsTable() {
           <button
             id="appt-tab-completed"
             onClick={() => setActiveTab("completed")}
-            className={`relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 transition-colors ${
+            className={`relative inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 transition-colors ${
               activeTab === "completed"
                 ? "text-brand-dark border-slate-200 bg-white font-medium"
                 : "border-transparent text-slate-500 hover:border-slate-200 hover:bg-white"

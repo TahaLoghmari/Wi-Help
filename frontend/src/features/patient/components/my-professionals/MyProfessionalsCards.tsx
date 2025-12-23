@@ -1,6 +1,6 @@
 import { GetPatientProfessionals } from "@/features/patient";
 import { useNavigate, Link } from "@tanstack/react-router";
-import { Spinner, EmptyState } from "@/components";
+import { Spinner, EmptyState, Avatar, AvatarImage, AvatarFallback } from "@/components";
 import { ROUTE_PATHS } from "@/config";
 import { getSpecializations } from "@/features/auth/lib/authConstants";
 import { useTranslation } from "react-i18next";
@@ -63,18 +63,26 @@ export function MyProfessionalsCards() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 ">
       {professionals.map((professional, index) => (
         <article
           key={index}
           className="hover:border-brand-blue/70 flex h-45 flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-100 transition-all hover:shadow-md hover:shadow-slate-100"
         >
           <div className="items:center flex gap-3">
-            <img
-              src={professional.profilePictureUrl}
-              alt={t("patient.professionals.card.professionalAlt")}
-              className="h-10 w-10 rounded-full border border-slate-200 object-cover"
-            />
+            <Avatar className="h-10 w-10 border-4 border-white bg-white">
+                <AvatarImage
+                  className="object-cover"
+                  src={professional?.profilePictureUrl}
+                  alt={professional?.firstName}
+                />
+                <AvatarFallback className="rounded-full text-lg">
+                  {professional?.firstName && professional?.lastName
+                    ? professional.firstName.charAt(0).toUpperCase() +
+                      professional.lastName.charAt(0).toUpperCase()
+                    : "U"}
+                </AvatarFallback>
+              </Avatar>
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between gap-2">
                 <h4 className="truncate text-xs font-medium tracking-tight text-slate-900">

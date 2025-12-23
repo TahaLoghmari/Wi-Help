@@ -157,8 +157,8 @@ export function ProfileAndBio() {
             </button>
           </header>
           <div className="flex flex-col gap-3">
-            <div className="my-4 flex items-center justify-between">
-              <div className="flex items-center gap-4">
+            <div className="my-4 flex flex-col items-center justify-between gap-4 sm:flex-row sm:items-center">
+              <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
                 <Avatar className="h-20 w-20">
                   <AvatarImage
                     className="object-cover"
@@ -181,7 +181,7 @@ export function ProfileAndBio() {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-2 text-[11px] sm:justify-end">
+              <div className="flex flex-wrap justify-center gap-2 text-[11px] sm:justify-end">
                 <FormField
                   control={form.control}
                   name="profilePicture"
@@ -916,7 +916,7 @@ export function ProfileAndBio() {
               )}
             />
           </div>
-          <div className="flex w-full items-center justify-end">
+          <div className="flex w-full items-center justify-end mt-2">
             <button
               className="bg-brand-dark hover:bg-brand-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] text-white transition-colors"
               type="submit"

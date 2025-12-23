@@ -41,7 +41,7 @@ export function PrescriptionsTable() {
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-100">
+    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-100">
       <div className="border-b border-slate-200 bg-slate-50/70 pt-3 pr-4 pb-2 pl-4 sm:px-5">
         <div className="mb-2">
           <h2 className="text-brand-dark text-sm font-semibold tracking-tight">
