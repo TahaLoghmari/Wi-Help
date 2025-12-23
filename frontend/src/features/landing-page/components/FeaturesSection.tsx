@@ -61,7 +61,7 @@ export function FeaturesSection() {
             </div>
 
             {/* UI Snippet for Patient */}
-            <div className="shadow-soft mt-12 translate-y-8 transform rounded-2xl border border-white/50 bg-white/80 pt-6 pr-6 pb-6 pl-6 backdrop-blur-xl transition-transform duration-500 ease-out will-change-transform group-hover:translate-y-4">
+            <div className="mb-3 shadow-soft mt-12 translate-y-8 transform rounded-2xl border border-white/50 bg-white/80 pt-6 pr-6 pb-6 pl-6 backdrop-blur-xl transition-transform duration-500 ease-out will-change-transform group-hover:translate-y-4">
               <div className="mb-5 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="relative">

@@ -15,7 +15,7 @@ export function NewFooterSection() {
   };
 
   return (
-    <footer className="bg-brand-bg pt-8 pb-12 sm:px-8">
+    <footer className="bg-brand-bg pt-8 pb-12 px-4 sm:px-8">
       <div className="bg-brand-dark relative overflow-hidden rounded-[2.5rem] border border-black/5">
         <div className="relative z-10 pt-8 pr-4 pb-8 pl-4 sm:p-12">
           <div className="grid grid-cols-1 gap-12 pb-12 lg:grid-cols-4">

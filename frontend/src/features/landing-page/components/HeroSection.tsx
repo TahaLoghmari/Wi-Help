@@ -116,7 +116,7 @@ export function HeroSection() {
             />
           </div>
 
-          <div className="shadow-card animate-float absolute top-12 -right-4 z-30 w-64 rounded-2xl border border-white/60 bg-white/70 p-5 backdrop-blur-xl lg:-right-6">
+          <div className="shadow-card animate-float absolute top-12 -right-4 z-30 w-64 rounded-2xl border border-white/60 bg-white/70 p-5 backdrop-blur-xl lg:-right-6 scale-[0.65] origin-top-right md:scale-100">
             <div className="mb-4 flex items-center justify-between">
               <h4 className="font-geist text-xs font-medium text-slate-500">
                 {t("landing.hero.totalRevenue")}
@@ -147,7 +147,7 @@ export function HeroSection() {
             </div>
           </div>
 
-          <div className="shadow-card animate-float-delayed absolute top-20 -left-4 z-20 w-52 rounded-2xl border border-white/60 bg-white/70 p-5 backdrop-blur-xl lg:-left-12">
+          <div className="shadow-card animate-float-delayed absolute top-20 -left-4 z-20 w-52 rounded-2xl border border-white/60 bg-white/70 p-5 backdrop-blur-xl lg:-left-12 scale-[0.65] origin-top-left md:scale-100">
             <div className="mb-4 flex items-start justify-between">
               <div>
                 <h4 className="font-geist mb-1 text-xs font-medium text-slate-500">
@@ -188,7 +188,7 @@ export function HeroSection() {
               {t("landing.hero.newPatientsText")}
             </div>
           </div>
-          <div className="shadow-card animate-float-reverse absolute bottom-16 -left-2 z-30 w-60 rounded-2xl border border-white/60 bg-white/70 p-5 backdrop-blur-xl lg:-left-6">
+          <div className="shadow-card animate-float-reverse absolute bottom-16 -left-2 z-30 w-60 rounded-2xl border border-white/60 bg-white/70 p-5 backdrop-blur-xl lg:-left-6 scale-[0.65] origin-bottom-left md:scale-100">
             <h4 className="font-geist mb-3 text-xs font-medium text-slate-500">
               {t("landing.hero.scheduleHeatmap")}
             </h4>
@@ -228,7 +228,7 @@ export function HeroSection() {
             </div>
           </div>
 
-          <div className="shadow-card animate-float-slow absolute -right-4 bottom-20 z-20 w-64 rounded-2xl border border-white/60 bg-white/70 p-5 backdrop-blur-xl lg:-right-8">
+          <div className="shadow-card animate-float-slow absolute -right-4 bottom-20 z-20 w-64 rounded-2xl border border-white/60 bg-white/70 p-5 backdrop-blur-xl lg:-right-8 scale-[0.65] origin-bottom-right md:scale-100">
             <h4 className="font-geist mb-4 text-xs font-medium text-slate-500">
               {t("landing.hero.serviceTrends")}
             </h4>

@@ -149,6 +149,7 @@
     }
   },
   "common": {
+    "language": "Language",
     "login": "Log in",
     "password": "Password",
     "email": "Email",
