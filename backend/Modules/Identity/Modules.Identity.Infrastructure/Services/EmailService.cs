@@ -21,7 +21,7 @@ public sealed class IdentityEmailService(
         var token = await userManager.GeneratePasswordResetTokenAsync(user);
         logger.LogInformation("Generated password reset token for user {UserId}", user.Id);
         
-        var baseUrl = configuration["VITE_API_URL"] ?? "http://localhost:5000";
+        var baseUrl = configuration["VITE_API_URL"];
         var passwordResetLink = $"{baseUrl}/auth/reset-password?Email={Uri.EscapeDataString(email)}&Token={Uri.EscapeDataString(token)}";
         
         if (string.IsNullOrEmpty(passwordResetLink))
@@ -49,7 +49,7 @@ public sealed class IdentityEmailService(
         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
         logger.LogInformation("Generated email confirmation token for user {UserId}", user.Id);
         
-        var baseUrl = configuration["VITE_API_URL"] ?? "http://localhost:5000";
+        var baseUrl = configuration["VITE_API_URL"];
         var confirmationLink = $"{baseUrl}/auth/confirm-email?UserId={Uri.EscapeDataString(user.Id.ToString())}&Token={Uri.EscapeDataString(token)}";
 
         if (string.IsNullOrEmpty(confirmationLink))

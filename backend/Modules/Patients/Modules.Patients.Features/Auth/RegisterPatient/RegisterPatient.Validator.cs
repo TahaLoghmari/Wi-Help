@@ -35,15 +35,15 @@ public class RegisterPatientCommandValidator : AbstractValidator<RegisterPatient
             .NotEmpty()
             .WithMessage("First name is required")
             .MaximumLength(100)
-            .Matches(@"^[a-zA-Z]+$")
-            .WithMessage("First name must contain only letters");
+            .Matches(@"^[a-zA-Z\s]+$")
+            .WithMessage("First name must contain only letters and spaces");
 
         RuleFor(x => x.LastName)
             .NotEmpty()
             .WithMessage("Last name is required")
             .MaximumLength(100)
-            .Matches(@"^[a-zA-Z]+$")
-            .WithMessage("Last name must contain only letters");
+            .Matches(@"^[a-zA-Z\s]+$")
+            .WithMessage("Last name must contain only letters and spaces");
 
         RuleFor(x => x.DateOfBirth)
             .NotEmpty()

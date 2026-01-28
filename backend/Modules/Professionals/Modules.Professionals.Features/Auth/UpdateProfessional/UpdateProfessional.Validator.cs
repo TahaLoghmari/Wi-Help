@@ -15,16 +15,16 @@ public class UpdateProfessionalCommandValidator : AbstractValidator<UpdateProfes
             .WithMessage("First name is required")
             .MaximumLength(100)
             .WithMessage("First name cannot exceed 100 characters")
-            .Matches(@"^[a-zA-Z]+$")
-            .WithMessage("First name must contain only letters");
+            .Matches(@"^[a-zA-Z\s]+$")
+            .WithMessage("First name must contain only letters and spaces");
 
         RuleFor(x => x.LastName)
             .NotEmpty()
             .WithMessage("Last name is required")
             .MaximumLength(100)
             .WithMessage("Last name cannot exceed 100 characters")
-            .Matches(@"^[a-zA-Z]+$")
-            .WithMessage("Last name must contain only letters");
+            .Matches(@"^[a-zA-Z\s]+$")
+            .WithMessage("Last name must contain only letters and spaces");
 
         RuleFor(x => x.PhoneNumber)
             .NotEmpty()
