@@ -23,45 +23,44 @@ const addressSchema = z.object({
     .max(50, { message: "Country must be at most 50 characters." }),
 });
 
-export const profileAndBioFormSchema = z
-  .object({
-    firstName: z
-      .string()
-      .min(1, { message: "First Name is required." })
-      .max(50, { message: "First Name must be at most 50 characters." })
-      .regex(/^[a-zA-Z]+$/, {
-        message: "First Name must contain only letters.",
-      }),
-    lastName: z
-      .string()
-      .min(1, { message: "Last Name is required." })
-      .max(50, { message: "Last Name must be at most 50 characters." })
-      .regex(/^[a-zA-Z]+$/, {
-        message: "Last Name must contain only letters.",
-      }),
-    phoneNumber: z
-      .string()
-      .min(1, { message: "Phone Number is required." })
-      .regex(/^[0-9+\-\s()]+$/, { message: "Invalid phone number format." }),
-    experience: z
-      .number({ message: "Years of experience must be a number." })
-      .int({ message: "Experience must be a whole number." })
-      .nonnegative({ message: "Experience cannot be negative." }),
-    address: addressSchema,
-    profilePicture: z.any().nullish(),
-    specialization: z
-      .string()
-      .min(1, { message: "Specialization is required." })
-      .max(50, { message: "Specialization must be at most 50 characters." }),
-    services: z.array(z.string()).nullish(),
-    visitPrice: z
-      .number({ message: "Visit price must be a number." })
-      .nonnegative({ message: "Visit price cannot be negative." }),
-    bio: z
-      .string()
-      .max(1000, { message: "Bio must be at most 1000 characters." })
-      .nullish(),
-  });
+export const profileAndBioFormSchema = z.object({
+  firstName: z
+    .string()
+    .min(1, { message: "First Name is required." })
+    .max(50, { message: "First Name must be at most 50 characters." })
+    .regex(/^[a-zA-Z\s]+$/, {
+      message: "First Name must contain only letters and spaces.",
+    }),
+  lastName: z
+    .string()
+    .min(1, { message: "Last Name is required." })
+    .max(50, { message: "Last Name must be at most 50 characters." })
+    .regex(/^[a-zA-Z\s]+$/, {
+      message: "Last Name must contain only letters and spaces.",
+    }),
+  phoneNumber: z
+    .string()
+    .min(1, { message: "Phone Number is required." })
+    .regex(/^[0-9+\-\s()]+$/, { message: "Invalid phone number format." }),
+  experience: z
+    .number({ message: "Years of experience must be a number." })
+    .int({ message: "Experience must be a whole number." })
+    .nonnegative({ message: "Experience cannot be negative." }),
+  address: addressSchema,
+  profilePicture: z.any().nullish(),
+  specialization: z
+    .string()
+    .min(1, { message: "Specialization is required." })
+    .max(50, { message: "Specialization must be at most 50 characters." }),
+  services: z.array(z.string()).nullish(),
+  visitPrice: z
+    .number({ message: "Visit price must be a number." })
+    .nonnegative({ message: "Visit price cannot be negative." }),
+  bio: z
+    .string()
+    .max(1000, { message: "Bio must be at most 1000 characters." })
+    .nullish(),
+});
 
 // Award validation schema
 export const awardFormSchema = z.object({

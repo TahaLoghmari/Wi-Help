@@ -9,7 +9,9 @@ const addressSchema = z.object({
     .string()
     .min(1, { message: "City is required." })
     .max(50, { message: "City must be at most 50 characters." })
-    .regex(/^[a-zA-Z]+$/, { message: "City must contain only letters." }),
+    .regex(/^[a-zA-Z\s]+$/, {
+      message: "City must contain only letters and spaces.",
+    }),
   postalCode: z
     .string()
     .min(1, { message: "Postal Code is required." })
@@ -22,7 +24,9 @@ const addressSchema = z.object({
     .string()
     .min(1, { message: "State is required." })
     .max(50, { message: "State must be at most 50 characters." })
-    .regex(/^[a-zA-Z]+$/, { message: "City must contain only letters." }),
+    .regex(/^[a-zA-Z\s]+$/, {
+      message: "State must contain only letters and spaces.",
+    }),
 });
 
 const emergencyContactSchema = z.object({
@@ -52,12 +56,16 @@ const commonFields = {
     .string()
     .min(1, { message: "First Name is required." })
     .max(50, { message: "First Name must be at most 50 characters." })
-    .regex(/^[a-zA-Z]+$/, { message: "First Name must contain only letters." }),
+    .regex(/^[a-zA-Z\s]+$/, {
+      message: "First Name must contain only letters and spaces.",
+    }),
   lastName: z
     .string()
     .min(1, { message: "Last Name is required." })
     .max(50, { message: "Last Name must be at most 50 characters." })
-    .regex(/^[a-zA-Z]+$/, { message: "Last Name must contain only letters." }),
+    .regex(/^[a-zA-Z\s]+$/, {
+      message: "Last Name must contain only letters and spaces.",
+    }),
   dateOfBirth: z
     .string()
     .min(1, { message: "Date of Birth is required." })

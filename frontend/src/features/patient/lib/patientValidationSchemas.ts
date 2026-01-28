@@ -53,14 +53,16 @@ export const profileAndBioFormSchema = z.object({
     .string()
     .min(1, { message: "First Name is required." })
     .max(50, { message: "First Name must be at most 50 characters." })
-    .regex(/^[a-zA-Z]+$/, {
-      message: "First Name must contain only letters.",
+    .regex(/^[a-zA-Z\s]+$/, {
+      message: "First Name must contain only letters and spaces.",
     }),
   lastName: z
     .string()
     .min(1, { message: "Last Name is required." })
     .max(50, { message: "Last Name must be at most 50 characters." })
-    .regex(/^[a-zA-Z]+$/, { message: "Last Name must contain only letters." }),
+    .regex(/^[a-zA-Z\s]+$/, {
+      message: "Last Name must contain only letters and spaces.",
+    }),
   phoneNumber: z
     .string()
     .min(1, { message: "Phone Number is required." })
