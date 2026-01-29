@@ -16,7 +16,7 @@ internal sealed class GetResetPasswordPage : IEndpoint
                 [FromQuery] string token,
                 IConfiguration configuration) =>
             {
-                var frontendUrl = configuration["FrontendUrl"] ?? "http://localhost:5173";
+                var frontendUrl = configuration["FRONTEND_URL"] ;
                 
                 var redirectUrl = $"{frontendUrl}/auth/reset-password?email={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(token)}";
                 

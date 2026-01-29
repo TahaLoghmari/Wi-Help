@@ -38,7 +38,7 @@ public sealed class User : IdentityUser<Guid>
             CreatedAt = DateTime.UtcNow,
             Email = email,
             PhoneNumber = phoneNumber,
-            UserName = $"{firstName.ToLower()}.{lastName.ToLower()}",
+            UserName = $"{firstName.ToLower()} {lastName.ToLower()}",
             Address =  address,
         };
     }
@@ -63,7 +63,7 @@ public sealed class User : IdentityUser<Guid>
             Address = address;
         
         if (!string.IsNullOrWhiteSpace(firstName) || !string.IsNullOrWhiteSpace(lastName))
-            UserName = $"{FirstName.ToLower()}.{LastName.ToLower()}";
+            UserName = $"{FirstName.ToLower()} {LastName.ToLower()}";
         
         if ( !string.IsNullOrWhiteSpace(profilePictureUrl) )
             ProfilePictureUrl = profilePictureUrl;

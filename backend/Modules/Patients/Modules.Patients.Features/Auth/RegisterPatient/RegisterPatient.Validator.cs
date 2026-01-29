@@ -72,12 +72,16 @@ public class RegisterPatientCommandValidator : AbstractValidator<RegisterPatient
         RuleFor(x => x.Address.City)
             .NotEmpty()
             .WithMessage("City is required")
-            .MaximumLength(100);
+            .MaximumLength(100)
+            .Matches(@"^[a-zA-Z\s']+$")
+            .WithMessage("City must contain only letters, spaces, and apostrophes");
 
         RuleFor(x => x.Address.State)
             .NotEmpty()
             .WithMessage("State/Province is required")
-            .MaximumLength(100);
+            .MaximumLength(100)
+            .Matches(@"^[a-zA-Z\s']+$")
+            .WithMessage("State must contain only letters, spaces, and apostrophes");
 
         RuleFor(x => x.Address.PostalCode)
             .NotEmpty()
