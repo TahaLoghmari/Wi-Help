@@ -8,11 +8,17 @@ const addressSchema = z.object({
   city: z
     .string()
     .min(1, { message: "City is required." })
-    .max(50, { message: "City must be at most 50 characters." }),
+    .max(50, { message: "City must be at most 50 characters." })
+    .regex(/^[a-zA-Z\s']+$/, {
+      message: "City must contain only letters, spaces, and apostrophes.",
+    }),
   state: z
     .string()
     .min(1, { message: "State is required." })
-    .max(50, { message: "State must be at most 50 characters." }),
+    .max(50, { message: "State must be at most 50 characters." })
+    .regex(/^[a-zA-Z\s']+$/, {
+      message: "State must contain only letters, spaces, and apostrophes.",
+    }),
   postalCode: z
     .string()
     .min(1, { message: "Postal Code is required." })
