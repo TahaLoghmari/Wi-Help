@@ -24,6 +24,14 @@ public sealed class IdentityDbContext(DbContextOptions<IdentityDbContext> option
         builder.Entity<IdentityUserToken<Guid>>().ToTable("user_tokens");
         builder.Entity<IdentityRoleClaim<Guid>>().ToTable("role_claims");
         
+        // Remove unique constraint on UserName to allow duplicate usernames
+        builder.Entity<User>(b =>
+        {
+            b.HasIndex(u => u.NormalizedUserName)
+                .HasDatabaseName("UserNameIndex")
+                .IsUnique(false);
+        });
+        
         // Apply all entity configurations from this assembly
         builder.ApplyConfigurationsFromAssembly(typeof(IdentityDbContext).Assembly);
     }

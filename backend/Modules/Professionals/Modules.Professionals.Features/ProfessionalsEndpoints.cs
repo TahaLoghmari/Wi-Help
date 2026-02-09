@@ -12,6 +12,7 @@ public static class ProfessionalsEndpoints
     public const string GetProfessionalAvailability = "professionals/{professionalId}/availability";
     public const string UploadVerificationDocument = "professionals/me/documents";
     public const string GetVerificationDocuments = "professionals/me/documents";
+    public const string CompleteOnboarding = "professionals/complete-onboarding";
     
     // Awards endpoints (current professional)
     public const string GetAwards = "professionals/me/awards";

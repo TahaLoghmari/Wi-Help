@@ -227,8 +227,7 @@ internal static class DependencyInjection
             .AddReviewsInfrastructure(builder.Configuration);
 
         builder.Services.AddAdministrationModule();
-        builder.Services.AddCommonModule(moduleApplicationAssemblies)
-            .AddCommonInfrastructure(builder.Configuration);
+        builder.Services.AddCommonInfrastructure(builder.Configuration);
 
         return builder;
     }

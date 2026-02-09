@@ -7,4 +7,5 @@ public static class PatientsEndpoints
     public const string GetCurrentPatient = "patients/me";
     public const string GetPatient = "patients/{patientId}";
     public const string GetAllPatients = "patients/admin";
+    public const string CompleteOnboarding = "patients/complete-onboarding";
 }

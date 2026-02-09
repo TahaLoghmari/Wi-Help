@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +9,7 @@ using Modules.Identity.Domain.Entities;
 using Modules.Identity.Infrastructure.Database;
 using Modules.Identity.Infrastructure.Services;
 using Modules.Identity.Infrastructure.Settings;
+using Modules.Identity.Infrastructure.Validators;
 
 namespace Modules.Identity.Infrastructure;
 
@@ -40,7 +42,17 @@ public static class DependencyInjection
             .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<IdentityDbContext>()
             .AddDefaultTokenProviders()
-            .AddSignInManager<SignInManager<User>>();
+            .AddSignInManager<SignInManager<User>>()
+            .AddUserValidator<CustomUserValidator>();
+
+        // Remove the default UserValidator that enforces unique usernames
+        var defaultValidator = services.FirstOrDefault(s =>
+            s.ServiceType == typeof(IUserValidator<User>) &&
+            s.ImplementationType == typeof(UserValidator<User>));
+        if (defaultValidator != null)
+        {
+            services.Remove(defaultValidator);
+        }
 
         services.AddHttpContextAccessor();
 
@@ -48,6 +60,7 @@ public static class DependencyInjection
         services.AddScoped<TokenProvider>();
         services.AddScoped<IdentityEmailService>();
         services.AddScoped<CookieService>();
+        services.AddScoped<GoogleTokensProvider>();
 
         services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
         services.Configure<GoogleSettings>(configuration.GetSection("Google"));

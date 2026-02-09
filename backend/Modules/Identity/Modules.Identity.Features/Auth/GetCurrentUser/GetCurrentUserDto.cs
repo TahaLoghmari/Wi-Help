@@ -13,4 +13,5 @@ public sealed record GetCurrentUserDto(
     Address Address,
     string Role,
     string? ProfilePictureUrl,
-    Coordinates? Location);
+    Coordinates? Location,
+    bool IsOnboardingCompleted);

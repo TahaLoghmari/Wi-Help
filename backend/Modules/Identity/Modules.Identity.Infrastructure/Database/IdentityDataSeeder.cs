@@ -68,7 +68,7 @@ public static class IdentityDataSeeder
         var professionals = new List<(string Email, string Password, string FirstName, string LastName, string DateOfBirth, string Gender, string PhoneNumber, Address Address)>
         {
             (
-                "medtahalog@gmail.com",
+                "forTestingPurposes@gmail.com",
                 "Tahalog12#",
                 "Mohamed",
                 "BenSalah",

@@ -43,4 +43,12 @@ public interface IIdentityModuleApi
     Task<Result<List<UserDto>>> GetUsersByRoleAsync(
         string role,
         CancellationToken cancellationToken);
+    
+    Task<Result> CompleteOnboardingAsync(
+        CompleteOnboardingRequest request,
+        CancellationToken cancellationToken);
+    
+    Task<Result<bool>> IsOnboardingCompletedAsync(
+        Guid userId,
+        CancellationToken cancellationToken);
 }

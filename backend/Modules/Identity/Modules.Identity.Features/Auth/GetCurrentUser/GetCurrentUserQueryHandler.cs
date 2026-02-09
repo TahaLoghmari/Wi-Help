@@ -44,7 +44,8 @@ public sealed class GetCurrentUserQueryHandler(
             user.Address,
             userRoles.FirstOrDefault() ?? string.Empty,
             user.ProfilePictureUrl,
-            user.Location);
+            user.Location,
+            user.IsOnboardingCompleted);
 
         return Result<GetCurrentUserDto>.Success(userDto);
     }

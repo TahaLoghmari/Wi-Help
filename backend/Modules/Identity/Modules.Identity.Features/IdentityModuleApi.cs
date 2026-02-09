@@ -302,5 +302,52 @@ public class IdentityModuleApi(
 
         return Result<List<UserDto>>.Success(userDtos);
     }
+    
+    public async Task<Result> CompleteOnboardingAsync(
+        CompleteOnboardingRequest request,
+        CancellationToken cancellationToken)
+    {
+        logger.LogInformation("Completing onboarding for user {UserId}", request.UserId);
+
+        var user = await userManager.FindByIdAsync(request.UserId.ToString());
+        if (user is null)
+        {
+            logger.LogWarning("User not found for UserId: {UserId}", request.UserId);
+            return Result.Failure(Error.NotFound("IdentityApi.UserNotFound", $"User with ID '{request.UserId}' not found."));
+        }
+
+        user.CompleteOnboarding(
+            request.DateOfBirth,
+            request.Gender,
+            request.PhoneNumber,
+            request.Address);
+
+        var result = await userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+        {
+            logger.LogError("Failed to complete onboarding for user {UserId}. Errors: {Errors}",
+                request.UserId, string.Join(", ", result.Errors.Select(e => $"{e.Code}: {e.Description}")));
+            return Result.Failure(Error.Failure("IdentityApi.OnboardingFailed", "Failed to complete onboarding."));
+        }
+
+        logger.LogInformation("Onboarding completed successfully for user {UserId}", request.UserId);
+        return Result.Success();
+    }
+    
+    public async Task<Result<bool>> IsOnboardingCompletedAsync(
+        Guid userId,
+        CancellationToken cancellationToken)
+    {
+        logger.LogInformation("Checking onboarding status for user {UserId}", userId);
+
+        var user = await userManager.FindByIdAsync(userId.ToString());
+        if (user is null)
+        {
+            logger.LogWarning("User not found for UserId: {UserId}", userId);
+            return Result<bool>.Failure(Error.NotFound("IdentityApi.UserNotFound", $"User with ID '{userId}' not found."));
+        }
+
+        return Result<bool>.Success(user.IsOnboardingCompleted);
+    }
 }
 
