@@ -84,7 +84,7 @@ export function LoginPage({
                     className="w-full"
                     onClick={(e) => {
                       e.stopPropagation();
-                      getGoogleOAuthUrlMutation.mutate();
+                      getGoogleOAuthUrlMutation.mutate(undefined);
                     }}
                     disabled={getGoogleOAuthUrlMutation.isPending}
                   >
