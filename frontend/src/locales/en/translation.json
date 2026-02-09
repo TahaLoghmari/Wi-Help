@@ -187,6 +187,7 @@
     "welcomeBack": "Welcome back",
     "loginDescription": "Enter your email below to login to your account",
     "loginWithGoogle": "Login with Google",
+    "signInWithGoogle": "Sign In with Google",
     "orContinueWith": "Or continue with",
     "emailPlaceholder": "name@example.com",
     "passwordPlaceholder": "Enter your password",
@@ -248,7 +249,17 @@
     "confirmPasswordPlaceholder": "Confirm your new password",
     "updatePassword": "Update Password",
     "sendResetLink": "Send Reset Link",
-    "backToLogin": "Back to Login"
+    "backToLogin": "Back to Login",
+    "signUpWithGoogle": "Sign up with Google",
+    "completeProfile": "Complete Your Profile",
+    "completeProfileDescription": "Please fill in the required information to complete your registration.",
+    "completeSetup": "Complete Setup",
+    "onboardingSteps": {
+      "patientInfo": "Patient Information",
+      "professionalInfo": "Professional Information",
+      "addressInfo": "Address Information",
+      "emergencyContact": "Emergency Contact"
+    }
   },
   "forms": {
     "labels": {

@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
-  // useGetGoogleOAuthUrl,
+  useGetGoogleOAuthUrl,
   useLogin,
   type LoginUserDto,
   loginFormSchema,
@@ -34,14 +34,14 @@ import { Route as LoginRoute } from "@/routes/auth/login";
 import { ROUTE_PATHS } from "@/config/routes";
 import { useAppNavigation } from "@/hooks";
 import { useTranslation } from "react-i18next";
-// import GoogleIcon from "@/assets/googleIcon.svg";
+import GoogleIcon from "@/assets/googleIcon.svg";
 
 export function LoginPage({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const { t } = useTranslation();
-  // const getGoogleOAuthUrlMutation = useGetGoogleOAuthUrl();
+  const getGoogleOAuthUrlMutation = useGetGoogleOAuthUrl();
   const { message } = LoginRoute.useSearch();
   const { goTo } = useAppNavigation();
   const loginMutation = useLogin();
@@ -77,7 +77,7 @@ export function LoginPage({
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <div className="grid gap-6">
-                {/* <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4">
                   <Button
                     type="button"
                     variant="outline"
@@ -86,16 +86,17 @@ export function LoginPage({
                       e.stopPropagation();
                       getGoogleOAuthUrlMutation.mutate();
                     }}
+                    disabled={getGoogleOAuthUrlMutation.isPending}
                   >
                     <img src={GoogleIcon} alt="Google" className="h-5 w-5" />
-                    {t("auth.loginWithGoogle")}
+                    {t("auth.signInWithGoogle")}
                   </Button>
                 </div>
                 <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                   <span className="bg-card text-muted-foreground relative z-10 px-2">
                     {t("auth.orContinueWith")}
                   </span>
-                </div> */}
+                </div>
                 <div className="grid gap-6">
                   <div className="grid gap-3">
                     <FormField

@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
   Progress,
+  Button,
 } from "@/components/ui";
 import {
   useRegisterPatient,
@@ -19,12 +20,14 @@ import {
   PatientForm,
   ProfessionalForm,
   useStepsStore,
+  useGetGoogleOAuthUrl,
 } from "@/features/auth";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Link } from "@tanstack/react-router";
 import { ROUTE_PATHS } from "@/config/routes";
 import { useTranslation } from "react-i18next";
+import GoogleIcon from "@/assets/googleIcon.svg";
 
 export function Register() {
   const { registerRole, setRegisterRole } = useRegisterRoleStore();
@@ -32,6 +35,7 @@ export function Register() {
   const { t } = useTranslation();
   const registerPatientMutation = useRegisterPatient();
   const registerProfessionMutation = useRegisterProfessional();
+  const getGoogleOAuthUrlMutation = useGetGoogleOAuthUrl();
 
   const form = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
@@ -142,6 +146,31 @@ export function Register() {
                     <p>{t("auth.roles.professional")}</p>
                   </div>
                 </div>
+
+                {/* Google Sign Up Button */}
+                <div className="mb-6 flex flex-col gap-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const role =
+                        registerRole === "patient" ? "Patient" : "Professional";
+                      getGoogleOAuthUrlMutation.mutate(role);
+                    }}
+                    disabled={getGoogleOAuthUrlMutation.isPending}
+                  >
+                    <img src={GoogleIcon} alt="Google" className="h-5 w-5" />
+                    {t("auth.signUpWithGoogle")}
+                  </Button>
+                  <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+                    <span className="bg-card text-muted-foreground relative z-10 px-2">
+                      {t("auth.orContinueWith")}
+                    </span>
+                  </div>
+                </div>
+
                 {registerRole === "patient" && <PatientForm form={form} />}
                 {registerRole === "professional" && (
                   <ProfessionalForm form={form} />

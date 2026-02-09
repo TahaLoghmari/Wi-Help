@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as ProfessionalRouteRouteImport } from './routes/professional/route'
 import { Route as PatientRouteRouteImport } from './routes/patient/route'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
@@ -42,6 +44,7 @@ import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
 import { Route as AuthEmailVerifiedRouteImport } from './routes/auth/email-verified'
 import { Route as AuthEmailVerificationRouteImport } from './routes/auth/email-verification'
+import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as AdminTransactionsRouteImport } from './routes/admin/transactions'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminReviewsRouteImport } from './routes/admin/reviews'
@@ -57,6 +60,16 @@ import { Route as PatientBookProfessionalIdRouteImport } from './routes/patient/
 import { Route as AdminProfessionalsProfessionalIdRouteImport } from './routes/admin/professionals.$professionalId'
 import { Route as AdminPatientsPatientIdRouteImport } from './routes/admin/patients.$patientId'
 
+const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
+  id: '/terms-of-service',
+  path: '/terms-of-service',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfessionalRouteRoute = ProfessionalRouteRouteImport.update({
   id: '/professional',
   path: '/professional',
@@ -225,6 +238,11 @@ const AuthEmailVerificationRoute = AuthEmailVerificationRouteImport.update({
   path: '/email-verification',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/callback',
+  path: '/callback',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AdminTransactionsRoute = AdminTransactionsRouteImport.update({
   id: '/transactions',
   path: '/transactions',
@@ -306,12 +324,15 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteRouteWithChildren
   '/patient': typeof PatientRouteRouteWithChildren
   '/professional': typeof ProfessionalRouteRouteWithChildren
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
   '/admin/appointments': typeof AdminAppointmentsRoute
   '/admin/documents': typeof AdminDocumentsRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/transactions': typeof AdminTransactionsRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/auth/email-verification': typeof AuthEmailVerificationRoute
   '/auth/email-verified': typeof AuthEmailVerifiedRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -351,12 +372,15 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
   '/admin/appointments': typeof AdminAppointmentsRoute
   '/admin/documents': typeof AdminDocumentsRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/transactions': typeof AdminTransactionsRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/auth/email-verification': typeof AuthEmailVerificationRoute
   '/auth/email-verified': typeof AuthEmailVerifiedRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -401,12 +425,15 @@ export interface FileRoutesById {
   '/auth': typeof AuthRouteRouteWithChildren
   '/patient': typeof PatientRouteRouteWithChildren
   '/professional': typeof ProfessionalRouteRouteWithChildren
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
   '/admin/appointments': typeof AdminAppointmentsRoute
   '/admin/documents': typeof AdminDocumentsRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/transactions': typeof AdminTransactionsRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/auth/email-verification': typeof AuthEmailVerificationRoute
   '/auth/email-verified': typeof AuthEmailVerifiedRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -452,12 +479,15 @@ export interface FileRouteTypes {
     | '/auth'
     | '/patient'
     | '/professional'
+    | '/privacy-policy'
+    | '/terms-of-service'
     | '/admin/appointments'
     | '/admin/documents'
     | '/admin/notifications'
     | '/admin/reviews'
     | '/admin/settings'
     | '/admin/transactions'
+    | '/auth/callback'
     | '/auth/email-verification'
     | '/auth/email-verified'
     | '/auth/forgot-password'
@@ -497,12 +527,15 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/privacy-policy'
+    | '/terms-of-service'
     | '/admin/appointments'
     | '/admin/documents'
     | '/admin/notifications'
     | '/admin/reviews'
     | '/admin/settings'
     | '/admin/transactions'
+    | '/auth/callback'
     | '/auth/email-verification'
     | '/auth/email-verified'
     | '/auth/forgot-password'
@@ -546,12 +579,15 @@ export interface FileRouteTypes {
     | '/auth'
     | '/patient'
     | '/professional'
+    | '/privacy-policy'
+    | '/terms-of-service'
     | '/admin/appointments'
     | '/admin/documents'
     | '/admin/notifications'
     | '/admin/reviews'
     | '/admin/settings'
     | '/admin/transactions'
+    | '/auth/callback'
     | '/auth/email-verification'
     | '/auth/email-verified'
     | '/auth/forgot-password'
@@ -596,10 +632,26 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   PatientRouteRoute: typeof PatientRouteRouteWithChildren
   ProfessionalRouteRoute: typeof ProfessionalRouteRouteWithChildren
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  TermsOfServiceRoute: typeof TermsOfServiceRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms-of-service': {
+      id: '/terms-of-service'
+      path: '/terms-of-service'
+      fullPath: '/terms-of-service'
+      preLoaderRoute: typeof TermsOfServiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/professional': {
       id: '/professional'
       path: '/professional'
@@ -831,6 +883,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthEmailVerificationRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/admin/transactions': {
       id: '/admin/transactions'
       path: '/transactions'
@@ -965,6 +1024,7 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 )
 
 interface AuthRouteRouteChildren {
+  AuthCallbackRoute: typeof AuthCallbackRoute
   AuthEmailVerificationRoute: typeof AuthEmailVerificationRoute
   AuthEmailVerifiedRoute: typeof AuthEmailVerifiedRoute
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
@@ -975,6 +1035,7 @@ interface AuthRouteRouteChildren {
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthCallbackRoute: AuthCallbackRoute,
   AuthEmailVerificationRoute: AuthEmailVerificationRoute,
   AuthEmailVerifiedRoute: AuthEmailVerifiedRoute,
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
@@ -1062,6 +1123,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   PatientRouteRoute: PatientRouteRouteWithChildren,
   ProfessionalRouteRoute: ProfessionalRouteRouteWithChildren,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
+  TermsOfServiceRoute: TermsOfServiceRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

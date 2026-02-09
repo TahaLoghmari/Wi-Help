@@ -13,12 +13,11 @@ import { useCurrentScreenSize } from "@/hooks";
 import { Route as ProfessionalRoute } from "@/routes/professional/route";
 import { Route as PatientRoute } from "@/routes/patient/route";
 import { Route as AdminRoute } from "@/routes/admin/route";
-import { useAppNavigation } from "@/index";
 import { Outlet, useRouterState } from "@tanstack/react-router";
 
 export function DashboardLayout() {
   const { setIsSidebarOpen } = useDashboardSidebarStateStore();
-  const { data: user, isLoading: isPending } = useCurrentUser();
+  const { isLoading: isPending } = useCurrentUser();
 
   const { currentScreenSize } = useCurrentScreenSize();
   const routerState = useRouterState();
@@ -43,23 +42,15 @@ export function DashboardLayout() {
       ? patientSearch.message
       : professionalSearch.message;
 
-  const { goToProfessionalApp, goToPatientApp, goToAdminApp } =
-    useAppNavigation();
   // useSignalRNotifications(user?.id);
 
   // this is for google signin/signup failing or any error when the redirection is comming from the backend with an error
   useEffect(() => {
     if (message) {
       toast.error(message);
-      if (user?.role === "admin") {
-        goToAdminApp();
-      } else if (user?.role === "professional") {
-        goToProfessionalApp();
-      } else {
-        goToPatientApp();
-      }
+      // User is already on their correct app, no need to navigate again
     }
-  }, [message, user?.role, goToProfessionalApp, goToPatientApp, goToAdminApp]);
+  }, [message]);
 
   useEffect(() => {
     if (currentScreenSize >= 768 && currentScreenSize < 1280)

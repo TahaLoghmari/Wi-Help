@@ -232,3 +232,46 @@ export const changePasswordFormSchema = z
     message: "New password must be different from the current password.",
     path: ["newPassword"],
   });
+
+// Onboarding schemas (for Google OAuth users)
+const onboardingCommonFields = {
+  dateOfBirth: z
+    .string()
+    .min(1, { message: "Date of Birth is required." })
+    .refine(
+      (date) => {
+        const selectedDate = new Date(date);
+        const today = new Date();
+        return selectedDate <= today;
+      },
+      { message: "Date of Birth cannot be in the future." },
+    ),
+  gender: z
+    .string()
+    .min(1, { message: "Gender is required." })
+    .max(10, { message: "Gender must be at most 10 characters." }),
+  phoneNumber: z
+    .string()
+    .min(1, { message: "Phone Number is required." })
+    .max(20, { message: "Phone Number must be at most 20 characters." })
+    .regex(/^\+?[\d\s\-()]+$/, {
+      message: "Please enter a valid phone number.",
+    }),
+  address: addressSchema,
+};
+
+export const patientOnboardingSchema = z.object({
+  ...onboardingCommonFields,
+  emergencyContact: emergencyContactSchema,
+});
+
+export const professionalOnboardingSchema = z.object({
+  ...onboardingCommonFields,
+  specialization: z
+    .string()
+    .min(1, { message: "Specialization is required." })
+    .max(100, { message: "Specialization must be at most 100 characters." }),
+  experience: z
+    .number()
+    .min(0, { message: "Years of Experience must be at least 0." }),
+});

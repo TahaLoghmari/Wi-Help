@@ -10,3 +10,4 @@ export * from "./useLogout";
 export * from "./useChangePassword";
 export * from "./useUpdateLocation";
 export * from "./useLocationManager";
+export * from "./useCompleteOnboarding";

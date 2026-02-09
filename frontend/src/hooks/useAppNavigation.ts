@@ -50,11 +50,11 @@ export function useAppNavigation() {
     },
 
     goToAdminApp: () => {
-      navigate({ to: ROUTE_PATHS.ADMIN.ROOT });
+      navigate({ to: ROUTE_PATHS.ADMIN.APPOINTMENTS });
     },
 
     goToProfessionalApp: () => {
-      navigate({ to: ROUTE_PATHS.PROFESSIONAL.ROOT });
+      navigate({ to: ROUTE_PATHS.PROFESSIONAL.APPOINTMENTS });
     },
 
     goToProfessionalMessaging: () => {
@@ -62,7 +62,7 @@ export function useAppNavigation() {
     },
 
     goToPatientApp: () => {
-      navigate({ to: ROUTE_PATHS.PATIENT.ROOT });
+      navigate({ to: ROUTE_PATHS.PATIENT.APPOINTMENTS });
     },
 
     goToBookingSuccess: () => {
@@ -80,6 +80,13 @@ export function useAppNavigation() {
       navigate({
         to: ROUTE_PATHS.PATIENT.PROFESSIONAL_PROFILE,
         params: { professionalId },
+      });
+    },
+
+    goToOnboarding: (role: string) => {
+      navigate({
+        to: ROUTE_PATHS.AUTH.CALLBACK,
+        search: { onboarding: true, role },
       });
     },
 

@@ -10,6 +10,7 @@ export interface UserDto {
   profilePictureUrl: string;
   role: string;
   location?: LocationCoordinates | null;
+  isOnboardingCompleted: boolean;
 }
 
 export interface Address {
@@ -91,4 +92,21 @@ export interface ForgotPasswordState {
 
 export interface GoogleAuthResponseDto {
   authorizationUrl: string;
+}
+
+export interface CompletePatientOnboardingDto {
+  dateOfBirth: string;
+  gender: string;
+  phoneNumber: string;
+  address: Address;
+  emergencyContact: EmergencyContact;
+}
+
+export interface CompleteProfessionalOnboardingDto {
+  dateOfBirth: string;
+  gender: string;
+  phoneNumber: string;
+  address: Address;
+  specialization: string;
+  experience: number;
 }

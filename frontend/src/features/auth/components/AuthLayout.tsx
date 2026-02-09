@@ -11,12 +11,14 @@ interface AuthLayoutProps {
 export function AuthLayout({ children }: AuthLayoutProps) {
   const { t } = useTranslation();
   const location = useLocation();
-  const isRegisterRoute = location.pathname.includes(ROUTE_PATHS.AUTH.REGISTER);
+  const isWideRoute =
+    location.pathname.includes(ROUTE_PATHS.AUTH.REGISTER) ||
+    location.pathname.includes(ROUTE_PATHS.AUTH.CALLBACK);
 
   return (
     <div className="bg-muted flex h-svh flex-col items-center gap-6 overflow-y-auto">
       <div
-        className={`my-auto flex w-full flex-col gap-6 p-6 md:p-10 ${isRegisterRoute ? "max-w-[590px]" : "max-w-md"}`}
+        className={`my-auto flex w-full flex-col gap-6 p-6 md:p-10 ${isWideRoute ? "max-w-[590px]" : "max-w-md"}`}
       >
         <div className="flex items-center justify-center">
           <div className="flex items-center gap-5">

@@ -63,3 +63,41 @@ export function ChangePasswordDefaults() {
     confirmNewPassword: "",
   };
 }
+
+// Onboarding form defaults (for Google OAuth users)
+export function PatientOnboardingDefaults() {
+  return {
+    dateOfBirth: "",
+    gender: "",
+    phoneNumber: "",
+    address: {
+      street: "",
+      city: "",
+      postalCode: "",
+      country: "",
+      state: "",
+    },
+    emergencyContact: {
+      fullName: "",
+      phoneNumber: "",
+      relationship: "",
+    },
+  };
+}
+
+export function ProfessionalOnboardingDefaults() {
+  return {
+    dateOfBirth: "",
+    gender: "",
+    phoneNumber: "",
+    address: {
+      street: "",
+      city: "",
+      postalCode: "",
+      country: "",
+      state: "",
+    },
+    specialization: "",
+    experience: 0,
+  };
+}

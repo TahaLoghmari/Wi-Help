@@ -2,7 +2,9 @@ import { useAppNavigation } from "@/hooks";
 import { useCurrentUser } from "@/features/auth";
 import { GetCurrentPatient } from "@/features/patient";
 import { Spinner } from "@/components/ui";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { useLocation } from "@tanstack/react-router";
+import { ROUTE_PATHS } from "@/config";
 
 export interface PatientGuardProps {
   children: React.ReactNode;
@@ -11,6 +13,7 @@ export interface PatientGuardProps {
 export function PatientGuard({ children }: PatientGuardProps) {
   const { data: user, isLoading: isUserLoading } = useCurrentUser();
   const isPatient = user?.role.toLowerCase() === "patient";
+  const location = useLocation();
 
   const {
     data: patient,
@@ -18,15 +21,37 @@ export function PatientGuard({ children }: PatientGuardProps) {
     isError,
   } = GetCurrentPatient();
 
-  const { goToLogin, goToProfessionalApp } = useAppNavigation();
+  const { goToLogin, goToOnboarding, goTo } = useAppNavigation();
+
+  // Prevent duplicate navigation attempts
+  const hasNavigated = useRef(false);
 
   useEffect(() => {
+    if (hasNavigated.current) return;
+
     if (!isUserLoading && !user) {
+      hasNavigated.current = true;
       goToLogin();
+    } else if (user && !user.isOnboardingCompleted) {
+      // Redirect to onboarding if not completed
+      hasNavigated.current = true;
+      goToOnboarding(user.role.toLowerCase());
     } else if (user && !isPatient) {
-      goToProfessionalApp();
+      // Only navigate if not already on professional route
+      if (!location.pathname.startsWith("/professional")) {
+        hasNavigated.current = true;
+        goTo({ to: ROUTE_PATHS.PROFESSIONAL.APPOINTMENTS });
+      }
     }
-  }, [user, isUserLoading, isPatient, goToLogin, goToProfessionalApp]);
+  }, [
+    user,
+    isUserLoading,
+    isPatient,
+    goToLogin,
+    goToOnboarding,
+    goTo,
+    location.pathname,
+  ]);
 
   if (isUserLoading || (isPatient && isPatientLoading)) {
     return (
@@ -36,7 +61,7 @@ export function PatientGuard({ children }: PatientGuardProps) {
     );
   }
 
-  if (!user || !isPatient) {
+  if (!user || !isPatient || !user.isOnboardingCompleted) {
     return null;
   }
 

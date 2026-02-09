@@ -2,7 +2,9 @@ import { useAppNavigation } from "@/hooks";
 import { useCurrentUser } from "@/features/auth";
 import { GetCurrentProfessional } from "@/features/professional";
 import { Spinner } from "@/components/ui";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { useLocation } from "@tanstack/react-router";
+import { ROUTE_PATHS } from "@/config";
 
 export interface ProfessionalGuardProps {
   children: React.ReactNode;
@@ -11,6 +13,7 @@ export interface ProfessionalGuardProps {
 export function ProfessionalGuard({ children }: ProfessionalGuardProps) {
   const { data: user, isLoading: isUserLoading } = useCurrentUser();
   const isProfessional = user?.role.toLowerCase() === "professional";
+  const location = useLocation();
 
   const {
     data: professional,
@@ -18,15 +21,37 @@ export function ProfessionalGuard({ children }: ProfessionalGuardProps) {
     isError,
   } = GetCurrentProfessional();
 
-  const { goToLogin, goToPatientApp } = useAppNavigation();
+  const { goToLogin, goToOnboarding, goTo } = useAppNavigation();
+
+  // Prevent duplicate navigation attempts
+  const hasNavigated = useRef(false);
 
   useEffect(() => {
+    if (hasNavigated.current) return;
+
     if (!isUserLoading && !user) {
+      hasNavigated.current = true;
       goToLogin();
+    } else if (user && !user.isOnboardingCompleted) {
+      // Redirect to onboarding if not completed
+      hasNavigated.current = true;
+      goToOnboarding(user.role.toLowerCase());
     } else if (user && !isProfessional) {
-      goToPatientApp();
+      // Only navigate if not already on patient route
+      if (!location.pathname.startsWith("/patient")) {
+        hasNavigated.current = true;
+        goTo({ to: ROUTE_PATHS.PATIENT.APPOINTMENTS });
+      }
     }
-  }, [user, isUserLoading, isProfessional, goToLogin, goToPatientApp]);
+  }, [
+    user,
+    isUserLoading,
+    isProfessional,
+    goToLogin,
+    goToOnboarding,
+    goTo,
+    location.pathname,
+  ]);
 
   if (isUserLoading || (isProfessional && isProfessionalLoading)) {
     return (
@@ -36,7 +61,7 @@ export function ProfessionalGuard({ children }: ProfessionalGuardProps) {
     );
   }
 
-  if (!user || !isProfessional) {
+  if (!user || !isProfessional || !user.isOnboardingCompleted) {
     return null;
   }
 

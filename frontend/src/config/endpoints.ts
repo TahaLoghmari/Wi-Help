@@ -6,6 +6,7 @@ export const API_ENDPOINTS = {
     CONFIRM_EMAIL: "/auth/confirm-email",
     CURRENT_USER: "/auth/me",
     GOOGLE_AUTHORIZE: "/auth/google/authorize",
+    GOOGLE_CALLBACK: "/auth/google/callback",
     FORGOT_PASSWORD: "/auth/forgot-password",
     RESET_PASSWORD: "/auth/reset-password",
     SEND_CONFIRMATION_EMAIL: "/auth/send-confirmation-email",
@@ -35,6 +36,7 @@ export const API_ENDPOINTS = {
       `/professionals/${professionalId}/availability`,
     UPLOAD_VERIFICATION_DOCUMENT: "/professionals/me/documents",
     GET_VERIFICATION_DOCUMENTS: "/professionals/me/documents",
+    COMPLETE_ONBOARDING: "/professionals/complete-onboarding",
     // Awards (current professional)
     GET_AWARDS: "/professionals/me/awards",
     CREATE_AWARD: "/professionals/me/awards",
@@ -71,6 +73,7 @@ export const API_ENDPOINTS = {
     GET_PATIENT_BY_ID: (patientId: string) => `/patients/${patientId}`,
     UPDATE_PATIENT: "/patients/me",
     GET_ALL_AS_ADMIN: "/patients/admin",
+    COMPLETE_ONBOARDING: "/patients/complete-onboarding",
   },
   APPOINTMENTS: {
     GET_PATIENT_APPOINTMENTS: "/appointments/patient/me",

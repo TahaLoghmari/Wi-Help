@@ -3,6 +3,7 @@ import { Facebook, Instagram, Twitter } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Icon2 from "@/assets/Icon-2.png";
 import { Link } from "@tanstack/react-router";
+import { ROUTE_PATHS } from "@/config/routes";
 
 export function NewFooterSection() {
   const { t } = useTranslation();
@@ -15,14 +16,14 @@ export function NewFooterSection() {
   };
 
   return (
-    <footer className="bg-brand-bg pt-8 pb-12 px-4 sm:px-8">
+    <footer className="bg-brand-bg px-4 pt-8 pb-12 sm:px-8">
       <div className="bg-brand-dark relative overflow-hidden rounded-[2.5rem] border border-black/5">
         <div className="relative z-10 pt-8 pr-4 pb-8 pl-4 sm:p-12">
           <div className="grid grid-cols-1 gap-12 pb-12 lg:grid-cols-4">
             <div className="lg:col-span-4">
-              <Link to="/" className="group flex items-center gap-3 mb-4">
+              <Link to="/" className="group mb-4 flex items-center gap-3">
                 <img src={Icon2} alt="Logo" className="h-10" />
-                <span className="text-white text-lg font-semibold tracking-tight">
+                <span className="text-lg font-semibold tracking-tight text-white">
                   Wi-Help
                 </span>
               </Link>
@@ -160,20 +161,20 @@ export function NewFooterSection() {
                         </a>
                       </li>
                       <li>
-                        <a
+                        <Link
+                          to={ROUTE_PATHS.TERMS_OF_SERVICE}
                           className="hover:text-brand-teal font-geist transition"
-                          href="#"
                         >
                           {t("landing.footer.links.termsOfService")}
-                        </a>
+                        </Link>
                       </li>
                       <li>
-                        <a
+                        <Link
+                          to={ROUTE_PATHS.PRIVACY_POLICY}
                           className="hover:text-brand-teal font-geist transition"
-                          href="#"
                         >
                           {t("landing.footer.links.privacyPolicy")}
-                        </a>
+                        </Link>
                       </li>
                     </ul>
                   </div>

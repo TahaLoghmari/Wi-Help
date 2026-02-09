@@ -2,6 +2,8 @@
 
 export const ROUTE_PATHS = {
   ROOT: "/",
+  PRIVACY_POLICY: "/privacy-policy",
+  TERMS_OF_SERVICE: "/terms-of-service",
 
   AUTH: {
     ROOT: "/auth",
@@ -12,6 +14,7 @@ export const ROUTE_PATHS = {
     EMAIL_VERIFIED: "/auth/email-verified",
     FORGOT_PASSWORD: "/auth/forgot-password",
     RESET_PASSWORD: "/auth/reset-password",
+    CALLBACK: "/auth/callback",
   },
 
   ADMIN: {
