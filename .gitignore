@@ -73,3 +73,27 @@ backend/appsettings.Development.json
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Mobile (React Native/Expo)
+mobile/node_modules/
+mobile/.expo/
+mobile/dist/
+mobile/web-build/
+mobile/expo-env.d.ts
+mobile/.kotlin/
+mobile/app-example
+mobile/ios/
+mobile/android/
+
+# Mobile Native files
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.pem
+*.tsbuildinfo
+
+# Metro
+.metro-health-check*
