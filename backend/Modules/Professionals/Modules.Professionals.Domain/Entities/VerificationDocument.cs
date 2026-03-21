@@ -1,19 +1,6 @@
+using Modules.Professionals.Domain.Enums;
+
 namespace Modules.Professionals.Domain.Entities;
-
-public enum DocumentType
-{
-    Diploma,
-    ProfessionalLicense,
-    Id,
-    Insurance
-}
-
-public enum DocumentStatus
-{
-    Pending,
-    Verified,
-    Rejected
-}
 
 public class VerificationDocument
 {

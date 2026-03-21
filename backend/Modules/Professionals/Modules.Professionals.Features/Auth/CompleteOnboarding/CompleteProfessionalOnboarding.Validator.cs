@@ -42,11 +42,9 @@ internal sealed class CompleteProfessionalOnboardingValidator : AbstractValidato
             .MaximumLength(50)
             .WithMessage("City must be at most 50 characters.");
 
-        RuleFor(x => x.Address.Country)
+        RuleFor(x => x.Address.CountryId)
             .NotEmpty()
-            .WithMessage("Country is required.")
-            .MaximumLength(50)
-            .WithMessage("Country must be at most 50 characters.");
+            .WithMessage("Country is required.");
 
         RuleFor(x => x.Address.PostalCode)
             .NotEmpty()
@@ -54,17 +52,13 @@ internal sealed class CompleteProfessionalOnboardingValidator : AbstractValidato
             .MaximumLength(20)
             .WithMessage("Postal code must be at most 20 characters.");
 
-        RuleFor(x => x.Address.State)
+        RuleFor(x => x.Address.StateId)
             .NotEmpty()
-            .WithMessage("State is required.")
-            .MaximumLength(50)
-            .WithMessage("State must be at most 50 characters.");
+            .WithMessage("State is required.");
 
-        RuleFor(x => x.Specialization)
+        RuleFor(x => x.SpecializationId)
             .NotEmpty()
-            .WithMessage("Specialization is required.")
-            .MaximumLength(100)
-            .WithMessage("Specialization must be at most 100 characters.");
+            .WithMessage("Specialization is required.");
 
         RuleFor(x => x.Experience)
             .GreaterThanOrEqualTo(0)

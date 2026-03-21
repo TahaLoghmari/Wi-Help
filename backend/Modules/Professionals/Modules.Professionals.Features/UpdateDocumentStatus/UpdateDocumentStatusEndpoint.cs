@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Routing;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain.Entities;
+using Modules.Professionals.Domain.Enums;
 
 namespace Modules.Professionals.Features.UpdateDocumentStatus;
 
@@ -12,7 +13,7 @@ internal sealed class UpdateDocumentStatus : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPut(ProfessionalsEndpoints.UpdateDocumentStatus, async (
+        app.MapPatch(ProfessionalsEndpoints.UpdateDocumentStatus, async (
                 Guid documentId,
                 UpdateDocumentStatusRequest request,
                 ICommandHandler<UpdateDocumentStatusCommand> handler,

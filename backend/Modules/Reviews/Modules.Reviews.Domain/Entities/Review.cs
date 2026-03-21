@@ -32,14 +32,10 @@ public class Review
         UpdatedAt = DateTime.UtcNow;
     }
 
-    public void Update(string? comment = null, int? rating = null)
+    public void Update(string comment, int rating)
     {
-        if (!string.IsNullOrWhiteSpace(comment))
-            Comment = comment;
-        
-        if (rating.HasValue)
-            Rating = rating.Value;
-        
+        Comment = comment;
+        Rating = rating;
         UpdatedAt = DateTime.UtcNow;
     }
 }

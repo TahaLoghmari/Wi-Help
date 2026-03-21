@@ -49,8 +49,8 @@ internal sealed class CreateExperience : IEndpoint
     private sealed record Request(
         string Title,
         string Organization,
-        string? Location,
-        string? Description,
+        string Location,
+        string Description,
         string StartYear,
         string? EndYear,
         bool IsCurrentPosition = false);

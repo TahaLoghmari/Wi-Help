@@ -4,9 +4,9 @@ using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.PublicApi;
 using Modules.Professionals.Domain;
-using Modules.Professionals.Domain.Entities;
+using Modules.Professionals.Features.GetServices;
+using Modules.Professionals.Features.GetSpecializations;
 using Modules.Professionals.Infrastructure.Database;
-using Modules.Professionals.Infrastructure.DTOs;
 
 namespace Modules.Professionals.Features.GetProfessional;
 
@@ -22,6 +22,8 @@ public sealed class GetProfessionalQueryHandler(
         logger.LogInformation("Retrieving professional profile for ProfessionalId: {ProfessionalId}", query.ProfessionalId);
 
         var professional = await dbContext.Professionals
+            .Include(p => p.Specialization)
+            .Include(p => p.Services)
             .FirstOrDefaultAsync(p => p.Id == query.ProfessionalId, cancellationToken);
 
         if (professional is null)
@@ -61,12 +63,11 @@ public sealed class GetProfessionalQueryHandler(
             user.DateOfBirth,
             user.Gender,
             user.Address,
-            professional.Specialization,
-            professional.Services,
+            new SpecializationDto(professional.Specialization.Id, professional.Specialization.Key),
+            professional.Services.Select(s => new ServiceDto(s.Id, s.Key)).ToList(),
             professional.Experience,
             professional.VisitPrice,
             professional.Bio,
-            professional.IsVerified,
             user.ProfilePictureUrl,
             professional.VerificationStatus,
             distanceKm);

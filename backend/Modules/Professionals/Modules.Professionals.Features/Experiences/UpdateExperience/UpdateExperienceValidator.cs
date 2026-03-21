@@ -21,10 +21,12 @@ public class UpdateExperienceCommandValidator : AbstractValidator<UpdateExperien
             .When(x => !string.IsNullOrEmpty(x.Organization));
 
         RuleFor(x => x.Location)
+            .MinimumLength(1).WithMessage("Location cannot be empty.")
             .MaximumLength(200).WithMessage("Location must not exceed 200 characters.")
             .When(x => !string.IsNullOrEmpty(x.Location));
 
         RuleFor(x => x.Description)
+            .MinimumLength(1).WithMessage("Description cannot be empty.")
             .MaximumLength(2000).WithMessage("Description must not exceed 2000 characters.")
             .When(x => !string.IsNullOrEmpty(x.Description));
 

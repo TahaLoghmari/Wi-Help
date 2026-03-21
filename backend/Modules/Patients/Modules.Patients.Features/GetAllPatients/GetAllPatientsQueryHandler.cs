@@ -51,7 +51,7 @@ internal sealed class GetAllPatientsQueryHandler(
                 user.Gender,
                 user.Address,
                 p.EmergencyContact,
-                p.MedicalInfo,
+                p.MobilityStatus,
                 p.Bio,
                 0, // Paid - requires cross-module call
                 user.IsBanned

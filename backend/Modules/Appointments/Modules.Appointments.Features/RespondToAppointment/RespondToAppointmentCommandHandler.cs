@@ -115,7 +115,7 @@ public class RespondToAppointmentCommandHandler(
                     professionalName,
                     professional.Email,
                     professional.PhoneNumber,
-                    professional.Specialization,
+                    professional.SpecializationKey,
                     appointment.StartDate,
                     appointment.EndDate,
                     appointment.Urgency.ToString(),

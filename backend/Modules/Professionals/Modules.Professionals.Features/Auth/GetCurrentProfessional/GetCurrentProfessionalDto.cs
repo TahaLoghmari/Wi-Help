@@ -1,5 +1,7 @@
 using Modules.Common.Features.ValueObjects;
 using Modules.Professionals.Domain.Enums;
+using Modules.Professionals.Features.GetServices;
+using Modules.Professionals.Features.GetSpecializations;
 
 namespace Modules.Professionals.Features.Auth.GetCurrentProfessional;
 
@@ -13,11 +15,10 @@ public sealed record GetCurrentProfessionalDto(
     string DateOfBirth,
     string Gender,
     Address Address,
-    string Specialization,
-    List<string>? Services,
+    SpecializationDto Specialization,
+    List<ServiceDto> Services,
     int Experience,
-    int? VisitPrice,
+    int VisitPrice,
     string? Bio,
-    bool IsVerified,
     string? ProfilePictureUrl,
     VerificationStatus VerificationStatus);

@@ -14,12 +14,12 @@ public class CreateAwardCommandValidator : AbstractValidator<CreateAwardCommand>
             .MaximumLength(200).WithMessage("Title must not exceed 200 characters.");
 
         RuleFor(x => x.Issuer)
-            .MaximumLength(200).WithMessage("Issuer must not exceed 200 characters.")
-            .When(x => !string.IsNullOrEmpty(x.Issuer));
+            .NotEmpty().WithMessage("Issuer is required.")
+            .MaximumLength(200).WithMessage("Issuer must not exceed 200 characters.");
 
         RuleFor(x => x.Description)
-            .MaximumLength(1000).WithMessage("Description must not exceed 1000 characters.")
-            .When(x => !string.IsNullOrEmpty(x.Description));
+            .NotEmpty().WithMessage("Description is required.")
+            .MaximumLength(1000).WithMessage("Description must not exceed 1000 characters.");
 
         RuleFor(x => x.YearReceived)
             .NotEmpty().WithMessage("Year received is required.")

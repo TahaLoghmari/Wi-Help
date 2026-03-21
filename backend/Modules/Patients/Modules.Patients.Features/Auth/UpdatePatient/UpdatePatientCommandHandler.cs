@@ -36,7 +36,7 @@ public sealed class UpdatePatientCommandHandler(
 
         try
         {
-            string? profilePictureUrl = "";
+            string? profilePictureUrl = null;
             if (command.ProfilePicture is not null)
             {
                 profilePictureUrl = await supabaseService.UploadFileAsync(
@@ -64,6 +64,9 @@ public sealed class UpdatePatientCommandHandler(
             logger.LogInformation("Identity fields updated successfully for UserId: {UserId}", command.UserId);
             
             var patient = await dbContext.Patients
+                .Include(p => p.Allergies)
+                .Include(p => p.Conditions)
+                .Include(p => p.Medications)
                 .FirstOrDefaultAsync(p => p.UserId == command.UserId, cancellationToken);
 
             if (patient is null)
@@ -72,7 +75,67 @@ public sealed class UpdatePatientCommandHandler(
                 return Result.Failure(PatientErrors.NotFound(command.UserId));
             }
 
-            patient.Update(command.EmergencyContact,command.MedicalInfo,command.Bio);
+            // Validate relationship if emergency contact provided
+            if (command.EmergencyContact?.RelationshipId.HasValue == true)
+            {
+                var relationship = await dbContext.Relationships
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(r => r.Id == command.EmergencyContact.RelationshipId.Value, cancellationToken);
+
+                if (relationship is null)
+                {
+                    logger.LogWarning("Relationship not found: {RelationshipId}", command.EmergencyContact.RelationshipId.Value);
+                    return Result.Failure(PatientErrors.RelationshipNotFound(command.EmergencyContact.RelationshipId.Value));
+                }
+            }
+
+            patient.Update(command.EmergencyContact, command.MobilityStatus, command.Bio);
+
+            // Update M2M collections
+            if (command.AllergyIds is not null)
+            {
+                var allergies = await dbContext.Allergies
+                    .Where(a => command.AllergyIds.Contains(a.Id))
+                    .ToListAsync(cancellationToken);
+
+                if (allergies.Count != command.AllergyIds.Count)
+                {
+                    logger.LogWarning("Some allergy IDs were not found");
+                    return Result.Failure(PatientErrors.AllergyNotFound(Guid.Empty));
+                }
+
+                patient.UpdateAllergies(allergies);
+            }
+
+            if (command.ConditionIds is not null)
+            {
+                var conditions = await dbContext.Conditions
+                    .Where(c => command.ConditionIds.Contains(c.Id))
+                    .ToListAsync(cancellationToken);
+
+                if (conditions.Count != command.ConditionIds.Count)
+                {
+                    logger.LogWarning("Some condition IDs were not found");
+                    return Result.Failure(PatientErrors.ConditionNotFound(Guid.Empty));
+                }
+
+                patient.UpdateConditions(conditions);
+            }
+
+            if (command.MedicationIds is not null)
+            {
+                var medications = await dbContext.Medications
+                    .Where(m => command.MedicationIds.Contains(m.Id))
+                    .ToListAsync(cancellationToken);
+
+                if (medications.Count != command.MedicationIds.Count)
+                {
+                    logger.LogWarning("Some medication IDs were not found");
+                    return Result.Failure(PatientErrors.MedicationNotFound(Guid.Empty));
+                }
+
+                patient.UpdateMedications(medications);
+            }
 
             await dbContext.SaveChangesAsync(cancellationToken);
 

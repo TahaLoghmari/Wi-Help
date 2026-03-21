@@ -24,12 +24,16 @@ public class EducationConfiguration : IEntityTypeConfiguration<Education>
             .HasMaxLength(200);
 
         builder.Property(e => e.FieldOfStudy)
-            .HasMaxLength(200)
-            .IsRequired(false);
+            .IsRequired()
+            .HasMaxLength(200);
 
-        builder.Property(e => e.Country)
-            .HasMaxLength(100)
-            .IsRequired(false);
+        builder.Property(e => e.CountryId)
+            .HasColumnName("country_id")
+            .IsRequired();
+
+        builder.Property(e => e.Description)
+            .IsRequired()
+            .HasMaxLength(1000);
 
         builder.Property(e => e.StartYear)
             .IsRequired()

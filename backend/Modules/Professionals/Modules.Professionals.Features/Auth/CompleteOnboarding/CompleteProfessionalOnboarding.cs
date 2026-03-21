@@ -30,7 +30,7 @@ internal sealed class CompleteProfessionalOnboarding : IEndpoint
                     request.Gender,
                     request.PhoneNumber,
                     request.Address,
-                    request.Specialization,
+                    request.SpecializationId,
                     request.Experience);
 
                 Result result = await handler.Handle(command, cancellationToken);
@@ -45,6 +45,6 @@ internal sealed class CompleteProfessionalOnboarding : IEndpoint
         string Gender,
         string PhoneNumber,
         Address Address,
-        string Specialization,
+        Guid SpecializationId,
         int Experience);
 }

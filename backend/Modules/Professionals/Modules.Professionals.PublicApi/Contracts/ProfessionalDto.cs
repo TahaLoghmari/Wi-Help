@@ -2,6 +2,8 @@ using Modules.Common.Features.ValueObjects;
 
 namespace Modules.Professionals.PublicApi.Contracts;
 
+public sealed record ServiceDto(Guid Id, string Key);
+
 public sealed record ProfessionalDto(
     Guid Id,
     Guid UserId,
@@ -12,10 +14,10 @@ public sealed record ProfessionalDto(
     string DateOfBirth,
     string Gender,
     Address Address,
-    string Specialization,
-    List<string>? Services,
+    Guid SpecializationId,
+    string SpecializationKey,
+    List<ServiceDto> Services,
     int Experience,
-    int? VisitPrice,
+    int VisitPrice,
     string? Bio,
-    bool IsVerified,
     string? ProfilePictureUrl);

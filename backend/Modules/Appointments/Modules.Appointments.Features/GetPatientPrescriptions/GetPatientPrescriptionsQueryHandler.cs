@@ -60,7 +60,7 @@ public sealed class GetPatientPrescriptionsQueryHandler(
                     FirstName = prof.FirstName,
                     LastName = prof.LastName,
                     ProfilePictureUrl = prof.ProfilePictureUrl,
-                    Specialization = prof.Specialization
+                    Specialization = prof.SpecializationKey
                 }
                 : null
         }).ToList();

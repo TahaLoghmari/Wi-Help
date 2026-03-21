@@ -53,9 +53,19 @@ public sealed class RegisterProfessionalCommandHandler(
             return Result.Failure(ProfessionalErrors.AlreadyExists(userId));
         }
 
+        var specialization = await dbContext.Specializations
+            .AsNoTracking()
+            .FirstOrDefaultAsync(s => s.Id == command.SpecializationId, cancellationToken);
+
+        if (specialization is null)
+        {
+            logger.LogWarning("Specialization not found: {SpecializationId}", command.SpecializationId);
+            return Result.Failure(ProfessionalErrors.SpecializationNotFound(command.SpecializationId));
+        }
+
         var professional = new Professional(
             userId,
-            command.Specialization,
+            command.SpecializationId,
             command.Experience);
 
         dbContext.Professionals.Add(professional);

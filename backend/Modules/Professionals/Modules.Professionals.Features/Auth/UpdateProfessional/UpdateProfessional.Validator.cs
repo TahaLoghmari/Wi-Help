@@ -16,7 +16,8 @@ public class UpdateProfessionalCommandValidator : AbstractValidator<UpdateProfes
             .MaximumLength(100)
             .WithMessage("First name cannot exceed 100 characters")
             .Matches(@"^[a-zA-Z\s]+$")
-            .WithMessage("First name must contain only letters and spaces");
+            .WithMessage("First name must contain only letters and spaces")
+            .When(x => !string.IsNullOrEmpty(x.FirstName));
 
         RuleFor(x => x.LastName)
             .NotEmpty()
@@ -24,7 +25,8 @@ public class UpdateProfessionalCommandValidator : AbstractValidator<UpdateProfes
             .MaximumLength(100)
             .WithMessage("Last name cannot exceed 100 characters")
             .Matches(@"^[a-zA-Z\s]+$")
-            .WithMessage("Last name must contain only letters and spaces");
+            .WithMessage("Last name must contain only letters and spaces")
+            .When(x => !string.IsNullOrEmpty(x.LastName));
 
         RuleFor(x => x.PhoneNumber)
             .NotEmpty()
@@ -32,11 +34,8 @@ public class UpdateProfessionalCommandValidator : AbstractValidator<UpdateProfes
             .Matches(@"^\+?[\d\s\-()]+$")
             .WithMessage("Invalid phone number format")
             .MaximumLength(20)
-            .WithMessage("Phone number cannot exceed 20 characters");
-
-        RuleFor(x => x.Address)
-            .NotNull()
-            .WithMessage("Address is required");
+            .WithMessage("Phone number cannot exceed 20 characters")
+            .When(x => !string.IsNullOrEmpty(x.PhoneNumber));
 
         When(x => x.Address != null, () =>
         {
@@ -52,11 +51,9 @@ public class UpdateProfessionalCommandValidator : AbstractValidator<UpdateProfes
                 .MaximumLength(100)
                 .WithMessage("City cannot exceed 100 characters");
 
-            RuleFor(x => x.Address!.State)
+            RuleFor(x => x.Address!.StateId)
                 .NotEmpty()
-                .WithMessage("State/Province is required")
-                .MaximumLength(100)
-                .WithMessage("State/Province cannot exceed 100 characters");
+                .WithMessage("State/Province is required");
 
             RuleFor(x => x.Address!.PostalCode)
                 .NotEmpty()
@@ -64,41 +61,27 @@ public class UpdateProfessionalCommandValidator : AbstractValidator<UpdateProfes
                 .MaximumLength(20)
                 .WithMessage("Postal code cannot exceed 20 characters");
 
-            RuleFor(x => x.Address!.Country)
+            RuleFor(x => x.Address!.CountryId)
                 .NotEmpty()
-                .WithMessage("Country is required")
-                .MaximumLength(100)
-                .WithMessage("Country cannot exceed 100 characters");
+                .WithMessage("Country is required");
         });
 
-        RuleFor(x => x.Specialization)
+        RuleFor(x => x.SpecializationId)
             .NotEmpty()
             .WithMessage("Specialization is required")
-            .MaximumLength(100)
-            .WithMessage("Specialization cannot exceed 100 characters");
-
-        When(x => x.Services != null && x.Services.Any(), () =>
-        {
-            RuleFor(x => x.Services)
-                .Must(services => services!.All(s => !string.IsNullOrWhiteSpace(s)))
-                .WithMessage("Services cannot contain empty values")
-                .Must(services => services!.All(s => s.Length <= 100))
-                .WithMessage("Each service cannot exceed 100 characters");
-        });
+            .When(x => x.SpecializationId.HasValue);
 
         RuleFor(x => x.Experience)
-            .NotNull()
-            .WithMessage("Years of experience is required")
             .GreaterThanOrEqualTo(0)
             .WithMessage("Years of experience must be at least 0")
             .LessThanOrEqualTo(60)
-            .WithMessage("Years of experience cannot exceed 60");
+            .WithMessage("Years of experience cannot exceed 60")
+            .When(x => x.Experience.HasValue);
 
         RuleFor(x => x.VisitPrice)
-            .NotNull()
-            .WithMessage("Visit price is required")
             .GreaterThanOrEqualTo(0)
-            .WithMessage("Visit price must be greater than or equal to 0");
+            .WithMessage("Visit price must be greater than or equal to 0")
+            .When(x => x.VisitPrice.HasValue);
 
         When(x => !string.IsNullOrWhiteSpace(x.Bio), () =>
         {

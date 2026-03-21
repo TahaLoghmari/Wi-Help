@@ -11,7 +11,9 @@ using Modules.Notifications.Infrastructure;
 using Modules.Messaging.Infrastructure;
 using Modules.Notifications.Infrastructure.Database;
 using Modules.Patients.Infrastructure.Database;
+using Modules.Patients.Infrastructure.Database.Seedings;
 using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Infrastructure.Database.Seedings;
 using Modules.Messaging.Infrastructure.Database;
 using Modules.Messaging.Infrastructure.Jobs;
 using Modules.Reviews.Infrastructure.Database;
@@ -76,14 +78,11 @@ using (var scope = app.Services.CreateScope())
     // Seed professional users
     var professionalUserIds = await IdentityDataSeeder.SeedProfessionalUsersAsync(userManager);
 
-    // Seed professionals
-    var professionalsData = new List<(Guid UserId, string Specialization, int Experience)>
-    {
-        (professionalUserIds[0], "criticalCare", 11),
-        (professionalUserIds[1], "criticalCare", 7)
-    };
-    var professionalIdsMap = await Modules.Professionals.Infrastructure.Database.ProfessionalDataSeeder.SeedProfessionalsAsync(professionalsDbContext, professionalsData);
-
+    // Seed professional entities and get userId -> professionalId map
+    var professionalsData = professionalUserIds
+        .Zip(ProfessionalSeeds.All)
+        .Select(pair => (UserId: pair.First, pair.Second.SpecializationId, pair.Second.Experience));
+    var professionalIdsMap = await ProfessionalDataSeeder.SeedProfessionalsAsync(professionalsDbContext, professionalsData);
     foreach (var (userId, professionalId) in professionalIdsMap)
     {
         var user = await userManager.FindByIdAsync(userId.ToString());
@@ -100,14 +99,11 @@ using (var scope = app.Services.CreateScope())
     // Seed patient users
     var patientUserIds = await IdentityDataSeeder.SeedPatientUsersAsync(userManager);
 
-    // Seed patients
-    var patientsData = new List<(Guid UserId, Modules.Patients.Domain.ValueObjects.EmergencyContact EmergencyContact)>
-    {
-        (patientUserIds[0], new Modules.Patients.Domain.ValueObjects.EmergencyContact("Sami Ben Youssef", "+216 98 442 109", "friend")),
-        (patientUserIds[1], new Modules.Patients.Domain.ValueObjects.EmergencyContact("Yassine Karray", "+216 97 560 882", "friend"))
-    };
-    var patientIdsMap = await Modules.Patients.Infrastructure.Database.PatientDataSeeder.SeedPatientsAsync(patientsDbContext, patientsData);
-
+    // Seed patient entities and get userId -> patientId map
+    var patientsData = patientUserIds
+        .Zip(PatientSeeds.All)
+        .Select(pair => (UserId: pair.First, EmergencyContact: pair.Second));
+    var patientIdsMap = await PatientDataSeeder.SeedPatientsAsync(patientsDbContext, patientsData);
     foreach (var (userId, patientId) in patientIdsMap)
     {
         var user = await userManager.FindByIdAsync(userId.ToString());

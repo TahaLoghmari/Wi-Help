@@ -42,11 +42,9 @@ internal sealed class CompletePatientOnboardingValidator : AbstractValidator<Com
             .MaximumLength(50)
             .WithMessage("City must be at most 50 characters.");
 
-        RuleFor(x => x.Address.Country)
+        RuleFor(x => x.Address.CountryId)
             .NotEmpty()
-            .WithMessage("Country is required.")
-            .MaximumLength(50)
-            .WithMessage("Country must be at most 50 characters.");
+            .WithMessage("Country is required.");
 
         RuleFor(x => x.Address.PostalCode)
             .NotEmpty()
@@ -54,11 +52,9 @@ internal sealed class CompletePatientOnboardingValidator : AbstractValidator<Com
             .MaximumLength(20)
             .WithMessage("Postal code must be at most 20 characters.");
 
-        RuleFor(x => x.Address.State)
+        RuleFor(x => x.Address.StateId)
             .NotEmpty()
-            .WithMessage("State is required.")
-            .MaximumLength(50)
-            .WithMessage("State must be at most 50 characters.");
+            .WithMessage("State is required.");
 
         RuleFor(x => x.EmergencyContact)
             .NotNull()
@@ -76,10 +72,8 @@ internal sealed class CompletePatientOnboardingValidator : AbstractValidator<Com
             .MaximumLength(20)
             .WithMessage("Emergency contact phone number must be at most 20 characters.");
 
-        RuleFor(x => x.EmergencyContact.Relationship)
+        RuleFor(x => x.EmergencyContact.RelationshipId)
             .NotEmpty()
-            .WithMessage("Relationship is required.")
-            .MaximumLength(50)
-            .WithMessage("Relationship must be at most 50 characters.");
+            .WithMessage("Relationship is required.");
     }
 }

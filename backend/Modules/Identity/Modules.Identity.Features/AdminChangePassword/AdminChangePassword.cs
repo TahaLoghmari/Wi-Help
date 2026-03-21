@@ -13,7 +13,7 @@ internal sealed class AdminChangePassword : IEndpoint
     {
         app.MapPatch(IdentityEndpoints.AdminChangePassword, async (
                 Guid userId,
-                [AsParameters] Request request,
+                Request request,
                 ICommandHandler<AdminChangePasswordCommand> handler,
                 CancellationToken cancellationToken) =>
             {

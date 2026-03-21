@@ -12,9 +12,9 @@ internal sealed class UpdateAccountStatus : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPut(ProfessionalsEndpoints.UpdateAccountStatus, async (
+        app.MapPatch(ProfessionalsEndpoints.UpdateAccountStatus, async (
                 Guid professionalId,
-                [AsParameters] Request request,
+                Request request,
                 ICommandHandler<UpdateAccountStatusCommand> handler,
                 CancellationToken cancellationToken) =>
             {

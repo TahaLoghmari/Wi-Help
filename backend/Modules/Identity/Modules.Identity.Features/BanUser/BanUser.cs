@@ -13,7 +13,7 @@ internal sealed class BanUser : IEndpoint
     {
         app.MapPatch(IdentityEndpoints.BanUser, async (
                 Guid userId,
-                [AsParameters] Request request,
+                Request request,
                 ICommandHandler<BanUserCommand> handler,
                 CancellationToken cancellationToken) =>
             {

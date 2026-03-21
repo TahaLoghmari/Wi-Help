@@ -13,7 +13,7 @@ internal sealed class UpdateAward : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPut(ProfessionalsEndpoints.UpdateAward, async (
+        app.MapPatch(ProfessionalsEndpoints.UpdateAward, async (
                 [FromRoute] Guid awardId,
                 [FromBody] Request request,
                 HttpContext httpContext,

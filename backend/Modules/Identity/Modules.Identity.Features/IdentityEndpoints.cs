@@ -13,8 +13,9 @@ public static class IdentityEndpoints
     public const string BanUser = "identity/users/{userId}/ban";
     public const string AdminChangePassword = "identity/users/{userId}/password";
     public const string UpdateLocation = "users/location";
-    
-    // Google OAuth
+
     public const string GoogleAuthorize = "auth/google/authorize";
     public const string GoogleCallback = "auth/google/callback";
+    public const string GetCountries = "countries";
+    public const string GetStatesByCountry = "countries/{countryId}/states";
 }

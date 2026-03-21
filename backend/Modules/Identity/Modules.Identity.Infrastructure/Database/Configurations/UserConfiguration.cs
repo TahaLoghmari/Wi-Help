@@ -30,8 +30,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             address.Property(a => a.Street).HasMaxLength(200);
             address.Property(a => a.City).HasMaxLength(100);
             address.Property(a => a.PostalCode).HasMaxLength(20);
-            address.Property(a => a.Country).HasMaxLength(100);
-            address.Property(a => a.State).HasMaxLength(100);
+            address.Property(a => a.CountryId).IsRequired();
+            address.Property(a => a.StateId).IsRequired();
         });
         
         builder.Property(u => u.ProfilePictureUrl)

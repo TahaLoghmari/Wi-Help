@@ -6,8 +6,8 @@ public class WorkExperience
     public Guid ProfessionalId { get; private set; }
     public string Title { get; private set; } = string.Empty;
     public string Organization { get; private set; } = string.Empty;
-    public string? Location { get; private set; }
-    public string? Description { get; private set; }
+    public string Location { get; private set; } = string.Empty;
+    public string Description { get; private set; } = string.Empty;
     public string StartYear { get; private set; } = string.Empty;
     public string? EndYear { get; private set; }
     public bool IsCurrentPosition { get; private set; }
@@ -21,8 +21,8 @@ public class WorkExperience
         Guid professionalId,
         string title,
         string organization,
-        string? location,
-        string? description,
+        string location,
+        string description,
         string startYear,
         string? endYear,
         bool isCurrentPosition = false)
@@ -55,7 +55,7 @@ public class WorkExperience
         if (!string.IsNullOrWhiteSpace(organization))
             Organization = organization;
 
-        if (location is not null)
+        if (!string.IsNullOrWhiteSpace(location))
             Location = location;
 
         if (description is not null)
@@ -64,11 +64,15 @@ public class WorkExperience
         if (!string.IsNullOrWhiteSpace(startYear))
             StartYear = startYear;
 
+        if (isCurrentPosition.HasValue)
+        {
+            IsCurrentPosition = isCurrentPosition.Value;
+            if (isCurrentPosition.Value)
+                EndYear = null;
+        }
+
         if (endYear is not null)
             EndYear = endYear;
-
-        if (isCurrentPosition.HasValue)
-            IsCurrentPosition = isCurrentPosition.Value;
 
         UpdatedAt = DateTime.UtcNow;
     }

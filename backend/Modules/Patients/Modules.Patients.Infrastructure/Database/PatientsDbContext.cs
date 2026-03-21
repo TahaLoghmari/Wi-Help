@@ -6,6 +6,16 @@ public sealed class PatientsDbContext(DbContextOptions<PatientsDbContext> option
 {
     
     public DbSet<Patient> Patients { get; set; }
+    public DbSet<Relationship> Relationships { get; set; }
+    public DbSet<Allergy> Allergies { get; set; }
+    public DbSet<Condition> Conditions { get; set; }
+    public DbSet<Medication> Medications { get; set; }
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        configurationBuilder.Properties<Enum>()
+            .HaveConversion<string>();
+    }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

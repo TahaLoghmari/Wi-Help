@@ -6,10 +6,10 @@ namespace Modules.Professionals.Infrastructure.Database;
 
 public static class ProfessionalDataSeeder
 {
-    public static async Task<Dictionary<Guid, Guid>> SeedProfessionalsAsync(ProfessionalsDbContext dbContext, IEnumerable<(Guid UserId, string Specialization, int Experience)> professionalsData)
+    public static async Task<Dictionary<Guid, Guid>> SeedProfessionalsAsync(ProfessionalsDbContext dbContext, IEnumerable<(Guid UserId, Guid SpecializationId, int Experience)> professionalsData)
     {
         var result = new Dictionary<Guid, Guid>();
-        foreach (var (userId, specialization, experience) in professionalsData)
+        foreach (var (userId, specializationId, experience) in professionalsData)
         {
             var existingProfessional = await dbContext.Professionals.FirstOrDefaultAsync(p => p.UserId == userId);
             if (existingProfessional != null)
@@ -18,7 +18,7 @@ public static class ProfessionalDataSeeder
                 continue;
             }
 
-            var professional = new Professional(userId, specialization, experience);
+            var professional = new Professional(userId, specializationId, experience);
             dbContext.Professionals.Add(professional);
             result[userId] = professional.Id;
         }

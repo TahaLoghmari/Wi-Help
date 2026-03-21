@@ -31,7 +31,8 @@ internal sealed class CreateEducation : IEndpoint
                     request.Institution,
                     request.Degree,
                     request.FieldOfStudy,
-                    request.Country,
+                    request.CountryId,
+                    request.Description,
                     request.StartYear,
                     request.EndYear,
                     request.IsCurrentlyStudying);
@@ -49,8 +50,9 @@ internal sealed class CreateEducation : IEndpoint
     private sealed record Request(
         string Institution,
         string Degree,
-        string? FieldOfStudy,
-        string? Country,
+        string FieldOfStudy,
+        Guid CountryId,
+        string Description,
         string StartYear,
         string? EndYear,
         bool IsCurrentlyStudying = false);

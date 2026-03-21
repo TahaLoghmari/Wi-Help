@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Routing;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain.Entities;
+using Modules.Professionals.Domain.Enums;
 
 namespace Modules.Professionals.Features.UploadVerificationDocument;
 

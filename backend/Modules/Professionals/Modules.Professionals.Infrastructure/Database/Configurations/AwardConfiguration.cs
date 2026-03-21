@@ -21,11 +21,11 @@ public class AwardConfiguration : IEntityTypeConfiguration<Award>
 
         builder.Property(a => a.Issuer)
             .HasMaxLength(200)
-            .IsRequired(false);
+            .IsRequired();
 
         builder.Property(a => a.Description)
             .HasMaxLength(1000)
-            .IsRequired(false);
+            .IsRequired();
 
         builder.Property(a => a.YearReceived)
             .IsRequired()

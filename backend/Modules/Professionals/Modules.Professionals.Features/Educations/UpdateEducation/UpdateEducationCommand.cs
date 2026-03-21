@@ -8,7 +8,8 @@ public record UpdateEducationCommand(
     string? Institution,
     string? Degree,
     string? FieldOfStudy,
-    string? Country,
+    Guid? CountryId,
+    string? Description,
     string? StartYear,
     string? EndYear,
     bool? IsCurrentlyStudying) : ICommand;

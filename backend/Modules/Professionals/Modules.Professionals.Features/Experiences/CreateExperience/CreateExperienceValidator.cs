@@ -18,12 +18,12 @@ public class CreateExperienceCommandValidator : AbstractValidator<CreateExperien
             .MaximumLength(300).WithMessage("Organization must not exceed 300 characters.");
 
         RuleFor(x => x.Location)
-            .MaximumLength(200).WithMessage("Location must not exceed 200 characters.")
-            .When(x => !string.IsNullOrEmpty(x.Location));
+            .NotEmpty().WithMessage("Location is required.")
+            .MaximumLength(200).WithMessage("Location must not exceed 200 characters.");
 
         RuleFor(x => x.Description)
-            .MaximumLength(2000).WithMessage("Description must not exceed 2000 characters.")
-            .When(x => !string.IsNullOrEmpty(x.Description));
+            .NotEmpty().WithMessage("Description is required.")
+            .MaximumLength(2000).WithMessage("Description must not exceed 2000 characters.");
 
         RuleFor(x => x.StartYear)
             .NotEmpty().WithMessage("Start year is required.")

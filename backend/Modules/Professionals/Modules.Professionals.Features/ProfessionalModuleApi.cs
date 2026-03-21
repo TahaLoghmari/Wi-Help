@@ -20,6 +20,8 @@ public class ProfessionalModuleApi(
     public async Task<Result<ProfessionalDto>> GetProfessionalByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var professional = await professionalsDbContext.Professionals
+            .Include(p => p.Specialization)
+            .Include(p => p.Services)
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.UserId == userId, cancellationToken);
 
@@ -46,12 +48,12 @@ public class ProfessionalModuleApi(
             user.DateOfBirth,
             user.Gender,
             user.Address,
-            professional.Specialization,
-            professional.Services,
+            professional.SpecializationId,
+            professional.Specialization.Key,
+            professional.Services.Select(s => new ServiceDto(s.Id, s.Key)).ToList(),
             professional.Experience,
             professional.VisitPrice,
             professional.Bio,
-            professional.IsVerified,
             user.ProfilePictureUrl
         ));
     }
@@ -59,6 +61,8 @@ public class ProfessionalModuleApi(
     public async Task<Result<List<ProfessionalDto>>> GetProfessionalsByIdsAsync(IEnumerable<Guid> professionalIds, CancellationToken cancellationToken = default)
     {
         var professionals = await professionalsDbContext.Professionals
+            .Include(p => p.Specialization)
+            .Include(p => p.Services)
             .AsNoTracking()
             .Where(p => professionalIds.Contains(p.Id))
             .ToListAsync(cancellationToken);
@@ -95,12 +99,12 @@ public class ProfessionalModuleApi(
                 user.DateOfBirth,
                 user.Gender,
                 user.Address,
-                p.Specialization,
-                p.Services,
+                p.SpecializationId,
+                p.Specialization.Key,
+                p.Services.Select(s => new ServiceDto(s.Id, s.Key)).ToList(),
                 p.Experience,
                 p.VisitPrice,
                 p.Bio,
-                p.IsVerified,
                 user.ProfilePictureUrl
             );
         }).Where(dto => dto != null).Cast<ProfessionalDto>().ToList();
@@ -114,6 +118,7 @@ public class ProfessionalModuleApi(
         CancellationToken cancellationToken = default)
     {
         var baseQuery = professionalsDbContext.Professionals
+            .Include(p => p.Specialization)
             .AsNoTracking()
             .OrderByDescending(p => p.CreatedAt);
 
@@ -149,7 +154,7 @@ public class ProfessionalModuleApi(
                 user?.ProfilePictureUrl,
                 user?.Email ?? "",
                 user?.PhoneNumber,
-                p.Specialization,
+                p.Specialization.Key,
                 p.CreatedAt,
                 0, // TotalEarned - will be populated by caller if needed
                 p.VerificationStatus

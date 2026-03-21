@@ -45,7 +45,7 @@ internal sealed class CreateAward : IEndpoint
 
     private sealed record Request(
         string Title,
-        string? Issuer,
-        string? Description,
+        string Issuer,
+        string Description,
         string YearReceived);
 }

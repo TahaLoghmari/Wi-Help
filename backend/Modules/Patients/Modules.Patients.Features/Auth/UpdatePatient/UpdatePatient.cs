@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Routing;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Common.Features.ValueObjects;
+using Modules.Patients.Domain.Enums;
 using Modules.Patients.Domain.ValueObjects;
 
 namespace Modules.Patients.Features.Auth.UpdatePatient;
@@ -15,7 +16,7 @@ internal sealed class UpdatePatient : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPut(PatientsEndpoints.UpdatePatient, async (
+        app.MapPatch(PatientsEndpoints.UpdatePatient, async (
                 [FromForm] Request request,
                 HttpContext httpContext,
                 ICommandHandler<UpdatePatientCommand> handler,
@@ -35,7 +36,10 @@ internal sealed class UpdatePatient : IEndpoint
                     request.PhoneNumber,
                     request.Address,
                     request.EmergencyContact,
-                    request.MedicalInfo,
+                    request.MobilityStatus,
+                    request.AllergyIds,
+                    request.ConditionIds,
+                    request.MedicationIds,
                     request.Bio,
                     request.ProfilePicture);
 
@@ -54,7 +58,10 @@ internal sealed class UpdatePatient : IEndpoint
         public string? PhoneNumber { get; set; }
         public Address? Address { get; set; }
         public EmergencyContact? EmergencyContact { get; set; }
-        public MedicalInfo? MedicalInfo { get; set; }
+        public MobilityStatus? MobilityStatus { get; set; }
+        public List<Guid>? AllergyIds { get; set; }
+        public List<Guid>? ConditionIds { get; set; }
+        public List<Guid>? MedicationIds { get; set; }
         public string? Bio { get; set; }
         public IFormFile? ProfilePicture { get; set; }
     }

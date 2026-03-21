@@ -15,8 +15,7 @@ public sealed class User : IdentityUser<Guid>
     public DateTime? UpdatedAt { get; private set; } = DateTime.UtcNow;
     public Coordinates? Location { get; private set; }
     public ICollection<RefreshToken> RefreshTokens { get; } = new List<RefreshToken>();
-    
-    // Google OAuth related fields
+
     public string? GoogleId { get; private set; }
     public bool IsOnboardingCompleted { get; private set; } = true;
 
@@ -76,18 +75,12 @@ public sealed class User : IdentityUser<Guid>
         UpdatedAt = DateTime.UtcNow;
     }
 
-    /// <summary>
-    /// Updates user location with new coordinates.
-    /// </summary>
     public void UpdateLocation(Coordinates coordinates)
     {
         Location = coordinates;
         UpdatedAt = DateTime.UtcNow;
     }
-    
-    /// <summary>
-    /// Creates a new user from Google OAuth data.
-    /// </summary>
+
     public static User CreateFromGoogle(
         string googleId,
         string email,
@@ -106,13 +99,10 @@ public sealed class User : IdentityUser<Guid>
             EmailConfirmed = true,
             IsOnboardingCompleted = false,
             CreatedAt = DateTime.UtcNow,
-            Address = new Address(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty)
+            Address = new Address(string.Empty, string.Empty, string.Empty, Guid.Empty, Guid.Empty)
         };
     }
-    
-    /// <summary>
-    /// Updates user profile from Google OAuth data.
-    /// </summary>
+
     public void UpdateFromGoogle(
         string googleId,
         string? profilePictureUrl)
@@ -122,10 +112,7 @@ public sealed class User : IdentityUser<Guid>
             ProfilePictureUrl = profilePictureUrl;
         UpdatedAt = DateTime.UtcNow;
     }
-    
-    /// <summary>
-    /// Completes user onboarding with required profile data.
-    /// </summary>
+
     public void CompleteOnboarding(
         string dateOfBirth,
         string gender,

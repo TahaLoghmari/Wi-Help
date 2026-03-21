@@ -24,9 +24,13 @@ public class UpdateEducationCommandValidator : AbstractValidator<UpdateEducation
             .MaximumLength(200).WithMessage("Field of study must not exceed 200 characters.")
             .When(x => !string.IsNullOrEmpty(x.FieldOfStudy));
 
-        RuleFor(x => x.Country)
-            .MaximumLength(100).WithMessage("Country must not exceed 100 characters.")
-            .When(x => !string.IsNullOrEmpty(x.Country));
+        RuleFor(x => x.CountryId)
+            .NotEmpty().WithMessage("Country is required when provided.")
+            .When(x => x.CountryId.HasValue);
+
+        RuleFor(x => x.Description)
+            .MaximumLength(1000).WithMessage("Description must not exceed 1000 characters.")
+            .When(x => !string.IsNullOrEmpty(x.Description));
 
         RuleFor(x => x.StartYear)
             .Matches(@"^\d{4}$").WithMessage("Start year must be a 4-digit year.")

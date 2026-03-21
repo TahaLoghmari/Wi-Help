@@ -5,8 +5,8 @@ public class Award
     public Guid Id { get; private set; }
     public Guid ProfessionalId { get; private set; }
     public string Title { get; private set; } = string.Empty;
-    public string? Issuer { get; private set; }
-    public string? Description { get; private set; }
+    public string Issuer { get; private set; } = string.Empty;
+    public string Description { get; private set; } = string.Empty;
     public string YearReceived { get; private set; } = string.Empty;
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
@@ -17,8 +17,8 @@ public class Award
     public Award(
         Guid professionalId,
         string title,
-        string? issuer,
-        string? description,
+        string issuer,
+        string description,
         string yearReceived)
     {
         Id = Guid.NewGuid();
@@ -40,7 +40,7 @@ public class Award
         if (!string.IsNullOrWhiteSpace(title))
             Title = title;
 
-        if (issuer is not null)
+        if (!string.IsNullOrWhiteSpace(issuer))
             Issuer = issuer;
 
         if (description is not null)

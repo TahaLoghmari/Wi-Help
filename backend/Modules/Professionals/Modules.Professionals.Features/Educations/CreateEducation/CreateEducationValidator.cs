@@ -18,12 +18,15 @@ public class CreateEducationCommandValidator : AbstractValidator<CreateEducation
             .MaximumLength(200).WithMessage("Degree must not exceed 200 characters.");
 
         RuleFor(x => x.FieldOfStudy)
-            .MaximumLength(200).WithMessage("Field of study must not exceed 200 characters.")
-            .When(x => !string.IsNullOrEmpty(x.FieldOfStudy));
+            .NotEmpty().WithMessage("Field of study is required.")
+            .MaximumLength(200).WithMessage("Field of study must not exceed 200 characters.");
 
-        RuleFor(x => x.Country)
-            .MaximumLength(100).WithMessage("Country must not exceed 100 characters.")
-            .When(x => !string.IsNullOrEmpty(x.Country));
+        RuleFor(x => x.CountryId)
+            .NotEmpty().WithMessage("Country is required.");
+
+        RuleFor(x => x.Description)
+            .NotEmpty().WithMessage("Description is required.")
+            .MaximumLength(1000).WithMessage("Description must not exceed 1000 characters.");
 
         RuleFor(x => x.StartYear)
             .NotEmpty().WithMessage("Start year is required.")

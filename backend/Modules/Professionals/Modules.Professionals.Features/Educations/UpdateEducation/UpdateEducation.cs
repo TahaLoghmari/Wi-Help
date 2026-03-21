@@ -13,7 +13,7 @@ internal sealed class UpdateEducation : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPut(ProfessionalsEndpoints.UpdateEducation, async (
+        app.MapPatch(ProfessionalsEndpoints.UpdateEducation, async (
                 [FromRoute] Guid educationId,
                 [FromBody] Request request,
                 HttpContext httpContext,
@@ -33,7 +33,8 @@ internal sealed class UpdateEducation : IEndpoint
                     request.Institution,
                     request.Degree,
                     request.FieldOfStudy,
-                    request.Country,
+                    request.CountryId,
+                    request.Description,
                     request.StartYear,
                     request.EndYear,
                     request.IsCurrentlyStudying);
@@ -52,7 +53,8 @@ internal sealed class UpdateEducation : IEndpoint
         string? Institution,
         string? Degree,
         string? FieldOfStudy,
-        string? Country,
+        Guid? CountryId,
+        string? Description,
         string? StartYear,
         string? EndYear,
         bool? IsCurrentlyStudying);

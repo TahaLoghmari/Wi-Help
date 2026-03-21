@@ -13,5 +13,5 @@ public sealed record RegisterProfessionalCommand(
     string Gender,
     string PhoneNumber,
     Address Address,
-    string Specialization,
+    Guid SpecializationId,
     int Experience) : ICommand;

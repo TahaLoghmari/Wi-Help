@@ -3,17 +3,17 @@ public record EmergencyContact
 {
     public string FullName { get; } = string.Empty;
     public string PhoneNumber { get; } = string.Empty;
-    public string Relationship { get; } = string.Empty;
+    public Guid? RelationshipId { get; }
 
     private EmergencyContact() { }
 
     public EmergencyContact(
         string fullName = "",
         string phoneNumber = "",
-        string relationship = "")
+        Guid? relationshipId = null)
     {
         FullName = fullName;
         PhoneNumber = phoneNumber;
-        Relationship = relationship;
+        RelationshipId = relationshipId;
     }
 }

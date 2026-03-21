@@ -76,22 +76,18 @@ public class RegisterPatientCommandValidator : AbstractValidator<RegisterPatient
             .Matches(@"^[a-zA-Z\s']+$")
             .WithMessage("City must contain only letters, spaces, and apostrophes");
 
-        RuleFor(x => x.Address.State)
+        RuleFor(x => x.Address.StateId)
             .NotEmpty()
-            .WithMessage("State/Province is required")
-            .MaximumLength(100)
-            .Matches(@"^[a-zA-Z\s']+$")
-            .WithMessage("State must contain only letters, spaces, and apostrophes");
+            .WithMessage("State/Province is required");
 
         RuleFor(x => x.Address.PostalCode)
             .NotEmpty()
             .WithMessage("Postal code is required")
             .MaximumLength(20);
 
-        RuleFor(x => x.Address.Country)
+        RuleFor(x => x.Address.CountryId)
             .NotEmpty()
-            .WithMessage("Country is required")
-            .MaximumLength(100);
+            .WithMessage("Country is required");
 
         RuleFor(x => x.EmergencyContact)
             .NotNull()
@@ -109,10 +105,9 @@ public class RegisterPatientCommandValidator : AbstractValidator<RegisterPatient
             .WithMessage("Invalid phone number format")
             .MaximumLength(20);
 
-        RuleFor(x => x.EmergencyContact.Relationship)
+        RuleFor(x => x.EmergencyContact.RelationshipId)
             .NotEmpty()
-            .WithMessage("Relationship is required")
-            .MaximumLength(50);
+            .WithMessage("Relationship is required");
     }
 
     private bool BeAValidDate(string dateString)

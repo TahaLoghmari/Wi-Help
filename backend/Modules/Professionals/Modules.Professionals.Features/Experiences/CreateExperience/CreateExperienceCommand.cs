@@ -6,8 +6,8 @@ public record CreateExperienceCommand(
     Guid ProfessionalId,
     string Title,
     string Organization,
-    string? Location,
-    string? Description,
+    string Location,
+    string Description,
     string StartYear,
     string? EndYear,
     bool IsCurrentPosition) : ICommand;

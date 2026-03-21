@@ -8,7 +8,6 @@ internal static class HealthCheckExtensions
 {
     public static WebApplication MapHealthCheckEndpoints(this WebApplication app)
     {
-        // Liveness probe - just confirms the app is running
         app.MapHealthChecks("/health/live", new HealthCheckOptions
         {
             Predicate = _ => false,
@@ -18,7 +17,6 @@ internal static class HealthCheckExtensions
             }
         });
 
-        // Readiness probe - checks all dependencies tagged with "ready"
         app.MapHealthChecks("/health/ready", new HealthCheckOptions
         {
             Predicate = healthCheck => healthCheck.Tags.Contains("ready"),
@@ -31,7 +29,6 @@ internal static class HealthCheckExtensions
             }
         });
 
-        // General health check for Docker healthcheck
         app.MapHealthChecks("/health", new HealthCheckOptions
         {
             Predicate = healthCheck => healthCheck.Tags.Contains("ready"),

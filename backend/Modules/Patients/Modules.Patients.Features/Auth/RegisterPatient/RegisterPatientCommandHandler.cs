@@ -21,6 +21,20 @@ public sealed class RegisterPatientCommandHandler(
     {
         logger.LogInformation("Patient registration attempt started for {Email}", command.Email);
 
+        // Validate relationship exists if provided
+        if (command.EmergencyContact.RelationshipId.HasValue)
+        {
+            var relationship = await dbContext.Relationships
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.Id == command.EmergencyContact.RelationshipId.Value, cancellationToken);
+
+            if (relationship is null)
+            {
+                logger.LogWarning("Relationship not found: {RelationshipId}", command.EmergencyContact.RelationshipId.Value);
+                return Result.Failure(PatientErrors.RelationshipNotFound(command.EmergencyContact.RelationshipId.Value));
+            }
+        }
+
         CreateUserRequest createUserRequest = new CreateUserRequest(
             command.Email,
             command.Password,

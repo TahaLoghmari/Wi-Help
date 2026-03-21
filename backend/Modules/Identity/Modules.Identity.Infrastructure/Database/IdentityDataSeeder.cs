@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Modules.Common.Features.ValueObjects;
 using Modules.Identity.Domain.Entities;
+using Modules.Identity.Infrastructure.Database.Seedings;
 
 namespace Modules.Identity.Infrastructure.Database;
 
@@ -21,7 +22,7 @@ public static class IdentityDataSeeder
     }
 
     public static async Task SeedAdminUserAsync(
-        UserManager<User> userManager, 
+        UserManager<User> userManager,
         IConfiguration configuration)
     {
         var adminEmail = configuration["ADMIN_EMAIL"] ?? "admin@wihelp.com";
@@ -30,15 +31,15 @@ public static class IdentityDataSeeder
         var existingAdmin = await userManager.FindByEmailAsync(adminEmail);
         if (existingAdmin != null)
         {
-            return; // Admin already exists
+            return;
         }
 
         var adminAddress = new Address(
             street: "Admin Street",
             city: "Admin City",
             postalCode: "12345",
-            country: "Admin Country",
-            state: "Admin State"
+            countryId: new Guid("00000002-0000-0000-0000-000000000125"), // Tunisia
+            stateId: new Guid("00000003-0000-0000-0000-000000000084") // Tunis
         );
 
         var adminUser = User.Create(
@@ -52,12 +53,10 @@ public static class IdentityDataSeeder
         );
 
         var result = await userManager.CreateAsync(adminUser, adminPassword);
-        
+
         if (result.Succeeded)
         {
             await userManager.AddToRoleAsync(adminUser, "Admin");
-            
-            // Confirm the admin email automatically
             var token = await userManager.GenerateEmailConfirmationTokenAsync(adminUser);
             await userManager.ConfirmEmailAsync(adminUser, token);
         }
@@ -65,33 +64,9 @@ public static class IdentityDataSeeder
 
     public static async Task<List<Guid>> SeedProfessionalUsersAsync(UserManager<User> userManager)
     {
-        var professionals = new List<(string Email, string Password, string FirstName, string LastName, string DateOfBirth, string Gender, string PhoneNumber, Address Address)>
-        {
-            (
-                "forTestingPurposes@gmail.com",
-                "Tahalog12#",
-                "Mohamed",
-                "BenSalah",
-                "1986-04-18 00:00:00.000 +0100",
-                "Male",
-                "22451889",
-                new Address("14 Rue Ibn Sina", "Tunis", "1006", "tunisia", "Tunis")
-            ),
-            (
-                "tahaloooghmari@gmail.com",
-                "Tahalog12#",
-                "Amina",
-                "Trabelsi",
-                "1991-09-03 00:00:00.000 +0100",
-                "Female",
-                "55783214",
-                new Address("7 Avenue Habib Bourguiba", "Sousse", "4000", "tunisia", "Sousse")
-            )
-        };
-
         var userIds = new List<Guid>();
 
-        foreach (var (email, password, firstName, lastName, dateOfBirth, gender, phoneNumber, address) in professionals)
+        foreach (var (email, password, firstName, lastName, dateOfBirth, gender, phoneNumber, address) in ProfessionalUserSeeds.All)
         {
             var existingUser = await userManager.FindByEmailAsync(email);
             if (existingUser != null)
@@ -125,33 +100,9 @@ public static class IdentityDataSeeder
 
     public static async Task<List<Guid>> SeedPatientUsersAsync(UserManager<User> userManager)
     {
-        var patients = new List<(string Email, string Password, string FirstName, string LastName, string DateOfBirth, string Gender, string PhoneNumber, Address Address)>
-        {
-            (
-                "heyitsmetahaa@gmail.com",
-                "Tahalog12#",
-                "Taha",
-                "Ghmari",
-                "1998-01-27 00:00:00.000 +0100",
-                "Male",
-                "93204776",
-                new Address("22 Rue El Farabi", "Ariana", "2080", "tunisia", "Ariana")
-            ),
-            (
-                "mohamedtahaloghmari@gmail.com",
-                "Tahalog12#",
-                "Ali",
-                "Ghmari",
-                "1993-06-11 00:00:00.000 +0100",
-                "Male",
-                "25991463",
-                new Address("5 Rue de l'Environnement", "Nabeul", "8000", "tunisia", "Nabeul")
-            )
-        };
-
         var userIds = new List<Guid>();
 
-        foreach (var (email, password, firstName, lastName, dateOfBirth, gender, phoneNumber, address) in patients)
+        foreach (var (email, password, firstName, lastName, dateOfBirth, gender, phoneNumber, address) in PatientUserSeeds.All)
         {
             var existingUser = await userManager.FindByEmailAsync(email);
             if (existingUser != null)
@@ -182,4 +133,5 @@ public static class IdentityDataSeeder
 
         return userIds;
     }
+
 }

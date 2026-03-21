@@ -8,4 +8,8 @@ public static class PatientsEndpoints
     public const string GetPatient = "patients/{patientId}";
     public const string GetAllPatients = "patients/admin";
     public const string CompleteOnboarding = "patients/complete-onboarding";
+    public const string GetRelationships = "relationships";
+    public const string GetAllergies = "allergies";
+    public const string GetConditions = "conditions";
+    public const string GetMedications = "medications";
 }

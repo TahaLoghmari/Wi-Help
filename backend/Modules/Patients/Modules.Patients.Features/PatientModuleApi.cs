@@ -53,7 +53,7 @@ public class PatientModuleApi(
                     user.Gender,
                     user.Address,
                     p.EmergencyContact,
-                    p.MedicalInfo,
+                    p.MobilityStatus,
                     p.Bio
                 );
             }
@@ -98,7 +98,7 @@ public class PatientModuleApi(
             user.Gender,
             user.Address,
             patient.EmergencyContact,
-            patient.MedicalInfo,
+            patient.MobilityStatus,
             patient.Bio
         );
 
@@ -155,10 +155,6 @@ public class PatientModuleApi(
                     parts.Add(user.Address.Street);
                 if (!string.IsNullOrWhiteSpace(user.Address.City))
                     parts.Add(user.Address.City);
-                if (!string.IsNullOrWhiteSpace(user.Address.State))
-                    parts.Add(user.Address.State);
-                if (!string.IsNullOrWhiteSpace(user.Address.Country))
-                    parts.Add(user.Address.Country);
                 addressString = parts.Count > 0 ? string.Join(", ", parts) : null;
             }
 

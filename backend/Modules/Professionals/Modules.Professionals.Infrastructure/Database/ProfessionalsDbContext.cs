@@ -5,6 +5,8 @@ namespace Modules.Professionals.Infrastructure.Database;
 public sealed class ProfessionalsDbContext(DbContextOptions<ProfessionalsDbContext> options) : DbContext(options)
 {
     public DbSet<Professional> Professionals { get; set; }
+    public DbSet<Service> Services { get; set; }
+    public DbSet<Specialization> Specializations { get; set; }
     public DbSet<AvailabilityDay> AvailabilityDays { get; set; }
     public DbSet<AvailabilitySlot> AvailabilitySlots { get; set; }
     public DbSet<VerificationDocument> VerificationDocuments { get; set; }

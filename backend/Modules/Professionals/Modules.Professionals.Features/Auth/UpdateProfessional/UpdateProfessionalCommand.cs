@@ -10,9 +10,9 @@ public sealed record UpdateProfessionalCommand(
     string? LastName,
     string? PhoneNumber,
     Address? Address,
-    string? Specialization,
-    List<string>? Services,
+    Guid? SpecializationId,
     int? Experience,
     int? VisitPrice,
     string? Bio,
-    IFormFile? ProfilePicture) : ICommand;
+    IFormFile? ProfilePicture,
+    List<Guid>? ServiceIds = null) : ICommand;

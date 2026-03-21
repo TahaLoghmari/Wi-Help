@@ -13,7 +13,7 @@ internal sealed class UpdateExperience : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPut(ProfessionalsEndpoints.UpdateExperience, async (
+        app.MapPatch(ProfessionalsEndpoints.UpdateExperience, async (
                 [FromRoute] Guid experienceId,
                 [FromBody] Request request,
                 HttpContext httpContext,

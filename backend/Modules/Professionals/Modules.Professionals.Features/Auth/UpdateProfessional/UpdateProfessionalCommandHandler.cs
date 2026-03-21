@@ -36,7 +36,7 @@ public sealed class UpdateProfessionalCommandHandler(
 
         try
         {
-            string? profilePictureUrl = "";
+            string? profilePictureUrl = null;
             if (command.ProfilePicture is not null)
             {
                 profilePictureUrl = await supabaseService.UploadFileAsync(
@@ -64,6 +64,7 @@ public sealed class UpdateProfessionalCommandHandler(
             logger.LogInformation("Identity fields updated successfully for UserId: {UserId}", command.UserId);
             
             var professional = await dbContext.Professionals
+                .Include(p => p.Services)
                 .FirstOrDefaultAsync(p => p.UserId == command.UserId, cancellationToken);
 
             if (professional is null)
@@ -72,12 +73,48 @@ public sealed class UpdateProfessionalCommandHandler(
                 return Result.Failure(ProfessionalErrors.NotFound(command.UserId));
             }
 
+            if (command.SpecializationId.HasValue)
+            {
+                var specialization = await dbContext.Specializations
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(s => s.Id == command.SpecializationId.Value, cancellationToken);
+
+                if (specialization is null)
+                {
+                    logger.LogWarning("Specialization not found: {SpecializationId}", command.SpecializationId.Value);
+                    return Result.Failure(ProfessionalErrors.SpecializationNotFound(command.SpecializationId.Value));
+                }
+            }
+
             professional.Update(
-                command.Specialization,
-                command.Services,
+                command.SpecializationId,
                 command.Experience,
                 command.VisitPrice,
                 command.Bio);
+
+            if (command.ServiceIds is not null)
+            {
+                var serviceIdsSet = command.ServiceIds.ToHashSet();
+
+                var missingIds = serviceIdsSet
+                    .Except(await dbContext.Services
+                        .Where(s => serviceIdsSet.Contains(s.Id))
+                        .Select(s => s.Id)
+                        .ToListAsync(cancellationToken))
+                    .ToList();
+
+                if (missingIds.Count > 0)
+                {
+                    logger.LogWarning("Service(s) not found: {ServiceIds}", missingIds);
+                    return Result.Failure(ProfessionalErrors.ServiceNotFound(missingIds.First()));
+                }
+
+                var newServices = await dbContext.Services
+                    .Where(s => serviceIdsSet.Contains(s.Id))
+                    .ToListAsync(cancellationToken);
+
+                professional.UpdateServices(newServices);
+            }
 
             await dbContext.SaveChangesAsync(cancellationToken);
 

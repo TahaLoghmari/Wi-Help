@@ -8,6 +8,8 @@ public class AvailabilityDay
     public bool IsActive { get; private set; }
     public Professional Professional { get; private set; } = null!;
     public ICollection<AvailabilitySlot> AvailabilitySlots { get; private set; } = new List<AvailabilitySlot>();
+    
+    private AvailabilityDay() {}
 
     public AvailabilityDay(
         Guid professionalId,

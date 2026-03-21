@@ -25,11 +25,11 @@ public class WorkExperienceConfiguration : IEntityTypeConfiguration<WorkExperien
 
         builder.Property(w => w.Location)
             .HasMaxLength(200)
-            .IsRequired(false);
+            .IsRequired();
 
         builder.Property(w => w.Description)
             .HasMaxLength(1000)
-            .IsRequired(false);
+            .IsRequired();
 
         builder.Property(w => w.StartYear)
             .IsRequired()

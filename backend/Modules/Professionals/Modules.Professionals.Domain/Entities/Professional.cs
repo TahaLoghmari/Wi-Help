@@ -7,16 +7,17 @@ public class Professional
 {
     public Guid Id { get; private set; }
     public Guid UserId { get; private set; }
-    public int? VisitPrice { get; private set; }
+    public int VisitPrice { get; private set; }
     public string? Bio { get; set; } 
-    public string Specialization { get; set; } = string.Empty;
+    public Guid SpecializationId { get; private set; }
     public int Experience { get; private set; }
-    public bool IsVerified { get; private set; }
-    public VerificationStatus VerificationStatus { get; private set; }
-    public List<string>? Services { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
+    
+    public VerificationStatus VerificationStatus { get; private set; }
+    public Specialization Specialization { get; private set; } = null!;
     public ICollection<AvailabilityDay> AvailabilityDays { get; private set; } = new List<AvailabilityDay>();
+    public ICollection<Service> Services { get; private set; } = new List<Service>();
     public ICollection<VerificationDocument> VerificationDocuments { get; private set; } = new List<VerificationDocument>();
     public ICollection<Award> Awards { get; private set; } = new List<Award>();
     public ICollection<Education> Educations { get; private set; } = new List<Education>();
@@ -26,16 +27,15 @@ public class Professional
 
     public Professional(
         Guid userId,
-        string specialization,
+        Guid specializationId,
         int experience)
     {
         Id = Guid.NewGuid();
         UserId = userId;
         Experience = experience;
-        Specialization = specialization;
-        IsVerified = false;
+        SpecializationId = specializationId;
         VerificationStatus = VerificationStatus.Pending;
-        VisitPrice = 30; // Default visit price
+        VisitPrice = 30;
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
     }
@@ -43,31 +43,44 @@ public class Professional
     public void UpdateVerificationStatus(VerificationStatus status)
     {
         VerificationStatus = status;
-        IsVerified = status == VerificationStatus.Verified;
+
         UpdatedAt = DateTime.UtcNow;
     }
     
     public void Update(
-        string? specialization = null,
-        List<string>? services = null,
+        Guid? specializationId = null,
         int? experience = null,
         int? visitPrice = null,
         string? bio = null)
     {
-        if (!string.IsNullOrWhiteSpace(specialization))
-            Specialization = specialization;
+        if (bio is not null)
+            Bio = bio;
         
-            Services = services;
+        UpdatedAt = DateTime.UtcNow;
+        
+        if (specializationId.HasValue)
+            SpecializationId = specializationId.Value;
         
         if (experience.HasValue)
             Experience = experience.Value;
         
         if (visitPrice.HasValue)
             VisitPrice = visitPrice.Value;
-            
-        if (bio != null) 
-            Bio = bio;
-        
+    }
+
+    public void UpdateServices(List<Service> newServices)
+    {
+        var newServiceIds = newServices.Select(s => s.Id).ToHashSet();
+        var currentServiceIds = Services.Select(s => s.Id).ToHashSet();
+
+        var toRemove = Services.Where(s => !newServiceIds.Contains(s.Id)).ToList();
+        foreach (var service in toRemove)
+            Services.Remove(service);
+
+        var toAdd = newServices.Where(s => !currentServiceIds.Contains(s.Id));
+        foreach (var service in toAdd)
+            Services.Add(service);
+
         UpdatedAt = DateTime.UtcNow;
     }
 }

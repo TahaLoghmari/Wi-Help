@@ -21,6 +21,20 @@ public sealed class CompletePatientOnboardingCommandHandler(
     {
         logger.LogInformation("Completing onboarding for patient with UserId: {UserId}", command.UserId);
 
+        // Validate relationship exists if provided
+        if (command.EmergencyContact.RelationshipId.HasValue)
+        {
+            var relationship = await dbContext.Relationships
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.Id == command.EmergencyContact.RelationshipId.Value, cancellationToken);
+
+            if (relationship is null)
+            {
+                logger.LogWarning("Relationship not found: {RelationshipId}", command.EmergencyContact.RelationshipId.Value);
+                return Result.Failure(PatientErrors.RelationshipNotFound(command.EmergencyContact.RelationshipId.Value));
+            }
+        }
+
         // Complete onboarding in Identity module
         var completeOnboardingRequest = new CompleteOnboardingRequest(
             command.UserId,

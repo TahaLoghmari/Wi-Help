@@ -9,7 +9,7 @@ public class AvailabilitySlot
     public TimeRange TimeRange { get; private set; } = null!;
     public AvailabilityDay Day { get; private set; } = null!;
 
-    protected AvailabilitySlot() {}
+    private AvailabilitySlot() {}
     public AvailabilitySlot(Guid availabilityDayId, TimeRange range)
     {
         Id = Guid.NewGuid();

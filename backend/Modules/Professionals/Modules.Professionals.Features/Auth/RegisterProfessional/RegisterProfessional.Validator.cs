@@ -78,27 +78,22 @@ public class RegisterProfessionalCommandValidator : AbstractValidator<RegisterPr
             .Matches(@"^[a-zA-Z\s']+$")
             .WithMessage("City must contain only letters, spaces, and apostrophes");
 
-        RuleFor(x => x.Address.State)
+        RuleFor(x => x.Address.StateId)
             .NotEmpty()
-            .WithMessage("State/Province is required")
-            .MaximumLength(100)
-            .Matches(@"^[a-zA-Z\s']+$")
-            .WithMessage("State must contain only letters, spaces, and apostrophes");
+            .WithMessage("State/Province is required");
 
         RuleFor(x => x.Address.PostalCode)
             .NotEmpty()
             .WithMessage("Postal code is required")
             .MaximumLength(20);
 
-        RuleFor(x => x.Address.Country)
+        RuleFor(x => x.Address.CountryId)
             .NotEmpty()
-            .WithMessage("Country is required")
-            .MaximumLength(100);
+            .WithMessage("Country is required");
 
-        RuleFor(x => x.Specialization)
+        RuleFor(x => x.SpecializationId)
             .NotEmpty()
-            .WithMessage("Specialization is required")
-            .MaximumLength(100);
+            .WithMessage("Specialization is required");
 
         RuleFor(x => x.Experience)
             .GreaterThanOrEqualTo(0)

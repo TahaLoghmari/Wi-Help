@@ -42,6 +42,9 @@ public static class ProfessionalsEndpoints
     public const string GetProfessionalsForAdmin = "professionals/admin";
     public const string GetVerificationDocumentsForAdmin = "professionals/admin/documents";
     public const string UpdateDocumentStatus = "professionals/admin/documents/{documentId}/status";
+
+    public const string GetServicesBySpecialization = "specializations/{specializationId}/services";
+    public const string GetSpecializations = "specializations";
 }
 
 

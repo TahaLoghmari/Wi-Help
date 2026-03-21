@@ -14,7 +14,7 @@ internal sealed class UpdateProfessional : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPut(ProfessionalsEndpoints.UpdateProfessional, async (
+        app.MapPatch(ProfessionalsEndpoints.UpdateProfessional, async (
                 [FromForm] Request request,
                 HttpContext httpContext,
                 ICommandHandler<UpdateProfessionalCommand> handler,
@@ -33,12 +33,12 @@ internal sealed class UpdateProfessional : IEndpoint
                     request.LastName,
                     request.PhoneNumber,
                     request.Address,
-                    request.Specialization,
-                    request.Services,
+                    request.SpecializationId,
                     request.Experience,
                     request.VisitPrice,
                     request.Bio,
-                    request.ProfilePicture);
+                    request.ProfilePicture,
+                    request.ServiceIds);
 
                 Result result = await handler.Handle(command, cancellationToken);
                 return result.Match(() => Results.Ok(), CustomResults.Problem);
@@ -54,11 +54,11 @@ internal sealed class UpdateProfessional : IEndpoint
         public string? LastName { get; set; }
         public string? PhoneNumber { get; set; }
         public Address? Address { get; set; }
-        public string? Specialization { get; set; }
-        public List<string>? Services { get; set; }
+        public Guid? SpecializationId { get; set; }
         public int? Experience { get; set; }
         public int? VisitPrice { get; set; }
         public string? Bio { get; set; }
         public IFormFile? ProfilePicture { get; set; }
+        public List<Guid>? ServiceIds { get; set; }
     }
 }

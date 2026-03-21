@@ -1,4 +1,5 @@
 using Modules.Professionals.Domain.Entities;
+using Modules.Professionals.Domain.Enums;
 
 namespace Modules.Professionals.Features.GetVerificationDocuments;
 

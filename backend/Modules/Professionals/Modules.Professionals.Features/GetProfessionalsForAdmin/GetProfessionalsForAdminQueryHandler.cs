@@ -17,6 +17,7 @@ internal sealed class GetProfessionalsForAdminQueryHandler(
         var totalCount = await dbContext.Professionals.CountAsync(cancellationToken);
 
         var professionals = await dbContext.Professionals
+            .Include(p => p.Specialization)
             .Skip((request.Page - 1) * request.PageSize)
             .Take(request.PageSize)
             .ToListAsync(cancellationToken);
@@ -44,7 +45,7 @@ internal sealed class GetProfessionalsForAdminQueryHandler(
                 user.Email,
                 user.PhoneNumber,
                 user.ProfilePictureUrl ?? "",
-                p.Specialization,
+                p.Specialization.Key,
                 p.CreatedAt,
                 0, // Earned - requires cross-module call
                 p.VerificationStatus,

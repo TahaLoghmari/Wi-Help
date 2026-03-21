@@ -10,7 +10,7 @@ public sealed record ProfessionalAdminDto(
     string? ProfilePictureUrl,
     string Email,
     string? PhoneNumber,
-    string Specialization,
+    string SpecializationKey,
     DateTime CreatedAt,
     decimal TotalEarned,
     VerificationStatus VerificationStatus);

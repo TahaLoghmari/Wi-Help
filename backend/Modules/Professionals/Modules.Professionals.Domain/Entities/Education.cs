@@ -6,8 +6,9 @@ public class Education
     public Guid ProfessionalId { get; private set; }
     public string Institution { get; private set; } = string.Empty;
     public string Degree { get; private set; } = string.Empty;
-    public string? FieldOfStudy { get; private set; }
-    public string? Country { get; private set; }
+    public string FieldOfStudy { get; private set; } = string.Empty;
+    public Guid CountryId { get; private set; }
+    public string Description { get; private set; } = string.Empty;
     public string StartYear { get; private set; } = string.Empty;
     public string? EndYear { get; private set; }
     public bool IsCurrentlyStudying { get; private set; }
@@ -21,8 +22,9 @@ public class Education
         Guid professionalId,
         string institution,
         string degree,
-        string? fieldOfStudy,
-        string? country,
+        string fieldOfStudy,
+        Guid countryId,
+        string description,
         string startYear,
         string? endYear,
         bool isCurrentlyStudying = false)
@@ -32,7 +34,8 @@ public class Education
         Institution = institution;
         Degree = degree;
         FieldOfStudy = fieldOfStudy;
-        Country = country;
+        CountryId = countryId;
+        Description = description;
         StartYear = startYear;
         EndYear = endYear;
         IsCurrentlyStudying = isCurrentlyStudying;
@@ -44,7 +47,8 @@ public class Education
         string? institution = null,
         string? degree = null,
         string? fieldOfStudy = null,
-        string? country = null,
+        Guid? countryId = null,
+        string? description = null,
         string? startYear = null,
         string? endYear = null,
         bool? isCurrentlyStudying = null)
@@ -55,20 +59,27 @@ public class Education
         if (!string.IsNullOrWhiteSpace(degree))
             Degree = degree;
 
-        if (fieldOfStudy is not null)
+        if (!string.IsNullOrWhiteSpace(fieldOfStudy))
             FieldOfStudy = fieldOfStudy;
 
-        if (country is not null)
-            Country = country;
+        if (countryId.HasValue)
+            CountryId = countryId.Value;
+
+        if (description is not null)
+            Description = description;
 
         if (!string.IsNullOrWhiteSpace(startYear))
             StartYear = startYear;
 
+        if (isCurrentlyStudying.HasValue)
+        {
+            IsCurrentlyStudying = isCurrentlyStudying.Value;
+            if (isCurrentlyStudying.Value)
+                EndYear = null;
+        }
+
         if (endYear is not null)
             EndYear = endYear;
-
-        if (isCurrentlyStudying.HasValue)
-            IsCurrentlyStudying = isCurrentlyStudying.Value;
 
         UpdatedAt = DateTime.UtcNow;
     }

@@ -5,8 +5,9 @@ using Modules.Common.Features.Results;
 using Modules.Common.Infrastructure.DTOs;
 using Modules.Identity.PublicApi;
 using Modules.Professionals.Features.GetProfessional;
+using Modules.Professionals.Features.GetServices;
+using Modules.Professionals.Features.GetSpecializations;
 using Modules.Professionals.Infrastructure.Database;
-using Modules.Professionals.Infrastructure.DTOs;
 
 namespace Modules.Professionals.Features.GetProfessionals;
 
@@ -22,12 +23,14 @@ public sealed class GetProfessionalsQueryHandler(
         logger.LogInformation("Retrieving professionals with filters: {@Query}", query);
 
         var professionalsQuery = dbContext.Professionals
+            .Include(p => p.Specialization)
+            .Include(p => p.Services)
             .AsNoTracking()
             .AsQueryable();
 
         if (query.MaxPrice.HasValue)
         {
-            professionalsQuery = professionalsQuery.Where(p => p.VisitPrice <= query.MaxPrice.Value || p.VisitPrice == null );
+            professionalsQuery = professionalsQuery.Where(p => p.VisitPrice <= query.MaxPrice.Value);
         }
 
         var professionals = await professionalsQuery.ToListAsync(cancellationToken);
@@ -67,13 +70,11 @@ public sealed class GetProfessionalsQueryHandler(
                 bool matchesSearch = string.IsNullOrEmpty(query.Search) ||
                                      (user.FirstName.Contains(query.Search, StringComparison.OrdinalIgnoreCase)) ||
                                      (user.LastName.Contains(query.Search, StringComparison.OrdinalIgnoreCase)) ||
-                                     (professional.Specialization.Contains(query.Search, StringComparison.OrdinalIgnoreCase));
+                                     (professional.Specialization.Key.Contains(query.Search, StringComparison.OrdinalIgnoreCase));
 
                 bool matchesLocation = string.IsNullOrEmpty(query.Location) ||
                                        (
                                             user.Address.City.Contains(query.Location, StringComparison.OrdinalIgnoreCase) ||
-                                            user.Address.State.Contains(query.Location, StringComparison.OrdinalIgnoreCase) ||
-                                            user.Address.Country.Contains(query.Location, StringComparison.OrdinalIgnoreCase) ||
                                             user.Address.Street.Contains(query.Location, StringComparison.OrdinalIgnoreCase)
                                        );
 
@@ -110,12 +111,11 @@ public sealed class GetProfessionalsQueryHandler(
                         user.DateOfBirth,
                         user.Gender,
                         user.Address,
-                        professional.Specialization,
-                        professional.Services,
+                        new SpecializationDto(professional.Specialization.Id, professional.Specialization.Key),
+                        professional.Services.Select(s => new ServiceDto(s.Id, s.Key)).ToList(),
                         professional.Experience,
                         professional.VisitPrice,
                         professional.Bio,
-                        professional.IsVerified,
                         user.ProfilePictureUrl,
                         professional.VerificationStatus,
                         distanceKm.HasValue ? Math.Round(distanceKm.Value, 1) : null);

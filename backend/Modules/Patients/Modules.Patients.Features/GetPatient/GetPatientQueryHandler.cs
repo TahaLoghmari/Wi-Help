@@ -4,6 +4,9 @@ using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.PublicApi;
 using Modules.Patients.Domain;
+using Modules.Patients.Features.GetAllergies;
+using Modules.Patients.Features.GetConditions;
+using Modules.Patients.Features.GetMedications;
 using Modules.Patients.Infrastructure.Database;
 
 namespace Modules.Patients.Features.GetPatient;
@@ -20,6 +23,9 @@ public sealed class GetPatientQueryHandler(
         logger.LogInformation("Retrieving patient profile for PatientId: {PatientId}", query.PatientId);
 
         var patient = await dbContext.Patients
+            .Include(p => p.Allergies)
+            .Include(p => p.Conditions)
+            .Include(p => p.Medications)
             .FirstOrDefaultAsync(p => p.Id == query.PatientId, cancellationToken);
 
         if (patient is null)
@@ -60,7 +66,10 @@ public sealed class GetPatientQueryHandler(
             user.Gender,
             user.Address,
             patient.EmergencyContact,
-            patient.MedicalInfo,
+            patient.MobilityStatus,
+            patient.Allergies.Select(a => new AllergyDto(a.Id, a.Key)).ToList(),
+            patient.Conditions.Select(c => new ConditionDto(c.Id, c.Key)).ToList(),
+            patient.Medications.Select(m => new MedicationDto(m.Id, m.Key)).ToList(),
             patient.Bio,
             user.ProfilePictureUrl,
             distanceKm);

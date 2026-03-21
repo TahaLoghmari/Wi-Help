@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Modules.Common.Features.Abstractions;
 using Modules.Professionals.Domain.Entities;
+using Modules.Professionals.Domain.Enums;
 
 namespace Modules.Professionals.Features.UploadVerificationDocument;
 
