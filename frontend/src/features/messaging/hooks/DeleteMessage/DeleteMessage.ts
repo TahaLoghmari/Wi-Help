@@ -3,6 +3,7 @@ import { api } from "@/api-client";
 import { API_ENDPOINTS } from "@/config/endpoints";
 import { handleApiError } from "@/hooks";
 import { toast } from "sonner";
+import i18n from "i18next";
 
 interface DeleteMessageParams {
   messageId: string;
@@ -27,11 +28,10 @@ export function useDeleteMessage() {
       queryClient.invalidateQueries({
         queryKey: ["conversations"],
       });
-      toast.success("Message deleted");
+      toast.success(i18n.t("toasts.messaging.messageDeleted"));
     },
     onError: (error) => {
       handleApiError({ apiError: error as any });
-      toast.error("Failed to delete message");
     },
   });
 }

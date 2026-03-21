@@ -29,25 +29,38 @@ import {
 import { useForm } from "react-hook-form";
 import type z from "zod";
 import {
-  getAllergies,
-  getChronicConditions,
-  getMedications,
   MOBILITY_STATUSES,
   ProfileAndBioFormDefaults,
   profileAndBioFormSchema,
   GetCurrentPatient,
   UpdatePatient,
+  GetRelationships,
+  GetAllergies,
+  GetConditions,
+  GetMedications,
 } from "@/features/patient";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getCountries, getRelationships } from "@/features/auth";
+import { GetCountries, GetStatesByCountry } from "@/features/auth";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export function ProfileAndBio() {
-  const { t, i18n } = useTranslation();
   const { data: patient, isLoading, isError } = GetCurrentPatient();
+  const form = useForm<z.infer<typeof profileAndBioFormSchema>>({
+    resolver: zodResolver(profileAndBioFormSchema),
+    mode: "onChange",
+    defaultValues: ProfileAndBioFormDefaults(patient!),
+  });
+  const { t } = useTranslation();
+  const { data: countries } = GetCountries();
+  const selectedCountryId = form.watch("address.countryId");
+  const { data: states } = GetStatesByCountry(selectedCountryId || "");
+  const { data: relationships } = GetRelationships();
+  const { data: allergies } = GetAllergies();
+  const { data: conditions } = GetConditions();
+  const { data: medications } = GetMedications();
 
   if (isLoading) {
     return (
@@ -64,13 +77,8 @@ export function ProfileAndBio() {
       </div>
     );
   }
-
-  const form = useForm<z.infer<typeof profileAndBioFormSchema>>({
-    resolver: zodResolver(profileAndBioFormSchema),
-    mode: "onChange",
-    defaultValues: ProfileAndBioFormDefaults(patient!),
-  });
   const updatePatientMutation = UpdatePatient();
+  const { isDirty } = form.formState;
   const [openAllergies, setOpenAllergies] = useState(false);
   const [openChronicConditions, setOpenChronicConditions] = useState(false);
   const [openMedications, setOpenMedications] = useState(false);
@@ -94,29 +102,27 @@ export function ProfileAndBio() {
         credentials.address &&
         credentials.address.street &&
         credentials.address.city &&
-        credentials.address.state &&
+        credentials.address.stateId &&
         credentials.address.postalCode &&
-        credentials.address.country
+        credentials.address.countryId
           ? (credentials.address as {
               street: string;
               city: string;
-              state: string;
+              stateId: string;
               postalCode: string;
-              country: string;
+              countryId: string;
             })
           : undefined,
-      medicalInfo: credentials.medicalInfo
-        ? {
-            ...credentials.medicalInfo,
-            mobilityStatus:
-              credentials.medicalInfo.mobilityStatus === ""
-                ? null
-                : credentials.medicalInfo.mobilityStatus,
-          }
-        : undefined,
+      mobilityStatus:
+        credentials.mobilityStatus === "" ? null : credentials.mobilityStatus,
     };
     // @ts-ignore
-    updatePatientMutation.mutate(cleanedCredentials);
+    updatePatientMutation.mutate(cleanedCredentials, {
+      onSuccess: () => {
+        form.reset({ ...credentials, profilePicture: undefined });
+        setPreviewUrl(null);
+      },
+    });
   };
 
   return (
@@ -330,19 +336,33 @@ export function ProfileAndBio() {
             <div className="grid gap-3 sm:grid-cols-2">
               <FormField
                 control={form.control}
-                name="address.state"
+                name="address.stateId"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
                       State
                     </FormLabel>
                     <FormControl>
-                      <input
-                        type="text"
-                        className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
-                        placeholder="Enter state"
-                        {...field}
-                      />
+                      <Select
+                        key={`state-${selectedCountryId}`}
+                        value={field.value || ""}
+                        onValueChange={field.onChange}
+                        disabled={!selectedCountryId}
+                      >
+                        <SelectTrigger className="h-8! w-full rounded-lg! text-xs shadow-none [&>span]:text-[11px]">
+                          <SelectValue
+                            className="text-xs placeholder:text-xs"
+                            placeholder="Select State"
+                          ></SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {(states ?? []).map((state) => (
+                            <SelectItem key={state.id} value={state.id}>
+                              {t(`lookups.${state.key}`)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage className="text-xs" />
                   </FormItem>
@@ -350,7 +370,7 @@ export function ProfileAndBio() {
               />
               <FormField
                 control={form.control}
-                name="address.country"
+                name="address.countryId"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
@@ -359,7 +379,10 @@ export function ProfileAndBio() {
                     <FormControl>
                       <Select
                         value={field.value || ""}
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          form.setValue("address.stateId", "");
+                        }}
                       >
                         <SelectTrigger className="h-8! w-full rounded-lg! text-xs shadow-none [&>span]:text-[11px]">
                           <SelectValue
@@ -368,9 +391,9 @@ export function ProfileAndBio() {
                           ></SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          {getCountries(i18n.language).map((country, idx) => (
-                            <SelectItem key={idx} value={country.value}>
-                              {country.label}
+                          {(countries ?? []).map((country) => (
+                            <SelectItem key={country.id} value={country.id}>
+                              {t(`lookups.${country.key}`)}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -429,7 +452,7 @@ export function ProfileAndBio() {
             <div className="grid grid-cols-1 gap-4">
               <FormField
                 control={form.control}
-                name="emergencyContact.relationship"
+                name="emergencyContact.relationshipId"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
@@ -447,13 +470,14 @@ export function ProfileAndBio() {
                           ></SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          {getRelationships(i18n.language).map(
-                            (relationship, idx) => (
-                              <SelectItem key={idx} value={relationship.value}>
-                                {relationship.label}
-                              </SelectItem>
-                            ),
-                          )}
+                          {(relationships ?? []).map((relationship) => (
+                            <SelectItem
+                              key={relationship.id}
+                              value={relationship.id}
+                            >
+                              {t(`lookups.${relationship.key}`)}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </FormControl>
@@ -510,7 +534,7 @@ export function ProfileAndBio() {
             <div className="grid gap-3 sm:grid-cols-2">
               <FormField
                 control={form.control}
-                name="medicalInfo.allergies"
+                name="allergyIds"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
@@ -535,15 +559,15 @@ export function ProfileAndBio() {
                               <div
                                 className={`flex flex-wrap items-center gap-1`}
                               >
-                                {field.value.slice(0, 4).map((allergie) => (
+                                {field.value.slice(0, 4).map((allergyId) => (
                                   <Badge
                                     variant="secondary"
-                                    key={allergie}
+                                    key={allergyId}
                                     className="text-[11px]"
                                   >
-                                    {getAllergies(i18n.language).find(
-                                      (a) => a.value === allergie,
-                                    )?.label || allergie}
+                                    {t(
+                                      `lookups.${allergies?.find((a) => a.id === allergyId)?.key ?? ""}`,
+                                    )}
                                   </Badge>
                                 ))}
 
@@ -570,10 +594,10 @@ export function ProfileAndBio() {
                             <CommandList>
                               <CommandEmpty>No allergie found.</CommandEmpty>
                               <CommandGroup>
-                                {getAllergies(i18n.language).map((allergie) => (
+                                {(allergies ?? []).map((allergy) => (
                                   <CommandItem
-                                    key={allergie.value}
-                                    value={allergie.value}
+                                    key={allergy.id}
+                                    value={allergy.id}
                                     onSelect={(currentValue) => {
                                       const currentValues = Array.isArray(
                                         field.value,
@@ -598,12 +622,12 @@ export function ProfileAndBio() {
                                       setOpenAllergies(true);
                                     }}
                                   >
-                                    {allergie.label}
+                                    {t(`lookups.${allergy.key}`)}
                                     <Check
                                       className={cn(
                                         "ml-auto",
                                         Array.isArray(field.value) &&
-                                          field.value.includes(allergie.value)
+                                          field.value.includes(allergy.id)
                                           ? "opacity-100"
                                           : "opacity-0",
                                       )}
@@ -622,7 +646,7 @@ export function ProfileAndBio() {
               />
               <FormField
                 control={form.control}
-                name="medicalInfo.chronicConditions"
+                name="conditionIds"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
@@ -647,19 +671,17 @@ export function ProfileAndBio() {
                               <div
                                 className={`flex flex-wrap items-center gap-1`}
                               >
-                                {field.value
-                                  .slice(0, 3)
-                                  .map((chronicCondition) => (
-                                    <Badge
-                                      variant="secondary"
-                                      key={chronicCondition}
-                                      className="text-[11px]"
-                                    >
-                                      {getChronicConditions(i18n.language).find(
-                                        (cc) => cc.value === chronicCondition,
-                                      )?.label || chronicCondition}
-                                    </Badge>
-                                  ))}
+                                {field.value.slice(0, 3).map((conditionId) => (
+                                  <Badge
+                                    variant="secondary"
+                                    key={conditionId}
+                                    className="text-[11px]"
+                                  >
+                                    {t(
+                                      `lookups.${conditions?.find((c) => c.id === conditionId)?.key ?? ""}`,
+                                    )}
+                                  </Badge>
+                                ))}
 
                                 {field.value.length > 3 && (
                                   <Badge variant="outline">
@@ -686,50 +708,46 @@ export function ProfileAndBio() {
                                 No chronic condition found.
                               </CommandEmpty>
                               <CommandGroup>
-                                {getChronicConditions(i18n.language).map(
-                                  (chronicCondition) => (
-                                    <CommandItem
-                                      key={chronicCondition.value}
-                                      value={chronicCondition.value}
-                                      onSelect={(currentValue) => {
-                                        const currentValues = Array.isArray(
-                                          field.value,
-                                        )
-                                          ? field.value
-                                          : [];
-                                        const isSelected =
-                                          currentValues.includes(currentValue);
+                                {(conditions ?? []).map((condition) => (
+                                  <CommandItem
+                                    key={condition.id}
+                                    value={condition.id}
+                                    onSelect={(currentValue) => {
+                                      const currentValues = Array.isArray(
+                                        field.value,
+                                      )
+                                        ? field.value
+                                        : [];
+                                      const isSelected =
+                                        currentValues.includes(currentValue);
 
-                                        if (isSelected) {
-                                          field.onChange(
-                                            currentValues.filter(
-                                              (v) => v !== currentValue,
-                                            ),
-                                          );
-                                        } else {
-                                          field.onChange([
-                                            ...currentValues,
-                                            currentValue,
-                                          ]);
-                                        }
-                                        setOpenChronicConditions(true);
-                                      }}
-                                    >
-                                      {chronicCondition.label}
-                                      <Check
-                                        className={cn(
-                                          "ml-auto",
-                                          Array.isArray(field.value) &&
-                                            field.value.includes(
-                                              chronicCondition.value,
-                                            )
-                                            ? "opacity-100"
-                                            : "opacity-0",
-                                        )}
-                                      />
-                                    </CommandItem>
-                                  ),
-                                )}
+                                      if (isSelected) {
+                                        field.onChange(
+                                          currentValues.filter(
+                                            (v) => v !== currentValue,
+                                          ),
+                                        );
+                                      } else {
+                                        field.onChange([
+                                          ...currentValues,
+                                          currentValue,
+                                        ]);
+                                      }
+                                      setOpenChronicConditions(true);
+                                    }}
+                                  >
+                                    {t(`lookups.${condition.key}`)}
+                                    <Check
+                                      className={cn(
+                                        "ml-auto",
+                                        Array.isArray(field.value) &&
+                                          field.value.includes(condition.id)
+                                          ? "opacity-100"
+                                          : "opacity-0",
+                                      )}
+                                    />
+                                  </CommandItem>
+                                ))}
                               </CommandGroup>
                             </CommandList>
                           </Command>
@@ -744,7 +762,7 @@ export function ProfileAndBio() {
             <div className="grid gap-3 sm:grid-cols-2">
               <FormField
                 control={form.control}
-                name="medicalInfo.medications"
+                name="medicationIds"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
@@ -769,15 +787,15 @@ export function ProfileAndBio() {
                               <div
                                 className={`flex flex-wrap items-center gap-1`}
                               >
-                                {field.value.slice(0, 4).map((medication) => (
+                                {field.value.slice(0, 4).map((medicationId) => (
                                   <Badge
                                     variant="secondary"
-                                    key={medication}
+                                    key={medicationId}
                                     className="text-[11px]"
                                   >
-                                    {getMedications(i18n.language).find(
-                                      (m) => m.value === medication,
-                                    )?.label || medication}
+                                    {t(
+                                      `lookups.${medications?.find((m) => m.id === medicationId)?.key ?? ""}`,
+                                    )}
                                   </Badge>
                                 ))}
 
@@ -804,50 +822,46 @@ export function ProfileAndBio() {
                             <CommandList>
                               <CommandEmpty>No medication found.</CommandEmpty>
                               <CommandGroup>
-                                {getMedications(i18n.language).map(
-                                  (medication) => (
-                                    <CommandItem
-                                      key={medication.value}
-                                      value={medication.value}
-                                      onSelect={(currentValue) => {
-                                        const currentValues = Array.isArray(
-                                          field.value,
-                                        )
-                                          ? field.value
-                                          : [];
-                                        const isSelected =
-                                          currentValues.includes(currentValue);
+                                {(medications ?? []).map((medication) => (
+                                  <CommandItem
+                                    key={medication.id}
+                                    value={medication.id}
+                                    onSelect={(currentValue) => {
+                                      const currentValues = Array.isArray(
+                                        field.value,
+                                      )
+                                        ? field.value
+                                        : [];
+                                      const isSelected =
+                                        currentValues.includes(currentValue);
 
-                                        if (isSelected) {
-                                          field.onChange(
-                                            currentValues.filter(
-                                              (v) => v !== currentValue,
-                                            ),
-                                          );
-                                        } else {
-                                          field.onChange([
-                                            ...currentValues,
-                                            currentValue,
-                                          ]);
-                                        }
-                                        setOpenMedications(true);
-                                      }}
-                                    >
-                                      {medication.label}
-                                      <Check
-                                        className={cn(
-                                          "ml-auto",
-                                          Array.isArray(field.value) &&
-                                            field.value.includes(
-                                              medication.value,
-                                            )
-                                            ? "opacity-100"
-                                            : "opacity-0",
-                                        )}
-                                      />
-                                    </CommandItem>
-                                  ),
-                                )}
+                                      if (isSelected) {
+                                        field.onChange(
+                                          currentValues.filter(
+                                            (v) => v !== currentValue,
+                                          ),
+                                        );
+                                      } else {
+                                        field.onChange([
+                                          ...currentValues,
+                                          currentValue,
+                                        ]);
+                                      }
+                                      setOpenMedications(true);
+                                    }}
+                                  >
+                                    {t(`lookups.${medication.key}`)}
+                                    <Check
+                                      className={cn(
+                                        "ml-auto",
+                                        Array.isArray(field.value) &&
+                                          field.value.includes(medication.id)
+                                          ? "opacity-100"
+                                          : "opacity-0",
+                                      )}
+                                    />
+                                  </CommandItem>
+                                ))}
                               </CommandGroup>
                             </CommandList>
                           </Command>
@@ -860,7 +874,7 @@ export function ProfileAndBio() {
               />
               <FormField
                 control={form.control}
-                name="medicalInfo.mobilityStatus"
+                name="mobilityStatus"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
@@ -916,10 +930,11 @@ export function ProfileAndBio() {
               )}
             />
           </div>
-          <div className="flex w-full items-center justify-end mt-2">
+          <div className="mt-2 flex w-full items-center justify-end">
             <button
-              className="bg-brand-dark hover:bg-brand-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] text-white transition-colors"
+              className="bg-brand-dark hover:bg-brand-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               type="submit"
+              disabled={!isDirty || updatePatientMutation.isPending}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

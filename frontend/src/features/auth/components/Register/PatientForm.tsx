@@ -2,10 +2,10 @@ import type { UseFormReturn } from "react-hook-form";
 import {
   useStepsStore,
   type registerFormSchema,
-  getCountries,
-  getRelationships,
   useRegisterPatient,
 } from "@/features/auth";
+import { GetCountries, GetStatesByCountry } from "@/features/auth";
+import { GetRelationships } from "@/features/patient";
 import type z from "zod";
 import {
   Button,
@@ -29,7 +29,6 @@ import {
 import { CalendarIcon, ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import i18n from "@/config/i18n";
 
 interface PatientFormProps {
   form: UseFormReturn<z.infer<typeof registerFormSchema>>;
@@ -40,6 +39,10 @@ export function PatientForm({ form }: PatientFormProps) {
   const { step, setStep } = useStepsStore();
   const registerPatientMutation = useRegisterPatient();
   const [open, setOpen] = useState(false);
+  const { data: countries } = GetCountries();
+  const selectedCountryId = form.watch("address.countryId");
+  const { data: states } = GetStatesByCountry(selectedCountryId || "");
+  const { data: relationships } = GetRelationships();
   return (
     <>
       {step == 1 && (
@@ -336,7 +339,7 @@ export function PatientForm({ form }: PatientFormProps) {
             <div className="grid gap-3">
               <FormField
                 control={form.control}
-                name="address.country"
+                name="address.countryId"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
@@ -346,7 +349,10 @@ export function PatientForm({ form }: PatientFormProps) {
                       <Select
                         key={`country-${step}`}
                         value={field.value || ""}
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          form.setValue("address.stateId", "");
+                        }}
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue
@@ -355,9 +361,9 @@ export function PatientForm({ form }: PatientFormProps) {
                           ></SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          {getCountries(i18n.language).map((country, idx) => (
-                            <SelectItem key={idx} value={country.value}>
-                              {t(country.label)}
+                          {(countries ?? []).map((country) => (
+                            <SelectItem key={country.id} value={country.id}>
+                              {t(`lookups.${country.key}`)}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -371,18 +377,33 @@ export function PatientForm({ form }: PatientFormProps) {
             <div className="grid gap-3">
               <FormField
                 control={form.control}
-                name="address.state"
+                name="address.stateId"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
                       {t("forms.labels.state")}
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        className="text-xs placeholder:text-sm"
-                        placeholder={t("placeholders.state")}
-                        {...field}
-                      />
+                      <Select
+                        key={`state-${selectedCountryId}`}
+                        value={field.value || ""}
+                        onValueChange={field.onChange}
+                        disabled={!selectedCountryId}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue
+                            className="text-xs placeholder:text-sm"
+                            placeholder={t("placeholders.state")}
+                          ></SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {(states ?? []).map((state) => (
+                            <SelectItem key={state.id} value={state.id}>
+                              {t(`lookups.${state.key}`)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -451,8 +472,8 @@ export function PatientForm({ form }: PatientFormProps) {
                   "address.street",
                   "address.city",
                   "address.postalCode",
-                  "address.country",
-                  "address.state",
+                  "address.countryId",
+                  "address.stateId",
                 ]);
                 if (isStep2Valid) {
                   setStep(step + 1);
@@ -523,7 +544,7 @@ export function PatientForm({ form }: PatientFormProps) {
             <div className="grid gap-3">
               <FormField
                 control={form.control}
-                name="emergencyContact.relationship"
+                name="emergencyContact.relationshipId"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
@@ -542,13 +563,14 @@ export function PatientForm({ form }: PatientFormProps) {
                           ></SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          {getRelationships(i18n.language).map(
-                            (relationship, idx) => (
-                              <SelectItem key={idx} value={relationship.value}>
-                                {t(relationship.label)}
-                              </SelectItem>
-                            ),
-                          )}
+                          {(relationships ?? []).map((relationship) => (
+                            <SelectItem
+                              key={relationship.id}
+                              value={relationship.id}
+                            >
+                              {t(`lookups.${relationship.key}`)}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </FormControl>

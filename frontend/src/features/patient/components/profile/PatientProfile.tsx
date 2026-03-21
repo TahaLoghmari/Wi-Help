@@ -12,14 +12,9 @@ import {
   UserCircle,
   ArrowLeft,
 } from "lucide-react";
-import {
-  getAllergies,
-  getChronicConditions,
-  getMedications,
-  type PatientDto,
-} from "@/features/patient";
+import { type PatientDto, GetRelationships } from "@/features/patient";
+import { GetCountries, GetStatesByCountry } from "@/features/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components";
-import { getCountries, getRelationships } from "@/features/auth";
 import { useRouter } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
@@ -34,8 +29,13 @@ export function PatientProfile({
   showBackButton = false,
   showHeader = true,
 }: PatientProfileProps) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const router = useRouter();
+  const { data: relationships } = GetRelationships();
+  const { data: countries } = GetCountries();
+  const { data: states } = GetStatesByCountry(
+    patient?.address?.countryId || "",
+  );
 
   const patientInitials =
     patient?.firstName && patient?.lastName
@@ -44,7 +44,7 @@ export function PatientProfile({
       : "U";
 
   return (
-    <section className="mb-6 flex-1 space-y-6 ">
+    <section className="mb-6 flex-1 space-y-6">
       {showBackButton && (
         <button
           onClick={() => router.history.back()}
@@ -148,8 +148,7 @@ export function PatientProfile({
                   {t("patient.profile.mobility")}
                 </div>
                 <div className="text-brand-dark text-xs font-semibold">
-                  {patient?.medicalInfo?.mobilityStatus ||
-                    t("common.notAvailable")}
+                  {patient?.mobilityStatus || t("common.notAvailable")}
                 </div>
               </div>
             </div>
@@ -168,17 +167,14 @@ export function PatientProfile({
                 <AlertCircle className="text-brand-dark h-3.5 w-3.5" />
                 {t("patient.profile.allergies")}
               </div>
-              {patient?.medicalInfo?.allergies &&
-              patient.medicalInfo.allergies.length > 0 ? (
+              {patient?.allergies && patient.allergies.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
-                  {patient.medicalInfo.allergies.map((allergy, index) => (
+                  {patient.allergies.map((allergy) => (
                     <span
-                      key={index}
+                      key={allergy.id}
                       className="border-brand-dark/20 bg-brand-bg text-brand-secondary hover:bg-brand-dark/10 cursor-default rounded-full border px-2 py-1 text-[10px] font-medium transition-colors"
                     >
-                      {getAllergies(i18n.language).find(
-                        (a) => a.value === allergy,
-                      )?.label || allergy}
+                      {t(`lookups.${allergy.key}`)}
                     </span>
                   ))}
                 </div>
@@ -195,17 +191,14 @@ export function PatientProfile({
                 <Pill className="text-brand-blue h-3.5 w-3.5" />
                 {t("patient.profile.medications")}
               </div>
-              {patient?.medicalInfo?.medications &&
-              patient.medicalInfo.medications.length > 0 ? (
+              {patient?.medications && patient.medications.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
-                  {patient.medicalInfo.medications.map((medication, index) => (
+                  {patient.medications.map((medication) => (
                     <span
-                      key={index}
+                      key={medication.id}
                       className="border-brand-dark/20 bg-brand-bg text-brand-secondary hover:bg-brand-dark/10 cursor-default rounded-full border px-2 py-1 text-[10px] font-medium transition-colors"
                     >
-                      {getMedications(i18n.language).find(
-                        (m) => m.value === medication,
-                      )?.label || medication}
+                      {t(`lookups.${medication.key}`)}
                     </span>
                   ))}
                 </div>
@@ -222,21 +215,16 @@ export function PatientProfile({
                 <Activity className="text-brand-teal h-3.5 w-3.5" />
                 {t("patient.profile.chronicConditions")}
               </div>
-              {patient?.medicalInfo?.chronicConditions &&
-              patient.medicalInfo.chronicConditions.length > 0 ? (
+              {patient?.conditions && patient.conditions.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
-                  {patient.medicalInfo.chronicConditions.map(
-                    (condition, index) => (
-                      <span
-                        key={index}
-                        className="border-brand-dark/20 bg-brand-bg text-brand-secondary hover:bg-brand-dark/10 cursor-default rounded-full border px-2 py-1 text-[10px] font-medium transition-colors"
-                      >
-                        {getChronicConditions(i18n.language).find(
-                          (c) => c.value === condition,
-                        )?.label || condition}
-                      </span>
-                    ),
-                  )}
+                  {patient.conditions.map((condition) => (
+                    <span
+                      key={condition.id}
+                      className="border-brand-dark/20 bg-brand-bg text-brand-secondary hover:bg-brand-dark/10 cursor-default rounded-full border px-2 py-1 text-[10px] font-medium transition-colors"
+                    >
+                      {t(`lookups.${condition.key}`)}
+                    </span>
+                  ))}
                 </div>
               ) : (
                 <p className="text-brand-secondary/60 text-xs">
@@ -268,14 +256,20 @@ export function PatientProfile({
                   <div className="text-brand-secondary mt-0.5 text-xs leading-snug">
                     {patient?.address?.street || t("common.notAvailable")}
                     <br />
-                    {patient?.address?.city}, {patient?.address?.state}{" "}
+                    {patient?.address?.city},{" "}
+                    {states?.find((s) => s.id === patient?.address?.stateId)
+                      ?.key
+                      ? t(
+                          `lookups.${states.find((s) => s.id === patient?.address?.stateId)!.key}`,
+                        )
+                      : ""}{" "}
                     {patient?.address?.postalCode}
                     <br />
-                    {getCountries(i18n.language).find(
-                      (c) => c.value === patient?.address?.country,
-                    )?.label ||
-                      patient?.address?.country ||
-                      ""}
+                    {patient?.address?.countryId
+                      ? t(
+                          `lookups.${countries?.find((c) => c.id === patient.address.countryId)?.key}`,
+                        )
+                      : ""}
                   </div>
                 </div>
               </div>
@@ -355,12 +349,11 @@ export function PatientProfile({
                     {t("patient.profile.relationship")}
                   </div>
                   <div className="text-brand-secondary mt-0.5 text-xs">
-                    {getRelationships(i18n.language).find(
-                      (r) =>
-                        r.value === patient?.emergencyContact?.relationship,
-                    )?.label ||
-                      patient?.emergencyContact?.relationship ||
-                      t("common.notAvailable")}
+                    {patient?.emergencyContact?.relationshipId
+                      ? t(
+                          `lookups.${relationships?.find((r) => r.id === patient.emergencyContact.relationshipId)?.key ?? ""}`,
+                        )
+                      : t("common.notAvailable")}
                   </div>
                 </div>
               </div>

@@ -5,10 +5,10 @@ export interface UpdateProfessionalRequest {
   lastName?: string | null;
   phoneNumber?: string | null;
   address?: Address | null;
-  specialization?: string | null;
-  services?: string[] | null;
+  specializationId?: string | null;
   experience?: number | null;
   visitPrice?: number | null;
   bio?: string | null;
   profilePicture?: File | null;
+  serviceIds?: string[] | null;
 }

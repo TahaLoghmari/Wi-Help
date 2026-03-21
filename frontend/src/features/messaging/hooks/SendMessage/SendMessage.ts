@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api-client";
 import { API_ENDPOINTS } from "@/config/endpoints";
 import type { SendMessageRequest } from "@/features/messaging";
-import { toast } from "sonner";
 import { handleApiError } from "@/hooks";
 
 interface SendMessageParams {
@@ -34,7 +33,6 @@ export function useSendMessage() {
     },
     onError: (error) => {
       handleApiError({ apiError: error as any });
-      toast.error("Failed to send message");
     },
   });
 }

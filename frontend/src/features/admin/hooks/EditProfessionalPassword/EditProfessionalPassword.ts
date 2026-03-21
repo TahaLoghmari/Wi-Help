@@ -2,6 +2,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api-client";
 import { API_ENDPOINTS } from "@/config";
 import { toast } from "sonner";
+import { handleApiError } from "@/hooks";
+import i18n from "i18next";
 
 interface EditProfessionalPasswordParams {
   userId: string;
@@ -12,10 +14,9 @@ const editProfessionalPassword = ({
   userId,
   newPassword,
 }: EditProfessionalPasswordParams) => {
-  const queryParams = new URLSearchParams({ NewPassword: newPassword });
-  return api.patch(
-    `${API_ENDPOINTS.IDENTITY.ADMIN_CHANGE_PASSWORD(userId)}?${queryParams.toString()}`,
-  );
+  return api.patch(API_ENDPOINTS.IDENTITY.ADMIN_CHANGE_PASSWORD(userId), {
+    newPassword,
+  });
 };
 
 export function EditProfessionalPassword() {
@@ -25,10 +26,10 @@ export function EditProfessionalPassword() {
     mutationFn: editProfessionalPassword,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-professionals"] });
-      toast.success("Professional password updated successfully");
+      toast.success(i18n.t("toasts.admin.professionalPasswordUpdated"));
     },
-    onError: () => {
-      toast.error("Failed to update professional password");
+    onError: (error) => {
+      handleApiError({ apiError: error as any });
     },
   });
 }

@@ -1,5 +1,12 @@
 import {
+  Badge,
   Button,
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
   Form,
   FormControl,
   FormField,
@@ -14,47 +21,47 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  Badge,
   Avatar,
   AvatarImage,
   AvatarFallback,
 } from "@/components";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { useForm } from "react-hook-form";
 import type z from "zod";
 import {
   ProfileAndBioFormDefaults,
   profileAndBioFormSchema,
-  getServicesForSpecialization,
   GetCurrentProfessional,
+  GetServicesBySpecialization,
   UpdateProfessional,
 } from "@/features/professional";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getCountries, getSpecializations } from "@/features/auth";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { GetCountries, GetStatesByCountry } from "@/features/auth";
+import { GetSpecializations } from "@/features/professional";
 import { cn } from "@/lib";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import i18n from "@/config/i18n";
 
 export function ProfileAndBio() {
   const { t } = useTranslation();
   const { data: professional } = GetCurrentProfessional();
+  const { data: countries } = GetCountries();
+  const { data: specializations } = GetSpecializations();
   const form = useForm<z.infer<typeof profileAndBioFormSchema>>({
     resolver: zodResolver(profileAndBioFormSchema),
     mode: "onChange",
     defaultValues: ProfileAndBioFormDefaults(professional!),
   });
+  const selectedCountryId = form.watch("address.countryId");
+  const selectedSpecializationId = form.watch("specializationId");
+  const { data: states } = GetStatesByCountry(selectedCountryId || "");
+  const { data: availableServices = [] } = GetServicesBySpecialization(
+    selectedSpecializationId || professional?.specialization?.id,
+  );
   const updateProfessionalMutation = UpdateProfessional();
-  const [open, setOpen] = useState(false);
+  const { isDirty } = form.formState;
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-
-  const selectedSpecialization = form.watch("specialization");
+  const [servicesOpen, setServicesOpen] = useState(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -74,19 +81,24 @@ export function ProfileAndBio() {
         credentials.address &&
         credentials.address.street &&
         credentials.address.city &&
-        credentials.address.state &&
+        credentials.address.stateId &&
         credentials.address.postalCode &&
-        credentials.address.country
+        credentials.address.countryId
           ? (credentials.address as {
               street: string;
               city: string;
-              state: string;
+              stateId: string;
               postalCode: string;
-              country: string;
+              countryId: string;
             })
           : undefined,
     };
-    updateProfessionalMutation.mutate(cleanedCredentials);
+    updateProfessionalMutation.mutate(cleanedCredentials, {
+      onSuccess: () => {
+        form.reset({ ...credentials, profilePicture: undefined });
+        setPreviewUrl(null);
+      },
+    });
   };
   return (
     <Form {...form}>
@@ -344,7 +356,7 @@ export function ProfileAndBio() {
             <div className="grid gap-3 sm:grid-cols-2">
               <FormField
                 control={form.control}
-                name="address.state"
+                name="address.stateId"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
@@ -353,14 +365,28 @@ export function ProfileAndBio() {
                       )}
                     </FormLabel>
                     <FormControl>
-                      <input
-                        type="text"
-                        className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-none"
-                        placeholder={t(
-                          "professional.settings.profileAndBio.form.address.state.placeholder",
-                        )}
-                        {...field}
-                      />
+                      <Select
+                        key={`state-${selectedCountryId}`}
+                        value={field.value || ""}
+                        onValueChange={field.onChange}
+                        disabled={!selectedCountryId}
+                      >
+                        <SelectTrigger className="h-8! w-full rounded-lg! text-xs shadow-none [&>span]:text-[11px]">
+                          <SelectValue
+                            className="text-xs placeholder:text-xs"
+                            placeholder={t(
+                              "professional.settings.profileAndBio.form.address.state.placeholder",
+                            )}
+                          ></SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {(states ?? []).map((state) => (
+                            <SelectItem key={state.id} value={state.id}>
+                              {t(`lookups.${state.key}`)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage className="text-xs" />
                   </FormItem>
@@ -368,7 +394,7 @@ export function ProfileAndBio() {
               />
               <FormField
                 control={form.control}
-                name="address.country"
+                name="address.countryId"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
@@ -379,7 +405,10 @@ export function ProfileAndBio() {
                     <FormControl>
                       <Select
                         value={field.value || ""}
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          form.setValue("address.stateId", "");
+                        }}
                       >
                         <SelectTrigger className="h-8! w-full rounded-lg! text-xs shadow-none [&>span]:text-[11px]">
                           <SelectValue
@@ -390,9 +419,9 @@ export function ProfileAndBio() {
                           ></SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          {getCountries(i18n.language).map((country, idx) => (
-                            <SelectItem key={idx} value={country.value}>
-                              {country.label}
+                          {(countries ?? []).map((country) => (
+                            <SelectItem key={country.id} value={country.id}>
+                              {t(`lookups.${country.key}`)}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -482,7 +511,7 @@ export function ProfileAndBio() {
             <div className="grid gap-3 sm:grid-cols-2">
               <FormField
                 control={form.control}
-                name="specialization"
+                name="specializationId"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
@@ -493,7 +522,10 @@ export function ProfileAndBio() {
                     <FormControl>
                       <Select
                         value={field.value || ""}
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          form.setValue("serviceIds", []);
+                        }}
                       >
                         <SelectTrigger className="w-full text-xs shadow-none [&>span]:text-[11px]">
                           <SelectValue
@@ -503,16 +535,14 @@ export function ProfileAndBio() {
                           />
                         </SelectTrigger>
                         <SelectContent>
-                          {getSpecializations(i18n.language).map(
-                            (specialization, idx) => (
-                              <SelectItem
-                                key={idx}
-                                value={specialization.value}
-                              >
-                                {specialization.label}
-                              </SelectItem>
-                            ),
-                          )}
+                          {(specializations ?? []).map((specialization) => (
+                            <SelectItem
+                              key={specialization.id}
+                              value={specialization.id}
+                            >
+                              {t(`lookups.${specialization.key}`)}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </FormControl>
@@ -520,110 +550,97 @@ export function ProfileAndBio() {
                   </FormItem>
                 )}
               />
-
               <FormField
                 control={form.control}
-                name="services"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col gap-2">
-                    <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      {t(
-                        "professional.settings.profileAndBio.form.services.label",
-                      )}
-                    </FormLabel>
-                    <FormControl>
-                      <Popover open={open} onOpenChange={setOpen}>
+                name="serviceIds"
+                render={({ field }) => {
+                  const selected: string[] = field.value ?? [];
+                  const selectedServices = availableServices.filter((s) =>
+                    selected.includes(s.id),
+                  );
+                  return (
+                    <FormItem className="flex flex-col gap-2">
+                      <FormLabel className="block text-[11px] font-medium text-slate-700">
+                        {t("professional.settings.services.title")}
+                      </FormLabel>
+                      <Popover
+                        open={servicesOpen}
+                        onOpenChange={setServicesOpen}
+                      >
                         <PopoverTrigger asChild className="shadow-none">
                           <Button
+                            type="button"
                             variant="outline"
                             role="combobox"
-                            aria-expanded={open}
+                            aria-expanded={servicesOpen}
                             className="h-9 w-full justify-between text-xs"
+                            disabled={
+                              !selectedSpecializationId &&
+                              availableServices.length === 0
+                            }
                           >
-                            {field.value && field.value.length > 0 ? (
-                              <div
-                                className={`flex flex-wrap items-center gap-1`}
-                              >
-                                {field.value.slice(0, 4).map((techValue) => (
+                            {selectedServices.length > 0 ? (
+                              <div className="flex flex-wrap items-center gap-1">
+                                {selectedServices.slice(0, 3).map((s) => (
                                   <Badge
                                     variant="secondary"
-                                    key={techValue}
+                                    key={s.id}
                                     className="text-[11px]"
                                   >
-                                    {getServicesForSpecialization(
-                                      selectedSpecialization || "",
-                                    ).find((s) => s.value === techValue)
-                                      ?.label || techValue}
+                                    {t(s.key)}
                                   </Badge>
                                 ))}
-
-                                {field.value.length > 4 && (
+                                {selectedServices.length > 3 && (
                                   <Badge variant="outline">
-                                    +{field.value.length - 4} more
+                                    +{selectedServices.length - 3}{" "}
+                                    {t("professional.settings.services.more")}
                                   </Badge>
                                 )}
                               </div>
                             ) : (
                               <p className="text-muted-foreground text-[11px]">
                                 {t(
-                                  "professional.settings.profileAndBio.form.services.add",
+                                  "professional.settings.services.placeholder",
                                 )}
                               </p>
                             )}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-[300px] p-0">
+                        <PopoverContent className="w-[320px] p-0">
                           <Command>
                             <CommandInput
                               placeholder={t(
-                                "professional.settings.profileAndBio.form.services.search",
+                                "professional.settings.services.search",
                               )}
                               className="h-9"
                             />
                             <CommandList>
                               <CommandEmpty>
-                                {t(
-                                  "professional.settings.profileAndBio.form.services.notFound",
-                                )}
+                                {t("professional.settings.services.notFound")}
                               </CommandEmpty>
                               <CommandGroup>
-                                {getServicesForSpecialization(
-                                  selectedSpecialization || "",
-                                ).map((service) => (
+                                {availableServices.map((service) => (
                                   <CommandItem
-                                    key={service.value}
-                                    value={service.value}
-                                    onSelect={(currentValue) => {
-                                      const currentValues = Array.isArray(
-                                        field.value,
+                                    key={service.id}
+                                    value={t(service.key)}
+                                    onSelect={() => {
+                                      const newIds = selected.includes(
+                                        service.id,
                                       )
-                                        ? field.value
-                                        : [];
-                                      const isSelected =
-                                        currentValues.includes(currentValue);
-
-                                      if (isSelected) {
-                                        field.onChange(
-                                          currentValues.filter(
-                                            (v) => v !== currentValue,
-                                          ),
-                                        );
-                                      } else {
-                                        field.onChange([
-                                          ...currentValues,
-                                          currentValue,
-                                        ]);
-                                      }
-                                      setOpen(true);
+                                        ? selected.filter(
+                                            (x) => x !== service.id,
+                                          )
+                                        : [...selected, service.id];
+                                      field.onChange(newIds);
+                                      setServicesOpen(true);
                                     }}
                                   >
-                                    {service.label}
+                                    {t(service.key)}
                                     <Check
                                       className={cn(
                                         "ml-auto",
-                                        Array.isArray(field.value) &&
-                                          field.value.includes(service.value)
+                                        selected.includes(service.id)
                                           ? "opacity-100"
                                           : "opacity-0",
                                       )}
@@ -635,21 +652,23 @@ export function ProfileAndBio() {
                           </Command>
                         </PopoverContent>
                       </Popover>
-                    </FormControl>
-                    <FormMessage className="text-xs" />
-                  </FormItem>
-                )}
+                      <FormMessage className="text-xs" />
+                    </FormItem>
+                  );
+                }}
               />
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-1">
               <FormField
                 control={form.control}
                 name="visitPrice"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
                     <FormLabel className="block text-[11px] font-medium text-slate-700">
-                      {t("professional.settings.profileAndBio.form.price.visit")}
+                      {t(
+                        "professional.settings.profileAndBio.form.price.visit",
+                      )}
                     </FormLabel>
                     <FormControl>
                       <div className="flex items-center gap-1.5">
@@ -702,8 +721,9 @@ export function ProfileAndBio() {
           </div>
           <div className="flex w-full items-center justify-end">
             <button
-              className="bg-brand-dark hover:bg-brand-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] text-white transition-colors"
+              className="bg-brand-dark hover:bg-brand-secondary inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               type="submit"
+              disabled={!isDirty || updateProfessionalMutation.isPending}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

@@ -3,6 +3,7 @@ import { api, handleApiError, type ProblemDetailsDto } from "@/index";
 import { API_ENDPOINTS } from "@/config";
 import { toast } from "sonner";
 import type { SetupScheduleRequest } from "@/features/professional";
+import i18n from "i18next";
 
 export const setupSchedule = (request: SetupScheduleRequest) => {
   const body = {
@@ -22,7 +23,7 @@ export function SetupSchedule() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["schedule"] });
       queryClient.invalidateQueries({ queryKey: ["professionalAvailability"] });
-      toast.success("Schedule setup successfully!");
+      toast.success(i18n.t("toasts.professional.scheduleSetup"));
     },
     onError: (error) => handleApiError({ apiError: error }),
   });

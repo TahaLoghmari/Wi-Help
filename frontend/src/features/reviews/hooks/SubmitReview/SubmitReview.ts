@@ -5,6 +5,7 @@ import type { ProblemDetailsDto } from "@/types";
 import type { SubmitReviewRequest } from "@/features/reviews";
 import { toast } from "sonner";
 import { handleApiError } from "@/hooks";
+import i18n from "i18next";
 
 const submitReview = (request: SubmitReviewRequest) => {
   return api.post<void>(API_ENDPOINTS.REVIEWS.SUBMIT_REVIEW, request);
@@ -21,9 +22,8 @@ export function useSubmitReview() {
       queryClient.invalidateQueries({
         queryKey: ["professional-review-stats", variables.professionalId],
       });
-      toast.success("Review submitted successfully!");
+      toast.success(i18n.t("reviews.submitSuccess"));
     },
     onError: (error) => handleApiError({ apiError: error }),
   });
 }
-

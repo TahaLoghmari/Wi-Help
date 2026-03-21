@@ -42,7 +42,7 @@ export function LoginPage({
 }: React.ComponentProps<"div">) {
   const { t } = useTranslation();
   const getGoogleOAuthUrlMutation = useGetGoogleOAuthUrl();
-  const { message } = LoginRoute.useSearch();
+  const { message, error: errorCode } = LoginRoute.useSearch();
   const { goTo } = useAppNavigation();
   const loginMutation = useLogin();
 
@@ -59,12 +59,16 @@ export function LoginPage({
   // this is for google signin/signup failing or any error when the redirection is comming from the backend with an error
   useEffect(() => {
     if (message) {
-      toast.error(message);
+      toast.error(
+        errorCode
+          ? t(`errors.google.${errorCode}`, { defaultValue: message })
+          : message,
+      );
       goTo({
         replace: true,
       });
     }
-  }, [message, goTo]);
+  }, [message, errorCode, goTo, t]);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

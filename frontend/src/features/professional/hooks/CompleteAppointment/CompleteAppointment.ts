@@ -4,6 +4,7 @@ import { API_ENDPOINTS } from "@/config";
 import { toast } from "sonner";
 import { toFormData } from "@/lib/utils";
 import type { CompleteAppointmentRequest } from "./CompleteAppointmentRequest";
+import i18n from "i18next";
 
 export const completeAppointment = (request: CompleteAppointmentRequest) => {
   const formData = toFormData({
@@ -23,7 +24,7 @@ export function CompleteAppointment() {
   return useMutation<void, ProblemDetailsDto, CompleteAppointmentRequest>({
     mutationFn: completeAppointment,
     onSuccess: () => {
-      toast.success("Appointment completed successfully!");
+      toast.success(i18n.t("toasts.professional.appointmentCompleted"));
       queryClient.invalidateQueries({
         queryKey: ["professional-appointments"],
       });

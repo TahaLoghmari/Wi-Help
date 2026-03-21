@@ -19,11 +19,7 @@ export async function request<T>(
     if (typeof body === "object") {
       body = JSON.stringify(body);
     }
-    if (options.method === "PATCH") {
-      headers["Content-Type"] = "application/json-patch+json";
-    } else {
-      headers["Content-Type"] = "application/json";
-    }
+    headers["Content-Type"] = "application/json";
   }
 
   if (options.headers) {

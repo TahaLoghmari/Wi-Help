@@ -7,6 +7,7 @@ import z from "zod";
 
 const PatientDashboardSearchSchema = z.object({
   message: z.string().optional(),
+  error: z.string().optional(),
 });
 
 export const Route = createFileRoute(ROUTE_PATHS.PATIENT.ROOT)({

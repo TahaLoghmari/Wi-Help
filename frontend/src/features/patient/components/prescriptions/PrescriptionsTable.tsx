@@ -2,12 +2,11 @@ import {
   GetPatientPrescriptions,
   type GetPatientPrescriptionsDto,
 } from "../../hooks/GetPatientPrescriptions";
-import { getSpecializations } from "@/features/auth";
 import { ExternalLink } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export function PrescriptionsTable() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const {
     data,
     isLoading,
@@ -134,12 +133,9 @@ export function PrescriptionsTable() {
                         </div>
                         {prescription.professional?.specialization && (
                           <div className="text-[11px] text-slate-500">
-                            {getSpecializations(i18n.language).find(
-                              (s) =>
-                                s.value ===
-                                prescription.professional?.specialization,
-                            )?.label ||
-                              prescription.professional.specialization}
+                            {t(
+                              `lookups.${prescription.professional.specialization}`,
+                            )}
                           </div>
                         )}
                       </div>

@@ -6,3 +6,8 @@ export * from "./GetPatientAppointments";
 export * from "./GetPatientPrescriptions";
 export * from "./GetPatientProfessionals";
 export * from "./UpdatePatient";
+export * from "./GetRelationships";
+export * from "./GetAllergies";
+export * from "./GetConditions";
+export * from "./GetMedications";
+export type { LookupDto } from "./LookupDto";

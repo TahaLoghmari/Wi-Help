@@ -4,6 +4,8 @@ import type {
   scheduleFormSchema,
 } from "@/features/professional";
 import type z from "zod";
+import type { ServiceDto } from "@/features/professional/hooks/GetServicesBySpecialization";
+import type { SpecializationDto } from "@/features/professional/hooks/GetSpecializations";
 
 export interface ProfessionalDto {
   id: string;
@@ -15,12 +17,11 @@ export interface ProfessionalDto {
   dateOfBirth: string;
   gender: string;
   address: Address;
-  specialization: string;
-  services: string[];
+  specialization: SpecializationDto;
+  services: ServiceDto[];
   experience: number;
   visitPrice: number;
   bio: string;
-  isVerified: boolean;
   profilePictureUrl: string;
 }
 

@@ -1,7 +1,6 @@
 import { ForgotPasswordForm, useForgotPassword } from "@/features/auth";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import {
   Card,
   CardContent,
@@ -64,7 +63,6 @@ export function ForgotPasswordPage({
                   className="bg-brand-dark hover:bg-brand-secondary mb-2 w-full cursor-pointer"
                   onClick={() => {
                     forgotPasswordMutation.mutate({ email });
-                    toast.success(t("auth.forgotPasswordPage.resendSuccess"));
                   }}
                 >
                   {forgotPasswordMutation.isPending ? (

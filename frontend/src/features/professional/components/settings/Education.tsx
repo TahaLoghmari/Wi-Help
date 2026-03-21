@@ -29,7 +29,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   Checkbox,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components";
+import { GetCountries } from "@/features/auth";
 import {
   educationFormSchema,
   useGetEducations,
@@ -62,13 +68,15 @@ function EducationForm({
       institution: education?.institution ?? "",
       degree: education?.degree ?? "",
       fieldOfStudy: education?.fieldOfStudy ?? "",
-      country: education?.country ?? "",
+      countryId: education?.countryId ?? "",
+      description: education?.description ?? "",
       startYear: education?.startYear ?? "",
       endYear: education?.endYear ?? "",
       isCurrentlyStudying: education?.isCurrentlyStudying ?? false,
     },
   });
 
+  const { data: countries } = GetCountries();
   const isCurrentlyStudying = form.watch("isCurrentlyStudying");
 
   const onSubmit = async (values: EducationFormValues) => {
@@ -168,22 +176,32 @@ function EducationForm({
           />
           <FormField
             control={form.control}
-            name="country"
+            name="countryId"
             render={({ field }) => (
               <FormItem className="flex flex-col gap-1">
                 <FormLabel className="block text-[10px] font-medium text-slate-600">
                   {t("professional.settings.education.form.country.label")}
                 </FormLabel>
                 <FormControl>
-                  <input
-                    type="text"
-                    className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
-                    placeholder={t(
-                      "professional.settings.education.form.country.placeholder",
-                    )}
-                    {...field}
-                    value={field.value ?? ""}
-                  />
+                  <Select
+                    value={field.value || ""}
+                    onValueChange={field.onChange}
+                  >
+                    <SelectTrigger className="h-8! w-full rounded-lg! text-[11px] shadow-none [&>span]:text-[11px]">
+                      <SelectValue
+                        placeholder={t(
+                          "professional.settings.education.form.country.placeholder",
+                        )}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {(countries ?? []).map((country) => (
+                        <SelectItem key={country.id} value={country.id}>
+                          {t(`lookups.${country.key}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage className="text-[10px]" />
               </FormItem>
@@ -256,6 +274,29 @@ function EducationForm({
             )}
           />
         </div>
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem className="flex flex-col gap-1">
+              <FormLabel className="block text-[10px] font-medium text-slate-600">
+                {t("professional.settings.education.form.description.label")}
+              </FormLabel>
+              <FormControl>
+                <textarea
+                  className="placeholder:text-muted-foreground focus:border-brand-blue/70 focus:ring-brand-blue/60 w-full resize-none rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] focus:ring-1 focus:outline-none"
+                  rows={3}
+                  placeholder={t(
+                    "professional.settings.education.form.description.placeholder",
+                  )}
+                  {...field}
+                  value={field.value ?? ""}
+                />
+              </FormControl>
+              <FormMessage className="text-[10px]" />
+            </FormItem>
+          )}
+        />
         <div className="flex items-center justify-end gap-2 pt-2">
           <button
             type="button"
@@ -293,6 +334,7 @@ interface EducationCardProps {
 
 function EducationCard({ education, onEdit, onDelete }: EducationCardProps) {
   const { t } = useTranslation();
+  const { data: countries } = GetCountries();
   const dateRange = education.isCurrentlyStudying
     ? `${education.startYear} – ${t("professional.settings.education.present")}`
     : education.endYear
@@ -314,7 +356,8 @@ function EducationCard({ education, onEdit, onDelete }: EducationCardProps) {
               <span className="hidden text-slate-300 sm:inline">•</span>
               <span className="truncate text-slate-500">
                 {education.degree}
-                {education.country && `, ${education.country}`}
+                {education.countryId &&
+                  `, ${t(`lookups.${countries?.find((c) => c.id === education.countryId)?.key}`)}`}
               </span>
             </div>
             {education.fieldOfStudy && (
@@ -347,6 +390,11 @@ function EducationCard({ education, onEdit, onDelete }: EducationCardProps) {
           </button>
         </div>
       </div>
+      {education.description && (
+        <p className="pl-9 text-[10px] leading-relaxed text-slate-600">
+          {education.description}
+        </p>
+      )}
     </article>
   );
 }

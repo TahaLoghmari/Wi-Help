@@ -3,6 +3,8 @@ import { api } from "@/api-client";
 import { API_ENDPOINTS } from "@/config";
 import type { VerificationStatus } from "@/features/admin";
 import { toast } from "sonner";
+import { handleApiError } from "@/hooks";
+import i18n from "i18next";
 
 interface UpdateProfessionalAccountStatusParams {
   professionalId: string;
@@ -13,9 +15,9 @@ const updateProfessionalAccountStatus = ({
   professionalId,
   status,
 }: UpdateProfessionalAccountStatusParams) => {
-  const queryParams = new URLSearchParams({ Status: status });
-  return api.put(
-    `${API_ENDPOINTS.PROFESSIONALS.UPDATE_ACCOUNT_STATUS(professionalId)}?${queryParams.toString()}`,
+  return api.patch(
+    API_ENDPOINTS.PROFESSIONALS.UPDATE_ACCOUNT_STATUS(professionalId),
+    { status },
   );
 };
 
@@ -29,10 +31,10 @@ export function useUpdateProfessionalAccountStatus() {
       queryClient.invalidateQueries({
         queryKey: ["admin-verification-documents"],
       });
-      toast.success("Professional account status updated successfully");
+      toast.success(i18n.t("toasts.admin.professionalAccountStatusUpdated"));
     },
-    onError: () => {
-      toast.error("Failed to update professional account status");
+    onError: (error) => {
+      handleApiError({ apiError: error as any });
     },
   });
 }

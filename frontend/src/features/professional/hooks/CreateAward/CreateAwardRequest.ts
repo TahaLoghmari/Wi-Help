@@ -1,6 +1,6 @@
 export interface CreateAwardRequest {
   title: string;
-  issuer?: string | null;
-  description?: string | null;
+  issuer: string;
+  description: string;
   yearReceived: string;
 }

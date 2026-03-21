@@ -2,10 +2,10 @@ import type { UseFormReturn } from "react-hook-form";
 import {
   useStepsStore,
   type registerFormSchema,
-  getCountries,
   useRegisterProfessional,
-  getSpecializations,
 } from "@/features/auth";
+import { GetSpecializations } from "@/features/professional";
+import { GetCountries, GetStatesByCountry } from "@/features/auth";
 import type z from "zod";
 import {
   Button,
@@ -39,6 +39,10 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
   const { step, setStep } = useStepsStore();
   const registerProfessionalMutation = useRegisterProfessional();
   const [open, setOpen] = useState(false);
+  const { data: specializations } = GetSpecializations();
+  const { data: countries } = GetCountries();
+  const selectedCountryId = form.watch("address.countryId");
+  const { data: states } = GetStatesByCountry(selectedCountryId || "");
   return (
     <>
       {step == 1 && (
@@ -335,7 +339,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
             <div className="grid gap-3">
               <FormField
                 control={form.control}
-                name="address.country"
+                name="address.countryId"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
@@ -345,7 +349,10 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                       <Select
                         key={`country-${step}`}
                         value={field.value || ""}
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          form.setValue("address.stateId", "");
+                        }}
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue
@@ -354,9 +361,9 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                           ></SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          {getCountries(i18n.language).map((country, idx) => (
-                            <SelectItem key={idx} value={country.value}>
-                              {country.label}
+                          {(countries ?? []).map((country) => (
+                            <SelectItem key={country.id} value={country.id}>
+                              {t(`lookups.${country.key}`)}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -370,18 +377,33 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
             <div className="grid gap-3">
               <FormField
                 control={form.control}
-                name="address.state"
+                name="address.stateId"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
                     <FormLabel className="text-xs text-gray-700">
                       {t("forms.labels.state")}
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        className="text-xs placeholder:text-sm"
-                        placeholder={t("placeholders.state")}
-                        {...field}
-                      />
+                      <Select
+                        key={`state-${selectedCountryId}`}
+                        value={field.value || ""}
+                        onValueChange={field.onChange}
+                        disabled={!selectedCountryId}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue
+                            className="text-xs placeholder:text-sm"
+                            placeholder={t("placeholders.state")}
+                          ></SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {(states ?? []).map((state) => (
+                            <SelectItem key={state.id} value={state.id}>
+                              {t(`lookups.${state.key}`)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -450,8 +472,8 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                   "address.street",
                   "address.city",
                   "address.postalCode",
-                  "address.country",
-                  "address.state",
+                  "address.countryId",
+                  "address.stateId",
                 ]);
                 if (isStep2Valid) {
                   setStep(step + 1);
@@ -479,7 +501,7 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
           <div className="grid gap-3">
             <FormField
               control={form.control}
-              name="specialization"
+              name="specializationId"
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-2">
                   <FormLabel className="text-xs text-gray-700">
@@ -498,13 +520,14 @@ export function ProfessionalForm({ form }: ProfessionalFormProps) {
                         ></SelectValue>
                       </SelectTrigger>
                       <SelectContent>
-                        {getSpecializations(i18n.language).map(
-                          (specialization, idx) => (
-                            <SelectItem key={idx} value={specialization.value}>
-                              {specialization.label}
-                            </SelectItem>
-                          ),
-                        )}
+                        {(specializations ?? []).map((specialization) => (
+                          <SelectItem
+                            key={specialization.id}
+                            value={specialization.id}
+                          >
+                            {t(`lookups.${specialization.key}`)}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </FormControl>

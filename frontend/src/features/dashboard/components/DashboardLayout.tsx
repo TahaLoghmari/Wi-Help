@@ -7,6 +7,7 @@ import {
 } from "@/features/dashboard";
 import { toast } from "sonner";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Spinner } from "@/components/ui/spinner";
 import { useCurrentUser } from "@/features/auth";
 import { useCurrentScreenSize } from "@/hooks";
@@ -18,6 +19,7 @@ import { Outlet, useRouterState } from "@tanstack/react-router";
 export function DashboardLayout() {
   const { setIsSidebarOpen } = useDashboardSidebarStateStore();
   const { isLoading: isPending } = useCurrentUser();
+  const { t } = useTranslation();
 
   const { currentScreenSize } = useCurrentScreenSize();
   const routerState = useRouterState();
@@ -27,14 +29,14 @@ export function DashboardLayout() {
   // Use the appropriate route search based on the current route
   const adminSearch = isAdminRoute
     ? AdminRoute.useSearch()
-    : { message: undefined };
+    : { message: undefined, error: undefined };
   const professionalSearch =
     !isPatientRoute && !isAdminRoute
       ? ProfessionalRoute.useSearch()
-      : { message: undefined };
+      : { message: undefined, error: undefined };
   const patientSearch = isPatientRoute
     ? PatientRoute.useSearch()
-    : { message: undefined };
+    : { message: undefined, error: undefined };
 
   const message = isAdminRoute
     ? adminSearch.message
@@ -42,15 +44,25 @@ export function DashboardLayout() {
       ? patientSearch.message
       : professionalSearch.message;
 
+  const errorCode = isAdminRoute
+    ? adminSearch.error
+    : isPatientRoute
+      ? patientSearch.error
+      : professionalSearch.error;
+
   // useSignalRNotifications(user?.id);
 
   // this is for google signin/signup failing or any error when the redirection is comming from the backend with an error
   useEffect(() => {
     if (message) {
-      toast.error(message);
+      toast.error(
+        errorCode
+          ? t(`errors.google.${errorCode}`, { defaultValue: message })
+          : message,
+      );
       // User is already on their correct app, no need to navigate again
     }
-  }, [message]);
+  }, [message, errorCode, t]);
 
   useEffect(() => {
     if (currentScreenSize >= 768 && currentScreenSize < 1280)

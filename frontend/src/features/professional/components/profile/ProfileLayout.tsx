@@ -23,7 +23,6 @@ import {
   CalendarDays,
 } from "lucide-react";
 import {
-  getServicesForSpecialization,
   GetCurrentProfessional,
   useGetEducations,
   useGetExperiences,
@@ -40,9 +39,10 @@ import {
   type VerificationDocumentDto,
 } from "@/features/professional";
 import { VerificationStatus } from "@/features/admin/types/adminTypes";
-import { getCountries, getSpecializations } from "@/features/auth";
+
 import { Avatar, AvatarFallback, AvatarImage, Spinner } from "@/components";
 import { ReviewsList, GetProfessionalReviewStats } from "@/features/reviews";
+import { GetCountries, GetStatesByCountry } from "@/features/auth";
 import { Medal } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -100,6 +100,7 @@ function ExperienceCard({ experience }: { experience: GetExperiencesDto }) {
 // Education Card Component
 function EducationCard({ education }: { education: GetEducationsDto }) {
   const { t } = useTranslation();
+  const { data: countries } = GetCountries();
   const yearRange = education.isCurrentlyStudying
     ? `${education.startYear} – ${t("professional.profile.present")}`
     : `${education.startYear} – ${education.endYear}`;
@@ -131,10 +132,12 @@ function EducationCard({ education }: { education: GetEducationsDto }) {
             {education.fieldOfStudy}
           </span>
         )}
-        {education.country && (
+        {education.countryId && (
           <span className="border-brand-dark/10 bg-brand-bg text-brand-secondary flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px]">
             <MapPin className="text-brand-dark h-3 w-3" />
-            {education.country}
+            {t(
+              `lookups.${countries?.find((c) => c.id === education.countryId)?.key}`,
+            )}
           </span>
         )}
       </div>
@@ -181,8 +184,11 @@ function AwardCard({ award }: { award: GetAwardsDto }) {
 export function ProfileLayout() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabType>("overview");
-  const { i18n } = useTranslation();
   const { data: professional, isLoading, isError } = GetCurrentProfessional();
+  const { data: countries } = GetCountries();
+  const { data: states } = GetStatesByCountry(
+    professional?.address?.countryId || "",
+  );
   const { data: reviewStats } = GetProfessionalReviewStats(
     professional?.id ?? "",
   );
@@ -271,11 +277,9 @@ export function ProfileLayout() {
                     <ShieldCheck className="text-brand-blue fill-brand-blue/10 h-5 w-5" />
                   </h2>
                   <p className="text-brand-secondary text-sm">
-                    {
-                      getSpecializations(i18n.language).find(
-                        (s) => s.value === professional?.specialization,
-                      )?.label
-                    }{" "}
+                    {professional?.specialization?.key
+                      ? t(`lookups.${professional.specialization.key}`)
+                      : ""}{" "}
                     {t("professional.profile.specialist")}
                   </p>
                 </div>
@@ -400,11 +404,9 @@ export function ProfileLayout() {
                     {t("professional.profile.specialty")}
                   </div>
                   <div className="text-brand-dark text-xs font-semibold">
-                    {
-                      getSpecializations(i18n.language).find(
-                        (s) => s.value === professional?.specialization,
-                      )?.label
-                    }
+                    {professional?.specialization?.key
+                      ? t(`lookups.${professional.specialization.key}`)
+                      : ""}
                   </div>
                 </div>
                 <div className="border-brand-dark/10 bg-brand-bg flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center">
@@ -480,11 +482,7 @@ export function ProfileLayout() {
                     key={index}
                     className="border-brand-dark/10 bg-brand-dark/5 text-brand-dark hover:bg-brand-dark/10 cursor-default rounded-full border px-3 py-1.5 text-xs font-medium transition-colors"
                   >
-                    {
-                      getServicesForSpecialization(
-                        professional.specialization,
-                      ).find((s) => s.value === service)?.label
-                    }
+                    {t(service.key)}
                   </span>
                 ))}
               </div>
@@ -606,12 +604,20 @@ export function ProfileLayout() {
                       {professional?.address.street}
                       <br />
                       {professional?.address.city},{" "}
-                      {professional?.address.state}{" "}
+                      {states?.find(
+                        (s) => s.id === professional?.address.stateId,
+                      )?.key
+                        ? t(
+                            `lookups.${states.find((s) => s.id === professional?.address.stateId)!.key}`,
+                          )
+                        : ""}{" "}
                       {professional?.address.postalCode}
                       <br />
-                      {getCountries(i18n.language).find(
-                        (c) => c.value === professional?.address?.country,
-                      )?.label ?? professional?.address?.country}
+                      {professional?.address?.countryId
+                        ? t(
+                            `lookups.${countries?.find((c) => c.id === professional.address.countryId)?.key}`,
+                          )
+                        : ""}
                     </div>
                   </div>
                 </div>

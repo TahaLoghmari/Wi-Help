@@ -1,5 +1,5 @@
 import type { Address, EmergencyContact } from "@/features/auth";
-import type { MedicalInfo } from "@/features/patient";
+import type { MobilityStatus } from "@/features/patient/types/enums.types";
 
 export interface UpdatePatientRequest {
   firstName?: string | null;
@@ -7,7 +7,10 @@ export interface UpdatePatientRequest {
   phoneNumber?: string | null;
   address?: Address | null;
   emergencyContact?: EmergencyContact | null;
-  medicalinfo?: MedicalInfo | null;
+  mobilityStatus?: MobilityStatus | null;
+  allergyIds?: string[] | null;
+  conditionIds?: string[] | null;
+  medicationIds?: string[] | null;
   bio?: string | null;
   profilePicture?: File | null;
 }

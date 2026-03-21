@@ -5,6 +5,7 @@ import type { ProblemDetailsDto } from "@/types";
 import type { LikeReviewRequest } from "@/features/reviews";
 import { toast } from "sonner";
 import { handleApiError } from "@/hooks";
+import i18n from "i18next";
 
 const likeReview = (request: LikeReviewRequest) => {
   return api.post<void>(API_ENDPOINTS.REVIEWS.LIKE_REVIEW(request.reviewId));
@@ -30,7 +31,7 @@ export function useLikeReview() {
       queryClient.invalidateQueries({
         queryKey: ["patient-review-stats"],
       });
-      toast.success("Review liked!");
+      toast.success(i18n.t("toasts.reviews.liked"));
     },
     onError: (error) => handleApiError({ apiError: error }),
   });

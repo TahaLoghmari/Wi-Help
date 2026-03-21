@@ -6,6 +6,8 @@ import type {
   AppointmentStatus,
 } from "@/features/admin";
 import { toast } from "sonner";
+import { handleApiError } from "@/hooks";
+import i18n from "i18next";
 
 interface UpdateAppointmentStatusParams {
   appointmentId: string;
@@ -30,10 +32,10 @@ export function UpdateAppointmentStatus() {
     mutationFn: updateAppointmentStatus,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-appointments"] });
-      toast.success("Appointment status updated successfully");
+      toast.success(i18n.t("toasts.admin.appointmentStatusUpdated"));
     },
-    onError: () => {
-      toast.error("Failed to update appointment status");
+    onError: (error) => {
+      handleApiError({ apiError: error as any });
     },
   });
 }

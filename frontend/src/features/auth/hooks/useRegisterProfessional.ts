@@ -1,12 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
-import {
-  useStepsStore,
-  type RegisterProfessionalDto,
-} from "@/features/auth";
+import { useStepsStore, type RegisterProfessionalDto } from "@/features/auth";
 import { api, handleApiError, type ProblemDetailsDto } from "@/index";
 import { API_ENDPOINTS } from "@/config/endpoints";
 import { toast } from "sonner";
 import { useAppNavigation } from "@/hooks";
+import i18n from "i18next";
 
 export const registerProfessional = (credentials: RegisterProfessionalDto) => {
   return api.post<void>(
@@ -21,8 +19,8 @@ export function useRegisterProfessional() {
   return useMutation<void, ProblemDetailsDto, RegisterProfessionalDto>({
     mutationFn: registerProfessional,
     onSuccess: (_data, credentials) => {
-      toast.success("Account created successfully!", {
-        description: "Please check your email to verify your account.",
+      toast.success(i18n.t("toasts.auth.accountCreated"), {
+        description: i18n.t("toasts.auth.accountCreatedDescription"),
       });
       goToEmailVerification(credentials.email);
       setStep(1);

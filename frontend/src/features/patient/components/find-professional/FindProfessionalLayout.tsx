@@ -10,17 +10,11 @@ import {
   GetProfessionals,
   type GetProfessionalsDto,
 } from "@/features/professional";
-import {
-  CalendarPlus,
-  MapPin,
-  Navigation2,
-  User,
-  Search,
-} from "lucide-react";
-import { getSpecializations } from "@/features/auth";
+import { CalendarPlus, MapPin, Navigation2, User, Search } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useAppNavigation } from "@/hooks";
 import { GetProfessionalReviewStats, StarRating } from "@/features/reviews";
+import { GetStatesByCountry } from "@/features/auth";
 import { useTranslation } from "react-i18next";
 
 interface ProfessionalCardProps {
@@ -28,9 +22,12 @@ interface ProfessionalCardProps {
 }
 
 function ProfessionalCard({ professional }: ProfessionalCardProps) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useAppNavigation();
   const { data: reviewStats } = GetProfessionalReviewStats(professional.id);
+  const { data: states } = GetStatesByCountry(
+    professional.address?.countryId || "",
+  );
 
   return (
     <article
@@ -57,7 +54,7 @@ function ProfessionalCard({ professional }: ProfessionalCardProps) {
             <h3 className="truncate text-xs font-medium tracking-tight text-slate-900">
               {professional.firstName} {professional.lastName}
             </h3>
-            {professional.isVerified ? (
+            {professional.verificationStatus === "Verified" ? (
               <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 text-[10px] text-emerald-800">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
                 {t("patient.findProfessional.verified")}
@@ -70,12 +67,9 @@ function ProfessionalCard({ professional }: ProfessionalCardProps) {
             )}
           </div>
           <p className="truncate text-[11px] text-slate-500">
-            {
-              getSpecializations(i18n.language).find(
-                (specialization) =>
-                  specialization.value === professional.specialization,
-              )?.label
-            }
+            {professional.specialization?.key
+              ? t(`lookups.${professional.specialization.key}`)
+              : ""}
           </p>
         </div>
 
@@ -92,15 +86,24 @@ function ProfessionalCard({ professional }: ProfessionalCardProps) {
           <div className="flex items-center gap-1 text-slate-500">
             <MapPin className="h-3.5 w-3.5" />
             <span className="truncate">
-              {professional.address.city}, {professional.address.state}
+              {professional.address.city},{" "}
+              {states?.find((s) => s.id === professional.address.stateId)?.key
+                ? t(
+                    `lookups.${states.find((s) => s.id === professional.address.stateId)!.key}`,
+                  )
+                : ""}
             </span>
           </div>
-          {professional.distanceKm !== undefined && professional.distanceKm !== null && (
-            <div className="flex items-center gap-1 text-brand-blue font-medium">
-              <Navigation2 className="h-3.5 w-3.5" />
-              <span>{professional.distanceKm} km {t("patient.findProfessional.away", "away")}</span>
-            </div>
-          )}
+          {professional.distanceKm !== undefined &&
+            professional.distanceKm !== null && (
+              <div className="text-brand-blue flex items-center gap-1 font-medium">
+                <Navigation2 className="h-3.5 w-3.5" />
+                <span>
+                  {professional.distanceKm} km{" "}
+                  {t("patient.findProfessional.away", "away")}
+                </span>
+              </div>
+            )}
           <div className="flex items-center gap-2 text-[11px] text-slate-700">
             <svg
               width="24"
@@ -216,7 +219,6 @@ export function FindProfessionalLayout() {
             </div>
           </div>
 
-
           {professionals.length === 0 ? (
             <div className="flex h-[50vh] flex-col items-center justify-center">
               <EmptyState
@@ -230,7 +232,7 @@ export function FindProfessionalLayout() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
                 {professionals.map((professional) => (
                   <ProfessionalCard
                     key={professional.id}
@@ -240,30 +242,33 @@ export function FindProfessionalLayout() {
               </div>
 
               <div className="flex items-center justify-between pt-4">
-            <div className="text-[11px] text-slate-500">
-              {t("patient.findProfessional.pagination.showing")}
-              <span className="font-medium text-slate-700">
-                {" "}
-                {professionals.length}{" "}
-              </span>
-              {t("patient.findProfessional.pagination.of")}
-              <span className="font-medium text-slate-700"> {totalCount} </span>
-              {t("patient.findProfessional.pagination.professionals")}
-            </div>
-            <div className="flex items-center gap-1.5 text-[11px]">
-              <button
-                onClick={() => fetchNextPage()}
-                disabled={!hasNextPage || isFetchingNextPage}
-                className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-slate-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {isFetchingNextPage
-                  ? t("patient.findProfessional.pagination.loading")
-                  : hasNextPage
-                    ? t("patient.findProfessional.pagination.loadMore")
-                    : t("patient.findProfessional.pagination.noMore")}
-              </button>
-            </div>
-            </div>
+                <div className="text-[11px] text-slate-500">
+                  {t("patient.findProfessional.pagination.showing")}
+                  <span className="font-medium text-slate-700">
+                    {" "}
+                    {professionals.length}{" "}
+                  </span>
+                  {t("patient.findProfessional.pagination.of")}
+                  <span className="font-medium text-slate-700">
+                    {" "}
+                    {totalCount}{" "}
+                  </span>
+                  {t("patient.findProfessional.pagination.professionals")}
+                </div>
+                <div className="flex items-center gap-1.5 text-[11px]">
+                  <button
+                    onClick={() => fetchNextPage()}
+                    disabled={!hasNextPage || isFetchingNextPage}
+                    className="hover:border-brand-blue/70 hover:bg-brand-blue/5 inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-slate-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {isFetchingNextPage
+                      ? t("patient.findProfessional.pagination.loading")
+                      : hasNextPage
+                        ? t("patient.findProfessional.pagination.loadMore")
+                        : t("patient.findProfessional.pagination.noMore")}
+                  </button>
+                </div>
+              </div>
             </>
           )}
         </>

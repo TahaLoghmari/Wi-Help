@@ -4,10 +4,11 @@ import { API_ENDPOINTS } from "@/config";
 import { toast } from "sonner";
 import { toFormData } from "@/lib/utils";
 import type { UpdatePatientRequest } from "@/features/patient";
+import i18n from "i18next";
 
 export const updatePatient = (credentials: UpdatePatientRequest) => {
   const formData = toFormData(credentials);
-  return api.put<void>(API_ENDPOINTS.PATIENTS.UPDATE_PATIENT, formData);
+  return api.patch<void>(API_ENDPOINTS.PATIENTS.UPDATE_PATIENT, formData);
 };
 
 export function UpdatePatient() {
@@ -17,7 +18,7 @@ export function UpdatePatient() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       queryClient.invalidateQueries({ queryKey: ["currentPatient"] });
-      toast.success("Account updated successfully!");
+      toast.success(i18n.t("toasts.patient.accountUpdated"));
     },
     onError: (error) => handleApiError({ apiError: error }),
   });

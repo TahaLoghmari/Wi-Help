@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api, handleApiError, type ProblemDetailsDto } from "@/index";
 import { API_ENDPOINTS } from "@/config";
 import { toast } from "sonner";
+import i18n from "i18next";
 
 const deleteEducation = (educationId: string) => {
   return api.delete<void>(
@@ -15,7 +16,7 @@ export function useDeleteEducation() {
     mutationFn: deleteEducation,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["educations"] });
-      toast.success("Education deleted successfully!");
+      toast.success(i18n.t("toasts.professional.educationDeleted"));
     },
     onError: (error) => handleApiError({ apiError: error }),
   });

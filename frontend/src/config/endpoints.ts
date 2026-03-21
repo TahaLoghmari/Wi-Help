@@ -11,6 +11,9 @@ export const API_ENDPOINTS = {
     RESET_PASSWORD: "/auth/reset-password",
     SEND_CONFIRMATION_EMAIL: "/auth/send-confirmation-email",
     CHANGE_PASSWORD: "/auth/change-password",
+    GET_COUNTRIES: "/countries",
+    GET_STATES_BY_COUNTRY: (countryId: string) =>
+      `/countries/${countryId}/states`,
   },
   IDENTITY: {
     BAN_USER: (userId: string) => `/identity/users/${userId}/ban`,
@@ -66,6 +69,10 @@ export const API_ENDPOINTS = {
     GET_PROFESSIONAL_DOCUMENTS: (professionalId: string) =>
       `/professionals/${professionalId}/documents`,
     GET_VERIFICATION_DOCUMENTS_AS_ADMIN: "/professionals/admin/documents",
+    // Services (predefined lookup)
+    GET_SERVICES_BY_SPECIALIZATION: (specializationId: string) =>
+      `/specializations/${specializationId}/services`,
+    GET_SPECIALIZATIONS: "/specializations",
   },
   PATIENTS: {
     REGISTER_PATIENT: "/patients/register",
@@ -74,6 +81,10 @@ export const API_ENDPOINTS = {
     UPDATE_PATIENT: "/patients/me",
     GET_ALL_AS_ADMIN: "/patients/admin",
     COMPLETE_ONBOARDING: "/patients/complete-onboarding",
+    GET_RELATIONSHIPS: "/relationships",
+    GET_ALLERGIES: "/allergies",
+    GET_CONDITIONS: "/conditions",
+    GET_MEDICATIONS: "/medications",
   },
   APPOINTMENTS: {
     GET_PATIENT_APPOINTMENTS: "/appointments/patient/me",

@@ -4,6 +4,7 @@ import { type ProblemDetailsDto } from "@/types/enums.types";
 import { API_ENDPOINTS } from "@/config/endpoints";
 import { api, handleApiError } from "@/index";
 import { toast } from "sonner";
+import i18n from "i18next";
 
 export const login = (credentials: LoginUserDto) => {
   return api.post<void>(API_ENDPOINTS.AUTH.LOGIN, credentials);
@@ -16,8 +17,8 @@ export function useLogin() {
     mutationFn: login,
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-      toast.success("Welcome back!", {
-        description: "You have successfully logged in.",
+      toast.success(i18n.t("toasts.auth.welcomeBack"), {
+        description: i18n.t("toasts.auth.welcomeBackDescription"),
       });
       // Navigation will be handled by GuestGuard's useEffect when user data loads by invalidating queries
     },

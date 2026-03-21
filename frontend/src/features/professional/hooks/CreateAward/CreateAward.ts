@@ -4,6 +4,7 @@ import { API_ENDPOINTS } from "@/config";
 import { toast } from "sonner";
 import type { CreateAwardRequest } from "./CreateAwardRequest";
 import type { GetAwardsDto } from "../GetAwards";
+import i18n from "i18next";
 
 const createAward = (request: CreateAwardRequest) => {
   return api.post<GetAwardsDto>(
@@ -18,7 +19,7 @@ export function useCreateAward() {
     mutationFn: createAward,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["awards"] });
-      toast.success("Award added successfully!");
+      toast.success(i18n.t("toasts.professional.awardAdded"));
     },
     onError: (error) => handleApiError({ apiError: error }),
   });

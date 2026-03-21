@@ -5,7 +5,6 @@ import {
   type GetAllAppointmentsDto,
   AppointmentStatus,
 } from "@/features/admin";
-import { getSpecializations } from "@/features/auth/lib/authConstants";
 import {
   Select,
   SelectContent,
@@ -18,7 +17,7 @@ import { X, Calendar, Stethoscope } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export function AdminAppointmentsTable() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const {
     data,
     isLoading,
@@ -146,11 +145,11 @@ export function AdminAppointmentsTable() {
                           {appointment.professional.lastName}
                         </div>
                         <div className="text-[11px] text-slate-500">
-                          {getSpecializations(i18n.language).find(
-                            (s) =>
-                              s.value ===
-                              appointment.professional.specialization,
-                          )?.label || appointment.professional.specialization}
+                          {appointment.professional.specialization?.key
+                            ? t(
+                                `lookups.${appointment.professional.specialization.key}`,
+                              )
+                            : ""}
                         </div>
                       </div>
                     </div>
@@ -296,7 +295,11 @@ export function AdminAppointmentsTable() {
                       <div className="flex items-center gap-1.5 text-xs text-slate-500">
                         <Stethoscope className="h-3 w-3" />
                         <span>
-                          {selectedAppointment.professional?.specialization}
+                          {selectedAppointment.professional?.specialization?.key
+                            ? t(
+                                `lookups.${selectedAppointment.professional.specialization.key}`,
+                              )
+                            : ""}
                         </span>
                       </div>
                     </div>

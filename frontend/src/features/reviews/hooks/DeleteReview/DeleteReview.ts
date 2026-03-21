@@ -5,6 +5,7 @@ import type { ProblemDetailsDto } from "@/types";
 import type { DeleteReviewRequest } from "@/features/reviews";
 import { toast } from "sonner";
 import { handleApiError } from "@/hooks";
+import i18n from "i18next";
 
 const deleteReview = (request: DeleteReviewRequest) => {
   return api.delete<void>(
@@ -29,7 +30,7 @@ export function useDeleteReview() {
       queryClient.invalidateQueries({
         queryKey: ["patient-review-stats"],
       });
-      toast.success("Review deleted!");
+      toast.success(i18n.t("toasts.reviews.deleted"));
     },
     onError: (error) => handleApiError({ apiError: error }),
   });

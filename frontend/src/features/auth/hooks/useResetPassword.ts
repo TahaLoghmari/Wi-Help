@@ -4,6 +4,7 @@ import { api, handleApiError, type ProblemDetailsDto } from "@/index";
 import { toast } from "sonner";
 import { API_ENDPOINTS } from "@/config/endpoints";
 import { useAppNavigation } from "@/hooks";
+import i18n from "i18next";
 
 export const resetPassword = (credentials: ResetPasswordDto) => {
   return api.post<void>(API_ENDPOINTS.AUTH.RESET_PASSWORD, credentials);
@@ -14,7 +15,7 @@ export function useResetPassword() {
   return useMutation<void, ProblemDetailsDto, ResetPasswordDto>({
     mutationFn: resetPassword,
     onSuccess: () => {
-      toast.success("Your password has been reset. You can now log in.");
+      toast.success(i18n.t("toasts.auth.passwordReset"));
       goToLogin();
     },
     onError: (error) => handleApiError({ apiError: error }),

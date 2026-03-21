@@ -1,10 +1,4 @@
 export type MobilityStatus = "Normal" | "Limited" | "Immobile";
-export interface MedicalInfo {
-  chronicConditions: string[] | null;
-  allergies: string[] | null;
-  medications: string[] | null;
-  mobilityStatus: MobilityStatus | null;
-}
 
 // Re-export from professional types for consistency
 export {

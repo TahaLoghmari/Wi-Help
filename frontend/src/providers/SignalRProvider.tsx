@@ -11,6 +11,7 @@ import type { NotificationDto } from "@/features/notifications";
 import { API_ENDPOINTS } from "@/config/endpoints";
 import { env } from "@/config/env";
 import { useCurrentUser, useLocationManager } from "@/features/auth";
+import { useTranslation } from "react-i18next";
 
 export const SignalRProvider = ({
   children,
@@ -21,6 +22,7 @@ export const SignalRProvider = ({
   const queryClient = useQueryClient();
   const connectionRef = useRef<HubConnection | null>(null);
   const isStoppingRef = useRef(false);
+  const { t } = useTranslation();
 
   // Location manager: checks freshness and requests geolocation when needed
   // Only runs when user is authenticated and not loading
@@ -116,9 +118,17 @@ export const SignalRProvider = ({
         queryClient.invalidateQueries({ queryKey: ["notifications"] });
         console.log("Notification received:", notification);
 
-        toast.info(notification.title, {
-          description: notification.message,
-        });
+        toast.info(
+          t(`notifications.types.${notification.type}.title`, {
+            defaultValue: notification.title,
+          }),
+          {
+            description: t(
+              `notifications.types.${notification.type}.description`,
+              { defaultValue: notification.message },
+            ),
+          },
+        );
 
         // Invalidate relevant queries based on role
         if (notification.role === "Professional") {

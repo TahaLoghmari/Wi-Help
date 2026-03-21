@@ -5,7 +5,6 @@ import {
   GetPatientAppointments,
   type GetPatientAppointmentsDto,
 } from "@/features/patient";
-import { getSpecializations } from "@/features/auth";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,7 +23,7 @@ import { useTranslation } from "react-i18next";
 type AppointmentTab = "offered" | "confirmed" | "cancelled" | "completed";
 
 export function PatientAppointmentsTable() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const {
     data,
     isLoading,
@@ -155,7 +154,7 @@ export function PatientAppointmentsTable() {
           </div>
         </div>
 
-        <div className="flex items-center gap-1 overflow-x-auto pb-1 text-xs whitespace-nowrap scrollbar-hide">
+        <div className="scrollbar-hide flex items-center gap-1 overflow-x-auto pb-1 text-xs whitespace-nowrap">
           <button
             id="appt-tab-offered"
             onClick={() => setActiveTab("offered")}
@@ -324,11 +323,9 @@ export function PatientAppointmentsTable() {
                         </div>
                         {appointment.professional?.specialization && (
                           <div className="text-[11px] text-slate-500">
-                            {getSpecializations(i18n.language).find(
-                              (s) =>
-                                s.value ===
-                                appointment.professional?.specialization,
-                            )?.label || appointment.professional.specialization}
+                            {t(
+                              `lookups.${appointment.professional.specialization.key}`,
+                            )}
                           </div>
                         )}
                       </div>

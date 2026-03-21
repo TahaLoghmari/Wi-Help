@@ -1,5 +1,6 @@
 import type { Address, EmergencyContact } from "@/features/auth";
-import type { MedicalInfo } from "./enums.types";
+import type { MobilityStatus } from "./enums.types";
+import type { LookupDto } from "@/features/patient/hooks/LookupDto";
 import type { profileAndBioFormSchema } from "@/features/professional";
 import type z from "zod";
 
@@ -14,7 +15,10 @@ export interface PatientDto {
   gender: string;
   address: Address;
   emergencyContact: EmergencyContact;
-  medicalInfo?: MedicalInfo;
+  mobilityStatus?: MobilityStatus;
+  allergies: LookupDto[];
+  conditions: LookupDto[];
+  medications: LookupDto[];
   bio?: string;
   profilePictureUrl?: string;
 }

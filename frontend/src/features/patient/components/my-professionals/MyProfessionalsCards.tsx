@@ -1,13 +1,20 @@
 import { GetPatientProfessionals } from "@/features/patient";
+import { GetCountries } from "@/features/auth";
 import { useNavigate, Link } from "@tanstack/react-router";
-import { Spinner, EmptyState, Avatar, AvatarImage, AvatarFallback } from "@/components";
+import {
+  Spinner,
+  EmptyState,
+  Avatar,
+  AvatarImage,
+  AvatarFallback,
+} from "@/components";
 import { ROUTE_PATHS } from "@/config";
-import { getSpecializations } from "@/features/auth/lib/authConstants";
 import { useTranslation } from "react-i18next";
 import { User } from "lucide-react";
 
 export function MyProfessionalsCards() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const { data: countries } = GetCountries();
   const {
     data,
     isLoading,
@@ -54,7 +61,8 @@ export function MyProfessionalsCards() {
           description={t("patient.professionals.emptyState.description")}
           action={{
             label: t("patient.professionals.emptyState.action"),
-            onClick: () => navigate({ to: ROUTE_PATHS.PATIENT.FINDPROFESSIONAL }),
+            onClick: () =>
+              navigate({ to: ROUTE_PATHS.PATIENT.FINDPROFESSIONAL }),
           }}
           className="border-none bg-transparent shadow-none"
         />
@@ -63,7 +71,7 @@ export function MyProfessionalsCards() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 ">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {professionals.map((professional, index) => (
         <article
           key={index}
@@ -71,18 +79,18 @@ export function MyProfessionalsCards() {
         >
           <div className="items:center flex gap-3">
             <Avatar className="h-10 w-10 border-4 border-white bg-white">
-                <AvatarImage
-                  className="object-cover"
-                  src={professional?.profilePictureUrl}
-                  alt={professional?.firstName}
-                />
-                <AvatarFallback className="rounded-full text-lg">
-                  {professional?.firstName && professional?.lastName
-                    ? professional.firstName.charAt(0).toUpperCase() +
-                      professional.lastName.charAt(0).toUpperCase()
-                    : "U"}
-                </AvatarFallback>
-              </Avatar>
+              <AvatarImage
+                className="object-cover"
+                src={professional?.profilePictureUrl}
+                alt={professional?.firstName}
+              />
+              <AvatarFallback className="rounded-full text-lg">
+                {professional?.firstName && professional?.lastName
+                  ? professional.firstName.charAt(0).toUpperCase() +
+                    professional.lastName.charAt(0).toUpperCase()
+                  : "U"}
+              </AvatarFallback>
+            </Avatar>
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between gap-2">
                 <h4 className="truncate text-xs font-medium tracking-tight text-slate-900">
@@ -97,7 +105,11 @@ export function MyProfessionalsCards() {
                 {professional.gender.charAt(0).toUpperCase() +
                   professional.gender.slice(1)}{" "}
                 • {professional.address?.city || t("common.unknown")} •{" "}
-                {professional.address?.state || t("common.unknown")}
+                {professional.address?.countryId
+                  ? t(
+                      `lookups.${countries?.find((c) => c.id === professional.address.countryId)?.key}`,
+                    )
+                  : t("common.unknown")}
               </p>
             </div>
           </div>
@@ -178,9 +190,9 @@ export function MyProfessionalsCards() {
                 <circle cx="20" cy="10" r="2" />
               </svg>
               <span className="font-medium text-slate-700">
-                {getSpecializations(i18n.language).find(
-                  (spec) => spec.value === professional.specialization,
-                )?.label || professional.specialization}
+                {professional.specialization?.key
+                  ? t(`lookups.${professional.specialization.key}`)
+                  : ""}
               </span>
             </div>
           </div>

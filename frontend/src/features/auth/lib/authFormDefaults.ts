@@ -18,8 +18,8 @@ const commonDefaults = {
     street: "",
     city: "",
     postalCode: "",
-    country: "",
-    state: "",
+    countryId: "",
+    stateId: "",
   },
 };
 
@@ -29,7 +29,7 @@ export function PatientFormDefaults() {
     emergencyContact: {
       fullName: "",
       phoneNumber: "",
-      relationship: "",
+      relationshipId: "",
     },
   };
 }
@@ -37,7 +37,7 @@ export function PatientFormDefaults() {
 export function ProfessionalFormDefaults() {
   return {
     ...commonDefaults,
-    specialization: "",
+    specializationId: "",
     experience: 0,
   };
 }
@@ -74,13 +74,13 @@ export function PatientOnboardingDefaults() {
       street: "",
       city: "",
       postalCode: "",
-      country: "",
-      state: "",
+      countryId: "",
+      stateId: "",
     },
     emergencyContact: {
       fullName: "",
       phoneNumber: "",
-      relationship: "",
+      relationshipId: "",
     },
   };
 }
@@ -94,10 +94,10 @@ export function ProfessionalOnboardingDefaults() {
       street: "",
       city: "",
       postalCode: "",
-      country: "",
-      state: "",
+      countryId: "",
+      stateId: "",
     },
-    specialization: "",
+    specializationId: "",
     experience: 0,
   };
 }

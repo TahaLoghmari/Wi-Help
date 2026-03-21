@@ -12,21 +12,12 @@ const addressSchema = z.object({
     .regex(/^[a-zA-Z\s']+$/, {
       message: "City must contain only letters, spaces, and apostrophes.",
     }),
-  state: z
-    .string()
-    .min(1, { message: "State is required." })
-    .max(50, { message: "State must be at most 50 characters." })
-    .regex(/^[a-zA-Z\s']+$/, {
-      message: "State must contain only letters, spaces, and apostrophes.",
-    }),
+  stateId: z.string().min(1, { message: "State is required." }),
   postalCode: z
     .string()
     .min(1, { message: "Postal Code is required." })
     .max(20, { message: "Postal Code must be at most 20 characters." }),
-  country: z
-    .string()
-    .min(1, { message: "Country is required." })
-    .max(50, { message: "Country must be at most 50 characters." }),
+  countryId: z.string().min(1, { message: "Country is required." }),
 });
 
 export const profileAndBioFormSchema = z.object({
@@ -54,11 +45,9 @@ export const profileAndBioFormSchema = z.object({
     .nonnegative({ message: "Experience cannot be negative." }),
   address: addressSchema,
   profilePicture: z.any().nullish(),
-  specialization: z
+  specializationId: z
     .string()
-    .min(1, { message: "Specialization is required." })
-    .max(50, { message: "Specialization must be at most 50 characters." }),
-  services: z.array(z.string()).nullish(),
+    .min(1, { message: "Specialization is required." }),
   visitPrice: z
     .number({ message: "Visit price must be a number." })
     .nonnegative({ message: "Visit price cannot be negative." }),
@@ -66,6 +55,7 @@ export const profileAndBioFormSchema = z.object({
     .string()
     .max(1000, { message: "Bio must be at most 1000 characters." })
     .nullish(),
+  serviceIds: z.array(z.string()).nullish(),
 });
 
 // Award validation schema
@@ -76,14 +66,12 @@ export const awardFormSchema = z.object({
     .max(200, { message: "Title must be at most 200 characters." }),
   issuer: z
     .string()
-    .max(200, { message: "Issuer must be at most 200 characters." })
-    .optional()
-    .nullable(),
+    .min(1, { message: "Issuer is required." })
+    .max(200, { message: "Issuer must be at most 200 characters." }),
   description: z
     .string()
-    .max(1000, { message: "Description must be at most 1000 characters." })
-    .optional()
-    .nullable(),
+    .min(1, { message: "Description is required." })
+    .max(1000, { message: "Description must be at most 1000 characters." }),
   yearReceived: z
     .string()
     .min(1, { message: "Year received is required." })
@@ -105,14 +93,13 @@ export const educationFormSchema = z.object({
     .max(200, { message: "Degree must be at most 200 characters." }),
   fieldOfStudy: z
     .string()
-    .max(200, { message: "Field of study must be at most 200 characters." })
-    .optional()
-    .nullable(),
-  country: z
+    .min(1, { message: "Field of study is required." })
+    .max(200, { message: "Field of study must be at most 200 characters." }),
+  countryId: z.string().min(1, { message: "Country is required." }),
+  description: z
     .string()
-    .max(100, { message: "Country must be at most 100 characters." })
-    .optional()
-    .nullable(),
+    .min(1, { message: "Description is required." })
+    .max(1000, { message: "Description must be at most 1000 characters." }),
   startYear: z
     .string()
     .min(1, { message: "Start year is required." })
@@ -137,14 +124,12 @@ export const experienceFormSchema = z.object({
     .max(300, { message: "Organization must be at most 300 characters." }),
   location: z
     .string()
-    .max(200, { message: "Location must be at most 200 characters." })
-    .optional()
-    .nullable(),
+    .min(1, { message: "Location is required." })
+    .max(200, { message: "Location must be at most 200 characters." }),
   description: z
     .string()
-    .max(1000, { message: "Description must be at most 1000 characters." })
-    .optional()
-    .nullable(),
+    .min(1, { message: "Description is required." })
+    .max(1000, { message: "Description must be at most 1000 characters." }),
   startYear: z
     .string()
     .min(1, { message: "Start year is required." })

@@ -5,6 +5,7 @@ import type { ProblemDetailsDto } from "@/types";
 import type { UnlikeReviewRequest } from "@/features/reviews";
 import { toast } from "sonner";
 import { handleApiError } from "@/hooks";
+import i18n from "i18next";
 
 const unlikeReview = (request: UnlikeReviewRequest) => {
   return api.delete<void>(
@@ -32,7 +33,7 @@ export function useUnlikeReview() {
       queryClient.invalidateQueries({
         queryKey: ["patient-review-stats"],
       });
-      toast.success("Review unliked!");
+      toast.success(i18n.t("toasts.reviews.unliked"));
     },
     onError: (error) => handleApiError({ apiError: error }),
   });

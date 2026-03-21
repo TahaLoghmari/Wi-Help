@@ -6,6 +6,7 @@ import { z } from "zod";
 
 const loginSearchSchema = z.object({
   message: z.string().optional(),
+  error: z.string().optional(),
 });
 
 export const Route = createFileRoute(ROUTE_PATHS.AUTH.LOGIN)({

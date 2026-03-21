@@ -12,21 +12,12 @@ const addressSchema = z.object({
     .regex(/^[a-zA-Z\s']+$/, {
       message: "City must contain only letters, spaces, and apostrophes.",
     }),
-  state: z
-    .string()
-    .min(1, { message: "State is required." })
-    .max(50, { message: "State must be at most 50 characters." })
-    .regex(/^[a-zA-Z\s']+$/, {
-      message: "State must contain only letters, spaces, and apostrophes.",
-    }),
+  stateId: z.string().min(1, { message: "State is required." }),
   postalCode: z
     .string()
     .min(1, { message: "Postal Code is required." })
     .max(20, { message: "Postal Code must be at most 20 characters." }),
-  country: z
-    .string()
-    .min(1, { message: "Country is required." })
-    .max(50, { message: "Country must be at most 50 characters." }),
+  countryId: z.string().min(1, { message: "Country is required." }),
 });
 
 const emergencyContactSchema = z.object({
@@ -38,20 +29,7 @@ const emergencyContactSchema = z.object({
     .string()
     .min(1, { message: "Phone Number is required." })
     .regex(/^[0-9+\-\s()]+$/, { message: "Invalid phone number format." }),
-  relationship: z
-    .string()
-    .min(1, { message: "Relationship is required." })
-    .max(50, { message: "Relationship must be at most 50 characters." }),
-});
-
-const medicalInfoSchema = z.object({
-  chronicConditions: z.array(z.string()).optional(),
-  allergies: z.array(z.string()).optional(),
-  medications: z.array(z.string()).optional(),
-  mobilityStatus: z
-    .enum(["Normal", "Limited", "Immobile"])
-    .nullish()
-    .or(z.literal("")),
+  relationshipId: z.string().min(1, { message: "Relationship is required." }),
 });
 
 export const profileAndBioFormSchema = z.object({
@@ -75,7 +53,13 @@ export const profileAndBioFormSchema = z.object({
     .regex(/^[0-9+\-\s()]+$/, { message: "Invalid phone number format." }),
   address: addressSchema,
   emergencyContact: emergencyContactSchema,
-  medicalInfo: medicalInfoSchema.nullish(),
+  mobilityStatus: z
+    .enum(["Normal", "Limited", "Immobile"])
+    .nullish()
+    .or(z.literal("")),
+  allergyIds: z.array(z.string()).optional(),
+  conditionIds: z.array(z.string()).optional(),
+  medicationIds: z.array(z.string()).optional(),
   profilePicture: z.any().nullish(),
   bio: z
     .string()

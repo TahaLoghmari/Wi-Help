@@ -4,6 +4,7 @@ import { API_ENDPOINTS } from "@/config";
 import { toast } from "sonner";
 import type { UpdateAwardRequest } from "./UpdateAwardRequest";
 import type { GetAwardsDto } from "../GetAwards";
+import i18n from "i18next";
 
 interface UpdateAwardParams {
   awardId: string;
@@ -11,7 +12,7 @@ interface UpdateAwardParams {
 }
 
 const updateAward = ({ awardId, request }: UpdateAwardParams) => {
-  return api.put<GetAwardsDto>(
+  return api.patch<GetAwardsDto>(
     API_ENDPOINTS.PROFESSIONALS.UPDATE_AWARD(awardId),
     request,
   );
@@ -23,7 +24,7 @@ export function useUpdateAward() {
     mutationFn: updateAward,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["awards"] });
-      toast.success("Award updated successfully!");
+      toast.success(i18n.t("toasts.professional.awardUpdated"));
     },
     onError: (error) => handleApiError({ apiError: error }),
   });

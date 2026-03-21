@@ -16,17 +16,8 @@ const addressSchema = z.object({
     .string()
     .min(1, { message: "Postal Code is required." })
     .max(20, { message: "Postal Code must be at most 20 characters." }),
-  country: z
-    .string()
-    .min(1, { message: "Country is required." })
-    .max(50, { message: "Country must be at most 50 characters." }),
-  state: z
-    .string()
-    .min(1, { message: "State is required." })
-    .max(50, { message: "State must be at most 50 characters." })
-    .regex(/^[a-zA-Z\s']+$/, {
-      message: "State must contain only letters, spaces, and apostrophes.",
-    }),
+  countryId: z.string().min(1, { message: "Country is required." }),
+  stateId: z.string().min(1, { message: "State is required." }),
 });
 
 const emergencyContactSchema = z.object({
@@ -45,10 +36,7 @@ const emergencyContactSchema = z.object({
     .regex(/^\+?[\d\s\-()]+$/, {
       message: "Please enter a valid phone number.",
     }),
-  relationship: z
-    .string()
-    .min(1, { message: "Relationship is required." })
-    .max(50, { message: "Relationship must be at most 50 characters." }),
+  relationshipId: z.string().min(1, { message: "Relationship is required." }),
 });
 
 const commonFields = {
@@ -128,10 +116,9 @@ export const patientSchema = z
 export const professionalSchema = z
   .object({
     ...commonFields,
-    specialization: z
+    specializationId: z
       .string()
-      .min(1, { message: "Specialization is required." })
-      .max(100, { message: "Specialization must be at most 100 characters." }),
+      .min(1, { message: "Specialization is required." }),
     experience: z
       .number()
       .min(0, { message: "Years of Experience must be at least 0." }),
@@ -267,10 +254,9 @@ export const patientOnboardingSchema = z.object({
 
 export const professionalOnboardingSchema = z.object({
   ...onboardingCommonFields,
-  specialization: z
+  specializationId: z
     .string()
-    .min(1, { message: "Specialization is required." })
-    .max(100, { message: "Specialization must be at most 100 characters." }),
+    .min(1, { message: "Specialization is required." }),
   experience: z
     .number()
     .min(0, { message: "Years of Experience must be at least 0." }),

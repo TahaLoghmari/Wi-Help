@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api, handleApiError, type ProblemDetailsDto } from "@/index";
 import { API_ENDPOINTS } from "@/config";
 import { toast } from "sonner";
+import i18n from "i18next";
 
 export const cancelAppointment = (appointmentId: string) => {
   return api.post<void>(
@@ -14,7 +15,7 @@ export function CancelAppointment() {
   return useMutation<void, ProblemDetailsDto, string>({
     mutationFn: cancelAppointment,
     onSuccess: () => {
-      toast.success("Appointment cancelled successfully!");
+      toast.success(i18n.t("toasts.patient.appointmentCancelled"));
       queryClient.invalidateQueries({
         queryKey: ["patient-appointments"],
       });

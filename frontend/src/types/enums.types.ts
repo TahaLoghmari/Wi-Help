@@ -3,7 +3,7 @@ export interface ProblemDetailsDto {
   detail?: string;
   type?: string;
   status?: number;
-  errors?: Record<string, string[]>;
+  errors?: Array<{ code: string; description: string; type: number }>;
 }
 
 export interface PaginationResultDto<T> {

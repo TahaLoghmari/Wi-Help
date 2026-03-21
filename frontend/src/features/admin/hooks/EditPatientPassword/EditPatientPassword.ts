@@ -2,6 +2,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api-client";
 import { API_ENDPOINTS } from "@/config";
 import { toast } from "sonner";
+import { handleApiError } from "@/hooks";
+import i18n from "i18next";
 
 interface EditPatientPasswordParams {
   userId: string;
@@ -12,10 +14,9 @@ const editPatientPassword = ({
   userId,
   newPassword,
 }: EditPatientPasswordParams) => {
-  const queryParams = new URLSearchParams({ NewPassword: newPassword });
-  return api.patch(
-    `${API_ENDPOINTS.IDENTITY.ADMIN_CHANGE_PASSWORD(userId)}?${queryParams.toString()}`,
-  );
+  return api.patch(API_ENDPOINTS.IDENTITY.ADMIN_CHANGE_PASSWORD(userId), {
+    newPassword,
+  });
 };
 
 export function EditPatientPassword() {
@@ -25,10 +26,10 @@ export function EditPatientPassword() {
     mutationFn: editPatientPassword,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-patients"] });
-      toast.success("Patient password updated successfully");
+      toast.success(i18n.t("toasts.admin.patientPasswordUpdated"));
     },
-    onError: () => {
-      toast.error("Failed to update patient password");
+    onError: (error) => {
+      handleApiError({ apiError: error as any });
     },
   });
 }

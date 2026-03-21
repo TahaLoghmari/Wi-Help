@@ -17,14 +17,10 @@ export function ProfileAndBioFormDefaults(patient: PatientDto) {
     phoneNumber: patient.phoneNumber,
     address: patient.address,
     emergencyContact: patient.emergencyContact,
-    medicalInfo: patient.medicalInfo
-      ? {
-          chronicConditions: patient.medicalInfo.chronicConditions ?? [],
-          allergies: patient.medicalInfo.allergies ?? [],
-          medications: patient.medicalInfo.medications ?? [],
-          mobilityStatus: patient.medicalInfo.mobilityStatus ?? "Normal",
-        }
-      : undefined,
+    mobilityStatus: patient.mobilityStatus ?? "Normal",
+    allergyIds: patient.allergies?.map((a) => a.id) ?? [],
+    conditionIds: patient.conditions?.map((c) => c.id) ?? [],
+    medicationIds: patient.medications?.map((m) => m.id) ?? [],
     bio: patient.bio,
     profilePicture: undefined,
   };

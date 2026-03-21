@@ -2,6 +2,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api-client";
 import { API_ENDPOINTS } from "@/config";
 import { toast } from "sonner";
+import { handleApiError } from "@/hooks";
+import i18n from "i18next";
 
 interface BanPatientParams {
   userId: string;
@@ -9,10 +11,9 @@ interface BanPatientParams {
 }
 
 const banPatient = ({ userId, isBan }: BanPatientParams) => {
-  const queryParams = new URLSearchParams({ IsBanned: isBan.toString() });
-  return api.patch(
-    `${API_ENDPOINTS.IDENTITY.BAN_USER(userId)}?${queryParams.toString()}`,
-  );
+  return api.patch(API_ENDPOINTS.IDENTITY.BAN_USER(userId), {
+    isBanned: isBan,
+  });
 };
 
 export function BanPatient() {
@@ -24,12 +25,12 @@ export function BanPatient() {
       queryClient.invalidateQueries({ queryKey: ["admin-patients"] });
       toast.success(
         variables.isBan
-          ? "Patient banned successfully"
-          : "Patient unbanned successfully",
+          ? i18n.t("toasts.admin.patientBanned")
+          : i18n.t("toasts.admin.patientUnbanned"),
       );
     },
-    onError: () => {
-      toast.error("Failed to update patient ban status");
+    onError: (error) => {
+      handleApiError({ apiError: error as any });
     },
   });
 }

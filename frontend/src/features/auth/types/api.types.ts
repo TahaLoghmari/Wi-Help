@@ -17,14 +17,14 @@ export interface Address {
   street: string;
   city: string;
   postalCode: string;
-  country: string;
-  state: string;
+  countryId: string;
+  stateId: string;
 }
 
 export interface EmergencyContact {
   fullName: string;
   phoneNumber: string;
-  relationship: string;
+  relationshipId: string;
 }
 
 export interface LocationCoordinates {
@@ -53,7 +53,7 @@ export interface RegisterProfessionalDto {
   gender: string;
   phoneNumber: string;
   address?: Address;
-  specialization?: string;
+  specializationId?: string;
   experience?: number;
 }
 
@@ -107,6 +107,6 @@ export interface CompleteProfessionalOnboardingDto {
   gender: string;
   phoneNumber: string;
   address: Address;
-  specialization: string;
+  specializationId: string;
   experience: number;
 }

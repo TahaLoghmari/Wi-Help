@@ -2,8 +2,8 @@ export interface GetExperiencesDto {
   id: string;
   title: string;
   organization: string;
-  location?: string | null;
-  description?: string | null;
+  location: string;
+  description: string;
   startYear: string;
   endYear?: string | null;
   isCurrentPosition: boolean;

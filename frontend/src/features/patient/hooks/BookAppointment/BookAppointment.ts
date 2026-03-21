@@ -5,6 +5,7 @@ import type { ProblemDetailsDto } from "@/types";
 import type { BookAppointmentRequest } from "@/features/patient";
 import { toast } from "sonner";
 import { handleApiError, useAppNavigation } from "@/hooks";
+import i18n from "i18next";
 
 const bookAppointment = (request: BookAppointmentRequest) => {
   return api.post<void>(API_ENDPOINTS.APPOINTMENTS.BOOK_APPOINTMENT, request);
@@ -25,7 +26,7 @@ export function useBookAppointment() {
       queryClient.invalidateQueries({
         queryKey: ["notifications"],
       });
-      toast.success(`Appointment booked successfully!`);
+      toast.success(i18n.t("toasts.patient.appointmentBooked"));
       goToBookingSuccess();
     },
     onError: (error) => handleApiError({ apiError: error }),

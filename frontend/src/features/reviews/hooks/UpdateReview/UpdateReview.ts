@@ -5,6 +5,7 @@ import type { ProblemDetailsDto } from "@/types";
 import type { UpdateReviewRequest } from "@/features/reviews";
 import { toast } from "sonner";
 import { handleApiError } from "@/hooks";
+import i18n from "i18next";
 
 const updateReview = (request: UpdateReviewRequest) => {
   return api.put<void>(API_ENDPOINTS.REVIEWS.UPDATE_REVIEW(request.reviewId), {
@@ -30,7 +31,7 @@ export function useUpdateReview() {
       queryClient.invalidateQueries({
         queryKey: ["patient-review-stats"],
       });
-      toast.success("Review updated!");
+      toast.success(i18n.t("toasts.reviews.updated"));
     },
     onError: (error) => handleApiError({ apiError: error }),
   });

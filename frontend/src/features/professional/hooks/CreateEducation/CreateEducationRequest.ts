@@ -1,8 +1,9 @@
 export interface CreateEducationRequest {
   institution: string;
   degree: string;
-  fieldOfStudy?: string | null;
-  country?: string | null;
+  fieldOfStudy: string;
+  countryId: string;
+  description: string;
   startYear: string;
   endYear?: string | null;
   isCurrentlyStudying?: boolean;

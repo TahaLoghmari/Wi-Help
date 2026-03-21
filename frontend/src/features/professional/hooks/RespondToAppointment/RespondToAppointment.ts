@@ -3,6 +3,7 @@ import { api, handleApiError, type ProblemDetailsDto } from "@/index";
 import { API_ENDPOINTS } from "@/config";
 import { toast } from "sonner";
 import type { RespondToAppointmentRequest } from "@/features/professional";
+import i18n from "i18next";
 
 export const respondToAppointment = (request: RespondToAppointmentRequest) => {
   const body = {
@@ -19,7 +20,7 @@ export function RespondToAppointment() {
   return useMutation<void, ProblemDetailsDto, RespondToAppointmentRequest>({
     mutationFn: respondToAppointment,
     onSuccess: (_, variables) => {
-      toast.success("Appointment status updated successfully!");
+      toast.success(i18n.t("toasts.professional.appointmentRespondedTo"));
       queryClient.invalidateQueries({
         queryKey: ["professional-appointments"],
       });

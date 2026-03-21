@@ -8,7 +8,6 @@ import {
   type GetAllProfessionalsDto,
   VerificationStatus,
 } from "@/features/admin";
-import { getSpecializations } from "@/features/auth/lib/authConstants";
 import {
   Select,
   SelectContent,
@@ -31,7 +30,7 @@ import { User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export function AdminProfessionalsTable() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const {
     data,
@@ -210,9 +209,7 @@ export function AdminProfessionalsTable() {
                       </td>
                       <td className="px-4 py-3.5 text-xs text-slate-700 sm:px-5">
                         <div className="text-xs text-slate-500">
-                          {getSpecializations(i18n.language).find(
-                            (s) => s.value === professional.specialization,
-                          )?.label || professional.specialization}
+                          {t(`lookups.${professional.specializationKey}`)}
                         </div>
                       </td>
                       <td className="px-4 py-3.5 text-xs whitespace-nowrap text-slate-700 sm:px-5">

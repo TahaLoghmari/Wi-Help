@@ -7,6 +7,9 @@ export const NotificationType = {
   newPrescription: "newPrescription",
   newMessage: "newMessage",
   newReview: "newReview",
+  accountStatusUpdated: "accountStatusUpdated",
+  documentStatusUpdated: "documentStatusUpdated",
+  appointmentStatusUpdated: "appointmentStatusUpdated",
 } as const;
 
 export type NotificationType =

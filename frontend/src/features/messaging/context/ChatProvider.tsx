@@ -15,6 +15,7 @@ import {
 import { toast } from "sonner";
 import { env } from "@/config/env";
 import { useCurrentUser } from "@/features/auth";
+import { useTranslation } from "react-i18next";
 
 interface ChatContextValue {
   connection: HubConnection | null;
@@ -27,6 +28,7 @@ const ChatContext = createContext<ChatContextValue | undefined>(undefined);
 
 export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: currentUser, isLoading: isUserLoading } = useCurrentUser();
+  const { t } = useTranslation();
   const connectionRef = useRef<HubConnection | null>(null);
   const [activeConnection, setActiveConnection] =
     useState<HubConnection | null>(null);
@@ -127,7 +129,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
       console.log("ChatHub reconnected. ConnectionId:", connectionId);
       setConnectionState(HubConnectionState.Connected);
       setConnectionError(null);
-      toast.success("Reconnected to chat");
+      toast.success(t("toasts.messaging.chatReconnected"));
       // Request fresh online users list after reconnection
       connection.invoke("GetOnlineUsers").catch((err) => {
         console.error("Failed to get online users after reconnect:", err);
@@ -141,7 +143,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
       } else if (error) {
         console.error("ChatHub connection closed with error:", error);
         setConnectionError(error);
-        toast.error("Chat connection lost. Attempting to reconnect...");
+        toast.error(t("toasts.messaging.chatDisconnected"));
       } else {
         console.log("ChatHub connection closed");
       }
@@ -193,7 +195,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
         setConnectionError(err as Error);
         // Only show toast if it's not a silent failure during HMR
         if (!isStoppingRef.current) {
-          toast.error("Failed to connect to chat. Please refresh the page.");
+          toast.error(t("toasts.messaging.chatConnectionFailed"));
         }
         connectionRef.current = null;
       });

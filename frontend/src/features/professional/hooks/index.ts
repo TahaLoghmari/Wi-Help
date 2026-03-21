@@ -7,6 +7,8 @@ export * from "./GetProfessionals";
 export * from "./GetSchedule";
 export * from "./SetupSchedule";
 export * from "./UpdateProfessional";
+export * from "./GetServicesBySpecialization";
+export * from "./GetSpecializations";
 export * from "./RespondToAppointment";
 export * from "./CompleteAppointment";
 export * from "./CancelAppointmentByProfessional";

@@ -8,6 +8,7 @@ import { api, handleApiError, type ProblemDetailsDto } from "@/index";
 import { API_ENDPOINTS } from "@/config/endpoints";
 import { toast } from "sonner";
 import { useAppNavigation } from "@/hooks";
+import i18n from "i18next";
 
 export type RegisterUserDto = RegisterPatientDto | RegisterProfessionalDto;
 
@@ -21,8 +22,8 @@ export function useRegisterPatient() {
   return useMutation<void, ProblemDetailsDto, RegisterUserDto>({
     mutationFn: registerPatient,
     onSuccess: (_data, credentials) => {
-      toast.success("Account created successfully!", {
-        description: "Please check your email to verify your account.",
+      toast.success(i18n.t("toasts.auth.accountCreated"), {
+        description: i18n.t("toasts.auth.accountCreatedDescription"),
       });
       goToEmailVerification(credentials.email);
       setStep(1);

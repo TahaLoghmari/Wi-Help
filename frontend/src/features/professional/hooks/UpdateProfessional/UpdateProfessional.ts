@@ -4,10 +4,11 @@ import { API_ENDPOINTS } from "@/config";
 import { toast } from "sonner";
 import { toFormData } from "@/lib";
 import type { UpdateProfessionalRequest } from "@/features/professional";
+import i18n from "i18next";
 
 export const updateProfessional = (request: UpdateProfessionalRequest) => {
   const formData = toFormData(request);
-  return api.put<void>(
+  return api.patch<void>(
     API_ENDPOINTS.PROFESSIONALS.UPDATE_PROFESSIONAL,
     formData,
   );
@@ -21,7 +22,7 @@ export function UpdateProfessional() {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       queryClient.invalidateQueries({ queryKey: ["currentProfessional"] });
       queryClient.invalidateQueries({ queryKey: ["professionals"] });
-      toast.success("Account updated successfully!");
+      toast.success(i18n.t("toasts.professional.accountUpdated"));
     },
     onError: (error) => handleApiError({ apiError: error }),
   });

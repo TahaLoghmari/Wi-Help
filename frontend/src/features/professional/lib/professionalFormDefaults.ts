@@ -7,10 +7,10 @@ export function ProfileAndBioFormDefaults(professional: ProfessionalDto) {
     phoneNumber: professional.phoneNumber,
     experience: professional.experience,
     address: professional.address,
-    specialization: professional.specialization,
-    services: professional.services,
+    specializationId: professional.specialization?.id ?? "",
     visitPrice: professional.visitPrice,
     bio: professional.bio,
     profilePicture: undefined,
+    serviceIds: professional.services?.map((s) => s.id) ?? [],
   };
 }

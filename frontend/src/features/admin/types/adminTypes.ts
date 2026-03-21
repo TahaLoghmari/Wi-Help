@@ -1,5 +1,5 @@
 import type { Address, EmergencyContact } from "@/features/auth";
-import type { MedicalInfo } from "@/features/patient/types/enums.types";
+import type { MobilityStatus } from "@/features/patient/types/enums.types";
 import type { ProfessionalDto } from "@/features/professional";
 import type { PatientDto } from "@/features/patient/types/common.types";
 
@@ -59,7 +59,7 @@ export interface GetAllProfessionalsDto {
   profilePictureUrl: string | null;
   email: string;
   phoneNumber: string | null;
-  specialization: string;
+  specializationKey: string;
   createdAt: string;
   totalEarned: number;
   accountStatus: VerificationStatus;
@@ -78,7 +78,7 @@ export interface GetAllPatientsDto {
   gender: string;
   address: Address;
   emergencyContact: EmergencyContact;
-  medicalInfo: MedicalInfo;
+  mobilityStatus?: MobilityStatus;
   bio: string | null;
   phoneNumber: string | null;
   totalPaid: number;
