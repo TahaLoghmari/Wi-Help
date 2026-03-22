@@ -18,7 +18,13 @@ internal sealed class Refresh : IEndpoint
                 HttpContext httpContext,
                 CancellationToken cancellationToken) =>
             {
-                var refreshTokenValue = httpContext.Request.Cookies["refreshToken"];
+                string? refreshTokenValue = httpContext.Request.Cookies["refreshToken"];
+
+                if (string.IsNullOrEmpty(refreshTokenValue))
+                {
+                    var body = await httpContext.Request.ReadFromJsonAsync<RefreshRequest>(cancellationToken);
+                    refreshTokenValue = body?.RefreshToken;
+                }
 
                 RefreshCommand command = new RefreshCommand(refreshTokenValue);
                 Result<AccessTokensDto> result = await handler.Handle(command, cancellationToken);
@@ -27,10 +33,12 @@ internal sealed class Refresh : IEndpoint
                     tokens =>
                     {
                         cookieService.AddCookies(httpContext.Response, tokens);
-                        return Results.NoContent();
+                        return Results.Ok(new { tokens.AccessToken, tokens.RefreshToken });
                     },
                     error => CustomResults.Problem(error));
             })
             .WithTags(Tags.Authentication);
     }
+
+    private sealed record RefreshRequest(string? RefreshToken);
 }

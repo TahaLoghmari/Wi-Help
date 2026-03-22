@@ -26,7 +26,7 @@ internal sealed class Login: IEndpoint
                     tokens =>
                     {
                         cookieService.AddCookies(httpContext.Response, tokens);
-                        return Results.Ok();
+                        return Results.Ok(new { tokens.AccessToken, tokens.RefreshToken });
                     },
                     error => CustomResults.Problem(error));
             })
