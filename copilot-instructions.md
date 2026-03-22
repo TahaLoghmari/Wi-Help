@@ -141,7 +141,7 @@ frontend/src/
 | Real-time    | (SignalR or Expo Notifications for push)        |
 | Icons        | Expo Symbols / Ionicons / @expo/vector-icons    |
 | Toasts       | react-native-toast-message or equivalent        |
-| Utilities    | clsx, tailwind-merge                            |
+| Utilities    | clsx                                            |
 
 > **UI Rule:** Do NOT use shadcn or Radix UI in mobile. Build every reusable component from scratch using NativeWind `className` props and React Native primitives (`View`, `Text`, `Pressable`, `TextInput`, `ScrollView`, `FlatList`, etc.).
 
@@ -176,7 +176,7 @@ mobile/src/
 │   └── routes.ts          # ROUTE_PATHS — Expo Router path constants
 ├── constants/             # App-wide constants (colors, sizes, etc.)
 ├── lib/
-│   └── utils.ts           # cn(), toQueryString(), helpers
+│   └── utils.ts           # cn() helper (clsx + tailwind-merge)
 ├── types/
 │   ├── enums.types.ts     # ProblemDetailsDto, PaginationResultDto<T> (already exists)
 │   └── common.types.ts
@@ -365,7 +365,7 @@ Expo Router uses the filesystem under `src/app/`. Route groups `(name)` create l
 ```typescript
 // src/app/(auth)/_layout.tsx — guest-only layout
 import { Stack } from "expo-router";
-import { GuestGuard } from "@/components/Guards";
+import { GuestGuard } from "@/components/Guards/GuestGuard";
 
 export default function AuthLayout() {
   return (
@@ -377,7 +377,8 @@ export default function AuthLayout() {
 
 // src/app/(patient)/_layout.tsx — authenticated tab layout
 import { Tabs } from "expo-router";
-import { UserGuard, PatientGuard } from "@/components/Guards";
+import { UserGuard } from "@/components/Guards/UserGuard";
+import { PatientGuard } from "@/components/Guards/PatientGuard";
 
 export default function PatientLayout() {
   return (
@@ -393,11 +394,10 @@ export default function PatientLayout() {
 **Navigation hook** (`hooks/useAppNavigation.ts`):
 
 ```typescript
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 import { ROUTE_PATHS } from "@/config/routes";
 
 export function useAppNavigation() {
-  const router = useRouter();
   return {
     goToLogin: () => router.replace(ROUTE_PATHS.AUTH.LOGIN),
     goToPatientHome: () => router.replace(ROUTE_PATHS.PATIENT.APPOINTMENTS),
@@ -406,6 +406,8 @@ export function useAppNavigation() {
   };
 }
 ```
+
+> **Why `router` singleton instead of `useRouter()`:** The `router` singleton from `expo-router` does not require a navigation context to be imported — it can be safely referenced in utility functions and hooks without risk of a "navigation context not found" error during re-renders. Reserve `useRouter()` only when you genuinely need the hook's reactive behaviour inside a component.
 
 **Route constants** (`config/routes.ts`):
 
@@ -436,17 +438,72 @@ Every primitive lives in `src/components/ui/` and is built with:
 - React Native core primitives (`View`, `Text`, `Pressable`, `TextInput`, `ScrollView`, `FlatList`, `Image`, `Modal`)
 - NativeWind `className` prop for styling
 - **Class Variance Authority (CVA)** for variant-based styling
-- `cn()` utility (`clsx` + `tailwind-merge`) for conditional classes
+- `cn()` or `clsx` for conditional class composition
 
-### `cn()` Utility (`lib/utils.ts`)
+### Styling Utilities — `cn()` and `clsx`
+
+Both `cn()` (clsx + tailwind-merge) and `clsx` are acceptable in `/mobile`. Use whichever is already present in the file.
+
+Use `cn()` or `clsx` for all conditional class composition:
 
 ```typescript
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { cn } from "@/lib/utils";
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+// Simple conditional
+className={cn("flex-1 rounded-xl py-2.5", isActive && "bg-white shadow-sm")}
+
+// Ternary
+className={cn("flex-1 rounded-xl py-2.5", isActive ? "bg-white shadow-sm" : "bg-transparent")}
+
+// Multiple conditions
+className={cn(
+  "flex-1 items-center rounded-xl py-2.5",
+  isActive && "bg-white shadow-sm",
+  disabled && "opacity-50",
+)}
+```
+
+For plain static classes, use a plain string — no utility needed:
+
+```typescript
+className = "flex-1 items-center rounded-xl py-2.5";
+```
+
+> **Important:** Using `cn()` does **not** protect against the NativeWind CSS variable remount crash. That crash is caused by missing CSS-variable-emitting class pairs, not by which utility you use. See pitfall #7 below.
+
+### CVA for variant-based components
+
+Use `cva()` when a component has more than one visual variant. CVA itself does not depend on `tailwind-merge` and is safe to use in React Native:
+
+```typescript
+import { cva, type VariantProps } from "class-variance-authority";
+import { clsx } from "clsx";
+
+const buttonVariants = cva(
+  "flex-row items-center justify-center rounded-lg gap-2",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary active:bg-primary/90",
+        outline: "border border-primary bg-transparent",
+        ghost: "bg-transparent",
+        destructive: "bg-destructive active:bg-destructive/90",
+      },
+      size: {
+        sm: "h-9 px-3",
+        default: "h-11 px-4",
+        lg: "h-14 px-6",
+      },
+    },
+    defaultVariants: { variant: "default", size: "default" },
+  },
+);
+```
+
+When composing CVA output with extra conditional classes, use `clsx`:
+
+```typescript
+className={clsx(buttonVariants({ variant, size }), disabled && "opacity-50", className)}
 ```
 
 ### Button Component Pattern
@@ -455,7 +512,7 @@ export function cn(...inputs: ClassValue[]) {
 // src/components/ui/Button.tsx
 import { Pressable, Text, ActivityIndicator } from "react-native";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/utils";
+import { clsx } from "clsx";
 
 const buttonVariants = cva(
   "flex-row items-center justify-center rounded-lg gap-2",
@@ -513,10 +570,10 @@ export function Button({
     <Pressable
       onPress={onPress}
       disabled={disabled || loading}
-      className={cn(buttonVariants({ variant, size }), disabled && "opacity-50", className)}
+      className={clsx(buttonVariants({ variant, size }), disabled && "opacity-50", className)}
     >
       {loading && <ActivityIndicator size="small" color="white" />}
-      <Text className={cn(textVariants({ variant, size }), textClassName)}>
+      <Text className={clsx(textVariants({ variant, size }), textClassName)}>
         {children}
       </Text>
     </Pressable>
@@ -529,20 +586,21 @@ export function Button({
 ```typescript
 // src/components/ui/Input.tsx
 import { TextInput, View, Text, type TextInputProps } from "react-native";
-import { cn } from "@/lib/utils";
+import { clsx } from "clsx";
 
 interface InputProps extends TextInputProps {
   label?: string;
   error?: string;
   className?: string;
+  containerClassName?: string;
 }
 
-export function Input({ label, error, className, ...props }: InputProps) {
+export function Input({ label, error, className, containerClassName, ...props }: InputProps) {
   return (
-    <View className="gap-1">
+    <View className={clsx("gap-1", containerClassName)}>
       {label && <Text className="text-sm font-medium text-foreground">{label}</Text>}
       <TextInput
-        className={cn(
+        className={clsx(
           "h-11 rounded-lg border border-input bg-background px-3 text-base text-foreground",
           "placeholder:text-muted-foreground",
           error && "border-destructive",
@@ -562,12 +620,16 @@ export function Input({ label, error, className, ...props }: InputProps) {
 ```typescript
 // src/components/ui/Card.tsx
 import { View, type ViewProps } from "react-native";
-import { cn } from "@/lib/utils";
+import { clsx } from "clsx";
 
-export function Card({ className, ...props }: ViewProps) {
+interface CardProps extends ViewProps {
+  className?: string;
+}
+
+export function Card({ className, ...props }: CardProps) {
   return (
     <View
-      className={cn("rounded-xl border border-border bg-card p-4 shadow-sm", className)}
+      className={clsx("rounded-xl border border-border bg-card p-4 shadow-sm", className)}
       {...props}
     />
   );
@@ -585,13 +647,14 @@ import { Input } from "@/components/ui/Input";
 import { useLogin } from "@/features/auth/hooks/useLogin";
 import { type UserDto } from "@/features/auth/types/api.types";
 import { loginSchema } from "@/features/auth/lib/authValidationSchemas";
+import { cn } from "@/lib/utils";
 
 // ❌ wrong — no barrel imports
 import { Button } from "@/components/ui";
 import { useLogin } from "@/features/auth";
 ```
 
-This avoids circular dependency issues common in React Native Metro bundler and keeps import chains explicit.
+> **Why this matters — Metro bundler eagerly evaluates all modules:** Unlike webpack or Rollup, Metro does not tree-shake. A barrel `index.ts` that re-exports 20 modules causes Metro to evaluate all 20 at import time — even if only one is used. This directly harms startup time, bundle size, and can cause hard-to-diagnose runtime crashes. The most dangerous pattern is a barrel that pulls in a module touching navigation context (e.g. `useNavigation`, `useRouter`, or any file that imports them) — this causes a "NavigationContainer not found" error that appears in an unrelated component and is extremely difficult to trace. Direct imports keep the module graph explicit and safe.
 
 ---
 
@@ -723,12 +786,11 @@ Guards are thin wrapper components that check auth state and redirect.
 ```typescript
 // src/components/Guards/UserGuard.tsx
 import { useEffect } from "react";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 import { ROUTE_PATHS } from "@/config/routes";
 
 export function UserGuard({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
   const { data: user, isPending } = useCurrentUser();
 
   useEffect(() => {
@@ -744,20 +806,111 @@ export function UserGuard({ children }: { children: React.ReactNode }) {
 
 ---
 
+## React Native — Common Pitfalls to Avoid
+
+These are patterns that work fine on web but cause subtle, hard-to-debug bugs in React Native. Always check this list before porting any web pattern to mobile.
+
+### 1. No barrel `index.ts` files — ever
+
+Metro evaluates every module in a barrel eagerly. One barrel pulling in a navigation-touching module will cause a "NavigationContainer not found" crash in a completely unrelated component. The error stack trace will point to innocent-looking JSX (a `<Pressable>`, a `className` prop call) — not to the actual offending import. This makes it one of the hardest bugs to trace in a React Native codebase.
+
+**Rule:** Never create `index.ts` re-export files anywhere in `/mobile`. Always use direct `@/` imports.
+
+### 2. `cn()` and `clsx` are both acceptable for class composition
+
+`cn()` (wrapping `clsx` + `tailwind-merge`) is fine in mobile. Use whichever is already present in the file. Being able to use `cn()` does **not** protect against the NativeWind CSS variable remount crash — that is caused by missing CSS-variable-emitting class pairs, not by which utility you use. See pitfall #7.
+
+### 3. Do not call navigation hooks at module level or outside components
+
+`useNavigation()` and `useRouter()` must only be called inside React components or custom hooks that are rendered within the navigator tree. Calling them at module initialization time, inside utility functions, or in Zustand store actions will crash with "NavigationContainer not found". Use the `router` singleton from `expo-router` for navigation outside of components.
+
+```typescript
+// ✅ safe — singleton, no context required
+import { router } from "expo-router";
+router.replace("/login");
+
+// ❌ unsafe outside a component
+import { useRouter } from "expo-router";
+const router = useRouter(); // crashes if called outside navigator tree
+```
+
+### 4. Error stack traces are misleading in React Native
+
+When Metro throws during a render caused by a state update, the stack trace points to where React was in the render cycle — not where the problematic import or hook call lives. A crash on `<Pressable>` or a `className` prop almost always means the real issue is in an import chain evaluated during that render. Always trace imports upward, not the component the error points to.
+
+### 5. No web globals
+
+Never use `localStorage`, `sessionStorage`, `document`, `window` (except `Platform`-guarded), or `fetch` without checking for Expo's polyfills. Use `expo-secure-store`, `AsyncStorage`, and the provided `api-client` instead.
+
+### 6. Avoid object/function creation inside render for lists
+
+Inline arrow functions and object literals inside `FlatList` `renderItem` or `keyExtractor` cause unnecessary re-renders. Extract them outside the component or memoize with `useCallback`/`useMemo`.
+
+### 7. NativeWind v4 CSS variable remount crash — RECURRING BUG (triggered twice in this project)
+
+> **This crash has been triggered twice in this project.** Every time you write a conditional `className` that includes `shadow-*`, `ring-*`, or `outline-*` on only one branch, you will hit this crash. The stack trace points to the wrong component, making it extremely hard to trace. Read this section before writing any conditional CSS-variable-emitting class.
+
+**The mechanism:** NativeWind v4 processes certain Tailwind classes by emitting CSS custom properties (e.g. `shadow-sm` emits `--tw-shadow-color`, `--tw-shadow-radius`, etc.). When a component receives one of these classes, NativeWind wraps it in a `VariableContext.Provider`. This wrapping is decided **once — on the component's first render**. If the component initially renders **without** such a class, and then receives one on a subsequent render (because a conditional flipped), NativeWind must change the component's React element type from `Pressable` → `VariableContext.Provider > Pressable`. React treats this as a completely different component tree, **unmounts and remounts** the subtree, and — during that remount cycle — any component that depends on the navigation context (even indirectly) will crash with:
+
+```
+Error: Couldn't find a navigation context.
+Have you wrapped your app with 'NavigationContainer'?
+```
+
+The stack trace will point to the `<Pressable>` or `className` prop, **not** to the actual cause, making this extremely hard to trace.
+
+**Classes that introduce CSS variables in NativeWind v4 (non-exhaustive):**
+
+- `shadow-*` (shadow-sm, shadow-md, shadow-lg, shadow-xl, shadow-2xl)
+- `ring-*`, `ring-offset-*`
+- `outline-*`
+- Any custom CSS-variable-backed utility registered via a NativeWind plugin
+
+**The rule:** When the active/selected branch of a conditional className includes a CSS-variable-emitting class, the inactive/unselected branch **must** include the transparent/null equivalent of that class so the `VariableContext.Provider` wrapper is established on the **first render** for every component.
+
+```typescript
+// ❌ BUG — inactive Pressable renders without shadow; on first activation
+// NativeWind changes its type from Pressable → Provider > Pressable → remount → crash
+className={clsx(
+  "flex-1 items-center rounded-xl py-2.5",
+  isActive ? "bg-white shadow-sm" : "bg-transparent",
+)}
+
+// ✅ CORRECT — both branches include a shadow class; VariableContext.Provider
+// is set up on the first render and never changes type
+className={clsx(
+  "flex-1 items-center rounded-xl py-2.5",
+  isActive ? "bg-white shadow-sm" : "bg-transparent shadow-transparent",
+)}
+```
+
+**Pairing reference:**
+
+| Active class                     | Inactive "seed"                 |
+| -------------------------------- | ------------------------------- |
+| `shadow-sm` / `shadow-md` / etc. | `shadow-transparent`            |
+| `ring-2 ring-brand-teal`         | `ring-0 ring-transparent`       |
+| `outline-2 outline-brand-teal`   | `outline-0 outline-transparent` |
+
+**General principle:** Any class that sets a CSS custom property (`--tw-*`) must be present in every render path of the component that will ever use it. Use the transparent/zero variant to satisfy this without visual side effects.
+
+---
+
 ## Code Style Rules
 
 1. **TypeScript strict mode** — no `any`, no implicit `any`. Use specific types or generics.
 2. **No unused variables** — `noUnusedLocals: true`, `noUnusedParameters: true`.
 3. **Named exports only** — avoid default exports for components and hooks. Exception: Expo Router screen files _must_ use default exports.
-4. **No barrel `index.ts` files in mobile** — import directly via `@/` path aliases (e.g. `import { useLogin } from "@/features/auth/hooks/useLogin"`). This is a hard rule specific to `/mobile` — the Metro bundler is sensitive to circular re-exports.
-5. **`cn()` for all className composition** — never concatenate class strings manually.
-6. **CVA for variant-based components** — use `cva()` when a component has more than one visual variant.
+4. **No barrel `index.ts` files in mobile** — import directly via `@/` path aliases (e.g. `import { useLogin } from "@/features/auth/hooks/useLogin"`). This is a hard rule specific to `/mobile` — the Metro bundler eagerly evaluates all re-exports and is sensitive to circular dependencies and navigation-touching imports in barrel chains.
+5. **`cn()` or `clsx` for all conditional className composition in mobile** — never concatenate class strings manually with `+` or template literals when conditions are involved.
+6. **CVA for variant-based components** — use `cva()` when a component has more than one visual variant. Compose CVA output with extra classes using `clsx`.
 7. **One concern per file** — one component per `.tsx`, one hook per `.ts`, one store per `.ts`.
 8. **Hooks call API, components call hooks** — never call `api.*` directly inside a component.
 9. **No magic strings** — all API paths from `API_ENDPOINTS`, all route paths from `ROUTE_PATHS`.
 10. **Platform-aware code** — use `Platform.OS` or `.native.ts` / `.web.ts` split files when behaviour differs.
 11. **Avoid inline styles** — use NativeWind `className` exclusively; `StyleSheet.create` only as a last resort.
 12. **Accessibility** — every interactive element must have `accessibilityLabel` and `accessibilityRole` on interactive components.
+13. **Use `router` singleton for navigation outside components** — prefer `import { router } from "expo-router"` in hooks and utility functions over `useRouter()` to avoid navigation context dependency issues.
 
 ---
 
@@ -774,6 +927,7 @@ export function UserGuard({ children }: { children: React.ReactNode }) {
 9. Add `ROUTE_PATHS` entry in `config/routes.ts`.
 10. Add translation keys to `locales/en/translation.json` and `locales/fr/translation.json`.
 11. **Do not create any `index.ts` barrel files** — consumers import directly via `@/features/{name}/...`.
+12. **Use `cn()` or `clsx` for conditional classes** — never manually concatenate with `+` or template literals.
 
 ---
 
