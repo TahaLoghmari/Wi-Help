@@ -11,12 +11,9 @@ import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
-  interpolate,
-  Extrapolation,
   withRepeat,
   withSequence,
   withTiming,
-  type SharedValue,
 } from "react-native-reanimated";
 import { Image } from "expo-image";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -33,6 +30,7 @@ import { useGetStatesByCountry } from "@/features/auth/hooks/useGetStatesByCount
 import { useGetProfessionalPatients } from "@/features/professional/hooks/useGetProfessionalPatients";
 import { type PatientDto } from "@/features/patient/types/api.types";
 import { ROUTE_PATHS } from "@/config/routes";
+import { ProfessionalAppHeader } from "@/components/ProfessionalAppHeader";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -47,76 +45,6 @@ function calcAge(dob: string): number {
 
 function getInitials(firstName: string, lastName: string): string {
   return `${firstName[0] ?? ""}${lastName[0] ?? ""}`.toUpperCase();
-}
-
-// ─── AppHeader ────────────────────────────────────────────────────────────────
-
-function AppHeader({
-  profilePictureUrl,
-  scrollY,
-}: {
-  profilePictureUrl?: string;
-  scrollY: SharedValue<number>;
-}) {
-  const borderStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(scrollY.value, [0, 8], [0, 1], Extrapolation.CLAMP),
-  }));
-
-  return (
-    <View className="flex-row items-center justify-between px-4 py-3 bg-brand-bg">
-      <View className="flex-row items-center gap-2">
-        <Image
-          source={require("@/assets/images/icon-2.png")}
-          style={{ width: 32, height: 32, borderRadius: 8 }}
-          contentFit="contain"
-        />
-        <Text className="text-xl font-semibold text-brand-dark tracking-tight">
-          Wi-Help
-        </Text>
-      </View>
-
-      <View className="flex-row items-center gap-4">
-        <Pressable
-          className="relative"
-          accessibilityLabel="Notifications"
-          accessibilityRole="button"
-        >
-          <Ionicons name="notifications-outline" size={24} color="#00546e" />
-          <View className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-brand-teal border border-brand-bg" />
-        </Pressable>
-
-        <Pressable
-          className="w-9 h-9 rounded-full border-2 border-brand-teal/20 overflow-hidden bg-brand-secondary/10 items-center justify-center"
-          accessibilityLabel="Profile"
-          accessibilityRole="button"
-        >
-          {profilePictureUrl ? (
-            <Image
-              source={{ uri: profilePictureUrl }}
-              style={{ width: 36, height: 36 }}
-              contentFit="cover"
-            />
-          ) : (
-            <Ionicons name="person" size={18} color="#00546e" />
-          )}
-        </Pressable>
-      </View>
-
-      <Animated.View
-        style={[
-          borderStyle,
-          {
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 1,
-            backgroundColor: "rgba(0,84,110,0.08)",
-          },
-        ]}
-      />
-    </View>
-  );
 }
 
 // ─── Skeleton Card ────────────────────────────────────────────────────────────
@@ -332,15 +260,6 @@ const PatientCard = React.memo(function PatientCard({
             {t("professional.patients.actions.viewProfile")}
           </Text>
         </Pressable>
-
-        <Pressable
-          className="w-9 h-9 rounded-full border border-brand-secondary/15 items-center justify-center active:opacity-80"
-          onPress={() => onViewProfile(patient)}
-          accessibilityLabel={`More options for ${patient.firstName} ${patient.lastName}`}
-          accessibilityRole="button"
-        >
-          <Ionicons name="chevron-forward" size={16} color="#00394a" />
-        </Pressable>
       </View>
     </View>
   );
@@ -406,7 +325,7 @@ export function PatientsScreen() {
       </View>
 
       {/* Search bar */}
-      <View className="flex-row items-center gap-3 rounded-2xl border border-brand-secondary/15 bg-white px-4 ">
+      <View className="flex-row items-center gap-3 rounded-2xl border border-brand-secondary/15 bg-white px-4">
         <Ionicons name="search-outline" size={18} color="rgba(0,84,110,0.45)" />
         <TextInput
           value={query}
@@ -416,6 +335,7 @@ export function PatientsScreen() {
           className="flex-1 text-brand-dark text-sm"
           autoCapitalize="none"
           autoCorrect={false}
+          returnKeyType="search"
           accessibilityLabel="Search patients"
         />
         {query.length > 0 && (
@@ -473,10 +393,7 @@ export function PatientsScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-brand-bg" edges={["top"]}>
-      <AppHeader
-        profilePictureUrl={user?.profilePictureUrl}
-        scrollY={scrollY}
-      />
+      <ProfessionalAppHeader scrollY={scrollY} />
       <Animated.FlatList
         data={isLoading ? [] : filtered}
         keyExtractor={keyExtractor}
@@ -494,6 +411,8 @@ export function PatientsScreen() {
         ListFooterComponent={listFooter}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 24 }}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         onScroll={scrollHandler}
         scrollEventThrottle={16}
       />

@@ -1127,9 +1127,135 @@
         "accept": "Accepter",
         "decline": "Refuser",
         "cancel": "Annuler",
+        "complete": "Terminer",
+        "view": "Voir",
         "noAppointments": "Aucun rendez-vous {{status}}",
         "loadMore": "Charger plus",
-        "today": "Aujourd'hui"
+        "today": "Aujourd'hui",
+        "confirmAccept": {
+          "title": "Accepter le rendez-vous ?",
+          "confirm": "Oui, accepter",
+          "dismiss": "Retour"
+        },
+        "confirmDecline": {
+          "title": "Refuser le rendez-vous ?",
+          "confirm": "Oui, refuser",
+          "dismiss": "Retour"
+        },
+        "confirmCancel": {
+          "title": "Annuler le rendez-vous ?",
+          "confirm": "Oui, annuler",
+          "dismiss": "Retour"
+        },
+        "completeModal": {
+          "title": "Terminer le rendez-vous",
+          "pdfRequired": "Une ordonnance PDF est requise",
+          "submit": "Marquer comme terminé",
+          "cancel": "Annuler",
+          "pdf": {
+            "label": "Ordonnance PDF",
+            "placeholder": "Appuyez pour télécharger l'ordonnance"
+          },
+          "prescriptionTitle": {
+            "label": "Titre de l'ordonnance",
+            "placeholder": "ex. Ordonnance post-visite"
+          },
+          "notes": {
+            "label": "Notes",
+            "placeholder": "Notes de suivi…"
+          }
+        },
+        "detail": {
+          "title": "Détails du rendez-vous",
+          "yrs": "ans",
+          "startTime": "Début",
+          "endTime": "Fin",
+          "price": "Prix",
+          "offeredAt": "Proposé le",
+          "confirmedAt": "Confirmé le",
+          "completedAt": "Terminé le",
+          "cancelledAt": "Annulé le",
+          "notes": "Notes",
+          "viewPatient": "Voir le patient",
+          "notFound": "Rendez-vous introuvable",
+          "goBack": "Retour",
+          "detailsSection": "Détails du rendez-vous"
+        }
+      },
+      "tabs": {
+        "appointments": "Rendez-vous",
+        "patients": "Patients",
+        "schedule": "Planning",
+        "messages": "Messages",
+        "more": "Plus"
+      }
+    },
+    "schedule": {
+      "title": "Mon Planning",
+      "subtitle": "Définissez vos disponibilités hebdomadaires",
+      "sectionLabel": "Disponibilités Hebdomadaires",
+      "saveButton": "Enregistrer le Planning",
+      "days": {
+        "sunday": "Dimanche",
+        "monday": "Lundi",
+        "tuesday": "Mardi",
+        "wednesday": "Mercredi",
+        "thursday": "Jeudi",
+        "friday": "Vendredi",
+        "saturday": "Samedi"
+      },
+      "dayCard": {
+        "slots_one": "{{count}} créneau",
+        "slots_other": "{{count}} créneaux",
+        "off": "Inactif",
+        "addSlot": "+ Ajouter un créneau"
+      },
+      "modal": {
+        "titleAdd": "Ajouter un créneau",
+        "titleEdit": "Modifier le créneau",
+        "startTime": "Heure de début",
+        "endTime": "Heure de fin",
+        "errorEndAfterStart": "L'heure de fin doit être après l'heure de début.",
+        "saveSlot": "Enregistrer",
+        "cancel": "Annuler"
+      },
+      "accessibility": {
+        "close": "Fermer",
+        "saveSlot": "Enregistrer le créneau",
+        "addTimeSlot": "Ajouter un créneau",
+        "deleteSlot": "Supprimer le créneau",
+        "collapse": "Réduire",
+        "expand": "Développer",
+        "saveSchedule": "Enregistrer le planning",
+        "notifications": "Notifications",
+        "profile": "Profil",
+        "editStartTime": "Modifier l'heure de début {{time}}",
+        "editEndTime": "Modifier l'heure de fin {{time}}",
+        "dayToggle": "{{day}} {{status}}",
+        "active": "actif",
+        "inactive": "inactif"
+      }
+    },
+    "more": {
+      "title": "Plus",
+      "preferences": "Préférences"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "subtitle": "Restez informé de votre activité",
+      "markAllRead": "Tout marquer comme lu",
+      "filters": {
+        "all": "Tout",
+        "appointments": "Rendez-vous",
+        "messages": "Messages",
+        "reviews": "Avis"
+      },
+      "empty": {
+        "title": "Aucune notification",
+        "subtitleAll": "Vous êtes à jour\u00a0!",
+        "subtitleAppointments": "Aucune notification de rendez-vous.",
+        "subtitleMessages": "Aucune notification de message.",
+        "subtitleReviews": "Aucune notification d\u2019avis."
       }
     }
   }

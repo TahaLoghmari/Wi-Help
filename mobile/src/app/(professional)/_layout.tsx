@@ -2,17 +2,20 @@ import React from "react";
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 import { ProfessionalGuard } from "@/components/Guards/ProfessionalGuard";
 
 export default function ProfessionalLayout() {
   const insets = useSafeAreaInsets();
   const bottomInset = Math.max(insets.bottom, 8);
+  const { t } = useTranslation();
 
   return (
     <ProfessionalGuard>
       <Tabs
         screenOptions={{
           headerShown: false,
+          tabBarHideOnKeyboard: true,
           tabBarStyle: {
             backgroundColor: "#fbfbfb",
             borderTopColor: "rgba(0, 84, 110, 0.05)",
@@ -32,7 +35,7 @@ export default function ProfessionalLayout() {
         <Tabs.Screen
           name="appointments"
           options={{
-            title: "Appointments",
+            title: t("professional.dashboard.tabs.appointments"),
             tabBarIcon: ({ color }) => (
               <Ionicons name="calendar-outline" size={24} color={color} />
             ),
@@ -41,7 +44,7 @@ export default function ProfessionalLayout() {
         <Tabs.Screen
           name="patients"
           options={{
-            title: "Patients",
+            title: t("professional.dashboard.tabs.patients"),
             tabBarIcon: ({ color }) => (
               <Ionicons name="people-outline" size={24} color={color} />
             ),
@@ -50,7 +53,7 @@ export default function ProfessionalLayout() {
         <Tabs.Screen
           name="schedule"
           options={{
-            title: "Schedule",
+            title: t("professional.dashboard.tabs.schedule"),
             tabBarIcon: ({ color }) => (
               <Ionicons name="time-outline" size={24} color={color} />
             ),
@@ -59,18 +62,23 @@ export default function ProfessionalLayout() {
         <Tabs.Screen
           name="messages"
           options={{
-            title: "Messages",
+            title: t("professional.dashboard.tabs.messages"),
             tabBarIcon: ({ color }) => (
               <Ionicons name="chatbubble-outline" size={24} color={color} />
             ),
           }}
         />
+        {/* Notifications — hidden from tab bar, accessible via bell icon in header */}
+        <Tabs.Screen
+          name="notifications"
+          options={{ href: null, title: t("professional.notifications.title") }}
+        />
         <Tabs.Screen
           name="more"
           options={{
-            title: "More",
+            title: t("professional.dashboard.tabs.more"),
             tabBarIcon: ({ color }) => (
-              <Ionicons name="grid-outline" size={24} color={color} />
+              <Ionicons name="menu-outline" size={24} color={color} />
             ),
           }}
         />
@@ -78,6 +86,11 @@ export default function ProfessionalLayout() {
         <Tabs.Screen
           name="patient/[id]"
           options={{ href: null, title: "Patient Profile" }}
+        />
+        {/* Appointment detail — hidden from tab bar, accessible via router.push */}
+        <Tabs.Screen
+          name="appointment/[id]"
+          options={{ href: null, title: "Appointment Detail" }}
         />
       </Tabs>
     </ProfessionalGuard>

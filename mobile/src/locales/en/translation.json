@@ -1127,9 +1127,135 @@
         "accept": "Accept",
         "decline": "Decline",
         "cancel": "Cancel",
+        "complete": "Complete",
+        "view": "View",
         "noAppointments": "No {{status}} appointments",
         "loadMore": "Load more",
-        "today": "Today"
+        "today": "Today",
+        "confirmAccept": {
+          "title": "Accept Appointment?",
+          "confirm": "Yes, Accept",
+          "dismiss": "Go Back"
+        },
+        "confirmDecline": {
+          "title": "Decline Appointment?",
+          "confirm": "Yes, Decline",
+          "dismiss": "Go Back"
+        },
+        "confirmCancel": {
+          "title": "Cancel Appointment?",
+          "confirm": "Yes, Cancel",
+          "dismiss": "Go Back"
+        },
+        "completeModal": {
+          "title": "Complete Appointment",
+          "pdfRequired": "A prescription PDF is required",
+          "submit": "Mark as Completed",
+          "cancel": "Cancel",
+          "pdf": {
+            "label": "Prescription PDF",
+            "placeholder": "Tap to upload prescription PDF"
+          },
+          "prescriptionTitle": {
+            "label": "Prescription Title",
+            "placeholder": "e.g. Post-visit prescription"
+          },
+          "notes": {
+            "label": "Notes",
+            "placeholder": "Any follow-up notes…"
+          }
+        },
+        "detail": {
+          "title": "Appointment Details",
+          "yrs": "yrs",
+          "startTime": "Start",
+          "endTime": "End",
+          "price": "Price",
+          "offeredAt": "Offered At",
+          "confirmedAt": "Confirmed At",
+          "completedAt": "Completed At",
+          "cancelledAt": "Cancelled At",
+          "notes": "Notes",
+          "viewPatient": "View Patient",
+          "notFound": "Appointment not found",
+          "goBack": "Go back",
+          "detailsSection": "Appointment Details"
+        }
+      },
+      "tabs": {
+        "appointments": "Appointments",
+        "patients": "Patients",
+        "schedule": "Schedule",
+        "messages": "Messages",
+        "more": "More"
+      }
+    },
+    "schedule": {
+      "title": "My Schedule",
+      "subtitle": "Set your weekly availability",
+      "sectionLabel": "Weekly Availability",
+      "saveButton": "Save Schedule",
+      "days": {
+        "sunday": "Sunday",
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday"
+      },
+      "dayCard": {
+        "slots_one": "{{count}} slot",
+        "slots_other": "{{count}} slots",
+        "off": "Off",
+        "addSlot": "+ Add Slot"
+      },
+      "modal": {
+        "titleAdd": "Add Time Slot",
+        "titleEdit": "Edit Time Slot",
+        "startTime": "Start Time",
+        "endTime": "End Time",
+        "errorEndAfterStart": "End time must be after start time.",
+        "saveSlot": "Save Slot",
+        "cancel": "Cancel"
+      },
+      "accessibility": {
+        "close": "Close",
+        "saveSlot": "Save slot",
+        "addTimeSlot": "Add time slot",
+        "deleteSlot": "Delete slot",
+        "collapse": "Collapse",
+        "expand": "Expand",
+        "saveSchedule": "Save schedule",
+        "notifications": "Notifications",
+        "profile": "Profile",
+        "editStartTime": "Edit start time {{time}}",
+        "editEndTime": "Edit end time {{time}}",
+        "dayToggle": "{{day}} {{status}}",
+        "active": "active",
+        "inactive": "inactive"
+      }
+    },
+    "more": {
+      "title": "More",
+      "preferences": "Preferences"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "subtitle": "Stay updated on your activity",
+      "markAllRead": "Mark all read",
+      "filters": {
+        "all": "All",
+        "appointments": "Appointments",
+        "messages": "Messages",
+        "reviews": "Reviews"
+      },
+      "empty": {
+        "title": "No notifications",
+        "subtitleAll": "You\u2019re all caught up!",
+        "subtitleAppointments": "No appointment notifications yet.",
+        "subtitleMessages": "No message notifications yet.",
+        "subtitleReviews": "No review notifications yet."
       }
     }
   }

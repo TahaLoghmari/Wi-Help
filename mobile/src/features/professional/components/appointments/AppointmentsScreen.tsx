@@ -8,26 +8,26 @@ import {
 } from "react-native";
 import Animated, {
   useAnimatedScrollHandler,
-  useAnimatedStyle,
   useSharedValue,
-  interpolate,
-  Extrapolation,
-  type SharedValue,
 } from "react-native-reanimated";
-import { Image } from "expo-image";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 import { useGetProfessionalAppointments } from "@/features/professional/hooks/useGetProfessionalAppointments";
 import { useRespondToAppointment } from "@/features/professional/hooks/useRespondToAppointment";
 import { useCancelAppointmentByProfessional } from "@/features/professional/hooks/useCancelAppointmentByProfessional";
+import { useCompleteAppointment } from "@/features/professional/hooks/useCompleteAppointment";
 import { AppointmentCard } from "@/features/professional/components/appointments/AppointmentCard";
+import { CompleteAppointmentModal } from "@/features/professional/components/appointments/CompleteAppointmentModal";
 import {
   AppointmentStatus,
   type AppointmentDto,
 } from "@/features/professional/types/api.types";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { ProfessionalAppHeader } from "@/components/ProfessionalAppHeader";
+import { useSelectedAppointmentStore } from "@/features/professional/stores/useSelectedAppointmentStore";
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
@@ -57,78 +57,6 @@ function isSameDay(dateString: string): boolean {
 }
 
 // ─── Sub-components ─────────────────────────────────────────────────────────
-
-function AppHeader({
-  profilePictureUrl,
-  scrollY,
-}: {
-  profilePictureUrl?: string;
-  scrollY: SharedValue<number>;
-}) {
-  const borderStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(scrollY.value, [0, 8], [0, 1], Extrapolation.CLAMP),
-  }));
-
-  return (
-    <View className="flex-row items-center justify-between px-4 py-3 bg-brand-bg">
-      {/* Logo */}
-      <View className="flex-row items-center gap-2">
-        <Image
-          source={require("@/assets/images/icon-2.png")}
-          style={{ width: 32, height: 32, borderRadius: 8 }}
-          contentFit="contain"
-        />
-        <Text className="text-xl font-semibold text-brand-dark tracking-tight">
-          Wi-Help
-        </Text>
-      </View>
-
-      {/* Right actions */}
-      <View className="flex-row items-center gap-4">
-        {/* Notification bell */}
-        <Pressable
-          className="relative"
-          accessibilityLabel="Notifications"
-          accessibilityRole="button"
-        >
-          <Ionicons name="notifications-outline" size={24} color="#00546e" />
-          <View className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-brand-teal border border-brand-bg" />
-        </Pressable>
-
-        {/* Avatar */}
-        <Pressable
-          className="w-9 h-9 rounded-full border-2 border-brand-teal/20 overflow-hidden bg-brand-secondary/10 items-center justify-center"
-          accessibilityLabel="Profile"
-          accessibilityRole="button"
-        >
-          {profilePictureUrl ? (
-            <Image
-              source={{ uri: profilePictureUrl }}
-              style={{ width: 36, height: 36 }}
-              contentFit="cover"
-            />
-          ) : (
-            <Ionicons name="person" size={18} color="#00546e" />
-          )}
-        </Pressable>
-      </View>
-      {/* Scroll-reveal separator */}
-      <Animated.View
-        style={[
-          borderStyle,
-          {
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 1,
-            backgroundColor: "rgba(0,84,110,0.08)",
-          },
-        ]}
-      />
-    </View>
-  );
-}
 
 interface TodayStatCardProps {
   label: string;
@@ -383,6 +311,8 @@ export function AppointmentsScreen() {
   const [activeTab, setActiveTab] = useState<AppointmentStatus>(
     AppointmentStatus.Offered,
   );
+  const [pendingCompleteAppointment, setPendingCompleteAppointment] =
+    useState<AppointmentDto | null>(null);
 
   const { data: user } = useCurrentUser();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
@@ -390,6 +320,7 @@ export function AppointmentsScreen() {
 
   const respondMutation = useRespondToAppointment();
   const cancelMutation = useCancelAppointmentByProfessional();
+  const completeMutation = useCompleteAppointment();
 
   const allAppointments = useMemo(
     () => data?.pages.flatMap((p) => p.items) ?? [],
@@ -452,6 +383,23 @@ export function AppointmentsScreen() {
     [cancelMutation.mutate],
   );
 
+  const handleComplete = useCallback(
+    (appointmentId: string) => {
+      const appt = allAppointments.find((a) => a.id === appointmentId);
+      if (appt) setPendingCompleteAppointment(appt);
+    },
+    [allAppointments],
+  );
+
+  const handleViewDetails = useCallback(
+    (appointmentId: string) => {
+      const appt = allAppointments.find((a) => a.id === appointmentId);
+      if (appt) useSelectedAppointmentStore.getState().setAppointment(appt);
+      router.push(`/(professional)/appointment/${appointmentId}`);
+    },
+    [allAppointments],
+  );
+
   const listHeader = (
     <View className="gap-6 pt-4 pb-2">
       {/* Greeting */}
@@ -489,9 +437,11 @@ export function AppointmentsScreen() {
       )}
 
       {/* Appointment list header */}
-      <View className="gap-4 pb-2">
-        <FilterTabs activeTab={activeTab} onTabChange={setActiveTab} />
-      </View>
+      {!isLoading && (
+        <View className="gap-4 pb-2">
+          <FilterTabs activeTab={activeTab} onTabChange={setActiveTab} />
+        </View>
+      )}
     </View>
   );
 
@@ -503,10 +453,18 @@ export function AppointmentsScreen() {
           onAccept={handleAccept}
           onDecline={handleDecline}
           onCancel={handleCancel}
+          onComplete={handleComplete}
+          onViewDetails={handleViewDetails}
         />
       </View>
     ),
-    [handleAccept, handleDecline, handleCancel],
+    [
+      handleAccept,
+      handleDecline,
+      handleCancel,
+      handleComplete,
+      handleViewDetails,
+    ],
   );
 
   const handleEndReached = useCallback(() => {
@@ -526,10 +484,7 @@ export function AppointmentsScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-brand-bg" edges={["top"]}>
-      <AppHeader
-        profilePictureUrl={user?.profilePictureUrl}
-        scrollY={scrollY}
-      />
+      <ProfessionalAppHeader scrollY={scrollY} />
       <Animated.FlatList
         data={filteredAppointments}
         keyExtractor={keyExtractor}
@@ -543,8 +498,20 @@ export function AppointmentsScreen() {
         ListFooterComponent={listFooter}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 24 }}
+        keyboardDismissMode="on-drag"
         onScroll={scrollHandler}
         scrollEventThrottle={16}
+      />
+      <CompleteAppointmentModal
+        visible={pendingCompleteAppointment !== null}
+        appointment={pendingCompleteAppointment}
+        onClose={() => setPendingCompleteAppointment(null)}
+        onSubmit={(req) => {
+          completeMutation.mutate(req, {
+            onSuccess: () => setPendingCompleteAppointment(null),
+          });
+        }}
+        isLoading={completeMutation.isPending}
       />
     </SafeAreaView>
   );

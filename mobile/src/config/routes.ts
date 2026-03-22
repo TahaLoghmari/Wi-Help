@@ -12,7 +12,9 @@ export const ROUTE_PATHS = {
     PATIENTS: "/(professional)/patients" as const,
     SCHEDULE: "/(professional)/schedule" as const,
     MESSAGES: "/(professional)/messages" as const,
+    NOTIFICATIONS: "/(professional)/notifications" as const,
     MORE: "/(professional)/more" as const,
     PATIENT_PROFILE_PATHNAME: "/(professional)/patient/[id]" as const,
+    APPOINTMENT_DETAIL_PATHNAME: "/(professional)/appointment/[id]" as const,
   },
 } as const;
