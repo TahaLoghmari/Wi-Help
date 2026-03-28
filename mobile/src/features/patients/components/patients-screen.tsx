@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import { useCurrentUser } from "@/api/auth/use-current-user";
 import { useGetCountries } from "@/api/auth/get-countries";
 import { useGetProfessionalPatients } from "@/api/patients/get-professional-patients";
+import { useGetConversations } from "@/api/messaging/get-conversations";
 import { type PatientDto } from "@/features/patients/types/api.types";
 import { ROUTE_PATHS } from "@/config/routes";
 import { AppHeader } from "@/components/app-header";
@@ -39,6 +40,7 @@ export function PatientsScreen() {
     notificationsData?.pages.flatMap((p) => p.items).some((n) => !n.isRead) ??
     false;
   const { data: countries = [] } = useGetCountries();
+  const { data: conversationsData = [] } = useGetConversations();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useGetProfessionalPatients();
 
@@ -60,14 +62,34 @@ export function PatientsScreen() {
     );
   }, [allPatients, query]);
 
-  const handleMessage = useCallback((_patient: PatientDto) => {
-    router.push(ROUTE_PATHS.PROFESSIONAL.MESSAGES);
-  }, []);
+  const handleMessage = useCallback(
+    (patient: PatientDto) => {
+      const conversation = conversationsData.find(
+        (c) => c.otherParticipantId === patient.userId,
+      );
+      if (!conversation) {
+        router.push(ROUTE_PATHS.PROFESSIONAL.MESSAGES);
+        return;
+      }
+      router.push({
+        pathname: ROUTE_PATHS.PROFESSIONAL.CONVERSATION_PATHNAME,
+        params: {
+          id: conversation.id,
+          participantId: patient.userId,
+          firstName: patient.firstName,
+          lastName: patient.lastName,
+          profilePictureUrl: patient.profilePictureUrl ?? "",
+          backRoute: ROUTE_PATHS.PROFESSIONAL.PATIENTS,
+        },
+      });
+    },
+    [conversationsData],
+  );
 
   const handleViewProfile = useCallback((patient: PatientDto) => {
     router.push({
       pathname: ROUTE_PATHS.PROFESSIONAL.PATIENT_PROFILE_PATHNAME,
-      params: { id: patient.id },
+      params: { id: patient.id, backRoute: ROUTE_PATHS.PROFESSIONAL.PATIENTS },
     });
   }, []);
 

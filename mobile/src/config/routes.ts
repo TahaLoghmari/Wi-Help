@@ -17,5 +17,6 @@ export const ROUTE_PATHS = {
     MORE: "/(professional)/more" as const,
     PATIENT_PROFILE_PATHNAME: "/(professional)/patient/[id]" as const,
     APPOINTMENT_DETAIL_PATHNAME: "/(professional)/appointment/[id]" as const,
+    CONVERSATION_PATHNAME: "/(professional)/conversation/[id]" as const,
   },
 } as const;

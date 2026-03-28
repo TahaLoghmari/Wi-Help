@@ -5,7 +5,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 
 export default function PatientProfileScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, backRoute } = useLocalSearchParams<{
+    id: string;
+    backRoute?: string;
+  }>();
 
   return (
     <SafeAreaView className="flex-1 bg-brand-bg" edges={["top"]}>
@@ -13,7 +16,15 @@ export default function PatientProfileScreen() {
       <View className="flex-row items-center gap-3 px-4 py-3">
         <Pressable
           className="w-9 h-9 rounded-full border border-brand-secondary/15 items-center justify-center"
-          onPress={() => router.back()}
+          onPress={() => {
+            if (backRoute) {
+              router.navigate(
+                backRoute as Parameters<typeof router.navigate>[0],
+              );
+            } else {
+              router.back();
+            }
+          }}
           accessibilityLabel="Go back"
           accessibilityRole="button"
         >

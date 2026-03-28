@@ -1245,6 +1245,15 @@
       "title": "Plus",
       "preferences": "Préférences"
     },
+    "messages": {
+      "title": "Messages",
+      "subtitle": "Vos conversations",
+      "searchPlaceholder": "Rechercher des conversations…",
+      "emptyTitle": "Aucune conversation",
+      "emptySubtitle": "Commencez à discuter avec vos patients.",
+      "emptySearchTitle": "Aucun résultat",
+      "emptySearchSubtitle": "Aucune conversation ne correspond à votre recherche."
+    },
     "notifications": {
       "title": "Notifications",
       "subtitle": "Restez informé de votre activité",

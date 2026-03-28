@@ -1245,6 +1245,15 @@
       "title": "More",
       "preferences": "Preferences"
     },
+    "messages": {
+      "title": "Messages",
+      "subtitle": "Your conversations",
+      "searchPlaceholder": "Search conversations…",
+      "emptyTitle": "No conversations yet",
+      "emptySubtitle": "Start chatting with your patients.",
+      "emptySearchTitle": "No results",
+      "emptySearchSubtitle": "No conversations match your search."
+    },
     "notifications": {
       "title": "Notifications",
       "subtitle": "Stay updated on your activity",
