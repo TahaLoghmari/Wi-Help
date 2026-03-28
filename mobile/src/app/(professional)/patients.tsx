@@ -1,3 +1,3 @@
-import { PatientsScreen } from "@/features/professional/components/patients/PatientsScreen";
+import { PatientsScreen } from "@/features/patients/components/patients-screen";
 
 export default PatientsScreen;

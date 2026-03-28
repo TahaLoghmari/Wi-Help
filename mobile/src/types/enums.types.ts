@@ -1,12 +1,3 @@
-/**
- * Shared type definitions.
- *
- * Mirrors: /frontend/src/types/enums.types.ts
- *
- * These DTOs are shared between frontend and mobile since they both
- * communicate with the same backend API.
- */
-
 export interface ProblemDetailsDto {
   title?: string;
   detail?: string;
@@ -23,4 +14,49 @@ export interface PaginationResultDto<T> {
   totalPages: number;
   hasPreviousPage: boolean;
   hasNextPage: boolean;
+}
+
+export interface Address {
+  street: string;
+  city: string;
+  postalCode: string;
+  countryId: string;
+  stateId: string;
+}
+
+export interface LookupDto {
+  id: string;
+  key: string;
+}
+
+export interface CountryDto {
+  id: string;
+  key: string;
+}
+
+export interface StateDto {
+  id: string;
+  key: string;
+}
+
+export interface LocationCoordinates {
+  latitude: number;
+  longitude: number;
+  accuracy: number;
+  timestamp: string;
+}
+
+export interface UserDto {
+  id: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  gender: string;
+  phoneNumber: string;
+  email: string;
+  address: Address;
+  profilePictureUrl: string;
+  role: string;
+  location?: LocationCoordinates | null;
+  isOnboardingCompleted: boolean;
 }

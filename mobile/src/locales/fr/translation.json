@@ -1177,6 +1177,11 @@
           "cancelledAt": "Annulé le",
           "notes": "Notes",
           "viewPatient": "Voir le patient",
+          "screenTitle": "Rendez-vous",
+          "patient": "Patient",
+          "timeline": "Chronologie",
+          "noNotes": "Aucune note fournie.",
+          "closedLabel": "Ce rendez-vous est clôturé.",
           "notFound": "Rendez-vous introuvable",
           "goBack": "Retour",
           "detailsSection": "Détails du rendez-vous"

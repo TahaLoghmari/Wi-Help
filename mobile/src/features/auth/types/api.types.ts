@@ -1,37 +1,21 @@
-export interface UserDto {
-  id: string;
-  firstName: string;
-  lastName: string;
-  dateOfBirth: string;
-  gender: string;
-  phoneNumber: string;
-  email: string;
-  address: Address;
-  profilePictureUrl: string;
-  role: string;
-  location?: LocationCoordinates | null;
-  isOnboardingCompleted: boolean;
-}
+import { type Address } from "@/types/enums.types";
+import { type UseFormReturn } from "react-hook-form";
+import {
+  type PatientFormValues,
+  type ProfessionalFormValues,
+} from "@/features/auth/lib/auth-validation-schemas";
 
-export interface Address {
-  street: string;
-  city: string;
-  postalCode: string;
-  countryId: string;
-  stateId: string;
-}
+export {
+  type UserDto,
+  type LocationCoordinates,
+  type CountryDto,
+  type StateDto,
+} from "@/types/enums.types";
 
 export interface EmergencyContact {
   fullName: string;
   phoneNumber: string;
   relationshipId: string;
-}
-
-export interface LocationCoordinates {
-  latitude: number;
-  longitude: number;
-  accuracy: number;
-  timestamp: string;
 }
 
 export interface LoginUserDto {
@@ -86,3 +70,12 @@ export interface ChangePasswordDto {
 export interface GoogleAuthResponseDto {
   authorizationUrl: string;
 }
+
+export interface LoginResponseDto {
+  accessToken: string;
+  refreshToken: string;
+}
+
+export type AnyFormReturn =
+  | UseFormReturn<PatientFormValues>
+  | UseFormReturn<ProfessionalFormValues>;

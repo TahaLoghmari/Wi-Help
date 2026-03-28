@@ -3,7 +3,7 @@ import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
-import { ProfessionalGuard } from "@/components/Guards/ProfessionalGuard";
+import { AuthGuard } from "@/components/guards/auth-guard";
 
 export default function ProfessionalLayout() {
   const insets = useSafeAreaInsets();
@@ -11,7 +11,7 @@ export default function ProfessionalLayout() {
   const { t } = useTranslation();
 
   return (
-    <ProfessionalGuard>
+    <AuthGuard role="Professional">
       <Tabs
         screenOptions={{
           headerShown: false,
@@ -68,7 +68,6 @@ export default function ProfessionalLayout() {
             ),
           }}
         />
-        {/* Notifications — hidden from tab bar, accessible via bell icon in header */}
         <Tabs.Screen
           name="notifications"
           options={{ href: null, title: t("professional.notifications.title") }}
@@ -82,17 +81,19 @@ export default function ProfessionalLayout() {
             ),
           }}
         />
-        {/* Patient detail — hidden from tab bar, accessible via router.push */}
         <Tabs.Screen
           name="patient/[id]"
           options={{ href: null, title: "Patient Profile" }}
         />
-        {/* Appointment detail — hidden from tab bar, accessible via router.push */}
         <Tabs.Screen
           name="appointment/[id]"
-          options={{ href: null, title: "Appointment Detail" }}
+          options={{
+            href: null,
+            title: "Appointment Detail",
+            tabBarStyle: { display: "none" },
+          }}
         />
       </Tabs>
-    </ProfessionalGuard>
+    </AuthGuard>
   );
 }

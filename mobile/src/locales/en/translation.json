@@ -1177,6 +1177,11 @@
           "cancelledAt": "Cancelled At",
           "notes": "Notes",
           "viewPatient": "View Patient",
+          "screenTitle": "Appointment",
+          "patient": "Patient",
+          "timeline": "Timeline",
+          "noNotes": "No notes provided.",
+          "closedLabel": "This appointment is closed.",
           "notFound": "Appointment not found",
           "goBack": "Go back",
           "detailsSection": "Appointment Details"

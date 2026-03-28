@@ -1,6 +1,6 @@
 import React from "react";
 import { Stack } from "expo-router";
-import { GuestGuard } from "@/components/Guards/GuestGuard";
+import { GuestGuard } from "@/components/guards/guest-guard";
 
 export default function AuthLayout() {
   return (

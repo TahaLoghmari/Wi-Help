@@ -6,6 +6,7 @@ export const ROUTE_PATHS = {
   },
   PATIENT: {
     APPOINTMENTS: "/(patient)/appointments" as const,
+    NOTIFICATIONS: "/(patient)/notifications" as const,
   },
   PROFESSIONAL: {
     APPOINTMENTS: "/(professional)/appointments" as const,
