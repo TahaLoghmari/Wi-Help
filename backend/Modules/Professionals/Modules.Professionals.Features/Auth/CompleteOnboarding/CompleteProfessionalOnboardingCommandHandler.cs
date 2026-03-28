@@ -21,7 +21,6 @@ public sealed class CompleteProfessionalOnboardingCommandHandler(
     {
         logger.LogInformation("Completing onboarding for professional with UserId: {UserId}", command.UserId);
 
-        // Validate specialization exists
         var specialization = await dbContext.Specializations
             .AsNoTracking()
             .FirstOrDefaultAsync(s => s.Id == command.SpecializationId, cancellationToken);
@@ -32,7 +31,6 @@ public sealed class CompleteProfessionalOnboardingCommandHandler(
             return Result.Failure(ProfessionalErrors.SpecializationNotFound(command.SpecializationId));
         }
 
-        // Complete onboarding in Identity module
         var completeOnboardingRequest = new CompleteOnboardingRequest(
             command.UserId,
             command.DateOfBirth,
@@ -50,13 +48,11 @@ public sealed class CompleteProfessionalOnboardingCommandHandler(
             return Result.Failure(onboardingResult.Error);
         }
 
-        // Check if professional already exists
         var existingProfessional = await dbContext.Professionals
             .FirstOrDefaultAsync(p => p.UserId == command.UserId, cancellationToken);
 
         if (existingProfessional is not null)
         {
-            // Update existing professional
             existingProfessional.Update(
                 specializationId: command.SpecializationId,
                 experience: command.Experience);
@@ -66,7 +62,6 @@ public sealed class CompleteProfessionalOnboardingCommandHandler(
             return Result.Success();
         }
 
-        // Create new professional
         var professional = new Professional(
             command.UserId,
             command.SpecializationId,

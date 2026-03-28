@@ -31,14 +31,7 @@ public class ProfessionalErrors
     public static Error SpecializationNotFound(Guid id) => Error.NotFound(
         "Specialization.NotFound",
         $"Specialization not found with id {id}.");
-
-    public static Error CountryNotFound(Guid id) => Error.NotFound(
-        "Country.NotFound",
-        $"Country not found with id {id}.");
-
-    public static Error StateNotFound(Guid id) => Error.NotFound(
-        "State.NotFound",
-        $"State not found with id {id}.");
+    
 
     public static Error Unauthorized() => Error.Unauthorized(
         "Professional.Unauthorized",

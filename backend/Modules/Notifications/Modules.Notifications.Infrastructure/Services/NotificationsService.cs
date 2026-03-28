@@ -25,10 +25,10 @@ public class NotificationsService(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex,
-                "Failed to send notification to user {UserId}. NotificationId: {NotificationId}",
+            logger.LogWarning(ex,
+                "Failed to push real-time notification to user {UserId}. NotificationId: {NotificationId}. " +
+                "The notification is persisted and will be delivered on the next fetch.",
                 userId, notificationDto.Id);
-            throw;
         }
     }
 }

@@ -45,13 +45,11 @@ public class BookAppointmentCommandHandler(
 
         logger.LogInformation("Appointment scheduled with ID {AppointmentId}", appointment.Id);
 
-        // Get professional's UserId from ProfessionalId for SignalR notification
-        // SignalR uses UserId (the 'sub' claim) to identify users, not ProfessionalId
+
         var professionalResult = await professionalModuleApi.GetProfessionalsByIdsAsync([command.ProfessionalId], cancellationToken);
         if (!professionalResult.IsSuccess)
         {
             logger.LogError("Failed to fetch professional details for ID {ProfessionalId}: {Error}", command.ProfessionalId, professionalResult.Error);
-            // Don't fail the appointment booking if we can't send notification
             return Result.Success();
         }
 
@@ -62,12 +60,10 @@ public class BookAppointmentCommandHandler(
             return Result.Success();
         }
 
-        // Get patient information for notification and email
         var patientResult = await patientsModuleApi.GetPatientsByIdsAsync([command.PatientId], cancellationToken);
         if (!patientResult.IsSuccess || !patientResult.Value.Any())
         {
             logger.LogWarning("Failed to fetch patient details for notification: {Error}", patientResult.Error);
-            // Send notification without patient name
             await notificationsModuleApi.AddNotificationAsync(
                 professional.UserId.ToString(),
                 "Professional",
@@ -82,7 +78,6 @@ public class BookAppointmentCommandHandler(
         var patientName = $"{patient.FirstName} {patient.LastName}";
         var professionalName = $"{professional.FirstName} {professional.LastName}";
 
-        // Send notification to professional's UserId (not ProfessionalId)
         await notificationsModuleApi.AddNotificationAsync(
             professional.UserId.ToString(),
             "Professional",
@@ -91,11 +86,9 @@ public class BookAppointmentCommandHandler(
             NotificationType.newAppointment,
             cancellationToken);
 
-        // Get patient information for email
         if (patientResult.IsSuccess && patientResult.Value.Any())
         {
-            
-            // Send email to professional
+
             var emailBody = AppointmentEmailTemplates.AppointmentBooked(
                 professionalName,
                 patientName,
@@ -121,7 +114,6 @@ public class BookAppointmentCommandHandler(
             logger.LogWarning("Failed to fetch patient details for email notification: {Error}", patientResult.Error);
         }
 
-        // Notify Admins
         var adminsResult = await identityModuleApi.GetUsersByRoleAsync("admin", cancellationToken);
         if (adminsResult.IsSuccess)
         {

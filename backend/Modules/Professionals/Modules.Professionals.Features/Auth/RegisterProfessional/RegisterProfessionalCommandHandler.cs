@@ -75,7 +75,6 @@ public sealed class RegisterProfessionalCommandHandler(
         if (!addClaimResult.IsSuccess)
         {
             logger.LogWarning("Failed to add ProfessionalId claim for UserId: {UserId}", userId);
-            // Maybe not fail the registration, just log
         }
 
         logger.LogInformation("Professional registration completed successfully for UserId: {UserId}, ProfessionalId: {ProfessionalId}",

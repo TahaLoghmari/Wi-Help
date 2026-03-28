@@ -2,13 +2,10 @@ namespace Modules.Professionals.Infrastructure.Database.Seedings;
 
 internal static class SpecializationServiceSeeds
 {
-    // Maps specialization IDs to service IDs for the specialization_services junction table.
-    // Each entry is { specialization_id, service_id }.
     public static readonly object[] All = BuildSeedData();
 
     private static object[] BuildSeedData()
     {
-        // Common services shared by most specializations
         var common = new[]
         {
             "00000001-0000-0000-0000-000000000001", // initialConsultation

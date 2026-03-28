@@ -33,23 +33,17 @@ public class ChatHub : Hub
             return;
         }
 
-        // Check if this is the user's first connection (they were offline before)
-        var wasOffline = !_connectionTracker.IsUserOnline(userId);
-        
-        _connectionTracker.AddConnection(userId, Context.ConnectionId);
-        
-        _logger.LogInformation("ChatHub client connected. UserId: {UserId}, ConnectionId: {ConnectionId}", 
+        var isFirstConnection = _connectionTracker.AddConnection(userId, Context.ConnectionId);
+
+        _logger.LogInformation("ChatHub client connected. UserId: {UserId}, ConnectionId: {ConnectionId}",
             userId, Context.ConnectionId);
 
-        // Join user's personal group for direct notifications
         await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
 
-        // Send the current list of online users to the newly connected client
         var onlineUserIds = _connectionTracker.GetOnlineUserIds();
         await Clients.Caller.SendAsync("OnlineUsers", onlineUserIds);
 
-        // Notify others that this user is now online (only if they were offline before)
-        if (wasOffline)
+        if (isFirstConnection)
         {
             await Clients.Others.SendAsync("UserOnline", userId);
         }
@@ -62,12 +56,10 @@ public class ChatHub : Hub
         var userId = Context.UserIdentifier;
         if (!string.IsNullOrEmpty(userId))
         {
-            _connectionTracker.RemoveConnection(userId, Context.ConnectionId);
+            var isLastConnection = _connectionTracker.RemoveConnection(userId, Context.ConnectionId);
 
-            // Check if user is still online (has other connections)
-            if (!_connectionTracker.IsUserOnline(userId))
+            if (isLastConnection)
             {
-                // Notify others that this user is now offline
                 await Clients.Others.SendAsync("UserOffline", userId);
             }
 
@@ -87,9 +79,6 @@ public class ChatHub : Hub
         await base.OnDisconnectedAsync(exception);
     }
 
-    /// <summary>
-    /// Join a conversation group to receive real-time updates for that conversation
-    /// </summary>
     public async Task JoinConversation(string conversationId)
     {
         var userId = Context.UserIdentifier;
@@ -105,10 +94,15 @@ public class ChatHub : Hub
             return;
         }
 
-        // Verify user is a participant in this conversation
+        if (!Guid.TryParse(userId, out var userGuid))
+        {
+            await Clients.Caller.SendAsync("Error", "Unauthorized");
+            return;
+        }
+
         var isParticipant = await _conversationAccessService.IsUserParticipantAsync(
-            conversationGuid, 
-            Guid.Parse(userId));
+            conversationGuid,
+            userGuid);
 
         if (!isParticipant)
         {
@@ -122,9 +116,6 @@ public class ChatHub : Hub
         _logger.LogInformation("User {UserId} joined conversation {ConversationId}", userId, conversationId);
     }
 
-    /// <summary>
-    /// Leave a conversation group
-    /// </summary>
     public async Task LeaveConversation(string conversationId)
     {
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"conversation_{conversationId}");
@@ -132,73 +123,46 @@ public class ChatHub : Hub
         _logger.LogInformation("User {UserId} left conversation {ConversationId}", userId, conversationId);
     }
 
-    /// <summary>
-    /// Notify that user is typing in a conversation
-    /// </summary>
     public async Task StartTyping(string conversationId)
     {
-        var userId = Context.UserIdentifier;
-        if (string.IsNullOrEmpty(userId))
-        {
+        if (!await IsAuthorizedForConversationAsync(conversationId, warnOnDenied: true))
             return;
-        }
 
-        if (!Guid.TryParse(conversationId, out var conversationGuid))
-        {
-            return;
-        }
-
-        // Verify user is a participant (prevents spoofing typing indicators)
-        var isParticipant = await _conversationAccessService.IsUserParticipantAsync(
-            conversationGuid, 
-            Guid.Parse(userId));
-
-        if (!isParticipant)
-        {
-            _logger.LogWarning("User {UserId} attempted to send typing indicator to conversation {ConversationId} they are not a participant of",
-                userId, conversationId);
-            return;
-        }
-
-        // Notify all other participants in the conversation
         await Clients.GroupExcept($"conversation_{conversationId}", Context.ConnectionId)
-            .SendAsync("UserTyping", conversationId, userId);
+            .SendAsync("UserTyping", conversationId, Context.UserIdentifier);
     }
 
-    /// <summary>
-    /// Notify that user stopped typing in a conversation
-    /// </summary>
     public async Task StopTyping(string conversationId)
+    {
+        if (!await IsAuthorizedForConversationAsync(conversationId, warnOnDenied: false))
+            return;
+
+        await Clients.GroupExcept($"conversation_{conversationId}", Context.ConnectionId)
+            .SendAsync("UserStoppedTyping", conversationId, Context.UserIdentifier);
+    }
+
+    private async Task<bool> IsAuthorizedForConversationAsync(string conversationId, bool warnOnDenied)
     {
         var userId = Context.UserIdentifier;
         if (string.IsNullOrEmpty(userId))
+            return false;
+
+        if (!Guid.TryParse(conversationId, out var conversationGuid) ||
+            !Guid.TryParse(userId, out var userGuid))
+            return false;
+
+        var isParticipant = await _conversationAccessService.IsUserParticipantAsync(conversationGuid, userGuid);
+
+        if (!isParticipant && warnOnDenied)
         {
-            return;
+            _logger.LogWarning(
+                "User {UserId} attempted to send a typing indicator to conversation {ConversationId} they are not a participant of",
+                userId, conversationId);
         }
 
-        if (!Guid.TryParse(conversationId, out var conversationGuid))
-        {
-            return;
-        }
-
-        // Verify user is a participant (prevents spoofing typing indicators)
-        var isParticipant = await _conversationAccessService.IsUserParticipantAsync(
-            conversationGuid, 
-            Guid.Parse(userId));
-
-        if (!isParticipant)
-        {
-            return;
-        }
-
-        await Clients.GroupExcept($"conversation_{conversationId}", Context.ConnectionId)
-            .SendAsync("UserStoppedTyping", conversationId, userId);
+        return isParticipant;
     }
 
-    /// <summary>
-    /// Get the list of currently online users.
-    /// Useful for syncing state after reconnection.
-    /// </summary>
     public async Task GetOnlineUsers()
     {
         var userId = Context.UserIdentifier;

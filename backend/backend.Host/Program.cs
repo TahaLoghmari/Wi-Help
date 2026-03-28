@@ -11,9 +11,7 @@ using Modules.Notifications.Infrastructure;
 using Modules.Messaging.Infrastructure;
 using Modules.Notifications.Infrastructure.Database;
 using Modules.Patients.Infrastructure.Database;
-using Modules.Patients.Infrastructure.Database.Seedings;
 using Modules.Professionals.Infrastructure.Database;
-using Modules.Professionals.Infrastructure.Database.Seedings;
 using Modules.Messaging.Infrastructure.Database;
 using Modules.Messaging.Infrastructure.Jobs;
 using Modules.Reviews.Infrastructure.Database;
@@ -74,48 +72,6 @@ using (var scope = app.Services.CreateScope())
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
     var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
     await IdentityDataSeeder.SeedAdminUserAsync(userManager, configuration);
-
-    // Seed professional users
-    var professionalUserIds = await IdentityDataSeeder.SeedProfessionalUsersAsync(userManager);
-
-    // Seed professional entities and get userId -> professionalId map
-    var professionalsData = professionalUserIds
-        .Zip(ProfessionalSeeds.All)
-        .Select(pair => (UserId: pair.First, pair.Second.SpecializationId, pair.Second.Experience));
-    var professionalIdsMap = await ProfessionalDataSeeder.SeedProfessionalsAsync(professionalsDbContext, professionalsData);
-    foreach (var (userId, professionalId) in professionalIdsMap)
-    {
-        var user = await userManager.FindByIdAsync(userId.ToString());
-        if (user != null)
-        {
-            var claims = await userManager.GetClaimsAsync(user);
-            if (!claims.Any(c => c.Type == "ProfessionalId"))
-            {
-                await userManager.AddClaimAsync(user, new System.Security.Claims.Claim("ProfessionalId", professionalId.ToString()));
-            }
-        }
-    }
-
-    // Seed patient users
-    var patientUserIds = await IdentityDataSeeder.SeedPatientUsersAsync(userManager);
-
-    // Seed patient entities and get userId -> patientId map
-    var patientsData = patientUserIds
-        .Zip(PatientSeeds.All)
-        .Select(pair => (UserId: pair.First, EmergencyContact: pair.Second));
-    var patientIdsMap = await PatientDataSeeder.SeedPatientsAsync(patientsDbContext, patientsData);
-    foreach (var (userId, patientId) in patientIdsMap)
-    {
-        var user = await userManager.FindByIdAsync(userId.ToString());
-        if (user != null)
-        {
-            var claims = await userManager.GetClaimsAsync(user);
-            if (!claims.Any(c => c.Type == "PatientId"))
-            {
-                await userManager.AddClaimAsync(user, new System.Security.Claims.Claim("PatientId", patientId.ToString()));
-            }
-        }
-    }
 
     var supabaseService = scope.ServiceProvider.GetRequiredService<SupabaseService>();
     await supabaseService.InitializeAsync();

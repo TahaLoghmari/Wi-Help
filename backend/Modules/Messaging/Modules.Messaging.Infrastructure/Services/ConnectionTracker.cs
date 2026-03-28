@@ -2,31 +2,40 @@ using System.Collections.Concurrent;
 
 namespace Modules.Messaging.Infrastructure.Services;
 
-/// <summary>
-/// Tracks online users and their SignalR connection IDs.
-/// Thread-safe implementation using ConcurrentDictionary.
-/// </summary>
+
 public class ConnectionTracker
 {
     private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> _userConnections = new();
+    private readonly object _lock = new();
 
-    public void AddConnection(string userId, string connectionId)
+
+    public bool AddConnection(string userId, string connectionId)
     {
-        var connections = _userConnections.GetOrAdd(userId, _ => new ConcurrentDictionary<string, byte>());
-        connections.TryAdd(connectionId, 0);
+        lock (_lock)
+        {
+            var connections = _userConnections.GetOrAdd(userId, _ => new ConcurrentDictionary<string, byte>());
+            var wasEmpty = connections.IsEmpty;
+            connections.TryAdd(connectionId, 0);
+            return wasEmpty;
+        }
     }
 
-    public void RemoveConnection(string userId, string connectionId)
+    public bool RemoveConnection(string userId, string connectionId)
     {
-        if (_userConnections.TryGetValue(userId, out var connections))
+        lock (_lock)
         {
+            if (!_userConnections.TryGetValue(userId, out var connections))
+                return false;
+
             connections.TryRemove(connectionId, out _);
-            
-            // Clean up empty user entries
+
             if (connections.IsEmpty)
             {
                 _userConnections.TryRemove(userId, out _);
+                return true;
             }
+
+            return false;
         }
     }
 

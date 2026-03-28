@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Modules.Common.Features.ValueObjects;
 using Modules.Identity.Domain.Entities;
-using Modules.Identity.Infrastructure.Database.Seedings;
 
 namespace Modules.Identity.Infrastructure.Database;
 
@@ -60,78 +59,6 @@ public static class IdentityDataSeeder
             var token = await userManager.GenerateEmailConfirmationTokenAsync(adminUser);
             await userManager.ConfirmEmailAsync(adminUser, token);
         }
-    }
-
-    public static async Task<List<Guid>> SeedProfessionalUsersAsync(UserManager<User> userManager)
-    {
-        var userIds = new List<Guid>();
-
-        foreach (var (email, password, firstName, lastName, dateOfBirth, gender, phoneNumber, address) in ProfessionalUserSeeds.All)
-        {
-            var existingUser = await userManager.FindByEmailAsync(email);
-            if (existingUser != null)
-            {
-                userIds.Add(existingUser.Id);
-                continue;
-            }
-
-            var user = User.Create(
-                firstName: firstName,
-                lastName: lastName,
-                gender: gender,
-                address: address,
-                dateOfBirth: dateOfBirth,
-                phoneNumber: phoneNumber,
-                email: email
-            );
-
-            var result = await userManager.CreateAsync(user, password);
-            if (result.Succeeded)
-            {
-                await userManager.AddToRoleAsync(user, "Professional");
-                var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                await userManager.ConfirmEmailAsync(user, token);
-                userIds.Add(user.Id);
-            }
-        }
-
-        return userIds;
-    }
-
-    public static async Task<List<Guid>> SeedPatientUsersAsync(UserManager<User> userManager)
-    {
-        var userIds = new List<Guid>();
-
-        foreach (var (email, password, firstName, lastName, dateOfBirth, gender, phoneNumber, address) in PatientUserSeeds.All)
-        {
-            var existingUser = await userManager.FindByEmailAsync(email);
-            if (existingUser != null)
-            {
-                userIds.Add(existingUser.Id);
-                continue;
-            }
-
-            var user = User.Create(
-                firstName: firstName,
-                lastName: lastName,
-                gender: gender,
-                address: address,
-                dateOfBirth: dateOfBirth,
-                phoneNumber: phoneNumber,
-                email: email
-            );
-
-            var result = await userManager.CreateAsync(user, password);
-            if (result.Succeeded)
-            {
-                await userManager.AddToRoleAsync(user, "Patient");
-                var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                await userManager.ConfirmEmailAsync(user, token);
-                userIds.Add(user.Id);
-            }
-        }
-
-        return userIds;
     }
 
 }

@@ -17,7 +17,7 @@ public class UpdateProfessionalCommandValidator : AbstractValidator<UpdateProfes
             .WithMessage("First name cannot exceed 100 characters")
             .Matches(@"^[a-zA-Z\s]+$")
             .WithMessage("First name must contain only letters and spaces")
-            .When(x => !string.IsNullOrEmpty(x.FirstName));
+            .When(x => x.FirstName != null );
 
         RuleFor(x => x.LastName)
             .NotEmpty()
@@ -26,7 +26,7 @@ public class UpdateProfessionalCommandValidator : AbstractValidator<UpdateProfes
             .WithMessage("Last name cannot exceed 100 characters")
             .Matches(@"^[a-zA-Z\s]+$")
             .WithMessage("Last name must contain only letters and spaces")
-            .When(x => !string.IsNullOrEmpty(x.LastName));
+            .When(x => x.LastName != null );
 
         RuleFor(x => x.PhoneNumber)
             .NotEmpty()
@@ -35,7 +35,7 @@ public class UpdateProfessionalCommandValidator : AbstractValidator<UpdateProfes
             .WithMessage("Invalid phone number format")
             .MaximumLength(20)
             .WithMessage("Phone number cannot exceed 20 characters")
-            .When(x => !string.IsNullOrEmpty(x.PhoneNumber));
+            .When(x => x.PhoneNumber != null );
 
         When(x => x.Address != null, () =>
         {
@@ -83,7 +83,7 @@ public class UpdateProfessionalCommandValidator : AbstractValidator<UpdateProfes
             .WithMessage("Visit price must be greater than or equal to 0")
             .When(x => x.VisitPrice.HasValue);
 
-        When(x => !string.IsNullOrWhiteSpace(x.Bio), () =>
+        When(x => x.Bio != null, () =>
         {
             RuleFor(x => x.Bio)
                 .MaximumLength(1000)
