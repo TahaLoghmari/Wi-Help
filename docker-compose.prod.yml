@@ -19,14 +19,14 @@ services:
       - /app/backend.Host/obj
     stdin_open: true
     tty: true
-    networks:
-      - dokploy-network
     labels:
       - traefik.enable=true
       - traefik.http.routers.web-api.rule=Host(`api.wi-help.com`)
       - traefik.http.routers.web-api.entrypoints=websecure
+      - traefik.http.routers.web-api.tls=true
       - traefik.http.routers.web-api.tls.certresolver=letsencrypt
       - traefik.http.services.web-api.loadbalancer.server.port=8080
+    restart: unless-stopped
 
   db:
     image: postgres:16-alpine
@@ -40,11 +40,10 @@ services:
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      test: ["CMD", "pg_isready"]
       interval: 10s
       timeout: 5s
-      retries: 10
-      start_period: 30s
+      retries: 5
     restart: unless-stopped
 
   seq:
@@ -55,12 +54,11 @@ services:
       - SEQ_FIRSTRUN_NOAUTHENTICATION=true
     volumes:
       - seq-data:/data
-    networks:
-      - dokploy-network
     labels:
       - traefik.enable=true
       - traefik.http.routers.seq.rule=Host(`seq.wi-help.com`)
       - traefik.http.routers.seq.entrypoints=websecure
+      - traefik.http.routers.seq.tls=true
       - traefik.http.routers.seq.tls.certresolver=letsencrypt
       - traefik.http.services.seq.loadbalancer.server.port=80
 
@@ -74,12 +72,11 @@ services:
     depends_on:
       api:
         condition: service_started
-    networks:
-      - dokploy-network
     labels:
       - traefik.enable=true
       - traefik.http.routers.web.rule=Host(`wi-help.com`) || Host(`www.wi-help.com`)
       - traefik.http.routers.web.entrypoints=websecure
+      - traefik.http.routers.web.tls=true
       - traefik.http.routers.web.tls.certresolver=letsencrypt
       - traefik.http.services.web.loadbalancer.server.port=5173
     ports:
@@ -98,7 +95,3 @@ services:
 volumes:
   db-data:
   seq-data:
-
-networks:
-  dokploy-network:
-    external: true
