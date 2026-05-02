@@ -15,13 +15,9 @@ export function useSubmitReview() {
   const queryClient = useQueryClient();
   return useMutation<void, ProblemDetailsDto, SubmitReviewRequest>({
     mutationFn: submitReview,
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: ["professional-reviews", variables.professionalId],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["professional-review-stats", variables.professionalId],
-      });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["reviews"] });
+      queryClient.invalidateQueries({ queryKey: ["review-stats"] });
       toast.success(i18n.t("reviews.submitSuccess"));
     },
     onError: (error) => handleApiError({ apiError: error }),

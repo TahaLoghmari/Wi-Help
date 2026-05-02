@@ -1,32 +1,27 @@
 import { useQuery } from "@tanstack/react-query";
+import { API_ENDPOINTS } from "@/config";
 import { api } from "@/api-client";
-import type {
-  GetPatientReviewsRequest,
-  GetPatientReviewsDto,
-  PaginationResultDto,
-} from "@/features/reviews";
+import type { ReviewDto, PaginationResultDto } from "@/features/reviews";
+
+export interface GetPatientReviewsRequest {
+  patientId: string;
+  page?: number;
+  pageSize?: number;
+}
 
 const getPatientReviews = (request: GetPatientReviewsRequest) => {
   const params = new URLSearchParams();
+  params.append("subjectId", request.patientId);
   if (request.page) params.append("page", request.page.toString());
   if (request.pageSize) params.append("pageSize", request.pageSize.toString());
-
-  const queryString = params.toString();
-  const url = `/reviews/patient/${request.patientId}${
-    queryString ? `?${queryString}` : ""
-  }`;
-
-  return api.get<PaginationResultDto<GetPatientReviewsDto>>(url);
+  return api.get<PaginationResultDto<ReviewDto>>(
+    `${API_ENDPOINTS.REVIEWS.GET_REVIEWS}?${params.toString()}`,
+  );
 };
 
 export function GetPatientReviews(request: GetPatientReviewsRequest) {
-  return useQuery<PaginationResultDto<GetPatientReviewsDto>>({
-    queryKey: [
-      "patient-reviews",
-      request.patientId,
-      request.page,
-      request.pageSize,
-    ],
+  return useQuery<PaginationResultDto<ReviewDto>>({
+    queryKey: ["reviews", request.patientId, request.page, request.pageSize],
     queryFn: () => getPatientReviews(request),
   });
 }

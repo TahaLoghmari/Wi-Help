@@ -6,7 +6,10 @@ import Animated, {
   withRepeat,
   withTiming,
 } from "react-native-reanimated";
-import { SKELETON_WIDTHS, CARD_SHADOW } from "../lib/utils";
+import {
+  SKELETON_WIDTHS,
+  CARD_SHADOW,
+} from "@/features/notifications/lib/utils";
 
 export function SkeletonList() {
   const opacity = useSharedValue(1);

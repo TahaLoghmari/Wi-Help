@@ -1,59 +1,56 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Modules.Reviews.Domain;
-using Modules.Reviews.Infrastructure.Database;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Reviews.Domain;
+using Modules.Reviews.Domain.Enums;
+using Modules.Reviews.Infrastructure.Database;
 
 namespace Modules.Reviews.Features.DeleteReview;
 
-public class DeleteReviewCommandHandler(
-    ReviewsDbContext reviewsDbContext,
+internal sealed class DeleteReviewCommandHandler(
+    ReviewsDbContext dbContext,
     ILogger<DeleteReviewCommandHandler> logger) : ICommandHandler<DeleteReviewCommand>
 {
     public async Task<Result> Handle(DeleteReviewCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation(
-            "Deleting review {ReviewId} for patient {PatientId}",
-            command.ReviewId, command.PatientId);
+        logger.LogInformation("Deleting review {ReviewId}", command.ReviewId);
 
-        // Find the review
-        var review = await reviewsDbContext.Reviews
+        var review = await dbContext.Reviews
             .FirstOrDefaultAsync(r => r.Id == command.ReviewId, cancellationToken);
 
         if (review is null)
+            return Result.Failure(ReviewErrors.NotFound(command.ReviewId));
+
+        if (!command.IsAdmin)
         {
-            logger.LogWarning("Review not found with ID {ReviewId}", command.ReviewId);
-            return Result.Failure(ReviewErrors.ReviewNotFound(command.ReviewId));
+            bool isAuthor =
+                (review.Type == ReviewType.ProfessionalReview
+                    && command.CallerPatientId.HasValue
+                    && review.PatientId == command.CallerPatientId.Value)
+                || (review.Type == ReviewType.PatientReview
+                    && command.CallerProfessionalId.HasValue
+                    && review.ProfessionalId == command.CallerProfessionalId.Value);
+
+            if (!isAuthor)
+                return Result.Failure(ReviewErrors.NotAuthor(command.ReviewId));
         }
 
-        // Check ownership
-        if (review.PatientId != command.PatientId)
-        {
-            logger.LogWarning(
-                "Patient {PatientId} attempted to delete review {ReviewId} owned by patient {OwnerId}",
-                command.PatientId, command.ReviewId, review.PatientId);
-            return Result.Failure(ReviewErrors.NotOwner(command.ReviewId, command.PatientId));
-        }
-
-        // Delete related likes
-        var likes = await reviewsDbContext.ReviewLikes
+        // Clean up related likes and replies before deleting the review
+        var likes = await dbContext.ReviewLikes
             .Where(l => l.ReviewId == command.ReviewId)
             .ToListAsync(cancellationToken);
-        reviewsDbContext.ReviewLikes.RemoveRange(likes);
+        dbContext.ReviewLikes.RemoveRange(likes);
 
-        // Delete related replies
-        var replies = await reviewsDbContext.ReviewReplies
+        var replies = await dbContext.ReviewReplies
             .Where(r => r.ReviewId == command.ReviewId)
             .ToListAsync(cancellationToken);
-        reviewsDbContext.ReviewReplies.RemoveRange(replies);
+        dbContext.ReviewReplies.RemoveRange(replies);
 
-        // Delete the review
-        reviewsDbContext.Reviews.Remove(review);
-        await reviewsDbContext.SaveChangesAsync(cancellationToken);
+        dbContext.Reviews.Remove(review);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Review {ReviewId} deleted successfully", command.ReviewId);
-
         return Result.Success();
     }
 }

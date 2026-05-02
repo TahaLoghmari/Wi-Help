@@ -18,18 +18,8 @@ export function useDeleteReview() {
   return useMutation<void, ProblemDetailsDto, DeleteReviewRequest>({
     mutationFn: deleteReview,
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["professional-reviews"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["professional-review-stats"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["patient-reviews"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["patient-review-stats"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["reviews"] });
+      queryClient.invalidateQueries({ queryKey: ["review-stats"] });
       toast.success(i18n.t("toasts.reviews.deleted"));
     },
     onError: (error) => handleApiError({ apiError: error }),

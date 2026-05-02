@@ -13,6 +13,134 @@
     "name": "Nom",
     "cancel": "Annuler"
   },
+  "professionalProfile": {
+    "title": "Profil Professionnel",
+    "tabs": {
+      "overview": "Aperçu",
+      "schedule": "Planning",
+      "reviews": "Avis"
+    },
+    "overview": {
+      "professionalInfo": "Informations Professionnelles",
+      "specialization": "Spécialisation",
+      "visitPrice": "Prix de visite",
+      "experience": "Expérience",
+      "verificationStatus": "Statut de vérification",
+      "verificationStatus_Pending": "En attente",
+      "verificationStatus_Verified": "Vérifié",
+      "verificationStatus_Rejected": "Rejeté",
+      "services": "Services",
+      "noServices": "Aucun service répertorié.",
+      "contactInfo": "Coordonnées",
+      "address": "Adresse",
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "dob": "Date de naissance",
+      "yearsExp": "{{count}} an",
+      "yearsExp_other": "{{count}} ans",
+      "pricePerVisit": "/ visite",
+      "credentials": "Documents justificatifs",
+      "docNotUploaded": "Non téléchargé",
+      "docPending": "En attente",
+      "docVerified": "Vérifié",
+      "docRejected": "Rejeté",
+      "docTypes": {
+        "Diploma": "Diplôme",
+        "ProfessionalLicense": "Licence professionnelle",
+        "Id": "Pièce d'identité",
+        "Insurance": "Assurance responsabilité civile"
+      },
+      "experience": "Expérience",
+      "noExperience": "Aucune expérience répertoriée.",
+      "present": "Présent",
+      "education": "Formation",
+      "noEducation": "Aucune formation répertoriée.",
+      "awards": "Récompenses",
+      "noAwards": "Aucune récompense répertoriée.",
+      "noBio": "Aucune biographie."
+    },
+    "schedule": {
+      "title": "Disponibilité hebdomadaire",
+      "available": "Disponible",
+      "unavailable": "Indisponible"
+    },
+    "reviews": {
+      "noReviews": "Aucun avis",
+      "noReviewsDesc": "Aucun avis n'a encore été soumis pour ce professionnel.",
+      "addReview": "Ajouter un Avis",
+      "editReview": "Modifier l'Avis",
+      "writeReview": "Écrire un avis...",
+      "submitReview": "Soumettre l'Avis",
+      "updateReview": "Mettre à Jour",
+      "deleteReview": "Supprimer l'Avis",
+      "confirmDelete": "Voulez-vous vraiment supprimer cet avis ?",
+      "rating": "Note",
+      "like": "J'aime",
+      "unlike": "Je n'aime plus",
+      "reply": "Répondre",
+      "sendReply": "Envoyer",
+      "writeReply": "Écrire une réponse...",
+      "replies": "réponses",
+      "hideReplies": "Masquer les réponses",
+      "loadMore": "Charger plus"
+    }
+  },
+  "patientProfile": {
+    "title": "Profil Patient",
+    "myProfile": "Mon Profil",
+    "tabs": {
+      "overview": "Aperçu",
+      "reviews": "Avis"
+    },
+    "overview": {
+      "patientDetails": "Détails du Patient",
+      "mobilityStatus": "Mobilité",
+      "mobility": {
+        "Normal": "Normal",
+        "Limited": "Limitée",
+        "Immobile": "Immobile"
+      },
+      "medicalInfo": "Informations Médicales",
+      "allergies": "Allergies",
+      "medications": "Médicaments",
+      "conditions": "Maladies Chroniques",
+      "contactInfo": "Coordonnées",
+      "address": "Adresse",
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "dob": "Date de Naissance",
+      "emergencyContact": "Contact d'Urgence",
+      "emergency": {
+        "name": "Nom",
+        "phone": "Téléphone",
+        "relationship": "Relation"
+      },
+      "noBio": "Aucune biographie.",
+      "none": "Aucun"
+    },
+    "reviews": {
+      "averageRating": "Note Moyenne",
+      "totalReviews": "{{count}} avis",
+      "noReviews": "Aucun avis",
+      "noReviewsDesc": "Aucun avis n'a encore été soumis pour ce patient.",
+      "addReview": "Ajouter un Avis",
+      "editReview": "Modifier l'Avis",
+      "writeReview": "Écrire un avis...",
+      "submitReview": "Soumettre l'Avis",
+      "updateReview": "Mettre à Jour",
+      "deleteReview": "Supprimer l'Avis",
+      "confirmDelete": "Voulez-vous vraiment supprimer cet avis ?",
+      "rating": "Note",
+      "like": "J'aime",
+      "unlike": "Je n'aime plus",
+      "reply": "Répondre",
+      "sendReply": "Envoyer",
+      "writeReply": "Écrire une réponse...",
+      "replies": "réponses",
+      "hideReplies": "Masquer les réponses",
+      "loadMore": "Charger plus"
+    }
+  },
   "auth": {
     "welcomeBack": "Bon retour",
     "loginDescription": "Connectez-vous pour gérer vos services de soins à domicile en toute sécurité.",
@@ -1243,7 +1371,14 @@
     },
     "more": {
       "title": "Plus",
-      "preferences": "Préférences"
+      "profileSection": "Profil",
+      "myProfile": "Mon Profil",
+      "preferences": "Préférences",
+      "settingsSection": "Paramètres",
+      "settings": "Paramètres",
+      "finance": "Finances",
+      "invoices": "Factures",
+      "payments": "Paiements"
     },
     "messages": {
       "title": "Messages",

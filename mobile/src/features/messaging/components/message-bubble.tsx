@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { type MessageDto } from "@/features/messaging/types/messaging.types";
-import { formatBubbleTime, getInitials } from "../lib/utils";
+import { formatBubbleTime, getInitials } from "@/features/messaging/lib/utils";
 
 interface MessageBubbleProps {
   message: MessageDto;

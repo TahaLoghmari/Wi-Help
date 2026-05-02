@@ -38,6 +38,22 @@ export default function PatientLayout() {
           name="notifications"
           options={{ href: null, title: "Notifications" }}
         />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            href: null,
+            title: "My Profile",
+            tabBarStyle: { display: "none" },
+          }}
+        />
+        <Tabs.Screen
+          name="professional/[id]"
+          options={{
+            href: null,
+            title: "Professional Profile",
+            tabBarStyle: { display: "none" },
+          }}
+        />
       </Tabs>
     </AuthGuard>
   );

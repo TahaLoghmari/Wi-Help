@@ -22,7 +22,7 @@ import { useMarkMessagesAsRead } from "@/api/messaging/mark-messages-as-read";
 import { useMarkMessagesAsDelivered } from "@/api/messaging/mark-messages-as-delivered";
 import { useOnlineUsers, useConversationHub } from "@/lib/signalr/use-chat-hub";
 import { type MessageDto } from "@/features/messaging/types/messaging.types";
-import { getDateLabel, isSameDay } from "../lib/utils";
+import { getDateLabel, isSameDay } from "@/features/messaging/lib/utils";
 import { ConversationHeader } from "./conversation-header";
 import { ConversationFooter } from "./conversation-footer";
 import { MessageBubble } from "./message-bubble";
@@ -144,13 +144,13 @@ export function ConversationScreen({
     if (conversationId && allMessages.length > 0) {
       markAsRead.mutate(conversationId);
     }
-  }, [conversationId, allMessages.length]);
+  }, [conversationId, allMessages.length, markAsRead]);
 
   useEffect(() => {
     if (conversationId) {
       markAsDelivered.mutate(conversationId);
     }
-  }, [conversationId]);
+  }, [conversationId, markAsDelivered]);
 
   const prevMessageCount = useRef(0);
   useEffect(() => {

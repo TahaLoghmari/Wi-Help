@@ -35,7 +35,7 @@ interface ProfessionalFormProps {
 }
 
 export function ProfessionalForm({ form }: ProfessionalFormProps) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { step, setStep } = useStepsStore();
   const registerProfessionalMutation = useRegisterProfessional();
   const [open, setOpen] = useState(false);

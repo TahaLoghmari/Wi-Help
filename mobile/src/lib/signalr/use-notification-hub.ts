@@ -6,6 +6,7 @@ import { useCurrentUser } from "@/api/auth/use-current-user";
 import { notificationKeys } from "@/api/notifications/keys";
 import { appointmentKeys } from "@/api/appointments/keys";
 import { messagingKeys } from "@/api/messaging/keys";
+import { reviewKeys } from "@/api/reviews/keys";
 
 interface NotificationPayload {
   id: string;
@@ -60,12 +61,24 @@ export function useNotificationHub() {
           queryClient.invalidateQueries({
             queryKey: messagingKeys.conversations,
           });
+          queryClient.invalidateQueries({
+            queryKey: reviewKeys.all,
+          });
+          queryClient.invalidateQueries({
+            queryKey: reviewKeys.allStats,
+          });
         } else if (n.role === "Patient") {
           queryClient.invalidateQueries({
             queryKey: ["patient-appointments"],
           });
           queryClient.invalidateQueries({
             queryKey: messagingKeys.conversations,
+          });
+          queryClient.invalidateQueries({
+            queryKey: reviewKeys.all,
+          });
+          queryClient.invalidateQueries({
+            queryKey: reviewKeys.allStats,
           });
         }
       },
@@ -76,5 +89,6 @@ export function useNotificationHub() {
       notificationHub.stop();
       connectedForUser.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser?.id, isLoading, queryClient]);
 }

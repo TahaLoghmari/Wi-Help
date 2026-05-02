@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Heart, Reply, Pencil, Trash2, X, Check } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui";
 import { StarRating, StarRatingInput } from "@/features/reviews";
-import type { GetProfessionalReviewsDto } from "@/features/reviews";
+import type { ReviewDto } from "@/features/reviews";
 import { formatDistanceToNow } from "date-fns";
 import {
   useLikeReview,
@@ -15,20 +15,24 @@ import { useCurrentUser } from "@/features/auth";
 import { useTranslation } from "react-i18next";
 
 interface ReviewCardProps {
-  review: GetProfessionalReviewsDto;
-  professionalId?: string;
+  review: ReviewDto;
+  currentPatientId?: string;
   showReplyInput?: boolean;
 }
 
 export function ReviewCard({
   review,
+  currentPatientId,
   showReplyInput = false,
 }: ReviewCardProps) {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
   const isProfessional = currentUser?.role?.toLowerCase() === "professional";
   const isPatient = currentUser?.role?.toLowerCase() === "patient";
-  const isOwner = isPatient && currentUser?.id === review.patient.userId;
+  const isOwner =
+    isPatient &&
+    currentPatientId != null &&
+    currentPatientId === review.author.id;
 
   const [replyText, setReplyText] = useState("");
   const [showReplyInputState, setShowReplyInputState] = useState(false);
@@ -42,10 +46,10 @@ export function ReviewCard({
   const { mutate: updateReview, isPending: isUpdating } = useUpdateReview();
   const { mutate: deleteReview, isPending: isDeleting } = useDeleteReview();
 
-  const patient = review.patient;
-  const patientInitials =
-    patient.firstName && patient.lastName
-      ? `${patient.firstName.charAt(0).toUpperCase()}${patient.lastName.charAt(0).toUpperCase()}`
+  const author = review.author;
+  const authorInitials =
+    author.firstName && author.lastName
+      ? `${author.firstName.charAt(0).toUpperCase()}${author.lastName.charAt(0).toUpperCase()}`
       : "U";
 
   const timeAgo = formatDistanceToNow(new Date(review.createdAt), {
@@ -108,17 +112,17 @@ export function ReviewCard({
           <Avatar className="h-8 w-8 border border-slate-200">
             <AvatarImage
               className="object-cover"
-              src={patient.profilePictureUrl}
-              alt={patient.firstName}
+              src={author.profilePictureUrl}
+              alt={author.firstName}
             />
             <AvatarFallback className="text-[10px]">
-              {patientInitials}
+              {authorInitials}
             </AvatarFallback>
           </Avatar>
           <div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-medium tracking-tight text-slate-900">
-                {patient.firstName} {patient.lastName}
+                {author.firstName} {author.lastName}
               </span>
               {isEditing ? (
                 <StarRatingInput value={editRating} onChange={setEditRating} />
@@ -242,14 +246,8 @@ export function ReviewCard({
               <div className="flex-1 rounded-xl border border-slate-200/70 bg-slate-50 px-3 py-2">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-medium text-slate-800">
-                    {reply.isProfessional
-                      ? t("reviews.replyInfo.prefix", {
-                          name: reply.userFirstName
-                            ? `Dr. ${reply.userFirstName} ${reply.userLastName || ""}`.trim()
-                            : t("reviews.replyInfo.fallbackProfessionalTitle"),
-                        })
-                      : `${reply.userFirstName || ""} ${reply.userLastName || ""}`.trim() ||
-                        t("reviews.replyInfo.fallbackUser")}
+                    {`${reply.firstName || ""} ${reply.lastName || ""}`.trim() ||
+                      t("reviews.replyInfo.fallbackUser")}
                   </span>
                   <span className="text-[10px] text-slate-400">
                     {formatDistanceToNow(new Date(reply.createdAt), {

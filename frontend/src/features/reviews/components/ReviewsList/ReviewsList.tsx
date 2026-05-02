@@ -7,6 +7,7 @@ import {
 import { useCurrentUser } from "@/features/auth";
 import { SubmitReviewForm } from "@/features/reviews";
 import { GetCurrentProfessional } from "@/features/professional";
+import { GetCurrentPatient } from "@/features/patient";
 import { useTranslation } from "react-i18next";
 
 interface ReviewsListProps {
@@ -23,6 +24,8 @@ export function ReviewsList({ professionalId }: ReviewsListProps) {
   const { data: currentProfessional } = GetCurrentProfessional({
     enabled: isProfessional,
   });
+
+  const { data: currentPatient } = GetCurrentPatient();
 
   // Check if the current professional is viewing their own profile
   const isViewingOwnProfile =
@@ -91,7 +94,7 @@ export function ReviewsList({ professionalId }: ReviewsListProps) {
             <ReviewCard
               key={review.id}
               review={review}
-              professionalId={professionalId}
+              currentPatientId={isPatient ? currentPatient?.id : undefined}
               showReplyInput={isViewingOwnProfile}
             />
           ))}

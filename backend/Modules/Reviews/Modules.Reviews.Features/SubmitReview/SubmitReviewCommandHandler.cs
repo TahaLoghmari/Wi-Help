@@ -1,109 +1,84 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Modules.Common.Features.Abstractions;
+using Modules.Common.Features.Results;
+using Modules.Notifications.Domain.Enums;
+using Modules.Notifications.PublicApi;
+using Modules.Patients.PublicApi;
+using Modules.Professionals.PublicApi;
 using Modules.Reviews.Domain;
 using Modules.Reviews.Domain.Entities;
 using Modules.Reviews.Domain.Enums;
 using Modules.Reviews.Infrastructure.Database;
-using Modules.Common.Features.Abstractions;
-using Modules.Common.Features.Results;
-using Modules.Patients.PublicApi;
-using Modules.Professionals.PublicApi;
-using Modules.Notifications.PublicApi;
-using Modules.Notifications.Domain.Enums;
 
 namespace Modules.Reviews.Features.SubmitReview;
 
-public class SubmitReviewCommandHandler(
-    ReviewsDbContext reviewsDbContext,
+internal sealed class SubmitReviewCommandHandler(
+    ReviewsDbContext dbContext,
     ILogger<SubmitReviewCommandHandler> logger,
-    IPatientsModuleApi patientsModuleApi,
-    IProfessionalModuleApi professionalModuleApi,
-    INotificationsModuleApi notificationsModuleApi) : ICommandHandler<SubmitReviewCommand>
+    IPatientsModuleApi patientsApi,
+    IProfessionalModuleApi professionalsApi,
+    INotificationsModuleApi notificationsApi) : ICommandHandler<SubmitReviewCommand>
 {
     public async Task<Result> Handle(SubmitReviewCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation(
-            "Submitting review for patient {PatientId} to professional {ProfessionalId} with rating {Rating}",
-            command.PatientId, command.ProfessionalId, command.Rating);
+            "Submitting {Type} review: Patient {PatientId}, Professional {ProfessionalId}",
+            command.Type, command.PatientId, command.ProfessionalId);
 
-        // Validate rating
-        if (command.Rating < 1 || command.Rating > 5)
-        {
-            return Result.Failure(ReviewErrors.InvalidRating(command.Rating));
-        }
-
-        // Validate comment
-        if (string.IsNullOrWhiteSpace(command.Comment))
-        {
-            return Result.Failure(ReviewErrors.CommentRequired());
-        }
-
-        // Validate comment length
-        const int maxCommentLength = 2000;
-        if (command.Comment.Length > maxCommentLength)
-        {
-            logger.LogWarning("Review comment exceeds maximum length of {MaxLength}", maxCommentLength);
-            return Result.Failure(ReviewErrors.CommentTooLong(maxCommentLength));
-        }
-
-        // Validate patient exists
-        var patientsResult = await patientsModuleApi.GetPatientsByIdsAsync([command.PatientId], cancellationToken);
-        if (!patientsResult.IsSuccess || !patientsResult.Value.Any())
-        {
-            logger.LogWarning("Patient not found for ID {PatientId}", command.PatientId);
+        var patientsResult = await patientsApi.GetPatientsByIdsAsync([command.PatientId], cancellationToken);
+        if (!patientsResult.IsSuccess || patientsResult.Value.Count == 0)
             return Result.Failure(ReviewErrors.PatientNotFound(command.PatientId));
-        }
 
-        // Validate professional exists
-        var professionalResult = await professionalModuleApi.GetProfessionalsByIdsAsync([command.ProfessionalId], cancellationToken);
-        if (!professionalResult.IsSuccess || !professionalResult.Value.Any())
-        {
-            logger.LogWarning("Professional not found for ID {ProfessionalId}", command.ProfessionalId);
+        var professionalsResult = await professionalsApi.GetProfessionalsByIdsAsync(
+            [command.ProfessionalId], cancellationToken);
+        if (!professionalsResult.IsSuccess || professionalsResult.Value.Count == 0)
             return Result.Failure(ReviewErrors.ProfessionalNotFound(command.ProfessionalId));
-        }
 
-        // Check if review already exists
-        var existingReview = await reviewsDbContext.Reviews
-            .FirstOrDefaultAsync(
-                r => r.PatientId == command.PatientId && 
-                     r.ProfessionalId == command.ProfessionalId &&
-                     r.Type == ReviewType.ProfessionalReview,
-                cancellationToken);
+        var exists = await dbContext.Reviews.AnyAsync(
+            r => r.PatientId == command.PatientId
+                 && r.ProfessionalId == command.ProfessionalId
+                 && r.Type == command.Type,
+            cancellationToken);
 
-        if (existingReview != null)
-        {
-            logger.LogWarning(
-                "Review already exists for patient {PatientId} and professional {ProfessionalId}",
-                command.PatientId, command.ProfessionalId);
+        if (exists)
             return Result.Failure(ReviewErrors.AlreadyExists(command.PatientId, command.ProfessionalId));
-        }
 
         var review = new Review(
             command.PatientId,
             command.ProfessionalId,
             command.Comment,
             command.Rating,
-            ReviewType.ProfessionalReview);
+            command.Type);
 
-        reviewsDbContext.Reviews.Add(review);
-        await reviewsDbContext.SaveChangesAsync(cancellationToken);
+        dbContext.Reviews.Add(review);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Review submitted with ID {ReviewId}", review.Id);
 
-        // Send notification to the professional
-        var professional = professionalResult.Value.First();
-        var patient = patientsResult.Value.First();
-        var patientName = $"{patient.FirstName} {patient.LastName}";
+        // Notify the subject (the person being reviewed)
+        var patient = patientsResult.Value[0];
+        var professional = professionalsResult.Value[0];
 
-        await notificationsModuleApi.AddNotificationAsync(
-            professional.UserId.ToString(),
-            "Professional",
-            "New Review Received",
-            $"{patientName} has left you a {command.Rating}-star review.",
-            NotificationType.newReview,
-            cancellationToken);
+        if (command.Type == ReviewType.ProfessionalReview)
+        {
+            var reviewerName = $"{patient.FirstName} {patient.LastName}";
+            await notificationsApi.AddNotificationAsync(
+                professional.UserId.ToString(), "Professional",
+                "New Review Received",
+                $"{reviewerName} has left you a {command.Rating}-star review.",
+                NotificationType.newReview, cancellationToken);
+        }
+        else
+        {
+            var reviewerName = $"{professional.FirstName} {professional.LastName}";
+            await notificationsApi.AddNotificationAsync(
+                patient.UserId.ToString(), "Patient",
+                "New Review Received",
+                $"{reviewerName} has left you a {command.Rating}-star review.",
+                NotificationType.newReview, cancellationToken);
+        }
 
         return Result.Success();
     }
 }
-

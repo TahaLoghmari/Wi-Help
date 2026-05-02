@@ -7,5 +7,7 @@ export * from "./SubmitPatientReview";
 export * from "./LikeReview";
 export * from "./UnlikeReview";
 export * from "./ReplyToReview";
+export * from "./EditReply";
+export * from "./DeleteReply";
 export * from "./UpdateReview";
 export * from "./DeleteReview";

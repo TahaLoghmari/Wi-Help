@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { getInitials } from "../lib/utils";
+import { getInitials } from "@/features/messaging/lib/utils";
 import { HeaderTypingDots } from "./typing-dots";
 
 interface ConversationHeaderProps {

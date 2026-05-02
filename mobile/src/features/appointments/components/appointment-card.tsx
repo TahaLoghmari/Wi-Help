@@ -14,7 +14,7 @@ import {
   calculateAge,
   statusStyles,
   urgencyStyles,
-} from "../lib/utils";
+} from "@/features/appointments/lib/utils";
 
 interface AppointmentCardProps {
   appointment: AppointmentDto;

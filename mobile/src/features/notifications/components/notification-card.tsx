@@ -3,7 +3,11 @@ import { View, Text, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { clsx } from "clsx";
 import type { NotificationDto } from "@/features/notifications/types/notifications.types";
-import { getIconConfig, getRelativeTime, CARD_SHADOW } from "../lib/utils";
+import {
+  getIconConfig,
+  getRelativeTime,
+  CARD_SHADOW,
+} from "@/features/notifications/lib/utils";
 
 interface NotificationCardProps {
   notification: NotificationDto;

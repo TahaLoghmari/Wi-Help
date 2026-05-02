@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { useForm, UseFormReturn, FieldValues } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -114,7 +114,7 @@ export function RegisterScreen() {
   const handleNext = async () => {
     const activeForm = (
       isPatient ? patientForm : professionalForm
-    ) as UseFormReturn<any>; // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ) as UseFormReturn<FieldValues>;
     const fields = step === 1 ? step1Fields : step2Fields;
     const isValid = await activeForm.trigger(fields);
     if (isValid) nextStep();

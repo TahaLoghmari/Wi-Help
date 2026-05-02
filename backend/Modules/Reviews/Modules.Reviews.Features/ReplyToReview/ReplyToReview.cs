@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -8,7 +7,7 @@ using Modules.Common.Features.Results;
 
 namespace Modules.Reviews.Features.ReplyToReview;
 
-public class ReplyToReview : IEndpoint
+internal sealed class ReplyToReview : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
@@ -19,20 +18,20 @@ public class ReplyToReview : IEndpoint
                 ICommandHandler<ReplyToReviewCommand> handler,
                 CancellationToken cancellationToken) =>
             {
-                var currentUserIdString = httpContext.User.FindFirst("sub")?.Value ??
-                                         httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrWhiteSpace(currentUserIdString) || !Guid.TryParse(currentUserIdString, out Guid currentUserId))
-                {
+                var userIdString = httpContext.User.FindFirst("sub")?.Value
+                                   ?? httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!Guid.TryParse(userIdString, out var userId))
                     return Results.Unauthorized();
-                }
+
+                var patientId = Guid.TryParse(
+                    httpContext.User.FindFirst("PatientId")?.Value, out var pid) ? pid : (Guid?)null;
+                var professionalId = Guid.TryParse(
+                    httpContext.User.FindFirst("ProfessionalId")?.Value, out var proId) ? proId : (Guid?)null;
 
                 var command = new ReplyToReviewCommand(
-                    reviewId,
-                    currentUserId,
-                    request.Comment);
+                    reviewId, userId, patientId, professionalId, request.Comment);
 
                 var result = await handler.Handle(command, cancellationToken);
-
                 return result.Match(() => Results.Ok(), CustomResults.Problem);
             })
             .WithTags(Tags.Reviews)
@@ -41,4 +40,3 @@ public class ReplyToReview : IEndpoint
 
     private sealed record Request(string Comment);
 }
-

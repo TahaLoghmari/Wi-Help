@@ -1,14 +1,13 @@
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Reviews.Domain.Enums;
 
 namespace Modules.Reviews.Features.SubmitReview;
 
-public class SubmitReview : IEndpoint
+internal sealed class SubmitReview : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
@@ -18,29 +17,43 @@ public class SubmitReview : IEndpoint
                 ICommandHandler<SubmitReviewCommand> handler,
                 CancellationToken cancellationToken) =>
             {
-                var patientIdString = httpContext.User.FindFirst("PatientId")?.Value;
-                if (!Guid.TryParse(patientIdString, out Guid patientId))
-                {
+                var patientId = Guid.TryParse(
+                    httpContext.User.FindFirst("PatientId")?.Value, out var pid) ? pid : (Guid?)null;
+                var professionalId = Guid.TryParse(
+                    httpContext.User.FindFirst("ProfessionalId")?.Value, out var proId) ? proId : (Guid?)null;
+
+                if (!patientId.HasValue && !professionalId.HasValue)
                     return Results.Unauthorized();
+
+                Guid reviewPatientId, reviewProfessionalId;
+                ReviewType type;
+
+                if (patientId.HasValue)
+                {
+                    reviewPatientId = patientId.Value;
+                    reviewProfessionalId = request.SubjectId;
+                    type = ReviewType.ProfessionalReview;
+                }
+                else
+                {
+                    reviewProfessionalId = professionalId!.Value;
+                    reviewPatientId = request.SubjectId;
+                    type = ReviewType.PatientReview;
                 }
 
                 var command = new SubmitReviewCommand(
-                    patientId,
-                    request.ProfessionalId,
+                    reviewPatientId,
+                    reviewProfessionalId,
                     request.Comment,
-                    request.Rating);
+                    request.Rating,
+                    type);
 
                 var result = await handler.Handle(command, cancellationToken);
-
                 return result.Match(() => Results.Ok(), CustomResults.Problem);
             })
             .WithTags(Tags.Reviews)
-            .RequireAuthorization(new AuthorizeAttribute { Roles = "Patient" });
+            .RequireAuthorization();
     }
 
-    private sealed record Request(
-        Guid ProfessionalId,
-        string Comment,
-        int Rating);
+    private sealed record Request(Guid SubjectId, string Comment, int Rating);
 }
-

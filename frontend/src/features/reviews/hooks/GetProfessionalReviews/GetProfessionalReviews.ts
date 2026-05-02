@@ -1,29 +1,32 @@
 import { useQuery } from "@tanstack/react-query";
 import { API_ENDPOINTS } from "@/config";
 import { api } from "@/api-client";
-import type {
-  GetProfessionalReviewsRequest,
-  GetProfessionalReviewsDto,
-  PaginationResultDto,
-} from "@/features/reviews";
+import type { ReviewDto, PaginationResultDto } from "@/features/reviews";
+
+export interface GetProfessionalReviewsRequest {
+  professionalId: string;
+  page?: number;
+  pageSize?: number;
+}
 
 const getProfessionalReviews = (request: GetProfessionalReviewsRequest) => {
   const params = new URLSearchParams();
+  params.append("subjectId", request.professionalId);
   if (request.page) params.append("page", request.page.toString());
   if (request.pageSize) params.append("pageSize", request.pageSize.toString());
-
-  const queryString = params.toString();
-  const url = `${API_ENDPOINTS.REVIEWS.GET_PROFESSIONAL_REVIEWS(request.professionalId)}${
-    queryString ? `?${queryString}` : ""
-  }`;
-
-  return api.get<PaginationResultDto<GetProfessionalReviewsDto>>(url);
+  return api.get<PaginationResultDto<ReviewDto>>(
+    `${API_ENDPOINTS.REVIEWS.GET_REVIEWS}?${params.toString()}`,
+  );
 };
 
 export function GetProfessionalReviews(request: GetProfessionalReviewsRequest) {
-  return useQuery<PaginationResultDto<GetProfessionalReviewsDto>>({
-    queryKey: ["professional-reviews", request.professionalId, request.page, request.pageSize],
+  return useQuery<PaginationResultDto<ReviewDto>>({
+    queryKey: [
+      "reviews",
+      request.professionalId,
+      request.page,
+      request.pageSize,
+    ],
     queryFn: () => getProfessionalReviews(request),
   });
 }
-

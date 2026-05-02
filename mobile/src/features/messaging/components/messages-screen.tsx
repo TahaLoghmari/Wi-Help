@@ -21,7 +21,7 @@ import { useNotifications } from "@/api/notifications/get-notifications";
 import { useGetConversations } from "@/api/messaging/get-conversations";
 import { useOnlineUsers } from "@/lib/signalr/use-chat-hub";
 import { type ConversationDto } from "@/features/messaging/types/messaging.types";
-import { sortConversations } from "../lib/utils";
+import { sortConversations } from "@/features/messaging/lib/utils";
 import { ChatCard } from "./chat-card";
 import { ChatListSkeleton } from "./chat-list-skeleton";
 import { ChatListEmpty } from "./chat-list-empty";

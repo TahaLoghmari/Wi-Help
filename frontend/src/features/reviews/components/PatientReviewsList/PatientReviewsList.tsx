@@ -4,6 +4,7 @@ import { GetPatientReviews, GetPatientReviewStats } from "@/features/reviews";
 import { useCurrentUser } from "@/features/auth";
 import { SubmitPatientReviewForm } from "@/features/reviews";
 import { GetCurrentPatient } from "@/features/patient";
+import { GetCurrentProfessional } from "@/features/professional";
 import { useTranslation } from "react-i18next";
 import { PatientReviewCard } from "./PatientReviewCard";
 
@@ -17,8 +18,11 @@ export function PatientReviewsList({ patientId }: PatientReviewsListProps) {
   const isProfessional = currentUser?.role?.toLowerCase() === "professional";
   const isPatient = currentUser?.role?.toLowerCase() === "patient";
 
-  // Only fetch current patient if user is a patient to avoid unnecessary API calls
   const { data: currentPatient } = GetCurrentPatient();
+
+  const { data: currentProfessional } = GetCurrentProfessional({
+    enabled: isProfessional,
+  });
 
   // Check if the current patient is viewing their own profile
   const isViewingOwnProfile = isPatient && currentPatient?.id === patientId;
@@ -88,7 +92,9 @@ export function PatientReviewsList({ patientId }: PatientReviewsListProps) {
             <PatientReviewCard
               key={review.id}
               review={review}
-              patientId={patientId}
+              currentProfessionalId={
+                isProfessional ? currentProfessional?.id : undefined
+              }
               showReplyInput={isViewingOwnProfile}
             />
           ))}

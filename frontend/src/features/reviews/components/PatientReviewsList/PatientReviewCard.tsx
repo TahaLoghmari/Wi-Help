@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Heart, Reply, Pencil, Trash2, X, Check } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui";
 import { StarRating, StarRatingInput } from "@/features/reviews";
-import type { GetPatientReviewsDto } from "@/features/reviews";
+import type { ReviewDto } from "@/features/reviews";
 import { formatDistanceToNow } from "date-fns";
 import {
   useLikeReview,
@@ -15,13 +15,14 @@ import { useCurrentUser } from "@/features/auth";
 import { useTranslation } from "react-i18next";
 
 interface PatientReviewCardProps {
-  review: GetPatientReviewsDto;
-  patientId?: string;
+  review: ReviewDto;
+  currentProfessionalId?: string;
   showReplyInput?: boolean;
 }
 
 export function PatientReviewCard({
   review,
+  currentProfessionalId,
   showReplyInput = false,
 }: PatientReviewCardProps) {
   const { t } = useTranslation();
@@ -29,7 +30,9 @@ export function PatientReviewCard({
   const isProfessional = currentUser?.role?.toLowerCase() === "professional";
   const isPatient = currentUser?.role?.toLowerCase() === "patient";
   const isOwner =
-    isProfessional && currentUser?.id === review.professional.userId;
+    isProfessional &&
+    currentProfessionalId != null &&
+    currentProfessionalId === review.author.id;
 
   const [replyText, setReplyText] = useState("");
   const [showReplyInputState, setShowReplyInputState] = useState(false);
@@ -43,10 +46,10 @@ export function PatientReviewCard({
   const { mutate: updateReview, isPending: isUpdating } = useUpdateReview();
   const { mutate: deleteReview, isPending: isDeleting } = useDeleteReview();
 
-  const professional = review.professional;
-  const professionalInitials =
-    professional.firstName && professional.lastName
-      ? `${professional.firstName.charAt(0).toUpperCase()}${professional.lastName.charAt(0).toUpperCase()}`
+  const author = review.author;
+  const authorInitials =
+    author.firstName && author.lastName
+      ? `${author.firstName.charAt(0).toUpperCase()}${author.lastName.charAt(0).toUpperCase()}`
       : "U";
 
   const timeAgo = formatDistanceToNow(new Date(review.createdAt), {
@@ -109,17 +112,17 @@ export function PatientReviewCard({
           <Avatar className="h-8 w-8 border border-slate-200">
             <AvatarImage
               className="object-cover"
-              src={professional.profilePictureUrl}
-              alt={professional.firstName}
+              src={author.profilePictureUrl}
+              alt={author.firstName}
             />
             <AvatarFallback className="text-[10px]">
-              {professionalInitials}
+              {authorInitials}
             </AvatarFallback>
           </Avatar>
           <div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-medium tracking-tight text-slate-900">
-                Dr. {professional.firstName} {professional.lastName}
+                Dr. {author.firstName} {author.lastName}
               </span>
               {isEditing ? (
                 <StarRatingInput value={editRating} onChange={setEditRating} />
@@ -275,24 +278,19 @@ export function PatientReviewCard({
               <Avatar className="h-6 w-6 border border-slate-200">
                 <AvatarImage
                   className="object-cover"
-                  src={reply.userProfilePictureUrl}
-                  alt={reply.userFirstName}
+                  src={reply.profilePictureUrl ?? undefined}
+                  alt={reply.firstName ?? undefined}
                 />
                 <AvatarFallback className="text-[9px]">
-                  {reply.userFirstName?.charAt(0).toUpperCase() ?? "U"}
+                  {reply.firstName?.charAt(0).toUpperCase() ?? "U"}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 rounded-lg border border-slate-200 bg-slate-50/50 p-2">
                 <div className="mb-1 flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
                     <span className="text-[10px] font-medium text-slate-900">
-                      {reply.userFirstName} {reply.userLastName}
+                      {reply.firstName} {reply.lastName}
                     </span>
-                    {!reply.isProfessional && (
-                      <span className="bg-brand-blue/10 text-brand-blue rounded-full px-1.5 py-0.5 text-[9px] font-medium">
-                        {t("reviews.patientBadge")}
-                      </span>
-                    )}
                   </div>
                   <span className="text-[9px] text-slate-500">
                     {formatDistanceToNow(new Date(reply.createdAt), {

@@ -78,6 +78,13 @@ export function AppHeader({
           hitSlop={{ top: 4, right: 4, bottom: 4, left: 4 }}
           accessibilityLabel="Profile"
           accessibilityRole="button"
+          onPress={() => {
+            if (user?.role === "Patient") {
+              router.push(ROUTE_PATHS.PATIENT.PROFILE);
+            } else if (user?.role === "Professional") {
+              router.push(ROUTE_PATHS.PROFESSIONAL.MY_PROFILE);
+            }
+          }}
         >
           {user?.profilePictureUrl ? (
             <Image

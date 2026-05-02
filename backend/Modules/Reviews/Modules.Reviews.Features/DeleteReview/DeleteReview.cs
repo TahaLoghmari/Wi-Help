@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -7,7 +6,7 @@ using Modules.Common.Features.Results;
 
 namespace Modules.Reviews.Features.DeleteReview;
 
-public class DeleteReview : IEndpoint
+internal sealed class DeleteReview : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
@@ -17,19 +16,21 @@ public class DeleteReview : IEndpoint
                 ICommandHandler<DeleteReviewCommand> handler,
                 CancellationToken cancellationToken) =>
             {
-                var patientIdString = httpContext.User.FindFirst("PatientId")?.Value;
-                if (!Guid.TryParse(patientIdString, out Guid patientId))
-                {
+                var patientId = Guid.TryParse(
+                    httpContext.User.FindFirst("PatientId")?.Value, out var pid) ? pid : (Guid?)null;
+                var professionalId = Guid.TryParse(
+                    httpContext.User.FindFirst("ProfessionalId")?.Value, out var proId) ? proId : (Guid?)null;
+                bool isAdmin = httpContext.User.IsInRole("Admin");
+
+                if (!patientId.HasValue && !professionalId.HasValue && !isAdmin)
                     return Results.Unauthorized();
-                }
 
-                var command = new DeleteReviewCommand(reviewId, patientId);
-
+                var command = new DeleteReviewCommand(reviewId, patientId, professionalId, isAdmin);
                 var result = await handler.Handle(command, cancellationToken);
 
                 return result.Match(() => Results.NoContent(), CustomResults.Problem);
             })
             .WithTags(Tags.Reviews)
-            .RequireAuthorization(new AuthorizeAttribute { Roles = "Patient" });
+            .RequireAuthorization();
     }
 }

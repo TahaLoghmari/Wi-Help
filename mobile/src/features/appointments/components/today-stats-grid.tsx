@@ -2,7 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { TodayStatCard } from "./today-stat-card";
-import { type AppointmentStats } from "../lib/utils";
+import { type AppointmentStats } from "@/features/appointments/lib/utils";
 
 interface TodayStatsGridProps {
   stats: AppointmentStats;

@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { TypingDots } from "./typing-dots";
-import { getInitials } from "../lib/utils";
+import { getInitials } from "@/features/messaging/lib/utils";
 
 interface TypingBubbleProps {
   firstName: string;

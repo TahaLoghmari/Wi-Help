@@ -40,7 +40,7 @@ export function SubmitReviewForm({
     }
 
     const request: SubmitReviewRequest = {
-      professionalId,
+      subjectId: professionalId,
       comment: comment.trim(),
       rating,
     };

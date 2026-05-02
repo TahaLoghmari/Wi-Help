@@ -2,8 +2,10 @@ using Modules.Common.Features.Abstractions;
 
 namespace Modules.Reviews.Features.EditReview;
 
-public record EditReviewCommand(
+public sealed record EditReviewCommand(
     Guid ReviewId,
-    Guid PatientId,
+    Guid? CallerPatientId,
+    Guid? CallerProfessionalId,
+    bool IsAdmin,
     string Comment,
     int Rating) : ICommand;

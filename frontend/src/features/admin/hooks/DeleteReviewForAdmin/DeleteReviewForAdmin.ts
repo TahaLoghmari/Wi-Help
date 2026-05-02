@@ -3,7 +3,7 @@ import { api } from "@/api-client";
 import { API_ENDPOINTS } from "@/config";
 
 const deleteReviewForAdmin = (reviewId: string) => {
-  return api.delete(API_ENDPOINTS.REVIEWS.DELETE_AS_ADMIN(reviewId));
+  return api.delete(API_ENDPOINTS.REVIEWS.DELETE_REVIEW(reviewId));
 };
 
 export function useDeleteReviewForAdmin() {

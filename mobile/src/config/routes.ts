@@ -7,6 +7,7 @@ export const ROUTE_PATHS = {
   PATIENT: {
     APPOINTMENTS: "/(patient)/appointments" as const,
     NOTIFICATIONS: "/(patient)/notifications" as const,
+    PROFILE: "/(patient)/profile" as const,
   },
   PROFESSIONAL: {
     APPOINTMENTS: "/(professional)/appointments" as const,
@@ -15,6 +16,7 @@ export const ROUTE_PATHS = {
     MESSAGES: "/(professional)/messages" as const,
     NOTIFICATIONS: "/(professional)/notifications" as const,
     MORE: "/(professional)/more" as const,
+    MY_PROFILE: "/(professional)/my-profile" as const,
     PATIENT_PROFILE_PATHNAME: "/(professional)/patient/[id]" as const,
     APPOINTMENT_DETAIL_PATHNAME: "/(professional)/appointment/[id]" as const,
     CONVERSATION_PATHNAME: "/(professional)/conversation/[id]" as const,

@@ -4,6 +4,7 @@ namespace Modules.Reviews.Features.ReplyToReview;
 
 public sealed record ReplyToReviewCommand(
     Guid ReviewId,
-    Guid UserId,
+    Guid CallerUserId,
+    Guid? CallerPatientId,
+    Guid? CallerProfessionalId,
     string Comment) : ICommand;
-

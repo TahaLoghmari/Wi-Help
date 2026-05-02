@@ -1,58 +1,46 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Modules.Reviews.Domain.Entities;
-using Modules.Reviews.Infrastructure.Database;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Reviews.Domain;
+using Modules.Reviews.Domain.Entities;
+using Modules.Reviews.Infrastructure.Database;
 
 namespace Modules.Reviews.Features.ReplyToReview;
 
-public class ReplyToReviewCommandHandler(
-    ReviewsDbContext reviewsDbContext,
+internal sealed class ReplyToReviewCommandHandler(
+    ReviewsDbContext dbContext,
     ILogger<ReplyToReviewCommandHandler> logger) : ICommandHandler<ReplyToReviewCommand>
 {
     public async Task<Result> Handle(ReplyToReviewCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation(
             "Replying to review {ReviewId} by user {UserId}",
-            command.ReviewId, command.UserId);
+            command.ReviewId, command.CallerUserId);
 
-        // Validate comment
-        if (string.IsNullOrWhiteSpace(command.Comment))
-        {
-            return Result.Failure(ReviewErrors.CommentRequired());
-        }
+        var review = await dbContext.Reviews
+            .AsNoTracking()
+            .FirstOrDefaultAsync(r => r.Id == command.ReviewId, cancellationToken);
 
-        // Validate comment length
-        const int maxCommentLength = 2000;
-        if (command.Comment.Length > maxCommentLength)
-        {
-            logger.LogWarning("Reply comment exceeds maximum length of {MaxLength}", maxCommentLength);
-            return Result.Failure(ReviewErrors.CommentTooLong(maxCommentLength));
-        }
+        if (review is null)
+            return Result.Failure(ReviewErrors.NotFound(command.ReviewId));
 
-        // Check if review exists
-        var reviewExists = await reviewsDbContext.Reviews
-            .AnyAsync(r => r.Id == command.ReviewId, cancellationToken);
+        // Only review author or subject may reply
+        bool isAuthorOrSubject =
+            (command.CallerPatientId.HasValue && review.PatientId == command.CallerPatientId.Value)
+            || (command.CallerProfessionalId.HasValue && review.ProfessionalId == command.CallerProfessionalId.Value);
 
-        if (!reviewExists)
-        {
-            logger.LogWarning("Review not found for ID {ReviewId}", command.ReviewId);
-            return Result.Failure(ReviewErrors.ReviewNotFound(command.ReviewId));
-        }
+        if (!isAuthorOrSubject)
+            return Result.Failure(ReviewErrors.NotAuthorOrSubject(command.ReviewId));
 
-        var reply = new ReviewReply(
-            command.ReviewId,
-            command.UserId,
-            command.Comment);
+        var reply = new ReviewReply(command.ReviewId, command.CallerUserId, command.Comment);
 
-        reviewsDbContext.ReviewReplies.Add(reply);
-        await reviewsDbContext.SaveChangesAsync(cancellationToken);
+        dbContext.ReviewReplies.Add(reply);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("Reply added to review {ReviewId} by user {UserId}", command.ReviewId, command.UserId);
+        logger.LogInformation("Reply added to review {ReviewId} by user {UserId}",
+            command.ReviewId, command.CallerUserId);
 
         return Result.Success();
     }
 }
-

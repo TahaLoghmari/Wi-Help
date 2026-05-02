@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -8,7 +7,7 @@ using Modules.Common.Features.Results;
 
 namespace Modules.Reviews.Features.LikeReview;
 
-public class LikeReview : IEndpoint
+internal sealed class LikeReview : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {

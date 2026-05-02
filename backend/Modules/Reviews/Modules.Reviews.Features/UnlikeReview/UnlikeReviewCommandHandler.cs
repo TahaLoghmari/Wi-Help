@@ -7,7 +7,7 @@ using Modules.Reviews.Domain;
 
 namespace Modules.Reviews.Features.UnlikeReview;
 
-public class UnlikeReviewCommandHandler(
+internal sealed class UnlikeReviewCommandHandler(
     ReviewsDbContext reviewsDbContext,
     ILogger<UnlikeReviewCommandHandler> logger) : ICommandHandler<UnlikeReviewCommand>
 {

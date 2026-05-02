@@ -27,7 +27,7 @@ import {
   formatHeaderDate,
   isSameDay,
   type AppointmentStats,
-} from "../lib/utils";
+} from "@/features/appointments/lib/utils";
 
 import { TodayStatsGrid } from "./today-stats-grid";
 import { TotalSummaryCard } from "./total-summary-card";

@@ -13,6 +13,134 @@
     "name": "Name",
     "cancel": "Cancel"
   },
+  "professionalProfile": {
+    "title": "Professional Profile",
+    "tabs": {
+      "overview": "Overview",
+      "schedule": "Schedule",
+      "reviews": "Reviews"
+    },
+    "overview": {
+      "professionalInfo": "Professional Info",
+      "specialization": "Specialization",
+      "visitPrice": "Visit Price",
+      "experience": "Experience",
+      "verificationStatus": "Verification Status",
+      "verificationStatus_Pending": "Pending",
+      "verificationStatus_Verified": "Verified",
+      "verificationStatus_Rejected": "Rejected",
+      "services": "Services",
+      "noServices": "No services listed.",
+      "contactInfo": "Contact Information",
+      "address": "Address",
+      "email": "Email",
+      "phone": "Phone",
+      "dob": "Date of Birth",
+      "yearsExp": "{{count}} yr",
+      "yearsExp_other": "{{count}} yrs",
+      "pricePerVisit": "/ visit",
+      "credentials": "Credentials",
+      "docNotUploaded": "Not Uploaded",
+      "docPending": "Pending",
+      "docVerified": "Verified",
+      "docRejected": "Rejected",
+      "docTypes": {
+        "Diploma": "Diploma",
+        "ProfessionalLicense": "Professional License",
+        "Id": "ID Card",
+        "Insurance": "Liability Insurance"
+      },
+      "experience": "Experience",
+      "noExperience": "No experience listed.",
+      "present": "Present",
+      "education": "Education",
+      "noEducation": "No education listed.",
+      "awards": "Awards & Recognitions",
+      "noAwards": "No awards listed.",
+      "noBio": "No bio provided."
+    },
+    "schedule": {
+      "title": "Weekly Availability",
+      "available": "Available",
+      "unavailable": "Unavailable"
+    },
+    "reviews": {
+      "noReviews": "No reviews yet",
+      "noReviewsDesc": "No reviews have been submitted for this professional yet.",
+      "addReview": "Add Review",
+      "editReview": "Edit Review",
+      "writeReview": "Write a review...",
+      "submitReview": "Submit Review",
+      "updateReview": "Update Review",
+      "deleteReview": "Delete Review",
+      "confirmDelete": "Are you sure you want to delete this review?",
+      "rating": "Rating",
+      "like": "Like",
+      "unlike": "Unlike",
+      "reply": "Reply",
+      "sendReply": "Send Reply",
+      "writeReply": "Write a reply...",
+      "replies": "replies",
+      "hideReplies": "Hide replies",
+      "loadMore": "Load more"
+    }
+  },
+  "patientProfile": {
+    "title": "Patient Profile",
+    "myProfile": "My Profile",
+    "tabs": {
+      "overview": "Overview",
+      "reviews": "Reviews"
+    },
+    "overview": {
+      "patientDetails": "Patient Details",
+      "mobilityStatus": "Mobility Status",
+      "mobility": {
+        "Normal": "Normal",
+        "Limited": "Limited",
+        "Immobile": "Immobile"
+      },
+      "medicalInfo": "Medical Information",
+      "allergies": "Allergies",
+      "medications": "Medications",
+      "conditions": "Chronic Conditions",
+      "contactInfo": "Contact Information",
+      "address": "Address",
+      "email": "Email",
+      "phone": "Phone",
+      "dob": "Date of Birth",
+      "emergencyContact": "Emergency Contact",
+      "emergency": {
+        "name": "Name",
+        "phone": "Phone",
+        "relationship": "Relationship"
+      },
+      "noBio": "No bio provided.",
+      "none": "None"
+    },
+    "reviews": {
+      "averageRating": "Average Rating",
+      "totalReviews": "{{count}} reviews",
+      "noReviews": "No reviews yet",
+      "noReviewsDesc": "No reviews have been submitted for this patient yet.",
+      "addReview": "Add Review",
+      "editReview": "Edit Review",
+      "writeReview": "Write a review...",
+      "submitReview": "Submit Review",
+      "updateReview": "Update Review",
+      "deleteReview": "Delete Review",
+      "confirmDelete": "Are you sure you want to delete this review?",
+      "rating": "Rating",
+      "like": "Like",
+      "unlike": "Unlike",
+      "reply": "Reply",
+      "sendReply": "Send Reply",
+      "writeReply": "Write a reply...",
+      "replies": "replies",
+      "hideReplies": "Hide replies",
+      "loadMore": "Load more"
+    }
+  },
   "auth": {
     "welcomeBack": "Welcome back",
     "loginDescription": "Log in to manage your at-home care services securely.",
@@ -1243,7 +1371,14 @@
     },
     "more": {
       "title": "More",
-      "preferences": "Preferences"
+      "profileSection": "Profile",
+      "myProfile": "My Profile",
+      "preferences": "Preferences",
+      "settingsSection": "Settings",
+      "settings": "Settings",
+      "finance": "Finance",
+      "invoices": "Invoices",
+      "payments": "Payments"
     },
     "messages": {
       "title": "Messages",

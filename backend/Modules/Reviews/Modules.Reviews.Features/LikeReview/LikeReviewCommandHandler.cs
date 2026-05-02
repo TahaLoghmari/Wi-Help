@@ -8,7 +8,7 @@ using Modules.Reviews.Domain;
 
 namespace Modules.Reviews.Features.LikeReview;
 
-public class LikeReviewCommandHandler(
+internal sealed class LikeReviewCommandHandler(
     ReviewsDbContext reviewsDbContext,
     ILogger<LikeReviewCommandHandler> logger) : ICommandHandler<LikeReviewCommand>
 {
@@ -25,7 +25,7 @@ public class LikeReviewCommandHandler(
         if (!reviewExists)
         {
             logger.LogWarning("Review not found for ID {ReviewId}", command.ReviewId);
-            return Result.Failure(ReviewErrors.ReviewNotFound(command.ReviewId));
+            return Result.Failure(ReviewErrors.NotFound(command.ReviewId));
         }
 
         // Check if already liked

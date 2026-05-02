@@ -87,8 +87,20 @@ export default function ProfessionalLayout() {
             }}
           />
           <Tabs.Screen
+            name="my-profile"
+            options={{
+              href: null,
+              title: "My Profile",
+              tabBarStyle: { display: "none" },
+            }}
+          />
+          <Tabs.Screen
             name="patient/[id]"
-            options={{ href: null, title: "Patient Profile" }}
+            options={{
+              href: null,
+              title: "Patient Profile",
+              tabBarStyle: { display: "none" },
+            }}
           />
           <Tabs.Screen
             name="appointment/[id]"

@@ -7,7 +7,7 @@ import {
   formatMessageTime,
   getMessagePreview,
   CARD_SHADOW,
-} from "../lib/utils";
+} from "@/features/messaging/lib/utils";
 import { TypingDots } from "./typing-dots";
 
 interface ChatCardProps {

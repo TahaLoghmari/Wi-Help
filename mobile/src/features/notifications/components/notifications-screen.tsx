@@ -24,7 +24,7 @@ import {
   keyExtractor,
   NOTIFICATION_FILTERS,
   type ListItem,
-} from "../lib/utils";
+} from "@/features/notifications/lib/utils";
 import { FilterTabs } from "@/components/filter-tabs";
 import { NotificationCard } from "./notification-card";
 import { EmptyState } from "./empty-state";

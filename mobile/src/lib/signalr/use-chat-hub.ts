@@ -190,6 +190,7 @@ export function useChatHub() {
       connectedForUser.current = null;
       setOnlineUsers(new Set());
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser?.id, isLoading, queryClient]);
 
   return {
@@ -295,11 +296,12 @@ export function useConversationHub(conversationId: string | undefined) {
     };
 
     typingListeners.add(listener);
+    const timers = typingTimers.current;
     return () => {
       typingListeners.delete(listener);
       chatHub.invoke("StopTyping", conversationId);
-      for (const timer of typingTimers.current.values()) clearTimeout(timer);
-      typingTimers.current.clear();
+      for (const timer of timers.values()) clearTimeout(timer);
+      timers.clear();
       setTypingUserIds(new Set());
     };
   }, [conversationId]);

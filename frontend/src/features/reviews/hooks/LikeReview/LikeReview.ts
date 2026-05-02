@@ -16,21 +16,7 @@ export function useLikeReview() {
   return useMutation<void, ProblemDetailsDto, LikeReviewRequest>({
     mutationFn: likeReview,
     onSuccess: () => {
-      // Invalidate all professional reviews queries to refresh the data
-      queryClient.invalidateQueries({
-        queryKey: ["professional-reviews"],
-      });
-      // Invalidate review stats to update like counts
-      queryClient.invalidateQueries({
-        queryKey: ["professional-review-stats"],
-      });
-      // Invalidate patient reviews queries
-      queryClient.invalidateQueries({
-        queryKey: ["patient-reviews"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["patient-review-stats"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["reviews"] });
       toast.success(i18n.t("toasts.reviews.liked"));
     },
     onError: (error) => handleApiError({ apiError: error }),

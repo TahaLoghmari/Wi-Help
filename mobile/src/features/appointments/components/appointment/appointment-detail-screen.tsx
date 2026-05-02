@@ -27,8 +27,11 @@ import {
   statusStyles,
   urgencyStyles,
   cardShadow,
-} from "../../lib/utils";
-import { timelineDotColors, type TimelineRow } from "../../lib/constants";
+} from "@/features/appointments/lib/utils";
+import {
+  timelineDotColors,
+  type TimelineRow,
+} from "@/features/appointments/lib/constants";
 import { SectionLabel } from "./section-label";
 import { TopBar } from "./top-bar";
 

@@ -1,13 +1,23 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api-client";
-import type { SubmitPatientReviewRequest } from "@/features/reviews";
+import { API_ENDPOINTS } from "@/config";
 import type { ProblemDetailsDto } from "@/types";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { handleApiError } from "@/hooks";
 
+export interface SubmitPatientReviewRequest {
+  patientId: string;
+  comment: string;
+  rating: number;
+}
+
 const submitPatientReview = (request: SubmitPatientReviewRequest) => {
-  return api.post<void>("/reviews/patient", request);
+  return api.post<void>(API_ENDPOINTS.REVIEWS.SUBMIT_REVIEW, {
+    subjectId: request.patientId,
+    comment: request.comment,
+    rating: request.rating,
+  });
 };
 
 export function useSubmitPatientReview() {
@@ -16,13 +26,9 @@ export function useSubmitPatientReview() {
 
   return useMutation<void, ProblemDetailsDto, SubmitPatientReviewRequest>({
     mutationFn: submitPatientReview,
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: ["patient-reviews", variables.patientId],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["patient-review-stats", variables.patientId],
-      });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["reviews"] });
+      queryClient.invalidateQueries({ queryKey: ["review-stats"] });
       toast.success(t("reviews.submitSuccess"));
     },
     onError: (error) => handleApiError({ apiError: error }),

@@ -1,6 +1,12 @@
 import { GetProfessionalPatients } from "@/features/professional";
 import { useNavigate, Link } from "@tanstack/react-router";
-import { Spinner, EmptyState, Avatar, AvatarImage, AvatarFallback } from "@/components";
+import {
+  Spinner,
+  EmptyState,
+  Avatar,
+  AvatarImage,
+  AvatarFallback,
+} from "@/components";
 import { ROUTE_PATHS } from "@/config";
 import { useTranslation } from "react-i18next";
 import { Users } from "lucide-react";
@@ -66,18 +72,18 @@ export function MyPatientsCards() {
         >
           <div className="items:center flex gap-3">
             <Avatar className="h-10 w-10 border-4 border-white bg-white">
-                <AvatarImage
-                  className="object-cover"
-                  src={patient?.profilePictureUrl}
-                  alt={patient?.firstName}
-                />
-                <AvatarFallback className="rounded-full text-lg">
-                  {patient?.firstName && patient?.lastName
-                    ? patient.firstName.charAt(0).toUpperCase() +
-                      patient.lastName.charAt(0).toUpperCase()
-                    : "U"}
-                </AvatarFallback>
-              </Avatar>
+              <AvatarImage
+                className="object-cover"
+                src={patient?.profilePictureUrl}
+                alt={patient?.firstName}
+              />
+              <AvatarFallback className="rounded-full text-lg">
+                {patient?.firstName && patient?.lastName
+                  ? patient.firstName.charAt(0).toUpperCase() +
+                    patient.lastName.charAt(0).toUpperCase()
+                  : "U"}
+              </AvatarFallback>
+            </Avatar>
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between gap-2">
                 <h4 className="truncate text-xs font-medium tracking-tight text-slate-900">
@@ -95,9 +101,6 @@ export function MyPatientsCards() {
                   patient.gender.slice(1)}{" "}
                 •{" "}
                 {patient.address?.city ||
-                  t("professional.myPatients.card.unknown")}{" "}
-                •{" "}
-                {patient.address?.state ||
                   t("professional.myPatients.card.unknown")}
               </p>
             </div>

@@ -19,18 +19,7 @@ export function useUpdateReview() {
   return useMutation<void, ProblemDetailsDto, UpdateReviewRequest>({
     mutationFn: updateReview,
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["professional-reviews"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["professional-review-stats"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["patient-reviews"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["patient-review-stats"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["reviews"] });
       toast.success(i18n.t("toasts.reviews.updated"));
     },
     onError: (error) => handleApiError({ apiError: error }),
