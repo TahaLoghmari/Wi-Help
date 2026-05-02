@@ -73,7 +73,7 @@ internal sealed class GoogleCallback : IEndpoint
                 if (user is null && isSignIn)
                 {
                     logger.LogWarning("Sign-in attempted but no account exists for Google email: {Email}", googleUser.Email);
-                    return Results.Redirect($"{frontendBaseUrl}/auth/login?error=no_account&message={Uri.EscapeDataString("No account found. Please sign up first.")}");
+                    return Results.Redirect($"{frontendBaseUrl}/auth/register?error=no_account&message={Uri.EscapeDataString("No account found. Please select your role and sign up with Google.")}");
                 }
                 
                 if (user is null)

@@ -25,17 +25,36 @@ import {
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Link } from "@tanstack/react-router";
+import { Route as RegisterRoute } from "@/routes/auth/register";
 import { ROUTE_PATHS } from "@/config/routes";
 import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
+import { toast } from "sonner";
+import { useAppNavigation } from "@/hooks";
 import GoogleIcon from "@/assets/googleIcon.svg";
 
 export function Register() {
   const { registerRole, setRegisterRole } = useRegisterRoleStore();
   const { step, setStep } = useStepsStore();
   const { t } = useTranslation();
+  const { message, error: errorCode } = RegisterRoute.useSearch();
+  const { goTo } = useAppNavigation();
   const registerPatientMutation = useRegisterPatient();
   const registerProfessionMutation = useRegisterProfessional();
   const getGoogleOAuthUrlMutation = useGetGoogleOAuthUrl();
+
+  useEffect(() => {
+    if (message) {
+      toast.info(
+        errorCode
+          ? t(`errors.google.${errorCode}`, { defaultValue: message })
+          : message,
+      );
+      goTo({
+        replace: true,
+      });
+    }
+  }, [message, errorCode, goTo, t]);
 
   const form = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
