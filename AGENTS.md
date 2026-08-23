@@ -73,7 +73,6 @@ Delegate liberally to as many subagents as needed, in parallel when possible —
 
 - For Codebase reading/exploration (understanding features, finding patterns, locating files) → invoke the `codebase-explorer` agent
 - For External information (docs, APIs, libraries) → invoke the `web-search` agent
-- For Figma UI Fetching using MCP → invoke the `figma-fetcher` agent
 
 ### Issue tracker
 
