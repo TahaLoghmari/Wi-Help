@@ -8,7 +8,7 @@ using Modules.Notifications.PublicApi.Contracts;
 namespace Modules.Notifications.Features;
 
 public class NotificationsModuleApi(
-    IAddNotification addNotification,
+    INotificationPublisher notificationPublisher,
     INotificationDelivery notificationDelivery,
     ILogger<NotificationsModuleApi> logger) : INotificationsModuleApi
 {
@@ -16,7 +16,7 @@ public class NotificationsModuleApi(
     {
         var notification = new Notification(userId, role, title, message, (Modules.Notifications.Domain.Enums.NotificationType)type);
 
-        await addNotification.AddAsync(notification, cancellationToken);
+        await notificationPublisher.PublishAsync(notification, cancellationToken);
 
         logger.LogInformation("Notification created with ID {NotificationId}", notification.Id);
 

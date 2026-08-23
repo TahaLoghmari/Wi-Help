@@ -12,7 +12,7 @@ namespace Modules.Patients.Features.GetPatient;
 
 public sealed class GetPatientQueryHandler(
     IIdentityModuleApi identityApi,
-    IGetPatientPort patientPort,
+    IPatientProfileOperations patientProfile,
     ILogger<GetPatientQueryHandler> logger) : IQueryHandler<GetPatientQuery, GetPatientDto>
 {
     public async Task<Result<GetPatientDto>> Handle(
@@ -21,7 +21,7 @@ public sealed class GetPatientQueryHandler(
     {
         logger.LogInformation("Retrieving patient profile for PatientId: {PatientId}", query.PatientId);
 
-        var patient = await patientPort.GetByIdAsync(query.PatientId, cancellationToken);
+        var patient = await patientProfile.GetByIdAsync(query.PatientId, cancellationToken);
 
         if (patient is null)
         {

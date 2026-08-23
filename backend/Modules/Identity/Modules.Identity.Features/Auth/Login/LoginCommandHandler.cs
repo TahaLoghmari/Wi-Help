@@ -8,7 +8,9 @@ using Modules.Identity.Domain.Ports;
 namespace Modules.Identity.Features.Auth.Login;
 
 public sealed class LoginCommandHandler(
-    IIdentityUserOperations users,
+    IIdentityAccountOperations accounts,
+    IIdentityCredentialOperations credentials,
+    IIdentityLockoutOperations lockout,
     ITokenManagement tokenManagement,
     ILogger<LoginCommandHandler> logger) : ICommandHandler<LoginCommand,AccessTokensDto>
 {
@@ -18,7 +20,7 @@ public sealed class LoginCommandHandler(
     {
         logger.LogInformation("Login attempt started for {Email}", command.Email);
 
-        var user = await users.FindByEmailAsync(command.Email);
+        var user = await accounts.FindByEmailAsync(command.Email);
         
         if (user is null)
         {
@@ -26,21 +28,21 @@ public sealed class LoginCommandHandler(
             return Result<AccessTokensDto>.Failure(IdentityErrors.InvalidCredentials());
         }
 
-        if (!await users.IsEmailConfirmedAsync(user))
+        if (!await accounts.IsEmailConfirmedAsync(user))
         {
             logger.LogWarning("Login failed - email not confirmed for {Email}, UserId: {UserId}", 
                 command.Email, user.Id);
             return Result<AccessTokensDto>.Failure(IdentityErrors.EmailNotConfirmed());
         }
 
-        if (await users.IsLockedOutAsync(user))
+        if (await lockout.IsLockedOutAsync(user))
         {
             logger.LogWarning("Login failed - user is locked out for {Email}, UserId: {UserId}", 
                 command.Email, user.Id);
             return Result<AccessTokensDto>.Failure(IdentityErrors.UserLockedOut());
         }
 
-        var result = await users.CheckPasswordAsync(user, command.Password);
+        var result = await credentials.CheckPasswordAsync(user, command.Password);
 
         if (!result)
         {
@@ -49,7 +51,7 @@ public sealed class LoginCommandHandler(
             return Result<AccessTokensDto>.Failure(IdentityErrors.InvalidCredentials());
         }
         
-        var userRoles = await users.GetRolesAsync(user);
+        var userRoles = await accounts.GetRolesAsync(user);
         
         AccessTokensDto tokens = await tokenManagement.CreateAndStoreTokens(user.Id, userRoles[0], command.Email, cancellationToken);
 

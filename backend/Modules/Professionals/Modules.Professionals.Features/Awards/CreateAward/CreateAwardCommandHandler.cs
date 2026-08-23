@@ -9,7 +9,7 @@ namespace Modules.Professionals.Features.Awards.CreateAward;
 
 public class CreateAwardCommandHandler(
     IProfessionalProfileOperations profileOperations,
-    IAwardOperations awardOperations,
+    IProfessionalQualificationsOperations qualificationsOperations,
     ILogger<CreateAwardCommandHandler> logger) : ICommandHandler<CreateAwardCommand, AwardDto>
 {
     public async Task<Result<AwardDto>> Handle(CreateAwardCommand command, CancellationToken cancellationToken)
@@ -31,8 +31,8 @@ public class CreateAwardCommandHandler(
             command.Description,
             command.YearReceived);
 
-        awardOperations.Add(award);
-        await awardOperations.SaveChangesAsync(cancellationToken);
+        qualificationsOperations.Add(award);
+        await qualificationsOperations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Award created with ID {AwardId} for professional {ProfessionalId}", 
             award.Id, command.ProfessionalId);

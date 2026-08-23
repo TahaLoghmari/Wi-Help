@@ -7,7 +7,7 @@ using Modules.Patients.PublicApi;
 namespace Modules.Appointments.Features.GetAppointmentById;
 
 public sealed class GetAppointmentByIdQueryHandler(
-    IGetAppointmentByIdStore appointmentsStore,
+    IAppointmentRead appointments,
     IPatientsModuleApi patientsApi)
     : IQueryHandler<GetAppointmentByIdQuery, GetAppointmentByIdDto>
 {
@@ -15,7 +15,7 @@ public sealed class GetAppointmentByIdQueryHandler(
         GetAppointmentByIdQuery query,
         CancellationToken cancellationToken)
     {
-        var appointment = await appointmentsStore.GetAsync(
+        var appointment = await appointments.GetProfessionalAppointmentAsync(
             query.AppointmentId,
             query.ProfessionalId,
             cancellationToken);

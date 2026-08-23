@@ -248,7 +248,7 @@ internal static class DependencyInjection
         builder.Services.AddRateLimiter(options =>
             options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, IPAddress>(context =>
             {
-                IPAddress ipAddress = context.Connection.RemoteIpAddress ?? IPAddress.Loopback;
+                IPAddress ipAddress = context.Connection.RemoteIpAddress!;
                 return RateLimitPartition.GetFixedWindowLimiter(ipAddress,
                     _ => new FixedWindowRateLimiterOptions
                     {

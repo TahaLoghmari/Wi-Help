@@ -8,7 +8,7 @@ using Modules.Professionals.PublicApi;
 namespace Modules.Appointments.Features.GetPatientPrescriptions;
 
 public sealed class GetPatientPrescriptionsQueryHandler(
-    IGetPatientPrescriptionsStore prescriptionsStore,
+    IAppointmentRead appointments,
     IPatientsModuleApi patientsApi,
     IProfessionalModuleApi professionalApi)
     : IQueryHandler<GetPatientPrescriptionsQuery, PaginationResultDto<PrescriptionDto>>
@@ -26,7 +26,7 @@ public sealed class GetPatientPrescriptionsQueryHandler(
 
         var patientId = patientResult.Value.Id;
 
-        var paginatedPrescriptions = await prescriptionsStore.GetAsync(
+        var paginatedPrescriptions = await appointments.GetPatientPrescriptionsPageAsync(
             patientId,
             query.Page,
             query.PageSize,

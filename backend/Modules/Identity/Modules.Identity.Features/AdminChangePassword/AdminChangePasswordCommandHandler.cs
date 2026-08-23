@@ -6,7 +6,8 @@ using Modules.Identity.Domain.Ports;
 namespace Modules.Identity.Features.AdminChangePassword;
 
 internal sealed class AdminChangePasswordCommandHandler(
-    IIdentityUserOperations users,
+    IIdentityAccountOperations accounts,
+    IIdentityCredentialOperations credentials,
     ILogger<AdminChangePasswordCommandHandler> logger)
     : ICommandHandler<AdminChangePasswordCommand>
 {
@@ -14,19 +15,19 @@ internal sealed class AdminChangePasswordCommandHandler(
     {
         logger.LogInformation("Admin changing password for user {UserId}", request.UserId);
 
-        var user = await users.FindByIdAsync(request.UserId.ToString());
+        var user = await accounts.FindByIdAsync(request.UserId.ToString());
         if (user is null)
         {
             return Result.Failure(Error.NotFound("Identity.UserNotFound", $"User with ID '{request.UserId}' not found."));
         }
 
-        var removeResult = await users.RemovePasswordAsync(user);
+        var removeResult = await credentials.RemovePasswordAsync(user);
         if (!removeResult.Succeeded)
         {
             return Result.Failure(Error.Failure("Identity.PasswordChangeFailed", "Failed to remove old password."));
         }
 
-        var addResult = await users.AddPasswordAsync(user, request.NewPassword);
+        var addResult = await credentials.AddPasswordAsync(user, request.NewPassword);
         if (!addResult.Succeeded)
         {
             return Result.Failure(Error.Failure("Identity.PasswordChangeFailed", "Failed to set new password."));

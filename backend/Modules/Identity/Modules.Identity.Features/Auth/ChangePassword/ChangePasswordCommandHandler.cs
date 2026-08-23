@@ -7,7 +7,8 @@ using Modules.Identity.Domain.Ports;
 namespace Modules.Identity.Features.Auth.ChangePassword;
 
 public sealed class ChangePasswordCommandHandler(
-    IIdentityUserOperations users,
+    IIdentityAccountOperations accounts,
+    IIdentityCredentialOperations credentials,
     ILogger<ChangePasswordCommandHandler> logger) : ICommandHandler<ChangePasswordCommand>
 {
     public async Task<Result> Handle(
@@ -16,7 +17,7 @@ public sealed class ChangePasswordCommandHandler(
     {
         logger.LogInformation("Password change attempt started for UserId: {UserId}", command.UserId);
 
-        var user = await users.FindByIdAsync(command.UserId.ToString());
+        var user = await accounts.FindByIdAsync(command.UserId.ToString());
         
         if (user is null)
         {
@@ -24,7 +25,7 @@ public sealed class ChangePasswordCommandHandler(
             return Result.Failure(IdentityErrors.UserNotFound());
         }
 
-        var isCurrentPasswordValid = await users.CheckPasswordAsync(user, command.CurrentPassword);
+        var isCurrentPasswordValid = await credentials.CheckPasswordAsync(user, command.CurrentPassword);
 
         if (!isCurrentPasswordValid)
         {
@@ -32,7 +33,7 @@ public sealed class ChangePasswordCommandHandler(
             return Result.Failure(IdentityErrors.InvalidCurrentPassword());
         }
 
-        var result = await users.ChangePasswordAsync(user, command.CurrentPassword, command.NewPassword);
+        var result = await credentials.ChangePasswordAsync(user, command.CurrentPassword, command.NewPassword);
 
         if (!result.Succeeded)
         {

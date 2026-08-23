@@ -18,21 +18,9 @@ public static class DependencyInjection
             .UseSnakeCaseNamingConvention()
         );
         services.AddScoped<IBookAppointmentStore, BookAppointmentStore>();
-        services.AddScoped<IRespondToAppointmentStore, RespondToAppointmentStore>();
-        services.AddScoped<ICancelAppointmentStore, CancelAppointmentStore>();
-        services.AddScoped<ICancelAppointmentByProfessionalStore, CancelAppointmentByProfessionalStore>();
-        services.AddScoped<ICompleteAppointmentStore, CompleteAppointmentStore>();
-        services.AddScoped<IUpdateAppointmentStatusByAdminStore, UpdateAppointmentStatusByAdminStore>();
-        services.AddScoped<IDeletePrescriptionStore, DeletePrescriptionStore>();
-        services.AddScoped<IGetAllAppointmentsForAdminStore, GetAllAppointmentsForAdminStore>();
-        services.AddScoped<IGetPatientPrescriptionsStore, GetPatientPrescriptionsStore>();
-        services.AddScoped<IGetPatientProfessionalsStore, GetPatientProfessionalsStore>();
-        services.AddScoped<IGetAllPrescriptionsForAdminStore, GetAllPrescriptionsForAdminStore>();
-        services.AddScoped<IGetPatientAppointmentsStore, GetPatientAppointmentsStore>();
-        services.AddScoped<IGetProfessionalAppointmentsStore, GetProfessionalAppointmentsStore>();
-        services.AddScoped<IGetAppointmentByIdStore, GetAppointmentByIdStore>();
-        services.AddScoped<IGetProfessionalPatientsStore, GetProfessionalPatientsStore>();
-        services.AddScoped<IGetBookedSessionsStore, GetBookedSessionsStore>();
+        services.AddScoped<IAppointmentWorkflow, AppointmentWorkflow>();
+        services.AddScoped<IAppointmentRead, AppointmentRead>();
+        services.AddScoped<IAppointmentScheduling, AppointmentScheduling>();
         return services;
     }
 }

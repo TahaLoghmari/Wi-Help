@@ -8,14 +8,14 @@ using Modules.Professionals.PublicApi;
 namespace Modules.Appointments.Features.GetAllPrescriptionsForAdmin;
 
 internal sealed class GetAllPrescriptionsForAdminHandler(
-    IGetAllPrescriptionsForAdminStore prescriptionsStore,
+    IAppointmentRead appointments,
     IPatientsModuleApi patientsModuleApi,
     IProfessionalModuleApi professionalModuleApi)
     : IQueryHandler<GetAllPrescriptionsForAdminQuery, PaginationResultDto<PrescriptionAdminDto>>
 {
     public async Task<Result<PaginationResultDto<PrescriptionAdminDto>>> Handle(GetAllPrescriptionsForAdminQuery query, CancellationToken cancellationToken)
     {
-        var prescriptionsPage = await prescriptionsStore.GetAsync(query.Page, query.PageSize, cancellationToken);
+        var prescriptionsPage = await appointments.GetAdminPrescriptionsPageAsync(query.Page, query.PageSize, cancellationToken);
         var prescriptions = prescriptionsPage.Items;
 
         if (prescriptions.Count == 0)

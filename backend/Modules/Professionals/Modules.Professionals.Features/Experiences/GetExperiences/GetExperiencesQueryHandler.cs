@@ -6,14 +6,14 @@ using Modules.Professionals.Domain.Ports;
 namespace Modules.Professionals.Features.Experiences.GetExperiences;
 
 public class GetExperiencesQueryHandler(
-    IWorkExperienceOperations workExperienceOperations,
+    IProfessionalQualificationsOperations qualificationsOperations,
     ILogger<GetExperiencesQueryHandler> logger) : IQueryHandler<GetExperiencesQuery, List<ExperienceDto>>
 {
     public async Task<Result<List<ExperienceDto>>> Handle(GetExperiencesQuery query, CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting experiences for professional {ProfessionalId}", query.ProfessionalId);
 
-        var experiences = (await workExperienceOperations.GetByProfessionalIdAsync(query.ProfessionalId, cancellationToken))
+        var experiences = (await qualificationsOperations.GetExperiencesAsync(query.ProfessionalId, cancellationToken))
             .Select(e => new ExperienceDto(
                 e.Id,
                 e.Title,

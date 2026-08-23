@@ -21,13 +21,7 @@ public static class DependencyInjection
         );
 
         services.AddScoped<IConversationAccessService, ConversationAccessService>();
-        services.AddScoped<ICreateConversationStore, CreateConversationStore>();
-        services.AddScoped<ISendMessageStore, SendMessageStore>();
-        services.AddScoped<IMarkMessagesAsDeliveredStore, MarkMessagesAsDeliveredStore>();
-        services.AddScoped<IMarkMessagesAsReadStore, MarkMessagesAsReadStore>();
-        services.AddScoped<IDeleteMessageStore, DeleteMessageStore>();
-        services.AddScoped<IGetMessagesStore, GetMessagesStore>();
-        services.AddScoped<IGetConversationsStore, GetConversationsStore>();
+        services.AddScoped<IConversationOperations, ConversationOperations>();
         services.AddScoped<IMessageStatusUpdateStore, MessageStatusUpdateStore>();
         services.AddSingleton<ConnectionTracker>();
         services.AddScoped<IMessagingRealtimeEvents, SignalRMessagingRealtimeEvents>();

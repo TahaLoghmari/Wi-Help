@@ -6,7 +6,7 @@ using Modules.Patients.Domain.Ports;
 namespace Modules.Patients.Features.GetRelationships;
 
 public sealed class GetRelationshipsQueryHandler(
-    IGetRelationshipsPort relationshipsPort,
+    IPatientCatalogOperations patientCatalog,
     ILogger<GetRelationshipsQueryHandler> logger) : IQueryHandler<GetRelationshipsQuery, List<RelationshipDto>>
 {
     public async Task<Result<List<RelationshipDto>>> Handle(
@@ -15,7 +15,7 @@ public sealed class GetRelationshipsQueryHandler(
     {
         logger.LogInformation("Retrieving all relationships");
 
-        var relationships = (await relationshipsPort.GetAllAsync(cancellationToken))
+        var relationships = (await patientCatalog.GetRelationshipsAsync(cancellationToken))
             .Select(relationship => new RelationshipDto(relationship.Id, relationship.Key))
             .ToList();
 

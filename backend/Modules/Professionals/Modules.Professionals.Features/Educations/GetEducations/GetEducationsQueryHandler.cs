@@ -6,14 +6,14 @@ using Modules.Professionals.Domain.Ports;
 namespace Modules.Professionals.Features.Educations.GetEducations;
 
 public class GetEducationsQueryHandler(
-    IEducationOperations educationOperations,
+    IProfessionalQualificationsOperations qualificationsOperations,
     ILogger<GetEducationsQueryHandler> logger) : IQueryHandler<GetEducationsQuery, List<EducationDto>>
 {
     public async Task<Result<List<EducationDto>>> Handle(GetEducationsQuery query, CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting educations for professional {ProfessionalId}", query.ProfessionalId);
 
-        var educations = (await educationOperations.GetByProfessionalIdAsync(query.ProfessionalId, cancellationToken))
+        var educations = (await qualificationsOperations.GetEducationsAsync(query.ProfessionalId, cancellationToken))
             .Select(e => new EducationDto(
                 e.Id,
                 e.Institution,

@@ -6,7 +6,7 @@ using Modules.Identity.Domain.Ports;
 namespace Modules.Identity.Features.Auth.GetCurrentUser;
 
 public sealed class GetCurrentUserQueryHandler(
-    IIdentityUserOperations users,
+    IIdentityAccountOperations accounts,
     ILogger<GetCurrentUserQueryHandler> logger) : IQueryHandler<GetCurrentUserQuery, GetCurrentUserDto>
 {
     public async Task<Result<GetCurrentUserDto>> Handle(
@@ -19,7 +19,7 @@ public sealed class GetCurrentUserQueryHandler(
             return Result<GetCurrentUserDto>.Failure(Error.Unauthorized("GetCurrentUser.Unauthorized", "User ID claim is missing."));
         }
 
-        var user = await users.FindByIdAsync(query.UserId);
+        var user = await accounts.FindByIdAsync(query.UserId);
 
         if (user is null)
         {
@@ -29,7 +29,7 @@ public sealed class GetCurrentUserQueryHandler(
 
         logger.LogInformation("Current user retrieved successfully for UserId: {UserId}", query.UserId);
 
-        var userRoles = await users.GetRolesAsync(user);
+        var userRoles = await accounts.GetRolesAsync(user);
 
         var userDto = new GetCurrentUserDto(
             user.Id,

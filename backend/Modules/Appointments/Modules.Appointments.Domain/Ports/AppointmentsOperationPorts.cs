@@ -1,95 +1,57 @@
 using Modules.Appointments.Domain.Entities;
 using Modules.Appointments.Domain.Enums;
-
 namespace Modules.Appointments.Domain.Ports;
 
 public sealed record PagedResult<T>(IReadOnlyList<T> Items, int TotalCount);
+public sealed record AppointmentWorkflowIntent(Appointment Appointment, bool CanTransition);
 
 public interface IBookAppointmentStore
 {
     Task AddAsync(Appointment appointment, CancellationToken cancellationToken);
 }
 
-public interface IRespondToAppointmentStore
+public interface IAppointmentWorkflow
 {
-    Task<Appointment?> GetAsync(Guid appointmentId, Guid professionalId, CancellationToken cancellationToken);
-    Task SaveChangesAsync(CancellationToken cancellationToken);
+    Task<AppointmentWorkflowIntent?> PrepareProfessionalResponseAsync(
+        Guid appointmentId,
+        Guid professionalId,
+        bool isAccepted,
+        CancellationToken cancellationToken);
+    Task FinalizeProfessionalResponseAsync(AppointmentWorkflowIntent intent, CancellationToken cancellationToken);
+    Task<AppointmentWorkflowIntent?> PreparePatientCancellationAsync(
+        Guid appointmentId,
+        Guid patientId,
+        CancellationToken cancellationToken);
+    Task FinalizePatientCancellationAsync(AppointmentWorkflowIntent intent, CancellationToken cancellationToken);
+    Task<AppointmentWorkflowIntent?> PrepareProfessionalCancellationAsync(
+        Guid appointmentId,
+        Guid professionalId,
+        CancellationToken cancellationToken);
+    Task FinalizeProfessionalCancellationAsync(AppointmentWorkflowIntent intent, CancellationToken cancellationToken);
+    Task<AppointmentWorkflowIntent?> PrepareProfessionalCompletionAsync(
+        Guid appointmentId,
+        Guid professionalId,
+        CancellationToken cancellationToken);
+    Task CompleteWithPrescriptionAsync(AppointmentWorkflowIntent intent, Prescription prescription, CancellationToken cancellationToken);
+    Task<Appointment?> UpdateStatusForAdminAsync(Guid appointmentId, AppointmentStatus status, CancellationToken cancellationToken);
+    Task<bool> DeletePrescriptionAsync(Guid prescriptionId, CancellationToken cancellationToken);
 }
 
-public interface ICancelAppointmentStore
+public interface IAppointmentRead
 {
-    Task<Appointment?> GetAsync(Guid appointmentId, Guid patientId, CancellationToken cancellationToken);
-    Task SaveChangesAsync(CancellationToken cancellationToken);
+    Task<PagedResult<Appointment>> GetAdminAppointmentsPageAsync(int page, int pageSize, CancellationToken cancellationToken);
+    Task<PagedResult<Appointment>> GetPatientAppointmentsPageAsync(Guid patientId, int page, int pageSize, CancellationToken cancellationToken);
+    Task<PagedResult<Appointment>> GetProfessionalAppointmentsPageAsync(Guid professionalId, int page, int pageSize, CancellationToken cancellationToken);
+    Task<Appointment?> GetProfessionalAppointmentAsync(Guid appointmentId, Guid professionalId, CancellationToken cancellationToken);
+    Task<PagedResult<Prescription>> GetPatientPrescriptionsPageAsync(Guid patientId, int page, int pageSize, CancellationToken cancellationToken);
+    Task<PagedResult<Prescription>> GetAdminPrescriptionsPageAsync(int page, int pageSize, CancellationToken cancellationToken);
+    Task<PagedResult<Guid>> GetPatientProfessionalsPageAsync(Guid patientId, int page, int pageSize, CancellationToken cancellationToken);
+    Task<PagedResult<Guid>> GetProfessionalPatientsPageAsync(Guid professionalId, int page, int pageSize, CancellationToken cancellationToken);
 }
 
-public interface ICancelAppointmentByProfessionalStore
+public interface IAppointmentScheduling
 {
-    Task<Appointment?> GetAsync(Guid appointmentId, Guid professionalId, CancellationToken cancellationToken);
-    Task SaveChangesAsync(CancellationToken cancellationToken);
-}
-
-public interface ICompleteAppointmentStore
-{
-    Task<Appointment?> GetAsync(Guid appointmentId, Guid professionalId, CancellationToken cancellationToken);
-    Task AddPrescriptionAsync(Prescription prescription, CancellationToken cancellationToken);
-    Task SaveChangesAsync(CancellationToken cancellationToken);
-}
-
-public interface IUpdateAppointmentStatusByAdminStore
-{
-    Task<Appointment?> GetAsync(Guid appointmentId, CancellationToken cancellationToken);
-    Task SaveChangesAsync(CancellationToken cancellationToken);
-}
-
-public interface IDeletePrescriptionStore
-{
-    Task<Prescription?> GetAsync(Guid prescriptionId, CancellationToken cancellationToken);
-    Task DeleteAsync(Prescription prescription, CancellationToken cancellationToken);
-}
-
-public interface IGetAllAppointmentsForAdminStore
-{
-    Task<PagedResult<Appointment>> GetAsync(int page, int pageSize, CancellationToken cancellationToken);
-}
-
-public interface IGetPatientPrescriptionsStore
-{
-    Task<PagedResult<Prescription>> GetAsync(Guid patientId, int page, int pageSize, CancellationToken cancellationToken);
-}
-
-public interface IGetPatientProfessionalsStore
-{
-    Task<PagedResult<Guid>> GetAsync(Guid patientId, int page, int pageSize, CancellationToken cancellationToken);
-}
-
-public interface IGetAllPrescriptionsForAdminStore
-{
-    Task<PagedResult<Prescription>> GetAsync(int page, int pageSize, CancellationToken cancellationToken);
-}
-
-public interface IGetPatientAppointmentsStore
-{
-    Task<PagedResult<Appointment>> GetAsync(Guid patientId, int page, int pageSize, CancellationToken cancellationToken);
-}
-
-public interface IGetProfessionalAppointmentsStore
-{
-    Task<PagedResult<Appointment>> GetAsync(Guid professionalId, int page, int pageSize, CancellationToken cancellationToken);
-}
-
-public interface IGetAppointmentByIdStore
-{
-    Task<Appointment?> GetAsync(Guid appointmentId, Guid professionalId, CancellationToken cancellationToken);
-}
-
-public interface IGetProfessionalPatientsStore
-{
-    Task<PagedResult<Guid>> GetAsync(Guid professionalId, int page, int pageSize, CancellationToken cancellationToken);
-}
-
-public interface IGetBookedSessionsStore
-{
-    Task<IReadOnlyList<Appointment>> GetAsync(
+    Task<IReadOnlyList<Appointment>> GetBookedSessionsAsync(
         Guid professionalId,
         DateTime from,
         DateTime to,

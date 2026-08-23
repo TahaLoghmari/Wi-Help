@@ -6,7 +6,7 @@ using Modules.Patients.Domain.Ports;
 namespace Modules.Patients.Features.GetMedications;
 
 public sealed class GetMedicationsQueryHandler(
-    IGetMedicationsPort medicationsPort,
+    IPatientCatalogOperations patientCatalog,
     ILogger<GetMedicationsQueryHandler> logger) : IQueryHandler<GetMedicationsQuery, List<MedicationDto>>
 {
     public async Task<Result<List<MedicationDto>>> Handle(
@@ -15,7 +15,7 @@ public sealed class GetMedicationsQueryHandler(
     {
         logger.LogInformation("Retrieving all medications");
 
-        var medications = (await medicationsPort.GetAllAsync(cancellationToken))
+        var medications = (await patientCatalog.GetMedicationsAsync(cancellationToken))
             .Select(medication => new MedicationDto(medication.Id, medication.Key))
             .ToList();
 

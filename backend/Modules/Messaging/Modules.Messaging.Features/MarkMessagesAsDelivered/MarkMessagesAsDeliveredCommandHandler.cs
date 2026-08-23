@@ -8,14 +8,14 @@ using Modules.Messaging.Domain.Ports;
 namespace Modules.Messaging.Features.MarkMessagesAsDelivered;
 
 public class MarkMessagesAsDeliveredCommandHandler(
-    IMarkMessagesAsDeliveredStore messageStore,
+    IConversationOperations conversationOperations,
     IMessagingRealtimeEvents realtimeEvents,
     ILogger<MarkMessagesAsDeliveredCommandHandler> logger) : ICommandHandler<MarkMessagesAsDeliveredCommand>
 {
     public async Task<Result> Handle(MarkMessagesAsDeliveredCommand command, CancellationToken cancellationToken)
     {
         // Verify conversation exists and user is a participant
-        var conversation = await messageStore.GetConversationAsync(command.ConversationId, cancellationToken);
+        var conversation = await conversationOperations.GetConversationAsync(command.ConversationId, cancellationToken);
 
         if (conversation == null)
         {
@@ -30,7 +30,7 @@ public class MarkMessagesAsDeliveredCommandHandler(
             return Result.Failure(MessagingErrors.NotParticipant());
         }
 
-        var sentMessages = await messageStore.GetSentMessagesAsync(
+        var sentMessages = await conversationOperations.GetSentMessagesAsync(
             command.ConversationId,
             command.UserId,
             cancellationToken);
@@ -42,7 +42,7 @@ public class MarkMessagesAsDeliveredCommandHandler(
 
         if (sentMessages.Count > 0)
         {
-            await messageStore.SaveAsync(cancellationToken);
+            await conversationOperations.SaveChangesAsync(cancellationToken);
             logger.LogInformation("Marked {Count} messages as delivered in conversation {ConversationId} by user {UserId}",
                 sentMessages.Count, command.ConversationId, command.UserId);
 

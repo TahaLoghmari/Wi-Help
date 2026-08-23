@@ -6,7 +6,7 @@ using Modules.Patients.Domain.Ports;
 namespace Modules.Patients.Features.GetConditions;
 
 public sealed class GetConditionsQueryHandler(
-    IGetConditionsPort conditionsPort,
+    IPatientCatalogOperations patientCatalog,
     ILogger<GetConditionsQueryHandler> logger) : IQueryHandler<GetConditionsQuery, List<ConditionDto>>
 {
     public async Task<Result<List<ConditionDto>>> Handle(
@@ -15,7 +15,7 @@ public sealed class GetConditionsQueryHandler(
     {
         logger.LogInformation("Retrieving all conditions");
 
-        var conditions = (await conditionsPort.GetAllAsync(cancellationToken))
+        var conditions = (await patientCatalog.GetConditionsAsync(cancellationToken))
             .Select(condition => new ConditionDto(condition.Id, condition.Key))
             .ToList();
 

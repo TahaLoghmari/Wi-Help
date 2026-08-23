@@ -11,7 +11,7 @@ using Modules.Identity.PublicApi;
 namespace Modules.Messaging.Features.SendMessage;
 
 public class SendMessageCommandHandler(
-    ISendMessageStore messageStore,
+    IConversationOperations conversationOperations,
     IMessagingRealtimeEvents realtimeEvents,
     INotificationsModuleApi notificationsModuleApi,
     IIdentityModuleApi identityModuleApi,
@@ -20,7 +20,7 @@ public class SendMessageCommandHandler(
     public async Task<Result<Guid>> Handle(SendMessageCommand command, CancellationToken cancellationToken)
     {
         // Verify conversation exists and user is a participant
-        var conversation = await messageStore.GetConversationAsync(command.ConversationId, cancellationToken);
+        var conversation = await conversationOperations.GetConversationAsync(command.ConversationId, cancellationToken);
 
         if (conversation == null)
         {
@@ -40,7 +40,7 @@ public class SendMessageCommandHandler(
             command.SenderId,
             command.Content);
 
-        await messageStore.SaveAsync(conversation, message, cancellationToken);
+        await conversationOperations.SaveMessageAsync(conversation, message, cancellationToken);
 
         logger.LogInformation("Message {MessageId} sent in conversation {ConversationId} by user {SenderId}",
             message.Id, command.ConversationId, command.SenderId);

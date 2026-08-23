@@ -7,7 +7,7 @@ using Modules.Professionals.Domain.Ports;
 namespace Modules.Professionals.Features.Educations.UpdateEducation;
 
 public class UpdateEducationCommandHandler(
-    IEducationOperations educationOperations,
+    IProfessionalQualificationsOperations qualificationsOperations,
     ILogger<UpdateEducationCommandHandler> logger) : ICommandHandler<UpdateEducationCommand, EducationDto>
 {
     public async Task<Result<EducationDto>> Handle(UpdateEducationCommand command, CancellationToken cancellationToken)
@@ -15,7 +15,7 @@ public class UpdateEducationCommandHandler(
         logger.LogInformation("Updating education {EducationId} for professional {ProfessionalId}", 
             command.EducationId, command.ProfessionalId);
 
-        var education = await educationOperations.FindAsync(command.EducationId, command.ProfessionalId, cancellationToken);
+        var education = await qualificationsOperations.FindEducationAsync(command.EducationId, command.ProfessionalId, cancellationToken);
 
         if (education is null)
         {
@@ -33,7 +33,7 @@ public class UpdateEducationCommandHandler(
             command.EndYear,
             command.IsCurrentlyStudying);
 
-        await educationOperations.SaveChangesAsync(cancellationToken);
+        await qualificationsOperations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Education {EducationId} updated successfully", command.EducationId);
 

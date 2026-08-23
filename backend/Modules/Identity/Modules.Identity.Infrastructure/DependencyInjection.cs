@@ -57,7 +57,10 @@ public static class DependencyInjection
 
         services.AddHttpContextAccessor();
 
-        services.AddScoped<IIdentityUserOperations, IdentityUserOperations>();
+        services.AddScoped<IIdentityAccountOperations, IdentityAccountOperations>();
+        services.AddScoped<IIdentityCredentialOperations, IdentityCredentialOperations>();
+        services.AddScoped<IIdentityClaimOperations, IdentityClaimOperations>();
+        services.AddScoped<IIdentityLockoutOperations, IdentityLockoutOperations>();
         services.AddScoped<ITokenManagement, TokenManagementService>();
         services.AddScoped<TokenProvider>();
         services.AddScoped<IIdentityEmail, IdentityEmailService>();

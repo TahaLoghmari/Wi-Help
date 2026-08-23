@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Modules.Appointments.Domain;
 using Modules.Appointments.Domain.Entities;
-using Modules.Appointments.Domain.Enums;
 using Modules.Appointments.Domain.Ports;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
@@ -14,7 +13,7 @@ using Modules.Identity.PublicApi;
 namespace Modules.Appointments.Features.CompleteAppointment;
 
 public class CompleteAppointmentCommandHandler(
-    ICompleteAppointmentStore appointmentsStore,
+    IAppointmentWorkflow appointmentsWorkflow,
     ILogger<CompleteAppointmentCommandHandler> logger,
     INotificationsModuleApi notificationsModuleApi,
     IPatientsModuleApi patientsModuleApi,
@@ -30,19 +29,20 @@ public class CompleteAppointmentCommandHandler(
             "Professional {ProfessionalId} completing appointment {AppointmentId}",
             command.ProfessionalId, command.AppointmentId);
         
-        var appointment = await appointmentsStore.GetAsync(
+        var intent = await appointmentsWorkflow.PrepareProfessionalCompletionAsync(
             command.AppointmentId,
             command.ProfessionalId,
             cancellationToken);
             
-        if (appointment is null)
+        if (intent is null)
         {
             logger.LogWarning("Appointment {AppointmentId} not found for professional {ProfessionalId}", 
                 command.AppointmentId, command.ProfessionalId);
             return Result.Failure(AppointmentErrors.AppointmentNotFound(command.AppointmentId));
         }
 
-        if (appointment.Status != AppointmentStatus.Confirmed)
+        var appointment = intent.Appointment;
+        if (!intent.CanTransition)
         {
             logger.LogWarning(
                 "Cannot complete appointment {AppointmentId} in status {Status}",
@@ -90,12 +90,7 @@ public class CompleteAppointmentCommandHandler(
             command.PrescriptionTitle,
             command.PrescriptionNotes);
 
-        await appointmentsStore.AddPrescriptionAsync(prescription, cancellationToken);
-
-        // Mark appointment as completed
-        appointment.Complete();
-
-        await appointmentsStore.SaveChangesAsync(cancellationToken);
+        await appointmentsWorkflow.CompleteWithPrescriptionAsync(intent, prescription, cancellationToken);
 
         logger.LogInformation(
             "Appointment {AppointmentId} completed with prescription {PrescriptionId}", 

@@ -11,7 +11,7 @@ namespace Modules.Patients.Features.Auth.CompleteOnboarding;
 
 public sealed class CompletePatientOnboardingCommandHandler(
     IIdentityModuleApi identityApi,
-    ICompletePatientOnboardingPort patientPort,
+    IPatientOnboardingOperations patientOnboarding,
     ILogger<CompletePatientOnboardingCommandHandler> logger) : ICommandHandler<CompletePatientOnboardingCommand>
 {
     public async Task<Result> Handle(
@@ -24,7 +24,7 @@ public sealed class CompletePatientOnboardingCommandHandler(
         if (command.EmergencyContact.RelationshipId.HasValue)
         {
             var relationshipId = command.EmergencyContact.RelationshipId.Value;
-            if (!await patientPort.RelationshipExistsAsync(relationshipId, cancellationToken))
+            if (!await patientOnboarding.RelationshipExistsAsync(relationshipId, cancellationToken))
             {
                 logger.LogWarning("Relationship not found: {RelationshipId}", relationshipId);
                 return Result.Failure(PatientErrors.RelationshipNotFound(relationshipId));
@@ -50,13 +50,13 @@ public sealed class CompletePatientOnboardingCommandHandler(
         }
 
         // Check if patient already exists
-        var existingPatient = await patientPort.GetPatientByUserIdAsync(command.UserId, cancellationToken);
+        var existingPatient = await patientOnboarding.GetPatientByUserIdAsync(command.UserId, cancellationToken);
 
         if (existingPatient is not null)
         {
             // Update existing patient's emergency contact
             existingPatient.Update(emergencyContact: command.EmergencyContact);
-            await patientPort.SaveChangesAsync(cancellationToken);
+            await patientOnboarding.SaveChangesAsync(cancellationToken);
             
             logger.LogInformation("Updated existing patient for UserId: {UserId}", command.UserId);
             return Result.Success();
@@ -65,8 +65,8 @@ public sealed class CompletePatientOnboardingCommandHandler(
         // Create new patient
         var patient = new Patient(command.UserId, command.EmergencyContact);
 
-        await patientPort.AddPatientAsync(patient, cancellationToken);
-        await patientPort.SaveChangesAsync(cancellationToken);
+        await patientOnboarding.AddPatientAsync(patient, cancellationToken);
+        await patientOnboarding.SaveChangesAsync(cancellationToken);
 
         var addClaimResult = await identityApi.AddClaimAsync(
             command.UserId, 

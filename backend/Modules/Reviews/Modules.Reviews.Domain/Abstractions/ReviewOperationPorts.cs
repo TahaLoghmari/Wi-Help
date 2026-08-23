@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Modules.Reviews.Domain.Entities;
 using Modules.Reviews.Domain.Enums;
 
@@ -55,12 +54,7 @@ public interface IDeleteReplyPort
 
 public interface IGetReviewsPort
 {
-    Task<ReviewsPage> GetAsync(
-        Expression<Func<Review, bool>> filter,
-        int page,
-        int pageSize,
-        Guid callerUserId,
-        CancellationToken cancellationToken);
+    Task<ReviewsPage> GetAsync(ReviewSearchCriteria criteria, CancellationToken cancellationToken);
 }
 
 public interface IGetReviewsForAdminPort
@@ -79,6 +73,15 @@ public sealed record ReviewsPage(
     Dictionary<Guid, int> LikeCounts,
     List<Guid> LikedReviewIds,
     List<ReviewReply> Replies);
+
+public sealed record ReviewSearchCriteria(
+    Guid? ProfessionalSubjectId,
+    Guid? PatientSubjectId,
+    Guid? ProfessionalReviewerId,
+    Guid? PatientReviewerId,
+    int Page,
+    int PageSize,
+    Guid CallerUserId);
 
 public sealed record AdminReviewsPage(List<Review> Reviews, int TotalCount);
 

@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
 using Modules.Appointments.Domain;
-using Modules.Appointments.Domain.Enums;
 using Modules.Appointments.Domain.Ports;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
@@ -15,7 +14,7 @@ using Modules.Identity.PublicApi;
 namespace Modules.Appointments.Features.CancelAppointment;
 
 public class CancelAppointmentCommandHandler(
-    ICancelAppointmentStore appointmentsStore,
+    IAppointmentWorkflow appointmentsWorkflow,
     ILogger<CancelAppointmentCommandHandler> logger,
     INotificationsModuleApi notificationsModuleApi,
     IPatientsModuleApi patientsModuleApi,
@@ -29,19 +28,20 @@ public class CancelAppointmentCommandHandler(
             "Patient {PatientId} cancelling appointment {AppointmentId}",
             command.PatientId, command.AppointmentId);
         
-        var appointment = await appointmentsStore.GetAsync(
+        var intent = await appointmentsWorkflow.PreparePatientCancellationAsync(
             command.AppointmentId,
             command.PatientId,
             cancellationToken);
             
-        if (appointment is null)
+        if (intent is null)
         {
             logger.LogWarning("Appointment {AppointmentId} not found for patient {PatientId}", 
                 command.AppointmentId, command.PatientId);
             return Result.Failure(AppointmentErrors.AppointmentNotFound(command.AppointmentId));
         }
 
-        if (appointment.Status != AppointmentStatus.Offered && appointment.Status != AppointmentStatus.Confirmed)
+        var appointment = intent.Appointment;
+        if (!intent.CanTransition)
         {
             logger.LogWarning(
                 "Cannot cancel appointment {AppointmentId} in status {Status}",
@@ -120,8 +120,7 @@ public class CancelAppointmentCommandHandler(
             }
         }
 
-        appointment.Cancel();
-        await appointmentsStore.SaveChangesAsync(cancellationToken);
+        await appointmentsWorkflow.FinalizePatientCancellationAsync(intent, cancellationToken);
 
         logger.LogInformation("Appointment {AppointmentId} cancelled by patient", command.AppointmentId);
 

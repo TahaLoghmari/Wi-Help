@@ -7,7 +7,7 @@ using Modules.Professionals.Domain.Ports;
 namespace Modules.Professionals.Features.Experiences.UpdateExperience;
 
 public class UpdateExperienceCommandHandler(
-    IWorkExperienceOperations workExperienceOperations,
+    IProfessionalQualificationsOperations qualificationsOperations,
     ILogger<UpdateExperienceCommandHandler> logger) : ICommandHandler<UpdateExperienceCommand, ExperienceDto>
 {
     public async Task<Result<ExperienceDto>> Handle(UpdateExperienceCommand command, CancellationToken cancellationToken)
@@ -15,7 +15,7 @@ public class UpdateExperienceCommandHandler(
         logger.LogInformation("Updating experience {ExperienceId} for professional {ProfessionalId}", 
             command.ExperienceId, command.ProfessionalId);
 
-        var experience = await workExperienceOperations.FindAsync(command.ExperienceId, command.ProfessionalId, cancellationToken);
+        var experience = await qualificationsOperations.FindExperienceAsync(command.ExperienceId, command.ProfessionalId, cancellationToken);
 
         if (experience is null)
         {
@@ -32,7 +32,7 @@ public class UpdateExperienceCommandHandler(
             command.EndYear,
             command.IsCurrentPosition);
 
-        await workExperienceOperations.SaveChangesAsync(cancellationToken);
+        await qualificationsOperations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Experience {ExperienceId} updated successfully", command.ExperienceId);
 

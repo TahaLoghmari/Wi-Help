@@ -7,13 +7,13 @@ using Modules.Messaging.Domain.Ports;
 namespace Modules.Messaging.Features.DeleteMessage;
 
 public class DeleteMessageCommandHandler(
-    IDeleteMessageStore messageStore,
+    IConversationOperations conversationOperations,
     IMessagingRealtimeEvents realtimeEvents,
     ILogger<DeleteMessageCommandHandler> logger) : ICommandHandler<DeleteMessageCommand>
 {
     public async Task<Result> Handle(DeleteMessageCommand command, CancellationToken cancellationToken)
     {
-        var message = await messageStore.GetMessageAsync(command.MessageId, cancellationToken);
+        var message = await conversationOperations.GetMessageAsync(command.MessageId, cancellationToken);
 
         if (message == null)
         {
@@ -30,7 +30,7 @@ public class DeleteMessageCommandHandler(
         }
 
         message.Delete();
-        await messageStore.SaveAsync(cancellationToken);
+        await conversationOperations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Message {MessageId} deleted by user {UserId}", command.MessageId, command.UserId);
 

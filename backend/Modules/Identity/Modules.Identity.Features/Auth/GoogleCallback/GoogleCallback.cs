@@ -20,7 +20,7 @@ internal sealed class GoogleCallback : IEndpoint
                 IGoogleAuthentication googleAuthentication,
                 ITokenManagement tokenManagement,
                 IAuthCookies authCookies,
-                IIdentityUserOperations users,
+                IIdentityAccountOperations accounts,
                 IConfiguration configuration,
                 ILogger<GoogleCallback> logger,
                 CancellationToken cancellationToken) =>
@@ -81,7 +81,7 @@ internal sealed class GoogleCallback : IEndpoint
                 }
 
                 // Get user role
-                var userRoles = await users.GetRolesAsync(user);
+                var userRoles = await accounts.GetRolesAsync(user);
                 var userRole = userRoles.FirstOrDefault() ?? role;
 
                 // Create tokens

@@ -8,13 +8,13 @@ using Modules.Messaging.PublicApi.Contracts;
 namespace Modules.Messaging.Features.GetMessages;
 
 public class GetMessagesQueryHandler(
-    IGetMessagesStore messageStore,
+    IConversationOperations conversationOperations,
     ILogger<GetMessagesQueryHandler> logger) : IQueryHandler<GetMessagesQuery, MessagesResponseDto>
 {
     public async Task<Result<MessagesResponseDto>> Handle(GetMessagesQuery query, CancellationToken cancellationToken)
     {
         // Verify conversation exists and user is a participant
-        var conversation = await messageStore.GetConversationAsync(query.ConversationId, cancellationToken);
+        var conversation = await conversationOperations.GetConversationAsync(query.ConversationId, cancellationToken);
 
         if (conversation == null)
         {
@@ -29,7 +29,7 @@ public class GetMessagesQueryHandler(
             return Result<MessagesResponseDto>.Failure(MessagingErrors.NotParticipant());
         }
 
-        var page = await messageStore.GetPageAsync(
+        var page = await conversationOperations.GetPageAsync(
             query.ConversationId,
             query.PageNumber,
             query.PageSize,

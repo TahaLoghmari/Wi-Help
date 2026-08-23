@@ -7,13 +7,13 @@ using Modules.Patients.Domain.Ports;
 namespace Modules.Patients.Features.GetAllPatients;
 
 internal sealed class GetAllPatientsQueryHandler(
-    IGetAllPatientsPort patientsPort,
+    IPatientAdminOperations patientAdmin,
     IIdentityModuleApi identityModuleApi)
     : IQueryHandler<GetAllPatientsQuery, PaginationResultDto<GetAllPatientsDto>>
 {
     public async Task<Result<PaginationResultDto<GetAllPatientsDto>>> Handle(GetAllPatientsQuery request, CancellationToken cancellationToken)
     {
-        var (patients, totalCount) = await patientsPort.GetPageAsync(
+        var (patients, totalCount) = await patientAdmin.GetPageAsync(
             request.Page,
             request.PageSize,
             cancellationToken);

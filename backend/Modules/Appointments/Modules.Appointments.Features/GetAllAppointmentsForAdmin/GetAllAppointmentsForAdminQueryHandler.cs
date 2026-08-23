@@ -8,7 +8,7 @@ using Modules.Professionals.PublicApi;
 namespace Modules.Appointments.Features.GetAllAppointmentsForAdmin;
 
 public sealed class GetAllAppointmentsForAdminQueryHandler(
-    IGetAllAppointmentsForAdminStore appointmentsStore,
+    IAppointmentRead appointmentRead,
     IPatientsModuleApi patientsApi,
     IProfessionalModuleApi professionalApi)
     : IQueryHandler<GetAllAppointmentsForAdminQuery, PaginationResultDto<GetAllAppointmentsForAdminDto>>
@@ -17,7 +17,7 @@ public sealed class GetAllAppointmentsForAdminQueryHandler(
         GetAllAppointmentsForAdminQuery query,
         CancellationToken cancellationToken)
     {
-        var appointmentsPage = await appointmentsStore.GetAsync(query.Page, query.PageSize, cancellationToken);
+        var appointmentsPage = await appointmentRead.GetAdminAppointmentsPageAsync(query.Page, query.PageSize, cancellationToken);
         var appointments = appointmentsPage.Items;
 
         // Get unique patient and professional IDs

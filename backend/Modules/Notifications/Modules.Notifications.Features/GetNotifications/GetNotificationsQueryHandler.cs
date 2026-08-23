@@ -5,14 +5,14 @@ using Modules.Notifications.Domain.Operations;
 
 namespace Modules.Notifications.Features.GetNotifications;
 
-public sealed class GetNotificationsQueryHandler(IGetNotifications getNotifications)
+public sealed class GetNotificationsQueryHandler(INotificationInbox notificationInbox)
     : IQueryHandler<GetNotificationsQuery, PaginationResultDto<GetNotificationsDto>>
 {
     public async Task<Result<PaginationResultDto<GetNotificationsDto>>> Handle(
         GetNotificationsQuery query,
         CancellationToken cancellationToken)
     {
-        var notificationPage = await getNotifications.GetAsync(
+        var notificationPage = await notificationInbox.GetAsync(
             query.UserId,
             query.Page,
             query.PageSize,

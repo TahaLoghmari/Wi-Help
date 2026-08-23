@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
 using Modules.Appointments.Domain;
-using Modules.Appointments.Domain.Enums;
 using Modules.Appointments.Domain.Ports;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
@@ -14,7 +13,7 @@ using Modules.Professionals.PublicApi;
 namespace Modules.Appointments.Features.CancelAppointmentByProfessional;
 
 public class CancelAppointmentByProfessionalCommandHandler(
-    ICancelAppointmentByProfessionalStore appointmentsStore,
+    IAppointmentWorkflow appointmentsWorkflow,
     ILogger<CancelAppointmentByProfessionalCommandHandler> logger,
     INotificationsModuleApi notificationsModuleApi,
     IPatientsModuleApi patientsModuleApi,
@@ -27,19 +26,20 @@ public class CancelAppointmentByProfessionalCommandHandler(
             "Professional {ProfessionalId} cancelling appointment {AppointmentId}",
             command.ProfessionalId, command.AppointmentId);
         
-        var appointment = await appointmentsStore.GetAsync(
+        var intent = await appointmentsWorkflow.PrepareProfessionalCancellationAsync(
             command.AppointmentId,
             command.ProfessionalId,
             cancellationToken);
             
-        if (appointment is null)
+        if (intent is null)
         {
             logger.LogWarning("Appointment {AppointmentId} not found for professional {ProfessionalId}", 
                 command.AppointmentId, command.ProfessionalId);
             return Result.Failure(AppointmentErrors.AppointmentNotFound(command.AppointmentId));
         }
 
-        if (appointment.Status != AppointmentStatus.Offered && appointment.Status != AppointmentStatus.Confirmed)
+        var appointment = intent.Appointment;
+        if (!intent.CanTransition)
         {
             logger.LogWarning(
                 "Cannot cancel appointment {AppointmentId} in status {Status}",
@@ -103,8 +103,7 @@ public class CancelAppointmentByProfessionalCommandHandler(
             logger.LogInformation("Cancellation email notification queued for patient {PatientId}", appointment.PatientId);
         }
 
-        appointment.Cancel();
-        await appointmentsStore.SaveChangesAsync(cancellationToken);
+        await appointmentsWorkflow.FinalizeProfessionalCancellationAsync(intent, cancellationToken);
 
         logger.LogInformation("Appointment {AppointmentId} cancelled by professional", command.AppointmentId);
 

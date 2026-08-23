@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Common.Features.DTOs;
@@ -23,9 +22,8 @@ internal sealed class GetReviewsQueryHandler(
         GetReviewsQuery query,
         CancellationToken cancellationToken)
     {
-        var filter = CreateFilter(query);
-        var reviewsPage = await reviewsPort.GetAsync(
-            filter, query.Page, query.PageSize, query.CallerUserId, cancellationToken);
+        var criteria = CreateCriteria(query);
+        var reviewsPage = await reviewsPort.GetAsync(criteria, cancellationToken);
         var reviews = reviewsPage.Reviews;
         var paginatedReviews = PaginationResultDto<Review>.Create(
             reviews, query.Page, query.PageSize, reviewsPage.TotalCount);
@@ -103,7 +101,7 @@ internal sealed class GetReviewsQueryHandler(
     /// <summary>
     /// Applies the subject/reviewer filter with role-based enforcement.
     /// </summary>
-    private static Expression<Func<Review, bool>> CreateFilter(GetReviewsQuery query)
+    private static ReviewSearchCriteria CreateCriteria(GetReviewsQuery query)
     {
         if (query.SubjectId.HasValue)
         {
@@ -113,46 +111,45 @@ internal sealed class GetReviewsQueryHandler(
             if (isOwnId)
             {
                 // Viewing own reviews (both types where I'm the subject)
-                return r =>
-                    (r.ProfessionalId == sid && r.Type == ReviewType.ProfessionalReview)
-                    || (r.PatientId == sid && r.Type == ReviewType.PatientReview);
+                return new ReviewSearchCriteria(sid, sid, null, null,
+                    query.Page, query.PageSize, query.CallerUserId);
             }
 
             // Not own profile — enforce role-based access:
             // Professionals can view patient-subject reviews; patients can view professional-subject reviews
             if (query.CallerProfessionalId.HasValue)
             {
-                return r => r.PatientId == sid && r.Type == ReviewType.PatientReview;
+                return new ReviewSearchCriteria(null, sid, null, null,
+                    query.Page, query.PageSize, query.CallerUserId);
             }
 
-            return r => r.ProfessionalId == sid && r.Type == ReviewType.ProfessionalReview;
+            return new ReviewSearchCriteria(sid, null, null, null,
+                query.Page, query.PageSize, query.CallerUserId);
         }
 
         if (query.ReviewerId.HasValue)
         {
             var rid = query.ReviewerId.Value;
-            return r =>
-                (r.PatientId == rid && r.Type == ReviewType.ProfessionalReview)
-                || (r.ProfessionalId == rid && r.Type == ReviewType.PatientReview);
+            return new ReviewSearchCriteria(null, null, rid, rid,
+                query.Page, query.PageSize, query.CallerUserId);
         }
 
         // Default: current user as subject
         if (query.CallerProfessionalId.HasValue)
         {
-            return r =>
-                r.ProfessionalId == query.CallerProfessionalId.Value
-                && r.Type == ReviewType.ProfessionalReview;
+            return new ReviewSearchCriteria(query.CallerProfessionalId.Value, null, null, null,
+                query.Page, query.PageSize, query.CallerUserId);
         }
 
         if (query.CallerPatientId.HasValue)
         {
-            return r =>
-                r.PatientId == query.CallerPatientId.Value
-                && r.Type == ReviewType.PatientReview;
+            return new ReviewSearchCriteria(null, query.CallerPatientId.Value, null, null,
+                query.Page, query.PageSize, query.CallerUserId);
         }
 
         // Fallback: no results (should not happen for authenticated users)
-        return _ => false;
+        return new ReviewSearchCriteria(null, null, null, null,
+            query.Page, query.PageSize, query.CallerUserId);
     }
 
     /// <summary>

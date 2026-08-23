@@ -6,14 +6,14 @@ using Modules.Professionals.Domain.Ports;
 namespace Modules.Professionals.Features.Awards.GetAwards;
 
 public class GetAwardsQueryHandler(
-    IAwardOperations awardOperations,
+    IProfessionalQualificationsOperations qualificationsOperations,
     ILogger<GetAwardsQueryHandler> logger) : IQueryHandler<GetAwardsQuery, List<AwardDto>>
 {
     public async Task<Result<List<AwardDto>>> Handle(GetAwardsQuery query, CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting awards for professional {ProfessionalId}", query.ProfessionalId);
 
-        var awards = (await awardOperations.GetByProfessionalIdAsync(query.ProfessionalId, cancellationToken))
+        var awards = (await qualificationsOperations.GetAwardsAsync(query.ProfessionalId, cancellationToken))
             .Select(a => new AwardDto(
                 a.Id,
                 a.Title,

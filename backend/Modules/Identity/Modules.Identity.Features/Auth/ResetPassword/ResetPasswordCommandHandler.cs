@@ -7,7 +7,8 @@ using Modules.Identity.Domain.Ports;
 namespace Modules.Identity.Features.Auth.ResetPassword;
 
 internal sealed class ResetPasswordCommandHandler(
-    IIdentityUserOperations users,
+    IIdentityAccountOperations accounts,
+    IIdentityCredentialOperations credentials,
     ILogger<ResetPasswordCommandHandler> logger)
     : ICommandHandler<ResetPasswordCommand>
 {
@@ -15,7 +16,7 @@ internal sealed class ResetPasswordCommandHandler(
     {
         logger.LogInformation("Password reset processing for {Email}", request.Email);
 
-        var user = await users.FindByEmailAsync(request.Email);
+        var user = await accounts.FindByEmailAsync(request.Email);
         if (user is null)
         {
             logger.LogWarning("Password reset failed - user not found for {Email}", request.Email);
@@ -25,7 +26,7 @@ internal sealed class ResetPasswordCommandHandler(
             return Result.Failure(IdentityErrors.UserNotFound());
         }
 
-        var result = await users.ResetPasswordAsync(user, request.Token, request.NewPassword);
+        var result = await credentials.ResetPasswordAsync(user, request.Token, request.NewPassword);
 
         if (!result.Succeeded)
         {

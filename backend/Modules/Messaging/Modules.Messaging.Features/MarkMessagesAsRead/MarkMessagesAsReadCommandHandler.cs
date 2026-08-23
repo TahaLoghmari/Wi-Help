@@ -8,14 +8,14 @@ using Modules.Messaging.Domain.Ports;
 namespace Modules.Messaging.Features.MarkMessagesAsRead;
 
 public class MarkMessagesAsReadCommandHandler(
-    IMarkMessagesAsReadStore messageStore,
+    IConversationOperations conversationOperations,
     IMessagingRealtimeEvents realtimeEvents,
     ILogger<MarkMessagesAsReadCommandHandler> logger) : ICommandHandler<MarkMessagesAsReadCommand>
 {
     public async Task<Result> Handle(MarkMessagesAsReadCommand command, CancellationToken cancellationToken)
     {
         // Verify conversation exists and user is a participant
-        var conversation = await messageStore.GetConversationAsync(command.ConversationId, cancellationToken);
+        var conversation = await conversationOperations.GetConversationAsync(command.ConversationId, cancellationToken);
 
         if (conversation == null)
         {
@@ -30,7 +30,7 @@ public class MarkMessagesAsReadCommandHandler(
             return Result.Failure(MessagingErrors.NotParticipant());
         }
 
-        var unreadMessages = await messageStore.GetUnreadMessagesAsync(
+        var unreadMessages = await conversationOperations.GetUnreadMessagesAsync(
             command.ConversationId,
             command.UserId,
             cancellationToken);
@@ -42,7 +42,7 @@ public class MarkMessagesAsReadCommandHandler(
 
         if (unreadMessages.Count > 0)
         {
-            await messageStore.SaveAsync(cancellationToken);
+            await conversationOperations.SaveChangesAsync(cancellationToken);
             logger.LogInformation("Marked {Count} messages as read in conversation {ConversationId} by user {UserId}",
                 unreadMessages.Count, command.ConversationId, command.UserId);
 

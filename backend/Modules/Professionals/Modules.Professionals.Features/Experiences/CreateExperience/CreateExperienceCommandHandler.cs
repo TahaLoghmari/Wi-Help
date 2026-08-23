@@ -9,7 +9,7 @@ namespace Modules.Professionals.Features.Experiences.CreateExperience;
 
 public class CreateExperienceCommandHandler(
     IProfessionalProfileOperations profileOperations,
-    IWorkExperienceOperations workExperienceOperations,
+    IProfessionalQualificationsOperations qualificationsOperations,
     ILogger<CreateExperienceCommandHandler> logger) : ICommandHandler<CreateExperienceCommand, ExperienceDto>
 {
     public async Task<Result<ExperienceDto>> Handle(CreateExperienceCommand command, CancellationToken cancellationToken)
@@ -34,8 +34,8 @@ public class CreateExperienceCommandHandler(
             command.EndYear,
             command.IsCurrentPosition);
 
-        workExperienceOperations.Add(experience);
-        await workExperienceOperations.SaveChangesAsync(cancellationToken);
+        qualificationsOperations.Add(experience);
+        await qualificationsOperations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Experience created with ID {ExperienceId} for professional {ProfessionalId}", 
             experience.Id, command.ProfessionalId);

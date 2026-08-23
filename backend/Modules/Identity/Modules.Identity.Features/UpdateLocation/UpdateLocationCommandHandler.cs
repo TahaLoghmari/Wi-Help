@@ -11,7 +11,7 @@ namespace Modules.Identity.Features.UpdateLocation;
 /// Handles the UpdateLocation command - validates and persists user location coordinates.
 /// </summary>
 public sealed class UpdateLocationCommandHandler(
-    IIdentityUserOperations users,
+    IIdentityAccountOperations accounts,
     ILogger<UpdateLocationCommandHandler> logger) : ICommandHandler<UpdateLocationCommand>
 {
     public async Task<Result> Handle(UpdateLocationCommand command, CancellationToken cancellationToken)
@@ -19,7 +19,7 @@ public sealed class UpdateLocationCommandHandler(
         logger.LogInformation("Updating location for user {UserId}", command.UserId);
 
         // Find the user
-        var user = await users.FindByIdAsync(command.UserId);
+        var user = await accounts.FindByIdAsync(command.UserId);
         if (user is null)
         {
             logger.LogWarning("User not found for location update: {UserId}", command.UserId);
@@ -53,7 +53,7 @@ public sealed class UpdateLocationCommandHandler(
 
         // Update user location
         user.UpdateLocation(coordinates);
-        var result = await users.UpdateAsync(user);
+        var result = await accounts.UpdateAsync(user);
 
         if (!result.Succeeded)
         {

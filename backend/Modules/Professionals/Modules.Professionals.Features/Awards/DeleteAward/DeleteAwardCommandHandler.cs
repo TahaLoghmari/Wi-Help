@@ -7,7 +7,7 @@ using Modules.Professionals.Domain.Ports;
 namespace Modules.Professionals.Features.Awards.DeleteAward;
 
 public class DeleteAwardCommandHandler(
-    IAwardOperations awardOperations,
+    IProfessionalQualificationsOperations qualificationsOperations,
     ILogger<DeleteAwardCommandHandler> logger) : ICommandHandler<DeleteAwardCommand>
 {
     public async Task<Result> Handle(DeleteAwardCommand command, CancellationToken cancellationToken)
@@ -15,7 +15,7 @@ public class DeleteAwardCommandHandler(
         logger.LogInformation("Deleting award {AwardId} for professional {ProfessionalId}", 
             command.AwardId, command.ProfessionalId);
 
-        var award = await awardOperations.FindAsync(command.AwardId, command.ProfessionalId, cancellationToken);
+        var award = await qualificationsOperations.FindAwardAsync(command.AwardId, command.ProfessionalId, cancellationToken);
 
         if (award is null)
         {
@@ -23,8 +23,8 @@ public class DeleteAwardCommandHandler(
             return Result.Failure(ProfessionalErrors.AwardNotFound(command.AwardId));
         }
 
-        awardOperations.Remove(award);
-        await awardOperations.SaveChangesAsync(cancellationToken);
+        qualificationsOperations.Remove(award);
+        await qualificationsOperations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Award {AwardId} deleted successfully", command.AwardId);
 

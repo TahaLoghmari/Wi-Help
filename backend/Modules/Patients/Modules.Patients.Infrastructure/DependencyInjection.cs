@@ -18,18 +18,11 @@ public static class DependencyInjection
                 npgsqlOptions.MigrationsHistoryTable(DbConsts.MigrationHistoryTableName, DbConsts.PatientsSchemaName))
             .UseSnakeCaseNamingConvention()
         );
-        services.AddScoped<IGetAllergiesPort, GetAllergiesEfAdapter>();
-        services.AddScoped<IGetConditionsPort, GetConditionsEfAdapter>();
-        services.AddScoped<IGetMedicationsPort, GetMedicationsEfAdapter>();
-        services.AddScoped<IGetRelationshipsPort, GetRelationshipsEfAdapter>();
-        services.AddScoped<IRegisterPatientPort, RegisterPatientEfAdapter>();
-        services.AddScoped<ICompletePatientOnboardingPort, CompletePatientOnboardingEfAdapter>();
-        services.AddScoped<IGetAllPatientsPort, GetAllPatientsEfAdapter>();
-        services.AddScoped<IGetCurrentPatientPort, GetCurrentPatientEfAdapter>();
-        services.AddScoped<IGetPatientPort, GetPatientEfAdapter>();
-        services.AddScoped<IUpdatePatientPort, UpdatePatientEfAdapter>();
+        services.AddScoped<IPatientCatalogOperations, PatientCatalogOperations>();
+        services.AddScoped<IPatientProfileOperations, PatientProfileOperations>();
+        services.AddScoped<IPatientOnboardingOperations, PatientOnboardingOperations>();
+        services.AddScoped<IPatientAdminOperations, PatientAdminOperations>();
         services.AddScoped<IPatientModuleApiPort, PatientModuleApiEfAdapter>();
         return services;
     }
 }
-

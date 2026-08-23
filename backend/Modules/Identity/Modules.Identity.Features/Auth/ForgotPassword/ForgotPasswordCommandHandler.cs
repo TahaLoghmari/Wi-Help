@@ -6,7 +6,7 @@ using Modules.Identity.Domain.Ports;
 namespace Modules.Identity.Features.Auth.ForgotPassword;
 
 internal sealed class ForgotPasswordCommandHandler(
-    IIdentityUserOperations users,
+    IIdentityAccountOperations accounts,
     IIdentityEmail emailService,
     ILogger<ForgotPasswordCommandHandler> logger)
     : ICommandHandler<ForgotPasswordCommand>
@@ -15,7 +15,7 @@ internal sealed class ForgotPasswordCommandHandler(
     {
         logger.LogInformation("Forgot password requested for {Email}", request.Email);
 
-        var user = await users.FindByEmailAsync(request.Email);
+        var user = await accounts.FindByEmailAsync(request.Email);
 
         if (user is null)
         {

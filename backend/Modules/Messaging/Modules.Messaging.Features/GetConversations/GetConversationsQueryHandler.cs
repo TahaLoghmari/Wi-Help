@@ -8,14 +8,14 @@ using Modules.Messaging.PublicApi.Contracts;
 namespace Modules.Messaging.Features.GetConversations;
 
 public class GetConversationsQueryHandler(
-    IGetConversationsStore conversationStore,
+    IConversationOperations conversationOperations,
     IIdentityModuleApi identityApi,
     ILogger<GetConversationsQueryHandler> logger) : IQueryHandler<GetConversationsQuery, List<ConversationDto>>
 {
     public async Task<Result<List<ConversationDto>>> Handle(GetConversationsQuery query, CancellationToken cancellationToken)
     {
         // Fetch conversations with last message and unread count in optimized queries
-        var conversationsWithData = await conversationStore.GetForUserAsync(query.UserId, cancellationToken);
+        var conversationsWithData = await conversationOperations.GetForUserAsync(query.UserId, cancellationToken);
 
         logger.LogInformation("Found {Count} conversations for user {UserId}", conversationsWithData.Count, query.UserId);
 

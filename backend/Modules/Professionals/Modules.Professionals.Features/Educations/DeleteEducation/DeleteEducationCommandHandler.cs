@@ -7,7 +7,7 @@ using Modules.Professionals.Domain.Ports;
 namespace Modules.Professionals.Features.Educations.DeleteEducation;
 
 public class DeleteEducationCommandHandler(
-    IEducationOperations educationOperations,
+    IProfessionalQualificationsOperations qualificationsOperations,
     ILogger<DeleteEducationCommandHandler> logger) : ICommandHandler<DeleteEducationCommand>
 {
     public async Task<Result> Handle(DeleteEducationCommand command, CancellationToken cancellationToken)
@@ -15,7 +15,7 @@ public class DeleteEducationCommandHandler(
         logger.LogInformation("Deleting education {EducationId} for professional {ProfessionalId}", 
             command.EducationId, command.ProfessionalId);
 
-        var education = await educationOperations.FindAsync(command.EducationId, command.ProfessionalId, cancellationToken);
+        var education = await qualificationsOperations.FindEducationAsync(command.EducationId, command.ProfessionalId, cancellationToken);
 
         if (education is null)
         {
@@ -23,8 +23,8 @@ public class DeleteEducationCommandHandler(
             return Result.Failure(ProfessionalErrors.EducationNotFound(command.EducationId));
         }
 
-        educationOperations.Remove(education);
-        await educationOperations.SaveChangesAsync(cancellationToken);
+        qualificationsOperations.Remove(education);
+        await qualificationsOperations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Education {EducationId} deleted successfully", command.EducationId);
 

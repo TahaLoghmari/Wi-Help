@@ -40,10 +40,8 @@ public static class DependencyInjection
         // Note: This is shared across all hubs - only register once
         services.AddSingleton<IUserIdProvider, UserIdProvider>();
 
-        services.AddScoped<IAddNotification, AddNotificationEfAdapter>();
-        services.AddScoped<IGetNotifications, GetNotificationsEfAdapter>();
-        services.AddScoped<IMarkNotificationAsRead, MarkNotificationAsReadEfAdapter>();
-        services.AddScoped<IMarkNotificationsAsRead, MarkNotificationsAsReadEfAdapter>();
+        services.AddScoped<INotificationInbox, NotificationInboxEfAdapter>();
+        services.AddScoped<INotificationPublisher, NotificationPublisherEfAdapter>();
         services.AddScoped<INotificationDelivery, NotificationsService>();
 
         return services;

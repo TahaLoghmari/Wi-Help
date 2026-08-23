@@ -8,14 +8,14 @@ using Modules.Patients.PublicApi.Contracts;
 namespace Modules.Appointments.Features.GetProfessionalPatients;
 
 internal sealed class GetProfessionalPatientsQueryHandler(
-    IGetProfessionalPatientsStore appointmentsStore,
+    IAppointmentRead appointments,
     IPatientsModuleApi patientsApi)
     : IQueryHandler<GetProfessionalPatientsQuery, PaginationResultDto<PatientDto>>
 {
     public async Task<Result<PaginationResultDto<PatientDto>>> Handle(GetProfessionalPatientsQuery query, CancellationToken cancellationToken)
     {
 
-        var patientsPage = await appointmentsStore.GetAsync(
+        var patientsPage = await appointments.GetProfessionalPatientsPageAsync(
             query.ProfessionalId,
             query.Page,
             query.PageSize,

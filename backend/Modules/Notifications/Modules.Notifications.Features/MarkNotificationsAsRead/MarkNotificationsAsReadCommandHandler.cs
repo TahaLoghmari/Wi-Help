@@ -5,14 +5,14 @@ using Modules.Notifications.Domain.Operations;
 
 namespace Modules.Notifications.Features.MarkNotificationsAsRead;
 
-public sealed class MarkNotificationsAsReadCommandHandler(IMarkNotificationsAsRead markNotificationsAsRead)
+public sealed class MarkNotificationsAsReadCommandHandler(INotificationInbox notificationInbox)
     : ICommandHandler<MarkNotificationsAsReadCommand>
 {
     public async Task<Result> Handle(
         MarkNotificationsAsReadCommand command,
         CancellationToken cancellationToken)
     {
-        bool markedNotifications = await markNotificationsAsRead.MarkAllAsync(command.UserId, cancellationToken);
+        bool markedNotifications = await notificationInbox.MarkAllAsync(command.UserId, cancellationToken);
 
         if (!markedNotifications)
         {

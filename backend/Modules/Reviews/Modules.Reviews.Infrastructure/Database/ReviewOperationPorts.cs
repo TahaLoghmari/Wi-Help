@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Modules.Reviews.Domain.Abstractions;
 using Modules.Reviews.Domain.Entities;
@@ -125,22 +124,29 @@ internal sealed class ReviewOperationPorts(ReviewsDbContext dbContext) :
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<ReviewsPage> GetAsync(
-        Expression<Func<Review, bool>> filter,
-        int page,
-        int pageSize,
-        Guid callerUserId,
-        CancellationToken cancellationToken)
+    public async Task<ReviewsPage> GetAsync(ReviewSearchCriteria criteria, CancellationToken cancellationToken)
     {
         var baseQuery = dbContext.Reviews
             .AsNoTracking()
-            .Where(filter)
+            .Where(review =>
+                (criteria.ProfessionalSubjectId.HasValue
+                 && review.ProfessionalId == criteria.ProfessionalSubjectId.Value
+                 && review.Type == ReviewType.ProfessionalReview)
+                || (criteria.PatientSubjectId.HasValue
+                    && review.PatientId == criteria.PatientSubjectId.Value
+                    && review.Type == ReviewType.PatientReview)
+                || (criteria.ProfessionalReviewerId.HasValue
+                    && review.ProfessionalId == criteria.ProfessionalReviewerId.Value
+                    && review.Type == ReviewType.PatientReview)
+                || (criteria.PatientReviewerId.HasValue
+                    && review.PatientId == criteria.PatientReviewerId.Value
+                    && review.Type == ReviewType.ProfessionalReview))
             .OrderByDescending(review => review.CreatedAt);
 
         var totalCount = await baseQuery.CountAsync(cancellationToken);
         var reviews = await baseQuery
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
+            .Skip((criteria.Page - 1) * criteria.PageSize)
+            .Take(criteria.PageSize)
             .ToListAsync(cancellationToken);
 
         var reviewIds = reviews.Select(review => review.Id).ToList();
@@ -152,7 +158,7 @@ internal sealed class ReviewOperationPorts(ReviewsDbContext dbContext) :
             .ToDictionaryAsync(result => result.ReviewId, result => result.Count, cancellationToken);
         var likedReviewIds = await dbContext.ReviewLikes
             .AsNoTracking()
-            .Where(like => reviewIds.Contains(like.ReviewId) && like.UserId == callerUserId)
+            .Where(like => reviewIds.Contains(like.ReviewId) && like.UserId == criteria.CallerUserId)
             .Select(like => like.ReviewId)
             .ToListAsync(cancellationToken);
         var replies = await dbContext.ReviewReplies

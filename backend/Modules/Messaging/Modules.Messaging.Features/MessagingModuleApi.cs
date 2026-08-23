@@ -9,7 +9,7 @@ namespace Modules.Messaging.Features;
 /// Provides methods for other modules to interact with the Messaging module.
 /// </summary>
 public class MessagingModuleApi(
-    ICreateConversationStore conversationStore) : IMessagingModuleApi
+    IConversationOperations conversationOperations) : IMessagingModuleApi
 {
     public async Task<Result<Guid>> CreateConversationAsync(
         Guid participant1Id,
@@ -17,7 +17,7 @@ public class MessagingModuleApi(
         CancellationToken cancellationToken = default)
     {
         // Check if conversation already exists
-        var existingConversation = await conversationStore.FindAsync(participant1Id, participant2Id, cancellationToken);
+        var existingConversation = await conversationOperations.FindAsync(participant1Id, participant2Id, cancellationToken);
 
         if (existingConversation != null)
         {
@@ -29,7 +29,7 @@ public class MessagingModuleApi(
             participant2Id,
             Domain.Enums.ConversationType.ProfessionalPatient);
 
-        await conversationStore.CreateAsync(conversation, cancellationToken);
+        await conversationOperations.CreateAsync(conversation, cancellationToken);
 
         return Result<Guid>.Success(conversation.Id);
     }

@@ -6,7 +6,7 @@ using Modules.Patients.Domain.Ports;
 namespace Modules.Patients.Features.GetAllergies;
 
 public sealed class GetAllergiesQueryHandler(
-    IGetAllergiesPort allergiesPort,
+    IPatientCatalogOperations patientCatalog,
     ILogger<GetAllergiesQueryHandler> logger) : IQueryHandler<GetAllergiesQuery, List<AllergyDto>>
 {
     public async Task<Result<List<AllergyDto>>> Handle(
@@ -15,7 +15,7 @@ public sealed class GetAllergiesQueryHandler(
     {
         logger.LogInformation("Retrieving all allergies");
 
-        var allergies = (await allergiesPort.GetAllAsync(cancellationToken))
+        var allergies = (await patientCatalog.GetAllergiesAsync(cancellationToken))
             .Select(allergy => new AllergyDto(allergy.Id, allergy.Key))
             .ToList();
 

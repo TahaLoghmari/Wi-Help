@@ -10,7 +10,7 @@ using Modules.Messaging.Domain.Ports;
 namespace Modules.Messaging.Features.CreateConversation;
 
 public class CreateConversationCommandHandler(
-    ICreateConversationStore conversationStore,
+    IConversationOperations conversationOperations,
     IIdentityModuleApi identityApi,
     ILogger<CreateConversationCommandHandler> logger) : ICommandHandler<CreateConversationCommand, Guid>
 {
@@ -31,7 +31,7 @@ public class CreateConversationCommandHandler(
         }
 
         // Check if conversation already exists between these participants
-        var existingConversation = await conversationStore.FindAsync(
+        var existingConversation = await conversationOperations.FindAsync(
             command.Participant1Id,
             command.Participant2Id,
             cancellationToken);
@@ -48,7 +48,7 @@ public class CreateConversationCommandHandler(
             command.Participant2Id,
             ConversationType.ProfessionalPatient);
 
-        await conversationStore.CreateAsync(conversation, cancellationToken);
+        await conversationOperations.CreateAsync(conversation, cancellationToken);
 
         logger.LogInformation("Created conversation {ConversationId} between {Participant1Id} and {Participant2Id}",
             conversation.Id, command.Participant1Id, command.Participant2Id);

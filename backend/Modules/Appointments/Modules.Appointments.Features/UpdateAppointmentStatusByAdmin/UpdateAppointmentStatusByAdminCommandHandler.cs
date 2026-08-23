@@ -12,7 +12,7 @@ using Modules.Appointments.Domain.Enums;
 namespace Modules.Appointments.Features.UpdateAppointmentStatusByAdmin;
 
 public sealed class UpdateAppointmentStatusByAdminCommandHandler(
-    IUpdateAppointmentStatusByAdminStore appointmentsStore,
+    IAppointmentWorkflow appointmentsWorkflow,
     ILogger<UpdateAppointmentStatusByAdminCommandHandler> logger,
     INotificationsModuleApi notificationsModuleApi,
     IPatientsModuleApi patientsModuleApi,
@@ -28,17 +28,16 @@ public sealed class UpdateAppointmentStatusByAdminCommandHandler(
             command.AppointmentId,
             command.Status);
 
-        var appointment = await appointmentsStore.GetAsync(command.AppointmentId, cancellationToken);
+        var appointment = await appointmentsWorkflow.UpdateStatusForAdminAsync(
+            command.AppointmentId,
+            command.Status,
+            cancellationToken);
 
         if (appointment is null)
         {
             logger.LogWarning("Appointment {AppointmentId} not found", command.AppointmentId);
             return Result.Failure(AppointmentErrors.AppointmentNotFound(command.AppointmentId));
         }
-
-        appointment.UpdateStatus(command.Status);
-
-        await appointmentsStore.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation(
             "Successfully updated appointment {AppointmentId} status to {Status}",

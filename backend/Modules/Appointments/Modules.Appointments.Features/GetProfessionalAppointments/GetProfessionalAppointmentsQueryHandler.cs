@@ -9,7 +9,7 @@ using Modules.Professionals.PublicApi;
 namespace Modules.Appointments.Features.GetProfessionalAppointments;
 
 public sealed class GetProfessionalAppointmentsQueryHandler(
-    IGetProfessionalAppointmentsStore appointmentsStore,
+    IAppointmentRead appointments,
     IPatientsModuleApi patientsApi,
     IProfessionalModuleApi professionalApi)
     : IQueryHandler<GetProfessionalAppointmentsQuery, PaginationResultDto<GetProfessionalAppointmentsDto>>
@@ -27,7 +27,7 @@ public sealed class GetProfessionalAppointmentsQueryHandler(
 
         var professionalId = professionalResult.Value.Id;
 
-        var paginatedAppointments = await appointmentsStore.GetAsync(
+        var paginatedAppointments = await appointments.GetProfessionalAppointmentsPageAsync(
             professionalId,
             query.Page,
             query.PageSize,

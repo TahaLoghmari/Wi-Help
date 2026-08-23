@@ -22,9 +22,7 @@ public static class DependencyInjection
         services.AddScoped<IProfessionalCatalogOperations, ProfessionalCatalogOperations>();
         services.AddScoped<IProfessionalScheduleOperations, ProfessionalScheduleOperations>();
         services.AddScoped<IVerificationDocumentOperations, VerificationDocumentOperations>();
-        services.AddScoped<IAwardOperations, AwardOperations>();
-        services.AddScoped<IWorkExperienceOperations, WorkExperienceOperations>();
-        services.AddScoped<IEducationOperations, EducationOperations>();
+        services.AddScoped<IProfessionalQualificationsOperations, ProfessionalQualificationsOperations>();
         return services;
     }
 }

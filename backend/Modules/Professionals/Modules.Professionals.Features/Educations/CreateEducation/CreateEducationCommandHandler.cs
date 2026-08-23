@@ -9,7 +9,7 @@ namespace Modules.Professionals.Features.Educations.CreateEducation;
 
 public class CreateEducationCommandHandler(
     IProfessionalProfileOperations profileOperations,
-    IEducationOperations educationOperations,
+    IProfessionalQualificationsOperations qualificationsOperations,
     ILogger<CreateEducationCommandHandler> logger) : ICommandHandler<CreateEducationCommand, EducationDto>
 {
     public async Task<Result<EducationDto>> Handle(CreateEducationCommand command, CancellationToken cancellationToken)
@@ -35,8 +35,8 @@ public class CreateEducationCommandHandler(
             command.EndYear,
             command.IsCurrentlyStudying);
 
-        educationOperations.Add(education);
-        await educationOperations.SaveChangesAsync(cancellationToken);
+        qualificationsOperations.Add(education);
+        await qualificationsOperations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Education created with ID {EducationId} for professional {ProfessionalId}", 
             education.Id, command.ProfessionalId);
