@@ -1,22 +1,20 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Appointments.Domain;
 using Modules.Appointments.Domain.Enums;
-using Modules.Appointments.Infrastructure.Database;
+using Modules.Appointments.Domain.Ports;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.DTOs;
-using Modules.Common.Infrastructure.Services;
-using Modules.Common.Infrastructure.Templates;
-using Modules.Notifications.Domain.Enums;
+using Modules.Appointments.Features.Templates;
+using Modules.Common.Features.DTOs;
 using Modules.Notifications.PublicApi;
+using Modules.Notifications.PublicApi.Contracts;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
 
 namespace Modules.Appointments.Features.CancelAppointmentByProfessional;
 
 public class CancelAppointmentByProfessionalCommandHandler(
-    AppointmentsDbContext appointmentsDbContext,
+    ICancelAppointmentByProfessionalStore appointmentsStore,
     ILogger<CancelAppointmentByProfessionalCommandHandler> logger,
     INotificationsModuleApi notificationsModuleApi,
     IPatientsModuleApi patientsModuleApi,
@@ -29,8 +27,9 @@ public class CancelAppointmentByProfessionalCommandHandler(
             "Professional {ProfessionalId} cancelling appointment {AppointmentId}",
             command.ProfessionalId, command.AppointmentId);
         
-        var appointment = await appointmentsDbContext.Appointments.FirstOrDefaultAsync(
-            ap => ap.Id == command.AppointmentId && ap.ProfessionalId == command.ProfessionalId, 
+        var appointment = await appointmentsStore.GetAsync(
+            command.AppointmentId,
+            command.ProfessionalId,
             cancellationToken);
             
         if (appointment is null)
@@ -105,7 +104,7 @@ public class CancelAppointmentByProfessionalCommandHandler(
         }
 
         appointment.Cancel();
-        await appointmentsDbContext.SaveChangesAsync(cancellationToken);
+        await appointmentsStore.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Appointment {AppointmentId} cancelled by professional", command.AppointmentId);
 

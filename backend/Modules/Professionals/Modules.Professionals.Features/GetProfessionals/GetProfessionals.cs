@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Features.DTOs;
 using Modules.Professionals.Features.GetProfessional;
-using Modules.Professionals.Infrastructure.DTOs;
 
 namespace Modules.Professionals.Features.GetProfessionals;
 

@@ -1,14 +1,13 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 
 namespace Modules.Professionals.Features.Experiences.DeleteExperience;
 
 public class DeleteExperienceCommandHandler(
-    ProfessionalsDbContext dbContext,
+    IWorkExperienceOperations workExperienceOperations,
     ILogger<DeleteExperienceCommandHandler> logger) : ICommandHandler<DeleteExperienceCommand>
 {
     public async Task<Result> Handle(DeleteExperienceCommand command, CancellationToken cancellationToken)
@@ -16,9 +15,7 @@ public class DeleteExperienceCommandHandler(
         logger.LogInformation("Deleting experience {ExperienceId} for professional {ProfessionalId}", 
             command.ExperienceId, command.ProfessionalId);
 
-        var experience = await dbContext.WorkExperiences
-            .FirstOrDefaultAsync(e => e.Id == command.ExperienceId && e.ProfessionalId == command.ProfessionalId, 
-                cancellationToken);
+        var experience = await workExperienceOperations.FindAsync(command.ExperienceId, command.ProfessionalId, cancellationToken);
 
         if (experience is null)
         {
@@ -26,8 +23,8 @@ public class DeleteExperienceCommandHandler(
             return Result.Failure(ProfessionalErrors.ExperienceNotFound(command.ExperienceId));
         }
 
-        dbContext.WorkExperiences.Remove(experience);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        workExperienceOperations.Remove(experience);
+        await workExperienceOperations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Experience {ExperienceId} deleted successfully", command.ExperienceId);
 

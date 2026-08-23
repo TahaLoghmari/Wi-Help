@@ -1,24 +1,19 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 
 namespace Modules.Professionals.Features.Experiences.GetExperiences;
 
 public class GetExperiencesQueryHandler(
-    ProfessionalsDbContext dbContext,
+    IWorkExperienceOperations workExperienceOperations,
     ILogger<GetExperiencesQueryHandler> logger) : IQueryHandler<GetExperiencesQuery, List<ExperienceDto>>
 {
     public async Task<Result<List<ExperienceDto>>> Handle(GetExperiencesQuery query, CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting experiences for professional {ProfessionalId}", query.ProfessionalId);
 
-        var experiences = await dbContext.WorkExperiences
-            .AsNoTracking()
-            .Where(e => e.ProfessionalId == query.ProfessionalId)
-            .OrderByDescending(e => e.IsCurrentPosition)
-            .ThenByDescending(e => e.StartYear)
+        var experiences = (await workExperienceOperations.GetByProfessionalIdAsync(query.ProfessionalId, cancellationToken))
             .Select(e => new ExperienceDto(
                 e.Id,
                 e.Title,
@@ -30,7 +25,7 @@ public class GetExperiencesQueryHandler(
                 e.IsCurrentPosition,
                 e.CreatedAt,
                 e.UpdatedAt))
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         logger.LogInformation("Found {Count} experiences for professional {ProfessionalId}", 
             experiences.Count, query.ProfessionalId);

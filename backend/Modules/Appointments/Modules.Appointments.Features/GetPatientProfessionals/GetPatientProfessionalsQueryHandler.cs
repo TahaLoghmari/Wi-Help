@@ -1,29 +1,26 @@
-using Microsoft.EntityFrameworkCore;
-using Modules.Appointments.Infrastructure.Database;
+using Modules.Appointments.Domain.Ports;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Features.DTOs;
 using Modules.Professionals.PublicApi;
 using Modules.Professionals.PublicApi.Contracts;
 
 namespace Modules.Appointments.Features.GetPatientProfessionals;
 
 internal sealed class GetPatientProfessionalsQueryHandler(
-    AppointmentsDbContext dbContext,
+    IGetPatientProfessionalsStore appointmentsStore,
     IProfessionalModuleApi professionalsApi)
     : IQueryHandler<GetPatientProfessionalsQuery, PaginationResultDto<ProfessionalDto>>
 {
     public async Task<Result<PaginationResultDto<ProfessionalDto>>> Handle(GetPatientProfessionalsQuery query, CancellationToken cancellationToken)
     {
-        // Get total count of distinct professionals
-        var totalCount = await dbContext.Appointments
-            .AsNoTracking()
-            .Where(a => a.PatientId == query.PatientId)
-            .Select(a => a.ProfessionalId)
-            .Distinct()
-            .CountAsync(cancellationToken);
+        var professionalsPage = await appointmentsStore.GetAsync(
+            query.PatientId,
+            query.Page,
+            query.PageSize,
+            cancellationToken);
 
-        if (totalCount == 0)
+        if (professionalsPage.TotalCount == 0)
         {
             return Result<PaginationResultDto<ProfessionalDto>>.Success(new PaginationResultDto<ProfessionalDto>
             {
@@ -34,19 +31,8 @@ internal sealed class GetPatientProfessionalsQueryHandler(
             });
         }
 
-        // Get paginated professional IDs
-        var professionalIds = await dbContext.Appointments
-            .AsNoTracking()
-            .Where(a => a.PatientId == query.PatientId)
-            .Select(a => a.ProfessionalId)
-            .Distinct()
-            .OrderBy(id => id) // Order by ID for consistency
-            .Skip((query.Page - 1) * query.PageSize)
-            .Take(query.PageSize)
-            .ToListAsync(cancellationToken);
-
         // Get Professional Details
-        var professionalsResult = await professionalsApi.GetProfessionalsByIdsAsync(professionalIds, cancellationToken);
+        var professionalsResult = await professionalsApi.GetProfessionalsByIdsAsync(professionalsPage.Items, cancellationToken);
         
         if (professionalsResult.IsFailure)
         {
@@ -58,7 +44,7 @@ internal sealed class GetPatientProfessionalsQueryHandler(
             Items = professionalsResult.Value,
             Page = query.Page,
             PageSize = query.PageSize,
-            TotalCount = totalCount
+            TotalCount = professionalsPage.TotalCount
         });
     }
 }

@@ -1,15 +1,14 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Reviews.Domain;
+using Modules.Reviews.Domain.Abstractions;
 using Modules.Reviews.Domain.Entities;
-using Modules.Reviews.Infrastructure.Database;
 
 namespace Modules.Reviews.Features.ReplyToReview;
 
 internal sealed class ReplyToReviewCommandHandler(
-    ReviewsDbContext dbContext,
+    IReplyToReviewPort reviews,
     ILogger<ReplyToReviewCommandHandler> logger) : ICommandHandler<ReplyToReviewCommand>
 {
     public async Task<Result> Handle(ReplyToReviewCommand command, CancellationToken cancellationToken)
@@ -18,9 +17,7 @@ internal sealed class ReplyToReviewCommandHandler(
             "Replying to review {ReviewId} by user {UserId}",
             command.ReviewId, command.CallerUserId);
 
-        var review = await dbContext.Reviews
-            .AsNoTracking()
-            .FirstOrDefaultAsync(r => r.Id == command.ReviewId, cancellationToken);
+        var review = await reviews.GetReviewAsync(command.ReviewId, cancellationToken);
 
         if (review is null)
             return Result.Failure(ReviewErrors.NotFound(command.ReviewId));
@@ -35,8 +32,7 @@ internal sealed class ReplyToReviewCommandHandler(
 
         var reply = new ReviewReply(command.ReviewId, command.CallerUserId, command.Comment);
 
-        dbContext.ReviewReplies.Add(reply);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await reviews.AddReplyAsync(reply, cancellationToken);
 
         logger.LogInformation("Reply added to review {ReviewId} by user {UserId}",
             command.ReviewId, command.CallerUserId);

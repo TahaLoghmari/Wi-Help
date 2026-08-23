@@ -1,14 +1,13 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Identity.Domain.Entities;
 using Modules.Identity.Domain;
+using Modules.Identity.Domain.Ports;
 
 namespace Modules.Identity.Features.Auth.ResetPassword;
 
 internal sealed class ResetPasswordCommandHandler(
-    UserManager<User> userManager,
+    IIdentityUserOperations users,
     ILogger<ResetPasswordCommandHandler> logger)
     : ICommandHandler<ResetPasswordCommand>
 {
@@ -16,7 +15,7 @@ internal sealed class ResetPasswordCommandHandler(
     {
         logger.LogInformation("Password reset processing for {Email}", request.Email);
 
-        var user = await userManager.FindByEmailAsync(request.Email);
+        var user = await users.FindByEmailAsync(request.Email);
         if (user is null)
         {
             logger.LogWarning("Password reset failed - user not found for {Email}", request.Email);
@@ -26,7 +25,7 @@ internal sealed class ResetPasswordCommandHandler(
             return Result.Failure(IdentityErrors.UserNotFound());
         }
 
-        var result = await userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
+        var result = await users.ResetPasswordAsync(user, request.Token, request.NewPassword);
 
         if (!result.Succeeded)
         {

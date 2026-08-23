@@ -1,4 +1,3 @@
-using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -39,5 +38,4 @@ public class GetProfessionalAvailability : IEndpoint
         public int Month { get; init; }
     }
 }
-
 

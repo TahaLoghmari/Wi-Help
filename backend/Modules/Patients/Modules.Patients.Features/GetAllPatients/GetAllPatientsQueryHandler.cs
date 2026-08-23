@@ -1,25 +1,22 @@
-using Microsoft.EntityFrameworkCore;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Features.DTOs;
 using Modules.Identity.PublicApi;
-using Modules.Patients.Infrastructure.Database;
+using Modules.Patients.Domain.Ports;
 
 namespace Modules.Patients.Features.GetAllPatients;
 
 internal sealed class GetAllPatientsQueryHandler(
-    PatientsDbContext dbContext,
+    IGetAllPatientsPort patientsPort,
     IIdentityModuleApi identityModuleApi)
     : IQueryHandler<GetAllPatientsQuery, PaginationResultDto<GetAllPatientsDto>>
 {
     public async Task<Result<PaginationResultDto<GetAllPatientsDto>>> Handle(GetAllPatientsQuery request, CancellationToken cancellationToken)
     {
-        var totalCount = await dbContext.Patients.CountAsync(cancellationToken);
-
-        var patients = await dbContext.Patients
-            .Skip((request.Page - 1) * request.PageSize)
-            .Take(request.PageSize)
-            .ToListAsync(cancellationToken);
+        var (patients, totalCount) = await patientsPort.GetPageAsync(
+            request.Page,
+            request.PageSize,
+            cancellationToken);
 
         var userIds = patients.Select(p => p.UserId).Distinct();
 

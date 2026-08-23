@@ -1,26 +1,21 @@
-using Microsoft.EntityFrameworkCore;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Features.DTOs;
 using Modules.Identity.PublicApi;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 
 namespace Modules.Professionals.Features.GetProfessionalsForAdmin;
 
 internal sealed class GetProfessionalsForAdminQueryHandler(
-    ProfessionalsDbContext dbContext,
+    IProfessionalProfileOperations profileOperations,
     IIdentityModuleApi identityModuleApi)
     : IQueryHandler<GetProfessionalsForAdminQuery, PaginationResultDto<GetProfessionalsForAdminDto>>
 {
     public async Task<Result<PaginationResultDto<GetProfessionalsForAdminDto>>> Handle(GetProfessionalsForAdminQuery request, CancellationToken cancellationToken)
     {
-        var totalCount = await dbContext.Professionals.CountAsync(cancellationToken);
+        var totalCount = await profileOperations.CountAsync(cancellationToken);
 
-        var professionals = await dbContext.Professionals
-            .Include(p => p.Specialization)
-            .Skip((request.Page - 1) * request.PageSize)
-            .Take(request.PageSize)
-            .ToListAsync(cancellationToken);
+        var professionals = await profileOperations.GetAdminPageAsync(request.Page, request.PageSize, cancellationToken);
 
         var userIds = professionals.Select(p => p.UserId).Distinct();
 

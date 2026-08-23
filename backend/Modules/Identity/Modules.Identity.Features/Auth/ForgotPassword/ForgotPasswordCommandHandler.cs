@@ -1,15 +1,13 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Identity.Domain.Entities;
-using Modules.Identity.Infrastructure.Services;
+using Modules.Identity.Domain.Ports;
 
 namespace Modules.Identity.Features.Auth.ForgotPassword;
 
 internal sealed class ForgotPasswordCommandHandler(
-    UserManager<User> userManager,
-    IdentityEmailService emailService,
+    IIdentityUserOperations users,
+    IIdentityEmail emailService,
     ILogger<ForgotPasswordCommandHandler> logger)
     : ICommandHandler<ForgotPasswordCommand>
 {
@@ -17,7 +15,7 @@ internal sealed class ForgotPasswordCommandHandler(
     {
         logger.LogInformation("Forgot password requested for {Email}", request.Email);
 
-        var user = await userManager.FindByEmailAsync(request.Email);
+        var user = await users.FindByEmailAsync(request.Email);
 
         if (user is null)
         {

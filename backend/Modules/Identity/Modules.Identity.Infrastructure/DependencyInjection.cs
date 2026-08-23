@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Modules.Identity.Domain.Entities;
+using Modules.Identity.Domain.Ports;
 using Modules.Identity.Infrastructure.Database;
 using Modules.Identity.Infrastructure.Services;
 using Modules.Identity.Infrastructure.Settings;
@@ -56,11 +57,13 @@ public static class DependencyInjection
 
         services.AddHttpContextAccessor();
 
-        services.AddScoped<TokenManagementService>();
+        services.AddScoped<IIdentityUserOperations, IdentityUserOperations>();
+        services.AddScoped<ITokenManagement, TokenManagementService>();
         services.AddScoped<TokenProvider>();
-        services.AddScoped<IdentityEmailService>();
-        services.AddScoped<CookieService>();
-        services.AddScoped<GoogleTokensProvider>();
+        services.AddScoped<IIdentityEmail, IdentityEmailService>();
+        services.AddScoped<IAuthCookies, CookieService>();
+        services.AddScoped<IGoogleAuthentication, GoogleTokensProvider>();
+        services.AddScoped<IIdentityLocationLookup, IdentityLocationLookup>();
 
         services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
         services.Configure<GoogleSettings>(configuration.GetSection("Google"));

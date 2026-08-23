@@ -1,14 +1,12 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Identity.Domain.Entities;
-using Modules.Identity.Infrastructure.DTOs;
+using Modules.Identity.Domain.Ports;
 
 namespace Modules.Identity.Features.Auth.GetCurrentUser;
 
 public sealed class GetCurrentUserQueryHandler(
-    UserManager<User> userManager,
+    IIdentityUserOperations users,
     ILogger<GetCurrentUserQueryHandler> logger) : IQueryHandler<GetCurrentUserQuery, GetCurrentUserDto>
 {
     public async Task<Result<GetCurrentUserDto>> Handle(
@@ -21,7 +19,7 @@ public sealed class GetCurrentUserQueryHandler(
             return Result<GetCurrentUserDto>.Failure(Error.Unauthorized("GetCurrentUser.Unauthorized", "User ID claim is missing."));
         }
 
-        var user = await userManager.FindByIdAsync(query.UserId);
+        var user = await users.FindByIdAsync(query.UserId);
 
         if (user is null)
         {
@@ -31,7 +29,7 @@ public sealed class GetCurrentUserQueryHandler(
 
         logger.LogInformation("Current user retrieved successfully for UserId: {UserId}", query.UserId);
 
-        var userRoles = await userManager.GetRolesAsync(user);
+        var userRoles = await users.GetRolesAsync(user);
 
         var userDto = new GetCurrentUserDto(
             user.Id,

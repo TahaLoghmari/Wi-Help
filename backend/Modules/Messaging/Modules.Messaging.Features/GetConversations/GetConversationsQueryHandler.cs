@@ -1,34 +1,21 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.PublicApi;
-using Modules.Messaging.Infrastructure.Database;
+using Modules.Messaging.Domain.Ports;
 using Modules.Messaging.PublicApi.Contracts;
 
 namespace Modules.Messaging.Features.GetConversations;
 
 public class GetConversationsQueryHandler(
-    MessagingDbContext messagingDbContext,
+    IGetConversationsStore conversationStore,
     IIdentityModuleApi identityApi,
     ILogger<GetConversationsQueryHandler> logger) : IQueryHandler<GetConversationsQuery, List<ConversationDto>>
 {
     public async Task<Result<List<ConversationDto>>> Handle(GetConversationsQuery query, CancellationToken cancellationToken)
     {
         // Fetch conversations with last message and unread count in optimized queries
-        var conversationsWithData = await messagingDbContext.Conversations
-            .Where(c => c.Participant1Id == query.UserId || c.Participant2Id == query.UserId)
-            .Select(c => new
-            {
-                Conversation = c,
-                LastMessage = c.Messages
-                    .OrderByDescending(m => m.CreatedAt)
-                    .FirstOrDefault(),
-                UnreadCount = c.Messages
-                    .Count(m => m.SenderId != query.UserId && m.Status != Domain.Enums.MessageStatus.Read)
-            })
-            .OrderByDescending(x => x.Conversation.LastMessageAt ?? x.Conversation.CreatedAt)
-            .ToListAsync(cancellationToken);
+        var conversationsWithData = await conversationStore.GetForUserAsync(query.UserId, cancellationToken);
 
         logger.LogInformation("Found {Count} conversations for user {UserId}", conversationsWithData.Count, query.UserId);
 
@@ -86,4 +73,3 @@ public class GetConversationsQueryHandler(
         return Result<List<ConversationDto>>.Success(conversationDtos);
     }
 }
-

@@ -1,6 +1,6 @@
 using Modules.Common.Features.ValueObjects;
 
-namespace Modules.Identity.Infrastructure.DTOs;
+namespace Modules.Identity.Features.Auth.GetCurrentUser;
 
 public sealed record GetCurrentUserDto(
     Guid Id,

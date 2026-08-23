@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Identity.Features.DTOs;
-using Modules.Identity.Infrastructure.Services;
+using Modules.Identity.Domain.DTOs;
+using Modules.Identity.Domain.Ports;
 
 namespace Modules.Identity.Features.Auth.Refresh;
 
@@ -14,7 +14,7 @@ internal sealed class Refresh : IEndpoint
     {
         app.MapPost(IdentityEndpoints.Refresh, async (
                 ICommandHandler<RefreshCommand, AccessTokensDto> handler,
-                CookieService cookieService,
+                IAuthCookies authCookies,
                 HttpContext httpContext,
                 CancellationToken cancellationToken) =>
             {
@@ -32,7 +32,7 @@ internal sealed class Refresh : IEndpoint
                 return result.Match(
                     tokens =>
                     {
-                        cookieService.AddCookies(httpContext.Response, tokens);
+                        authCookies.AddCookies(httpContext.Response, tokens);
                         return Results.Ok(new { tokens.AccessToken, tokens.RefreshToken });
                     },
                     error => CustomResults.Problem(error));

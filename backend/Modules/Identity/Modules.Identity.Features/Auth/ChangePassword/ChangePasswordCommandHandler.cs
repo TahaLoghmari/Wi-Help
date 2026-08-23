@@ -1,14 +1,13 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Identity.Domain.Entities;
 using Modules.Identity.Domain;
+using Modules.Identity.Domain.Ports;
 
 namespace Modules.Identity.Features.Auth.ChangePassword;
 
 public sealed class ChangePasswordCommandHandler(
-    UserManager<User> userManager,
+    IIdentityUserOperations users,
     ILogger<ChangePasswordCommandHandler> logger) : ICommandHandler<ChangePasswordCommand>
 {
     public async Task<Result> Handle(
@@ -17,7 +16,7 @@ public sealed class ChangePasswordCommandHandler(
     {
         logger.LogInformation("Password change attempt started for UserId: {UserId}", command.UserId);
 
-        User? user = await userManager.FindByIdAsync(command.UserId.ToString());
+        var user = await users.FindByIdAsync(command.UserId.ToString());
         
         if (user is null)
         {
@@ -25,7 +24,7 @@ public sealed class ChangePasswordCommandHandler(
             return Result.Failure(IdentityErrors.UserNotFound());
         }
 
-        var isCurrentPasswordValid = await userManager.CheckPasswordAsync(user, command.CurrentPassword);
+        var isCurrentPasswordValid = await users.CheckPasswordAsync(user, command.CurrentPassword);
 
         if (!isCurrentPasswordValid)
         {
@@ -33,7 +32,7 @@ public sealed class ChangePasswordCommandHandler(
             return Result.Failure(IdentityErrors.InvalidCurrentPassword());
         }
 
-        var result = await userManager.ChangePasswordAsync(user, command.CurrentPassword, command.NewPassword);
+        var result = await users.ChangePasswordAsync(user, command.CurrentPassword, command.NewPassword);
 
         if (!result.Succeeded)
         {

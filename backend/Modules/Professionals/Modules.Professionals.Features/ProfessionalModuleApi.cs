@@ -1,29 +1,24 @@
 using System.Globalization;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Features.DTOs;
 using Modules.Identity.PublicApi;
 using Modules.Professionals.Domain;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 using Modules.Professionals.PublicApi;
 using Modules.Professionals.PublicApi.Contracts;
 
 namespace Modules.Professionals.Features;
 
 public class ProfessionalModuleApi(
-    ProfessionalsDbContext professionalsDbContext, 
+    IProfessionalProfileOperations profileOperations,
     IIdentityModuleApi identityApi,
     ILogger<ProfessionalModuleApi> logger)
     : IProfessionalModuleApi
 {
     public async Task<Result<ProfessionalDto>> GetProfessionalByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        var professional = await professionalsDbContext.Professionals
-            .Include(p => p.Specialization)
-            .Include(p => p.Services)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.UserId == userId, cancellationToken);
+        var professional = await profileOperations.FindByUserIdWithDetailsReadOnlyAsync(userId, cancellationToken);
 
         if (professional is null)
         {
@@ -60,12 +55,7 @@ public class ProfessionalModuleApi(
 
     public async Task<Result<List<ProfessionalDto>>> GetProfessionalsByIdsAsync(IEnumerable<Guid> professionalIds, CancellationToken cancellationToken = default)
     {
-        var professionals = await professionalsDbContext.Professionals
-            .Include(p => p.Specialization)
-            .Include(p => p.Services)
-            .AsNoTracking()
-            .Where(p => professionalIds.Contains(p.Id))
-            .ToListAsync(cancellationToken);
+        var professionals = await profileOperations.GetByIdsWithDetailsAsync(professionalIds, cancellationToken);
 
         if (professionals.Count == 0)
         {
@@ -117,17 +107,9 @@ public class ProfessionalModuleApi(
         int pageSize, 
         CancellationToken cancellationToken = default)
     {
-        var baseQuery = professionalsDbContext.Professionals
-            .Include(p => p.Specialization)
-            .AsNoTracking()
-            .OrderByDescending(p => p.CreatedAt);
+        var totalCount = await profileOperations.CountAsync(cancellationToken);
 
-        var totalCount = await baseQuery.CountAsync(cancellationToken);
-
-        var professionals = await baseQuery
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync(cancellationToken);
+        var professionals = await profileOperations.GetPublicApiAdminPageAsync(page, pageSize, cancellationToken);
 
         // Get user IDs
         var userIds = professionals.Select(p => p.UserId).ToList();
@@ -157,7 +139,7 @@ public class ProfessionalModuleApi(
                 p.Specialization.Key,
                 p.CreatedAt,
                 0, // TotalEarned - will be populated by caller if needed
-                p.VerificationStatus
+                (VerificationStatus)p.VerificationStatus
             );
         }).ToList();
 
@@ -173,20 +155,19 @@ public class ProfessionalModuleApi(
 
     public async Task<Result> UpdateVerificationStatusAsync(
         Guid professionalId, 
-        Modules.Professionals.Domain.Enums.VerificationStatus verificationStatus, 
+        VerificationStatus verificationStatus,
         CancellationToken cancellationToken = default)
     {
-        var professional = await professionalsDbContext.Professionals
-            .FirstOrDefaultAsync(p => p.Id == professionalId, cancellationToken);
+        var professional = await profileOperations.FindByIdAsync(professionalId, cancellationToken);
 
         if (professional is null)
         {
             return Result.Failure(ProfessionalErrors.NotFound(professionalId));
         }
 
-        professional.UpdateVerificationStatus(verificationStatus);
+        professional.UpdateVerificationStatus((Modules.Professionals.Domain.Enums.VerificationStatus)verificationStatus);
 
-        await professionalsDbContext.SaveChangesAsync(cancellationToken);
+        await profileOperations.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }

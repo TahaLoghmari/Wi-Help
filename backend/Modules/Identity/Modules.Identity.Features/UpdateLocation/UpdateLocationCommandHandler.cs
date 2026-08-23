@@ -1,10 +1,9 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Common.Features.ValueObjects;
 using Modules.Identity.Domain;
-using Modules.Identity.Domain.Entities;
+using Modules.Identity.Domain.Ports;
 
 namespace Modules.Identity.Features.UpdateLocation;
 
@@ -12,7 +11,7 @@ namespace Modules.Identity.Features.UpdateLocation;
 /// Handles the UpdateLocation command - validates and persists user location coordinates.
 /// </summary>
 public sealed class UpdateLocationCommandHandler(
-    UserManager<User> userManager,
+    IIdentityUserOperations users,
     ILogger<UpdateLocationCommandHandler> logger) : ICommandHandler<UpdateLocationCommand>
 {
     public async Task<Result> Handle(UpdateLocationCommand command, CancellationToken cancellationToken)
@@ -20,7 +19,7 @@ public sealed class UpdateLocationCommandHandler(
         logger.LogInformation("Updating location for user {UserId}", command.UserId);
 
         // Find the user
-        var user = await userManager.FindByIdAsync(command.UserId);
+        var user = await users.FindByIdAsync(command.UserId);
         if (user is null)
         {
             logger.LogWarning("User not found for location update: {UserId}", command.UserId);
@@ -54,7 +53,7 @@ public sealed class UpdateLocationCommandHandler(
 
         // Update user location
         user.UpdateLocation(coordinates);
-        var result = await userManager.UpdateAsync(user);
+        var result = await users.UpdateAsync(user);
 
         if (!result.Succeeded)
         {

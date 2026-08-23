@@ -1,17 +1,16 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 
 using Modules.Notifications.PublicApi;
-using Modules.Notifications.Domain.Enums;
+using Modules.Notifications.PublicApi.Contracts;
 
 namespace Modules.Professionals.Features.UpdateAccountStatus;
 
 internal sealed class UpdateAccountStatusCommandHandler(
-    ProfessionalsDbContext dbContext,
+    IProfessionalProfileOperations profileOperations,
     ILogger<UpdateAccountStatusCommandHandler> logger,
     INotificationsModuleApi notificationsModuleApi)
     : ICommandHandler<UpdateAccountStatusCommand>
@@ -20,8 +19,7 @@ internal sealed class UpdateAccountStatusCommandHandler(
     {
         logger.LogInformation("Updating account status for professional {ProfessionalId} to {Status}", request.ProfessionalId, request.Status);
 
-        var professional = await dbContext.Professionals
-            .FirstOrDefaultAsync(p => p.Id == request.ProfessionalId, cancellationToken);
+        var professional = await profileOperations.FindByIdAsync(request.ProfessionalId, cancellationToken);
 
         if (professional is null)
         {
@@ -30,7 +28,7 @@ internal sealed class UpdateAccountStatusCommandHandler(
 
         professional.UpdateVerificationStatus(request.Status);
 
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await profileOperations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Account status updated successfully for professional {ProfessionalId}", request.ProfessionalId);
 

@@ -1,15 +1,14 @@
-using Microsoft.EntityFrameworkCore;
-using Modules.Appointments.Infrastructure.Database;
+using Modules.Appointments.Domain.Ports;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Features.DTOs;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
 
 namespace Modules.Appointments.Features.GetAllAppointmentsForAdmin;
 
 public sealed class GetAllAppointmentsForAdminQueryHandler(
-    AppointmentsDbContext appointmentsDbContext,
+    IGetAllAppointmentsForAdminStore appointmentsStore,
     IPatientsModuleApi patientsApi,
     IProfessionalModuleApi professionalApi)
     : IQueryHandler<GetAllAppointmentsForAdminQuery, PaginationResultDto<GetAllAppointmentsForAdminDto>>
@@ -18,16 +17,8 @@ public sealed class GetAllAppointmentsForAdminQueryHandler(
         GetAllAppointmentsForAdminQuery query,
         CancellationToken cancellationToken)
     {
-        var baseQuery = appointmentsDbContext.Appointments
-            .AsNoTracking()
-            .OrderByDescending(a => a.CreatedAt);
-
-        var totalCount = await baseQuery.CountAsync(cancellationToken);
-
-        var appointments = await baseQuery
-            .Skip((query.Page - 1) * query.PageSize)
-            .Take(query.PageSize)
-            .ToListAsync(cancellationToken);
+        var appointmentsPage = await appointmentsStore.GetAsync(query.Page, query.PageSize, cancellationToken);
+        var appointments = appointmentsPage.Items;
 
         // Get unique patient and professional IDs
         var patientIds = appointments.Select(a => a.PatientId).Distinct().ToList();
@@ -83,7 +74,7 @@ public sealed class GetAllAppointmentsForAdminQueryHandler(
             new PaginationResultDto<GetAllAppointmentsForAdminDto>
             {
                 Items = appointmentDtos,
-                TotalCount = totalCount,
+                TotalCount = appointmentsPage.TotalCount,
                 Page = query.Page,
                 PageSize = query.PageSize
             });

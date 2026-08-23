@@ -1,19 +1,18 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Appointments.Domain;
-using Modules.Appointments.Infrastructure.Database;
+using Modules.Appointments.Domain.Ports;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Notifications.PublicApi;
+using Modules.Notifications.PublicApi.Contracts;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
-using Modules.Notifications.Domain.Enums;
 using Modules.Appointments.Domain.Enums;
 
 namespace Modules.Appointments.Features.UpdateAppointmentStatusByAdmin;
 
 public sealed class UpdateAppointmentStatusByAdminCommandHandler(
-    AppointmentsDbContext dbContext,
+    IUpdateAppointmentStatusByAdminStore appointmentsStore,
     ILogger<UpdateAppointmentStatusByAdminCommandHandler> logger,
     INotificationsModuleApi notificationsModuleApi,
     IPatientsModuleApi patientsModuleApi,
@@ -29,8 +28,7 @@ public sealed class UpdateAppointmentStatusByAdminCommandHandler(
             command.AppointmentId,
             command.Status);
 
-        var appointment = await dbContext.Appointments
-            .FirstOrDefaultAsync(a => a.Id == command.AppointmentId, cancellationToken);
+        var appointment = await appointmentsStore.GetAsync(command.AppointmentId, cancellationToken);
 
         if (appointment is null)
         {
@@ -40,7 +38,7 @@ public sealed class UpdateAppointmentStatusByAdminCommandHandler(
 
         appointment.UpdateStatus(command.Status);
 
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await appointmentsStore.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation(
             "Successfully updated appointment {AppointmentId} status to {Status}",

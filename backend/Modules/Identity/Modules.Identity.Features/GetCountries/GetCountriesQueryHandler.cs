@@ -1,13 +1,12 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Identity.Infrastructure.Database;
+using Modules.Identity.Domain.Ports;
 
 namespace Modules.Identity.Features.GetCountries;
 
 public sealed class GetCountriesQueryHandler(
-    IdentityDbContext dbContext,
+    IIdentityLocationLookup locationLookup,
     ILogger<GetCountriesQueryHandler> logger) : IQueryHandler<GetCountriesQuery, List<CountryDto>>
 {
     public async Task<Result<List<CountryDto>>> Handle(
@@ -16,11 +15,9 @@ public sealed class GetCountriesQueryHandler(
     {
         logger.LogInformation("Retrieving all countries");
 
-        var countries = await dbContext.Countries
-            .AsNoTracking()
-            .OrderBy(c => c.Key)
-            .Select(c => new CountryDto(c.Id, c.Key))
-            .ToListAsync(cancellationToken);
+        var countries = (await locationLookup.GetCountriesAsync(cancellationToken))
+            .Select(country => new CountryDto(country.Id, country.Key))
+            .ToList();
 
         logger.LogInformation("Retrieved {Count} countries", countries.Count);
 

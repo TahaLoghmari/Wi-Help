@@ -1,19 +1,19 @@
-using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Features.DTOs;
 using Modules.Identity.PublicApi;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
 using Modules.Reviews.Domain;
+using Modules.Reviews.Domain.Abstractions;
 using Modules.Reviews.Domain.Entities;
 using Modules.Reviews.Domain.Enums;
-using Modules.Reviews.Infrastructure.Database;
 
 namespace Modules.Reviews.Features.GetReviews;
 
 internal sealed class GetReviewsQueryHandler(
-    ReviewsDbContext dbContext,
+    IGetReviewsPort reviewsPort,
     IPatientsModuleApi patientsApi,
     IProfessionalModuleApi professionalsApi,
     IIdentityModuleApi identityApi)
@@ -23,13 +23,12 @@ internal sealed class GetReviewsQueryHandler(
         GetReviewsQuery query,
         CancellationToken cancellationToken)
     {
-        IQueryable<Review> baseQuery = dbContext.Reviews.AsNoTracking();
-
-        baseQuery = ApplyFilter(baseQuery, query);
-        baseQuery = baseQuery.OrderByDescending(r => r.CreatedAt);
-
-        var paginatedReviews = await PaginationResultDto<Review>.CreateAsync(
-            baseQuery, query.Page, query.PageSize, cancellationToken);
+        var filter = CreateFilter(query);
+        var reviewsPage = await reviewsPort.GetAsync(
+            filter, query.Page, query.PageSize, query.CallerUserId, cancellationToken);
+        var reviews = reviewsPage.Reviews;
+        var paginatedReviews = PaginationResultDto<Review>.Create(
+            reviews, query.Page, query.PageSize, reviewsPage.TotalCount);
 
         if (paginatedReviews.Items.Count == 0)
         {
@@ -42,30 +41,9 @@ internal sealed class GetReviewsQueryHandler(
             });
         }
 
-        var reviewIds = paginatedReviews.Items.Select(r => r.Id).ToList();
-
-        // Batch-fetch likes counts
-        var likesCounts = await dbContext.ReviewLikes
-            .AsNoTracking()
-            .Where(rl => reviewIds.Contains(rl.ReviewId))
-            .GroupBy(rl => rl.ReviewId)
-            .Select(g => new { ReviewId = g.Key, Count = g.Count() })
-            .ToDictionaryAsync(x => x.ReviewId, x => x.Count, cancellationToken);
-
-        // Current user liked reviews
-        var likedReviewIds = await dbContext.ReviewLikes
-            .AsNoTracking()
-            .Where(rl => reviewIds.Contains(rl.ReviewId) && rl.UserId == query.CallerUserId)
-            .Select(rl => rl.ReviewId)
-            .ToListAsync(cancellationToken);
-        var likedSet = likedReviewIds.ToHashSet();
-
-        // Batch-fetch replies
-        var replies = await dbContext.ReviewReplies
-            .AsNoTracking()
-            .Where(rr => reviewIds.Contains(rr.ReviewId))
-            .OrderBy(rr => rr.CreatedAt)
-            .ToListAsync(cancellationToken);
+        var likesCounts = reviewsPage.LikeCounts;
+        var likedSet = reviewsPage.LikedReviewIds.ToHashSet();
+        var replies = reviewsPage.Replies;
 
         // Resolve reply author info
         var replyUserIds = replies.Select(r => r.UserId).Distinct().ToList();
@@ -125,7 +103,7 @@ internal sealed class GetReviewsQueryHandler(
     /// <summary>
     /// Applies the subject/reviewer filter with role-based enforcement.
     /// </summary>
-    private static IQueryable<Review> ApplyFilter(IQueryable<Review> baseQuery, GetReviewsQuery query)
+    private static Expression<Func<Review, bool>> CreateFilter(GetReviewsQuery query)
     {
         if (query.SubjectId.HasValue)
         {
@@ -135,48 +113,46 @@ internal sealed class GetReviewsQueryHandler(
             if (isOwnId)
             {
                 // Viewing own reviews (both types where I'm the subject)
-                return baseQuery.Where(r =>
+                return r =>
                     (r.ProfessionalId == sid && r.Type == ReviewType.ProfessionalReview)
-                    || (r.PatientId == sid && r.Type == ReviewType.PatientReview));
+                    || (r.PatientId == sid && r.Type == ReviewType.PatientReview);
             }
 
             // Not own profile — enforce role-based access:
             // Professionals can view patient-subject reviews; patients can view professional-subject reviews
             if (query.CallerProfessionalId.HasValue)
             {
-                return baseQuery.Where(r =>
-                    r.PatientId == sid && r.Type == ReviewType.PatientReview);
+                return r => r.PatientId == sid && r.Type == ReviewType.PatientReview;
             }
 
-            return baseQuery.Where(r =>
-                r.ProfessionalId == sid && r.Type == ReviewType.ProfessionalReview);
+            return r => r.ProfessionalId == sid && r.Type == ReviewType.ProfessionalReview;
         }
 
         if (query.ReviewerId.HasValue)
         {
             var rid = query.ReviewerId.Value;
-            return baseQuery.Where(r =>
+            return r =>
                 (r.PatientId == rid && r.Type == ReviewType.ProfessionalReview)
-                || (r.ProfessionalId == rid && r.Type == ReviewType.PatientReview));
+                || (r.ProfessionalId == rid && r.Type == ReviewType.PatientReview);
         }
 
         // Default: current user as subject
         if (query.CallerProfessionalId.HasValue)
         {
-            return baseQuery.Where(r =>
+            return r =>
                 r.ProfessionalId == query.CallerProfessionalId.Value
-                && r.Type == ReviewType.ProfessionalReview);
+                && r.Type == ReviewType.ProfessionalReview;
         }
 
         if (query.CallerPatientId.HasValue)
         {
-            return baseQuery.Where(r =>
+            return r =>
                 r.PatientId == query.CallerPatientId.Value
-                && r.Type == ReviewType.PatientReview);
+                && r.Type == ReviewType.PatientReview;
         }
 
         // Fallback: no results (should not happen for authenticated users)
-        return baseQuery.Where(_ => false);
+        return _ => false;
     }
 
     /// <summary>

@@ -1,6 +1,5 @@
 using Modules.Common.Features.Abstractions;
 using Modules.Professionals.Features.GetProfessionals;
-using Modules.Professionals.Infrastructure.DTOs;
 
 namespace Modules.Professionals.Features.GetProfessional;
 

@@ -13,10 +13,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Modules.Notifications.Domain\Modules.Notifications.Domain.csproj" />
-    <ProjectReference Include="..\Modules.Notifications.Infrastructure\Modules.Notifications.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules.Notifications.PublicApi\Modules.Notifications.PublicApi.csproj" />
     <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Features\Modules.Common.Features.csproj" />
-    <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Infrastructure\Modules.Common.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

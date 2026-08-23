@@ -2,12 +2,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Professionals.Infrastructure.Database;
-using Modules.Professionals.Infrastructure.DTOs;
 
 namespace Modules.Professionals.Features.Schedule.Get;
 
@@ -31,4 +27,3 @@ public class GetSchedule : IEndpoint
             .WithTags(Tags.Professionals);
     }
 }
-

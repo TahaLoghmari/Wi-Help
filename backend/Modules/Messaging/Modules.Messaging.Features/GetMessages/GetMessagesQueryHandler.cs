@@ -1,22 +1,20 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Messaging.Domain;
-using Modules.Messaging.Infrastructure.Database;
+using Modules.Messaging.Domain.Ports;
 using Modules.Messaging.PublicApi.Contracts;
 
 namespace Modules.Messaging.Features.GetMessages;
 
 public class GetMessagesQueryHandler(
-    MessagingDbContext messagingDbContext,
+    IGetMessagesStore messageStore,
     ILogger<GetMessagesQueryHandler> logger) : IQueryHandler<GetMessagesQuery, MessagesResponseDto>
 {
     public async Task<Result<MessagesResponseDto>> Handle(GetMessagesQuery query, CancellationToken cancellationToken)
     {
         // Verify conversation exists and user is a participant
-        var conversation = await messagingDbContext.Conversations
-            .FirstOrDefaultAsync(c => c.Id == query.ConversationId, cancellationToken);
+        var conversation = await messageStore.GetConversationAsync(query.ConversationId, cancellationToken);
 
         if (conversation == null)
         {
@@ -31,15 +29,13 @@ public class GetMessagesQueryHandler(
             return Result<MessagesResponseDto>.Failure(MessagingErrors.NotParticipant());
         }
 
-        // DeletedAt filter is handled by global query filter in MessagingDbContext
-        var totalCount = await messagingDbContext.Messages
-            .CountAsync(m => m.ConversationId == query.ConversationId, cancellationToken);
+        var page = await messageStore.GetPageAsync(
+            query.ConversationId,
+            query.PageNumber,
+            query.PageSize,
+            cancellationToken);
 
-        var messages = await messagingDbContext.Messages
-            .Where(m => m.ConversationId == query.ConversationId)
-            .OrderByDescending(m => m.CreatedAt)
-            .Skip((query.PageNumber - 1) * query.PageSize)
-            .Take(query.PageSize)
+        var messages = page.Messages
             .Select(m => new MessageDto(
                 m.Id,
                 m.SenderId,
@@ -48,19 +44,18 @@ public class GetMessagesQueryHandler(
                 m.CreatedAt,
                 m.DeliveredAt,
                 m.ReadAt))
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         // Reverse to show oldest first
-        messages.Reverse();
+        var orderedMessages = messages.AsEnumerable().Reverse().ToList();
 
         var response = new MessagesResponseDto(
-            messages,
+            orderedMessages,
             query.PageNumber,
             query.PageSize,
-            totalCount,
-            (int)Math.Ceiling(totalCount / (double)query.PageSize));
+            page.TotalCount,
+            (int)Math.Ceiling(page.TotalCount / (double)query.PageSize));
 
         return Result<MessagesResponseDto>.Success(response);
     }
 }
-

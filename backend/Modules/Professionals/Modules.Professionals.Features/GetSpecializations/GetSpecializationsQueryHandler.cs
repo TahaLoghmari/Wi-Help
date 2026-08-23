@@ -1,13 +1,12 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 
 namespace Modules.Professionals.Features.GetSpecializations;
 
 public sealed class GetSpecializationsQueryHandler(
-    ProfessionalsDbContext dbContext,
+    IProfessionalCatalogOperations catalogOperations,
     ILogger<GetSpecializationsQueryHandler> logger) : IQueryHandler<GetSpecializationsQuery, List<SpecializationDto>>
 {
     public async Task<Result<List<SpecializationDto>>> Handle(
@@ -16,11 +15,9 @@ public sealed class GetSpecializationsQueryHandler(
     {
         logger.LogInformation("Retrieving all specializations");
 
-        var specializations = await dbContext.Specializations
-            .AsNoTracking()
-            .OrderBy(s => s.Key)
+        var specializations = (await catalogOperations.GetSpecializationsAsync(cancellationToken))
             .Select(s => new SpecializationDto(s.Id, s.Key))
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         logger.LogInformation("Retrieved {Count} specializations", specializations.Count);
 

@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Modules.Notifications.Domain.Operations;
 using Modules.Notifications.Infrastructure.Database;
+using Modules.Notifications.Infrastructure.Operations;
 using Modules.Notifications.Infrastructure.Services;
 
 namespace Modules.Notifications.Infrastructure;
@@ -38,7 +40,11 @@ public static class DependencyInjection
         // Note: This is shared across all hubs - only register once
         services.AddSingleton<IUserIdProvider, UserIdProvider>();
 
-        services.AddScoped<NotificationsService>();
+        services.AddScoped<IAddNotification, AddNotificationEfAdapter>();
+        services.AddScoped<IGetNotifications, GetNotificationsEfAdapter>();
+        services.AddScoped<IMarkNotificationAsRead, MarkNotificationAsReadEfAdapter>();
+        services.AddScoped<IMarkNotificationsAsRead, MarkNotificationsAsReadEfAdapter>();
+        services.AddScoped<INotificationDelivery, NotificationsService>();
 
         return services;
     }

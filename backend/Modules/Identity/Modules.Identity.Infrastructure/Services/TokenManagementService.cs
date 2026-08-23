@@ -5,7 +5,8 @@ using Microsoft.Extensions.Options;
 using Modules.Common.Features.Results;
 using Modules.Identity.Domain.Entities;
 using Modules.Identity.Domain;
-using Modules.Identity.Features.DTOs;
+using Modules.Identity.Domain.DTOs;
+using Modules.Identity.Domain.Ports;
 using Modules.Identity.Infrastructure.Database;
 using Modules.Identity.Infrastructure.DTOs;
 using Modules.Identity.Infrastructure.Settings;
@@ -18,7 +19,7 @@ public sealed class TokenManagementService(
     TokenProvider tokenProvider,
     ILogger<TokenManagementService> logger,
     UserManager<User> userManager
-)
+) : ITokenManagement
 {
     private readonly JwtSettings _jwtAuthSettings = jwtAuthSettings.Value;
 

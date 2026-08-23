@@ -1,5 +1,5 @@
 using Modules.Common.Features.Abstractions;
-using Modules.Professionals.Infrastructure.DTOs;
+using Modules.Professionals.Features.Schedule;
 
 namespace Modules.Professionals.Features.Schedule.SetupSchedule;
 

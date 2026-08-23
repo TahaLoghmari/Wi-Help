@@ -1,23 +1,21 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Reviews.Domain;
+using Modules.Reviews.Domain.Abstractions;
 using Modules.Reviews.Domain.Enums;
-using Modules.Reviews.Infrastructure.Database;
 
 namespace Modules.Reviews.Features.EditReview;
 
 internal sealed class EditReviewCommandHandler(
-    ReviewsDbContext dbContext,
+    IEditReviewPort reviews,
     ILogger<EditReviewCommandHandler> logger) : ICommandHandler<EditReviewCommand>
 {
     public async Task<Result> Handle(EditReviewCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Editing review {ReviewId}", command.ReviewId);
 
-        var review = await dbContext.Reviews
-            .FirstOrDefaultAsync(r => r.Id == command.ReviewId, cancellationToken);
+        var review = await reviews.GetAsync(command.ReviewId, cancellationToken);
 
         if (review is null)
             return Result.Failure(ReviewErrors.NotFound(command.ReviewId));
@@ -37,7 +35,7 @@ internal sealed class EditReviewCommandHandler(
         }
 
         review.Update(command.Comment, command.Rating);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await reviews.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Review {ReviewId} updated successfully", command.ReviewId);
         return Result.Success();

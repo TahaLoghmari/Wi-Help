@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
@@ -6,13 +5,14 @@ using Modules.Identity.PublicApi;
 using Modules.Identity.PublicApi.Contracts;
 using Modules.Professionals.Domain;
 using Modules.Professionals.Domain.Entities;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 
 namespace Modules.Professionals.Features.Auth.RegisterProfessional;
 
 public sealed class RegisterProfessionalCommandHandler(
     IIdentityModuleApi identityApi,
-    ProfessionalsDbContext dbContext,
+    IProfessionalProfileOperations profileOperations,
+    IProfessionalCatalogOperations catalogOperations,
     ILogger<RegisterProfessionalCommandHandler> logger) : ICommandHandler<RegisterProfessionalCommand>
 {
     public async Task<Result> Handle(
@@ -45,7 +45,7 @@ public sealed class RegisterProfessionalCommandHandler(
         Guid userId = createUserResult.Value;
         logger.LogInformation("User created successfully, creating professional profile for UserId: {UserId}", userId);
 
-        var existingProfessional = await dbContext.Professionals.FirstOrDefaultAsync(p => p.UserId == userId, cancellationToken);
+        var existingProfessional = await profileOperations.FindByUserIdAsync(userId, cancellationToken);
 
         if (existingProfessional is not null)
         {
@@ -53,9 +53,7 @@ public sealed class RegisterProfessionalCommandHandler(
             return Result.Failure(ProfessionalErrors.AlreadyExists(userId));
         }
 
-        var specialization = await dbContext.Specializations
-            .AsNoTracking()
-            .FirstOrDefaultAsync(s => s.Id == command.SpecializationId, cancellationToken);
+        var specialization = await catalogOperations.FindSpecializationAsync(command.SpecializationId, cancellationToken);
 
         if (specialization is null)
         {
@@ -68,8 +66,8 @@ public sealed class RegisterProfessionalCommandHandler(
             command.SpecializationId,
             command.Experience);
 
-        dbContext.Professionals.Add(professional);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        profileOperations.Add(professional);
+        await profileOperations.SaveChangesAsync(cancellationToken);
 
         var addClaimResult = await identityApi.AddClaimAsync(userId, "ProfessionalId", professional.Id.ToString(), cancellationToken);
         if (!addClaimResult.IsSuccess)

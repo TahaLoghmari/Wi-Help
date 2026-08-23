@@ -1,27 +1,22 @@
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Modules.Notifications.Domain;
 using Modules.Notifications.Domain.Entities;
-using Modules.Notifications.Domain.Enums;
-using Modules.Notifications.Infrastructure;
-using Modules.Notifications.Infrastructure.Database;
-using Modules.Notifications.Infrastructure.Services;
+using Modules.Notifications.Domain.Operations;
 using Modules.Notifications.PublicApi;
+using Modules.Notifications.PublicApi.Contracts;
 
 namespace Modules.Notifications.Features;
 
 public class NotificationsModuleApi(
-    NotificationsDbContext dbContext,
-    NotificationsService notificationsService,
+    IAddNotification addNotification,
+    INotificationDelivery notificationDelivery,
     ILogger<NotificationsModuleApi> logger) : INotificationsModuleApi
 {
     public async Task AddNotificationAsync(string userId, string role, string title, string message, NotificationType type, CancellationToken cancellationToken)
     {
-        var notification = new Notification(userId, role, title, message, type);
+        var notification = new Notification(userId, role, title, message, (Modules.Notifications.Domain.Enums.NotificationType)type);
 
-        dbContext.Notifications.Add(notification);
-
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await addNotification.AddAsync(notification, cancellationToken);
 
         logger.LogInformation("Notification created with ID {NotificationId}", notification.Id);
 
@@ -34,6 +29,6 @@ public class NotificationsModuleApi(
             notification.IsRead,
             notification.CreatedAt);
 
-        await notificationsService.SendToUser(userId, dto);
+        await notificationDelivery.SendToUserAsync(userId, dto);
     }
 }

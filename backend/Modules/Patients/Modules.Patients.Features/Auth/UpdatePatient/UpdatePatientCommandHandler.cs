@@ -1,19 +1,17 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.PublicApi;
 using Modules.Patients.Domain;
-using Modules.Patients.Infrastructure.Database;
+using Modules.Patients.Domain.Ports;
 using System.Transactions;
-using Modules.Common.Infrastructure.Services;
 using Modules.Identity.PublicApi.Contracts;
 
 namespace Modules.Patients.Features.Auth.UpdatePatient;
 
 public sealed class UpdatePatientCommandHandler(
     IIdentityModuleApi identityApi,
-    PatientsDbContext dbContext,
+    IUpdatePatientPort patientPort,
     IFileStorage fileStorage,
     ILogger<UpdatePatientCommandHandler> logger) : ICommandHandler<UpdatePatientCommand>
 {
@@ -63,11 +61,7 @@ public sealed class UpdatePatientCommandHandler(
 
             logger.LogInformation("Identity fields updated successfully for UserId: {UserId}", command.UserId);
             
-            var patient = await dbContext.Patients
-                .Include(p => p.Allergies)
-                .Include(p => p.Conditions)
-                .Include(p => p.Medications)
-                .FirstOrDefaultAsync(p => p.UserId == command.UserId, cancellationToken);
+            var patient = await patientPort.GetPatientByUserIdAsync(command.UserId, cancellationToken);
 
             if (patient is null)
             {
@@ -78,14 +72,11 @@ public sealed class UpdatePatientCommandHandler(
             // Validate relationship if emergency contact provided
             if (command.EmergencyContact?.RelationshipId.HasValue == true)
             {
-                var relationship = await dbContext.Relationships
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(r => r.Id == command.EmergencyContact.RelationshipId.Value, cancellationToken);
-
-                if (relationship is null)
+                var relationshipId = command.EmergencyContact.RelationshipId.Value;
+                if (!await patientPort.RelationshipExistsAsync(relationshipId, cancellationToken))
                 {
-                    logger.LogWarning("Relationship not found: {RelationshipId}", command.EmergencyContact.RelationshipId.Value);
-                    return Result.Failure(PatientErrors.RelationshipNotFound(command.EmergencyContact.RelationshipId.Value));
+                    logger.LogWarning("Relationship not found: {RelationshipId}", relationshipId);
+                    return Result.Failure(PatientErrors.RelationshipNotFound(relationshipId));
                 }
             }
 
@@ -94,9 +85,7 @@ public sealed class UpdatePatientCommandHandler(
             // Update M2M collections
             if (command.AllergyIds is not null)
             {
-                var allergies = await dbContext.Allergies
-                    .Where(a => command.AllergyIds.Contains(a.Id))
-                    .ToListAsync(cancellationToken);
+                var allergies = await patientPort.GetAllergiesAsync(command.AllergyIds, cancellationToken);
 
                 if (allergies.Count != command.AllergyIds.Count)
                 {
@@ -109,9 +98,7 @@ public sealed class UpdatePatientCommandHandler(
 
             if (command.ConditionIds is not null)
             {
-                var conditions = await dbContext.Conditions
-                    .Where(c => command.ConditionIds.Contains(c.Id))
-                    .ToListAsync(cancellationToken);
+                var conditions = await patientPort.GetConditionsAsync(command.ConditionIds, cancellationToken);
 
                 if (conditions.Count != command.ConditionIds.Count)
                 {
@@ -124,9 +111,7 @@ public sealed class UpdatePatientCommandHandler(
 
             if (command.MedicationIds is not null)
             {
-                var medications = await dbContext.Medications
-                    .Where(m => command.MedicationIds.Contains(m.Id))
-                    .ToListAsync(cancellationToken);
+                var medications = await patientPort.GetMedicationsAsync(command.MedicationIds, cancellationToken);
 
                 if (medications.Count != command.MedicationIds.Count)
                 {
@@ -137,7 +122,7 @@ public sealed class UpdatePatientCommandHandler(
                 patient.UpdateMedications(medications);
             }
 
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await patientPort.SaveChangesAsync(cancellationToken);
 
             logger.LogInformation("Patient updated successfully for UserId: {UserId}, PatientId: {PatientId}",
                 command.UserId, patient.Id);

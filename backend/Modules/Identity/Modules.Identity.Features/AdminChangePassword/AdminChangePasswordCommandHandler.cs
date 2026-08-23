@@ -1,13 +1,12 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Identity.Domain.Entities;
+using Modules.Identity.Domain.Ports;
 
 namespace Modules.Identity.Features.AdminChangePassword;
 
 internal sealed class AdminChangePasswordCommandHandler(
-    UserManager<User> userManager,
+    IIdentityUserOperations users,
     ILogger<AdminChangePasswordCommandHandler> logger)
     : ICommandHandler<AdminChangePasswordCommand>
 {
@@ -15,19 +14,19 @@ internal sealed class AdminChangePasswordCommandHandler(
     {
         logger.LogInformation("Admin changing password for user {UserId}", request.UserId);
 
-        var user = await userManager.FindByIdAsync(request.UserId.ToString());
+        var user = await users.FindByIdAsync(request.UserId.ToString());
         if (user is null)
         {
             return Result.Failure(Error.NotFound("Identity.UserNotFound", $"User with ID '{request.UserId}' not found."));
         }
 
-        var removeResult = await userManager.RemovePasswordAsync(user);
+        var removeResult = await users.RemovePasswordAsync(user);
         if (!removeResult.Succeeded)
         {
             return Result.Failure(Error.Failure("Identity.PasswordChangeFailed", "Failed to remove old password."));
         }
 
-        var addResult = await userManager.AddPasswordAsync(user, request.NewPassword);
+        var addResult = await users.AddPasswordAsync(user, request.NewPassword);
         if (!addResult.Succeeded)
         {
             return Result.Failure(Error.Failure("Identity.PasswordChangeFailed", "Failed to set new password."));

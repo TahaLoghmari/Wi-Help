@@ -1,15 +1,16 @@
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Modules.Notifications.Domain;
+using Modules.Notifications.Domain.Operations;
 using Modules.Notifications.Infrastructure;
 
 namespace Modules.Notifications.Infrastructure.Services;
 
 public class NotificationsService(
     IHubContext<NotificationHub> hubContext,
-    ILogger<NotificationsService> logger)
+    ILogger<NotificationsService> logger) : INotificationDelivery
 {
-    public async Task SendToUser(string userId, NotificationDto notificationDto)
+    public async Task SendToUserAsync(string userId, NotificationDto notificationDto)
     {
         try
         {

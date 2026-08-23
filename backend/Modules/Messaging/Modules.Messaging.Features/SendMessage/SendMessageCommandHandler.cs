@@ -1,21 +1,18 @@
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Messaging.Domain;
 using Modules.Messaging.Domain.Entities;
-using Modules.Messaging.Infrastructure;
-using Modules.Messaging.Infrastructure.Database;
-using Modules.Notifications.Domain.Enums;
+using Modules.Messaging.Domain.Ports;
 using Modules.Notifications.PublicApi;
+using Modules.Notifications.PublicApi.Contracts;
 using Modules.Identity.PublicApi;
 
 namespace Modules.Messaging.Features.SendMessage;
 
 public class SendMessageCommandHandler(
-    MessagingDbContext messagingDbContext,
-    IHubContext<ChatHub> hubContext,
+    ISendMessageStore messageStore,
+    IMessagingRealtimeEvents realtimeEvents,
     INotificationsModuleApi notificationsModuleApi,
     IIdentityModuleApi identityModuleApi,
     ILogger<SendMessageCommandHandler> logger) : ICommandHandler<SendMessageCommand, Guid>
@@ -23,8 +20,7 @@ public class SendMessageCommandHandler(
     public async Task<Result<Guid>> Handle(SendMessageCommand command, CancellationToken cancellationToken)
     {
         // Verify conversation exists and user is a participant
-        var conversation = await messagingDbContext.Conversations
-            .FirstOrDefaultAsync(c => c.Id == command.ConversationId, cancellationToken);
+        var conversation = await messageStore.GetConversationAsync(command.ConversationId, cancellationToken);
 
         if (conversation == null)
         {
@@ -44,9 +40,7 @@ public class SendMessageCommandHandler(
             command.SenderId,
             command.Content);
 
-        messagingDbContext.Messages.Add(message);
-        conversation.UpdateLastMessageAt();
-        await messagingDbContext.SaveChangesAsync(cancellationToken);
+        await messageStore.SaveAsync(conversation, message, cancellationToken);
 
         logger.LogInformation("Message {MessageId} sent in conversation {ConversationId} by user {SenderId}",
             message.Id, command.ConversationId, command.SenderId);
@@ -82,25 +76,15 @@ public class SendMessageCommandHandler(
         // Notify all participants in the conversation via SignalR
         try
         {
-            await hubContext.Clients.Group($"conversation_{command.ConversationId}")
-                .SendAsync("MessageReceived", new
-                {
-                    MessageId = message.Id,
-                    ConversationId = message.ConversationId,
-                    SenderId = message.SenderId,
-                    Content = message.Content,
-                    Status = message.Status.ToString(),
-                    CreatedAt = message.CreatedAt
-                }, cancellationToken);
+            await realtimeEvents.MessageReceivedAsync(message, cancellationToken);
 
             // Also notify the recipient's personal group
-            await hubContext.Clients.Group($"user_{recipientId}")
-                .SendAsync("NewMessageNotification", new
-                {
-                    ConversationId = conversation.Id,
-                    SenderId = command.SenderId,
-                    Preview = command.Content.Length > 50 ? command.Content.Substring(0, 50) + "..." : command.Content
-                }, cancellationToken);
+            await realtimeEvents.NewMessageNotificationAsync(
+                recipientId,
+                conversation.Id,
+                command.SenderId,
+                command.Content.Length > 50 ? command.Content.Substring(0, 50) + "..." : command.Content,
+                cancellationToken);
         }
         catch (Exception ex)
         {
@@ -111,4 +95,3 @@ public class SendMessageCommandHandler(
         return Result<Guid>.Success(message.Id);
     }
 }
-

@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Modules.Common.Features.Abstractions;
 using Modules.Common.Infrastructure.Services;
 using Modules.Common.Infrastructure.Settings;
 

@@ -1,14 +1,12 @@
-using Microsoft.EntityFrameworkCore;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Reviews.Domain;
-using Modules.Reviews.Domain.Enums;
-using Modules.Reviews.Infrastructure.Database;
+using Modules.Reviews.Domain.Abstractions;
 
 namespace Modules.Reviews.Features.GetReviewStats;
 
 internal sealed class GetReviewStatsQueryHandler(
-    ReviewsDbContext dbContext)
+    IGetReviewStatsPort reviewsPort)
     : IQueryHandler<GetReviewStatsQuery, ReviewStatsDto>
 {
     public async Task<Result<ReviewStatsDto>> Handle(
@@ -35,18 +33,7 @@ internal sealed class GetReviewStatsQueryHandler(
             return Result<ReviewStatsDto>.Failure(ReviewErrors.Unauthorized());
         }
 
-        // Query reviews where subjectId is the subject (could be professional or patient)
-        var stats = await dbContext.Reviews
-            .AsNoTracking()
-            .Where(r =>
-                (r.ProfessionalId == subjectId && r.Type == ReviewType.ProfessionalReview)
-                || (r.PatientId == subjectId && r.Type == ReviewType.PatientReview))
-            .GroupBy(_ => 1)
-            .Select(g => new { Average = g.Average(r => (double)r.Rating), Count = g.Count() })
-            .FirstOrDefaultAsync(cancellationToken);
-
-        if (stats is null)
-            return Result<ReviewStatsDto>.Success(new ReviewStatsDto(0, 0));
+        var stats = await reviewsPort.GetAsync(subjectId, cancellationToken);
 
         return Result<ReviewStatsDto>.Success(
             new ReviewStatsDto(Math.Round(stats.Average, 1), stats.Count));

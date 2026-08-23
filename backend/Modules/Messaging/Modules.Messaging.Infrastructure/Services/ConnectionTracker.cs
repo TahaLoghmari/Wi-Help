@@ -2,12 +2,10 @@ using System.Collections.Concurrent;
 
 namespace Modules.Messaging.Infrastructure.Services;
 
-
 public class ConnectionTracker
 {
     private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> _userConnections = new();
     private readonly object _lock = new();
-
 
     public bool AddConnection(string userId, string connectionId)
     {
@@ -39,10 +37,8 @@ public class ConnectionTracker
         }
     }
 
-    public bool IsUserOnline(string userId)
-    {
-        return _userConnections.TryGetValue(userId, out var connections) && !connections.IsEmpty;
-    }
+    public bool IsUserOnline(string userId) =>
+        _userConnections.TryGetValue(userId, out var connections) && !connections.IsEmpty;
 
     public IReadOnlyList<string> GetUserConnections(string userId)
     {
@@ -50,20 +46,15 @@ public class ConnectionTracker
         {
             return connections.Keys.ToList();
         }
+
         return Array.Empty<string>();
     }
 
-    public IReadOnlyList<string> GetOnlineUserIds()
-    {
-        return _userConnections
+    public IReadOnlyList<string> GetOnlineUserIds() =>
+        _userConnections
             .Where(kvp => !kvp.Value.IsEmpty)
             .Select(kvp => kvp.Key)
             .ToList();
-    }
 
-    public int GetOnlineUserCount()
-    {
-        return _userConnections.Count(kvp => !kvp.Value.IsEmpty);
-    }
+    public int GetOnlineUserCount() => _userConnections.Count(kvp => !kvp.Value.IsEmpty);
 }
-

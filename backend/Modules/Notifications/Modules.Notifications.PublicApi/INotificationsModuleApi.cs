@@ -1,4 +1,4 @@
-using Modules.Notifications.Domain.Enums;
+using Modules.Notifications.PublicApi.Contracts;
 
 namespace Modules.Notifications.PublicApi;
 

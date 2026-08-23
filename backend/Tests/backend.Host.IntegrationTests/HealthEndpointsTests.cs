@@ -3,7 +3,8 @@ using FluentAssertions;
 
 namespace backend.Host.IntegrationTests;
 
-public sealed class HealthEndpointsTests(IntegrationTestWebApplicationFactory factory) : IClassFixture<IntegrationTestWebApplicationFactory>
+[Collection(nameof(HostIntegrationCollection))]
+public sealed class HealthEndpointsTests(IntegrationTestWebApplicationFactory factory)
 {
     [Fact]
     public async Task GetReadyHealth_WhenPostgreSqlMigrationsComplete_ReturnsOk()

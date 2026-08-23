@@ -1,24 +1,20 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Reviews.Domain;
-using Modules.Reviews.Infrastructure.Database;
+using Modules.Reviews.Domain.Abstractions;
 
 namespace Modules.Reviews.Features.EditReply;
 
 internal sealed class EditReplyCommandHandler(
-    ReviewsDbContext dbContext,
+    IEditReplyPort reviews,
     ILogger<EditReplyCommandHandler> logger) : ICommandHandler<EditReplyCommand>
 {
     public async Task<Result> Handle(EditReplyCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Editing reply {ReplyId} on review {ReviewId}", command.ReplyId, command.ReviewId);
 
-        var reply = await dbContext.ReviewReplies
-            .FirstOrDefaultAsync(
-                r => r.Id == command.ReplyId && r.ReviewId == command.ReviewId,
-                cancellationToken);
+        var reply = await reviews.GetAsync(command.ReviewId, command.ReplyId, cancellationToken);
 
         if (reply is null)
             return Result.Failure(ReviewErrors.ReplyNotFound(command.ReplyId));
@@ -27,7 +23,7 @@ internal sealed class EditReplyCommandHandler(
             return Result.Failure(ReviewErrors.NotReplyOwner(command.ReplyId));
 
         reply.Update(command.Comment);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await reviews.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Reply {ReplyId} updated successfully", command.ReplyId);
         return Result.Success();

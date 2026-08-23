@@ -1,25 +1,21 @@
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Messaging.Domain;
 using Modules.Messaging.Domain.Enums;
-using Modules.Messaging.Infrastructure;
-using Modules.Messaging.Infrastructure.Database;
+using Modules.Messaging.Domain.Ports;
 
 namespace Modules.Messaging.Features.MarkMessagesAsDelivered;
 
 public class MarkMessagesAsDeliveredCommandHandler(
-    MessagingDbContext messagingDbContext,
-    IHubContext<ChatHub> hubContext,
+    IMarkMessagesAsDeliveredStore messageStore,
+    IMessagingRealtimeEvents realtimeEvents,
     ILogger<MarkMessagesAsDeliveredCommandHandler> logger) : ICommandHandler<MarkMessagesAsDeliveredCommand>
 {
     public async Task<Result> Handle(MarkMessagesAsDeliveredCommand command, CancellationToken cancellationToken)
     {
         // Verify conversation exists and user is a participant
-        var conversation = await messagingDbContext.Conversations
-            .FirstOrDefaultAsync(c => c.Id == command.ConversationId, cancellationToken);
+        var conversation = await messageStore.GetConversationAsync(command.ConversationId, cancellationToken);
 
         if (conversation == null)
         {
@@ -34,14 +30,10 @@ public class MarkMessagesAsDeliveredCommandHandler(
             return Result.Failure(MessagingErrors.NotParticipant());
         }
 
-        // Mark all sent messages from other participants as delivered
-        // DeletedAt filter is handled by global query filter in MessagingDbContext
-        var sentMessages = await messagingDbContext.Messages
-            .Where(m =>
-                m.ConversationId == command.ConversationId &&
-                m.SenderId != command.UserId &&
-                m.Status == MessageStatus.Sent)
-            .ToListAsync(cancellationToken);
+        var sentMessages = await messageStore.GetSentMessagesAsync(
+            command.ConversationId,
+            command.UserId,
+            cancellationToken);
 
         foreach (var message in sentMessages)
         {
@@ -50,7 +42,7 @@ public class MarkMessagesAsDeliveredCommandHandler(
 
         if (sentMessages.Count > 0)
         {
-            await messagingDbContext.SaveChangesAsync(cancellationToken);
+            await messageStore.SaveAsync(cancellationToken);
             logger.LogInformation("Marked {Count} messages as delivered in conversation {ConversationId} by user {UserId}",
                 sentMessages.Count, command.ConversationId, command.UserId);
 
@@ -60,12 +52,11 @@ public class MarkMessagesAsDeliveredCommandHandler(
                 var senderIds = sentMessages.Select(m => m.SenderId).Distinct().ToList();
                 foreach (var senderId in senderIds)
                 {
-                    await hubContext.Clients.Group($"user_{senderId}")
-                        .SendAsync("MessagesDelivered", new
-                        {
-                            ConversationId = command.ConversationId,
-                            DeliveredBy = command.UserId
-                        }, cancellationToken);
+                    await realtimeEvents.MessagesDeliveredAsync(
+                        senderId,
+                        command.ConversationId,
+                        command.UserId,
+                        cancellationToken);
                 }
             }
             catch (Exception ex)
@@ -79,4 +70,3 @@ public class MarkMessagesAsDeliveredCommandHandler(
         return Result.Success();
     }
 }
-

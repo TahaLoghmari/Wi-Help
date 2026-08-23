@@ -2,9 +2,10 @@ using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Modules.Common.Infrastructure.DTOs;
-using Modules.Common.Infrastructure.Services;
+using Modules.Common.Features.Abstractions;
+using Modules.Common.Features.DTOs;
 using Modules.Identity.Domain.Entities;
+using Modules.Identity.Domain.Ports;
 using Modules.Identity.Infrastructure.Templates;
 
 namespace Modules.Identity.Infrastructure.Services;
@@ -13,7 +14,7 @@ public sealed class IdentityEmailService(
     UserManager<User> userManager,
     ILogger<IdentityEmailService> logger,
     IEmailSender emailService,
-    IConfiguration configuration)
+    IConfiguration configuration) : IIdentityEmail
 {
     public async Task SendForgotPasswordEmail(string email, User user)
     {

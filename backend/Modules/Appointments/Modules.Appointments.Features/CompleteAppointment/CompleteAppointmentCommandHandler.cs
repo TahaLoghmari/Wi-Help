@@ -1,14 +1,12 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Appointments.Domain;
 using Modules.Appointments.Domain.Entities;
 using Modules.Appointments.Domain.Enums;
-using Modules.Appointments.Infrastructure.Database;
+using Modules.Appointments.Domain.Ports;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.Services;
-using Modules.Notifications.Domain.Enums;
 using Modules.Notifications.PublicApi;
+using Modules.Notifications.PublicApi.Contracts;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
 using Modules.Identity.PublicApi;
@@ -16,7 +14,7 @@ using Modules.Identity.PublicApi;
 namespace Modules.Appointments.Features.CompleteAppointment;
 
 public class CompleteAppointmentCommandHandler(
-    AppointmentsDbContext appointmentsDbContext,
+    ICompleteAppointmentStore appointmentsStore,
     ILogger<CompleteAppointmentCommandHandler> logger,
     INotificationsModuleApi notificationsModuleApi,
     IPatientsModuleApi patientsModuleApi,
@@ -32,8 +30,9 @@ public class CompleteAppointmentCommandHandler(
             "Professional {ProfessionalId} completing appointment {AppointmentId}",
             command.ProfessionalId, command.AppointmentId);
         
-        var appointment = await appointmentsDbContext.Appointments.FirstOrDefaultAsync(
-            ap => ap.Id == command.AppointmentId && ap.ProfessionalId == command.ProfessionalId, 
+        var appointment = await appointmentsStore.GetAsync(
+            command.AppointmentId,
+            command.ProfessionalId,
             cancellationToken);
             
         if (appointment is null)
@@ -91,12 +90,12 @@ public class CompleteAppointmentCommandHandler(
             command.PrescriptionTitle,
             command.PrescriptionNotes);
 
-        appointmentsDbContext.Prescriptions.Add(prescription);
+        await appointmentsStore.AddPrescriptionAsync(prescription, cancellationToken);
 
         // Mark appointment as completed
         appointment.Complete();
 
-        await appointmentsDbContext.SaveChangesAsync(cancellationToken);
+        await appointmentsStore.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation(
             "Appointment {AppointmentId} completed with prescription {PrescriptionId}", 

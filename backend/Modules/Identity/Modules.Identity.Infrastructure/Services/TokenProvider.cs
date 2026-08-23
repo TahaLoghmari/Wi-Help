@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Modules.Identity.Domain.Entities;
-using Modules.Identity.Features.DTOs;
+using Modules.Identity.Domain.DTOs;
 using Modules.Identity.Infrastructure.DTOs;
 using Modules.Identity.Infrastructure.Settings;
 
