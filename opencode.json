@@ -1,5 +1,16 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "explore": {
+      "disable": true
+    },
+    "scout": {
+      "disable": true
+    },
+    "compaction": {
+      "disable": true
+    }
+  },
   "lsp": true,
   "permission": {
     "lsp": "allow",
