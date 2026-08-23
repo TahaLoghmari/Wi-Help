@@ -12,7 +12,7 @@ namespace Modules.Identity.Infrastructure.Services;
 public sealed class IdentityEmailService(
     UserManager<User> userManager,
     ILogger<IdentityEmailService> logger,
-    EmailService emailService,
+    IEmailSender emailService,
     IConfiguration configuration)
 {
     public async Task SendForgotPasswordEmail(string email, User user)

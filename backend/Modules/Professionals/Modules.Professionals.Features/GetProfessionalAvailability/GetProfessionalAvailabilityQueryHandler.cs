@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
+using Modules.Appointments.PublicApi;
 using Modules.Professionals.Infrastructure.Database;
 using Modules.Professionals.PublicApi;
 using Modules.Professionals.PublicApi.Contracts;
@@ -10,6 +11,8 @@ namespace Modules.Professionals.Features.GetProfessionalAvailability;
 
 internal sealed class GetProfessionalAvailabilityQueryHandler(
     ProfessionalsDbContext professionalsDbContext,
+    IAppointmentsModuleApi appointmentsModuleApi,
+    TimeProvider timeProvider,
     ILogger<GetProfessionalAvailabilityQueryHandler> logger)
     : IQueryHandler<GetProfessionalAvailabilityQuery, MonthlyAvailabilityResponse>
 {
@@ -21,7 +24,26 @@ internal sealed class GetProfessionalAvailabilityQueryHandler(
         var availabilityDays = await professionalsDbContext.AvailabilityDays
             .Include(ad => ad.AvailabilitySlots)
             .Where(ad => ad.ProfessionalId == query.ProfessionalId)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
+
+        var monthStart = new DateTime(query.Year, query.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+        var monthEnd = monthStart.AddMonths(1);
+        var bookedSessionsResult = await appointmentsModuleApi.GetBookedSessionsAsync(
+            query.ProfessionalId,
+            monthStart,
+            monthEnd,
+            cancellationToken);
+
+        if (!bookedSessionsResult.IsSuccess)
+        {
+            return Result<MonthlyAvailabilityResponse>.Failure(bookedSessionsResult.Error);
+        }
+
+        var bookedSessions = bookedSessionsResult.Value
+            .Select(session => new ScheduledAtWithDuration(
+                session.Start,
+                (int)(session.End - session.Start).TotalMinutes))
+            .ToList();
 
         // Generate a list of all dates in the requested month
         var allDaysInMonth = Enumerable.Range(1, DateTime.DaysInMonth(query.Year, query.Month))
@@ -50,7 +72,8 @@ internal sealed class GetProfessionalAvailabilityQueryHandler(
             }
 
             var allDaySlots = new List<TimeSlotResponse>();
-            var isToday = DateTime.Today.Date == date.ToDateTime(TimeOnly.MinValue).Date; // Check if processing today's date
+            var now = timeProvider.GetUtcNow().UtcDateTime;
+            var isToday = now.Date == date.ToDateTime(TimeOnly.MinValue).Date; // Check if processing today's date
 
             // Process each availability window configured for this day of the week
             foreach (var dayAvailability in dayAvailabilities)
@@ -60,11 +83,12 @@ internal sealed class GetProfessionalAvailabilityQueryHandler(
                     // Calculate individual time slots within this availability window
                     var slots = GetProfessionalAvailabilityUtility.CalculateAvailabilitySlots(
                         latestSlot, // For handling buffer between windows
-                        DateTime.UtcNow, // Current time for filtering past slots
+                        now, // Current time for filtering past slots
+                        date,
                         isToday, // Only filter past times if it's today
                         availabilitySlot.TimeRange.StartTime,
                         availabilitySlot.TimeRange.EndTime,
-                        [], // Empty booked sessions for now : TODO : get it from appointments module 
+                        bookedSessions,
                         15); // 15-minute buffer between slots
 
                     allDaySlots.AddRange(slots);

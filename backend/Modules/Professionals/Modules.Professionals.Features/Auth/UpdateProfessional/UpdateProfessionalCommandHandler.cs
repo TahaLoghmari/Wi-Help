@@ -14,7 +14,7 @@ namespace Modules.Professionals.Features.Auth.UpdateProfessional;
 public sealed class UpdateProfessionalCommandHandler(
     IIdentityModuleApi identityApi,
     ProfessionalsDbContext dbContext,
-    SupabaseService supabaseService,
+    IFileStorage fileStorage,
     ILogger<UpdateProfessionalCommandHandler> logger) : ICommandHandler<UpdateProfessionalCommand>
 {
     public async Task<Result> Handle(
@@ -39,7 +39,7 @@ public sealed class UpdateProfessionalCommandHandler(
             string? profilePictureUrl = null;
             if (command.ProfilePicture is not null)
             {
-                profilePictureUrl = await supabaseService.UploadFileAsync(
+                profilePictureUrl = await fileStorage.UploadFileAsync(
                     command.ProfilePicture,
                     "profilePicture",
                     "profile-pictures",

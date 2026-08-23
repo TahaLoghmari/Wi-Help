@@ -13,9 +13,11 @@ public static class DependencyInjection
     {
         services.Configure<SupabaseSettings>(configuration.GetSection("Supabase"));
         services.AddSingleton<SupabaseService>();
+        services.AddSingleton<IFileStorage>(serviceProvider => serviceProvider.GetRequiredService<SupabaseService>());
         
         services.Configure<EmailSettings>(configuration.GetSection("Email"));
         services.AddScoped<EmailService>();
+        services.AddScoped<IEmailSender>(serviceProvider => serviceProvider.GetRequiredService<EmailService>());
         
         return services;
     }

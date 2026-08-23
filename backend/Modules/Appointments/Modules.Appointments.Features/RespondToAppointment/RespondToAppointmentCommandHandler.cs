@@ -27,7 +27,7 @@ public class RespondToAppointmentCommandHandler(
     IProfessionalModuleApi professionalModuleApi,
     IMessagingModuleApi messagingModuleApi,
     IIdentityModuleApi identityModuleApi,
-    EmailService emailService) : ICommandHandler<RespondToAppointmentCommand>
+    IEmailSender emailService) : ICommandHandler<RespondToAppointmentCommand>
 {
     public async Task<Result> Handle(RespondToAppointmentCommand command, CancellationToken cancellationToken)
     {
@@ -204,5 +204,4 @@ public class RespondToAppointmentCommandHandler(
         return Result.Success();
     }
 }
-
 

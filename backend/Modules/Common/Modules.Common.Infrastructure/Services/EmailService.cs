@@ -11,7 +11,7 @@ namespace Modules.Common.Infrastructure.Services;
 public sealed class EmailService(
     IOptions<EmailSettings> emailSettings,
     ILogger<EmailService> logger,
-    IBackgroundJobClient backgroundJobClient)
+    IBackgroundJobClient backgroundJobClient) : IEmailSender
 {
     private readonly EmailSettings _emailSettings = emailSettings.Value;
 

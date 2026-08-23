@@ -22,7 +22,7 @@ public class CompleteAppointmentCommandHandler(
     IPatientsModuleApi patientsModuleApi,
     IProfessionalModuleApi professionalModuleApi,
     IIdentityModuleApi identityModuleApi,
-    SupabaseService supabaseService) : ICommandHandler<CompleteAppointmentCommand>
+    IFileStorage fileStorage) : ICommandHandler<CompleteAppointmentCommand>
 {
     private const string PrescriptionsBucketName = "prescriptions";
 
@@ -68,7 +68,7 @@ public class CompleteAppointmentCommandHandler(
         try
         {
             var fileName = $"prescription_{appointment.PatientId}_{appointment.Id}";
-            pdfUrl = await supabaseService.UploadFileAsync(
+            pdfUrl = await fileStorage.UploadFileAsync(
                 command.PrescriptionPdf,
                 fileName,
                 PrescriptionsBucketName,

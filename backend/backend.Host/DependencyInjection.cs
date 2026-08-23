@@ -179,6 +179,8 @@ internal static class DependencyInjection
     public static WebApplicationBuilder AddServices(this WebApplicationBuilder builder
     )
     {
+        builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
+
         string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
 
         builder.Services.AddHealthChecks()

@@ -24,7 +24,7 @@ public class CancelAppointmentCommandHandler(
     IPatientsModuleApi patientsModuleApi,
     IProfessionalModuleApi professionalModuleApi,
     IIdentityModuleApi identityModuleApi,
-    EmailService emailService) : ICommandHandler<CancelAppointmentCommand>
+    IEmailSender emailService) : ICommandHandler<CancelAppointmentCommand>
 {
     public async Task<Result> Handle(CancelAppointmentCommand command, CancellationToken cancellationToken)
     {

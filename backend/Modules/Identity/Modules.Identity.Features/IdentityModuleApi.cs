@@ -14,7 +14,7 @@ namespace Modules.Identity.Features;
 public class IdentityModuleApi(
     UserManager<User> userManager,
     IdentityEmailService identityEmailService,
-    SupabaseService supabaseService,
+    IFileStorage fileStorage,
     ILogger<IdentityModuleApi> logger) : IIdentityModuleApi
 {
     public async Task<Result<Guid>> CreateUserAsync(
@@ -106,7 +106,7 @@ public class IdentityModuleApi(
 
         if (!string.IsNullOrEmpty(request.ProfilePictureUrl) && !string.IsNullOrEmpty(user.ProfilePictureUrl))
         {
-            await supabaseService.DeleteFileAsync(user.ProfilePictureUrl, "profile-pictures");
+            await fileStorage.DeleteFileAsync(user.ProfilePictureUrl, "profile-pictures");
         }
 
         user.Update(
@@ -350,4 +350,3 @@ public class IdentityModuleApi(
         return Result<bool>.Success(user.IsOnboardingCompleted);
     }
 }
-

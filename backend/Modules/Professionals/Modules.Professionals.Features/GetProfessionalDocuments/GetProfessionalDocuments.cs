@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -24,7 +25,7 @@ internal sealed class GetProfessionalDocuments : IEndpoint
                     error => CustomResults.Problem(error));
             })
             .WithTags(Tags.Professionals)
-            .RequireAuthorization();
+            .RequireAuthorization(new AuthorizeAttribute { Roles = "Admin" });
     }
 
     private class Request

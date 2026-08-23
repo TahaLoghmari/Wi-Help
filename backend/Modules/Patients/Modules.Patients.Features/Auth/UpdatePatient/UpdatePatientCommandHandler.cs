@@ -14,7 +14,7 @@ namespace Modules.Patients.Features.Auth.UpdatePatient;
 public sealed class UpdatePatientCommandHandler(
     IIdentityModuleApi identityApi,
     PatientsDbContext dbContext,
-    SupabaseService supabaseService,
+    IFileStorage fileStorage,
     ILogger<UpdatePatientCommandHandler> logger) : ICommandHandler<UpdatePatientCommand>
 {
     public async Task<Result> Handle(
@@ -39,7 +39,7 @@ public sealed class UpdatePatientCommandHandler(
             string? profilePictureUrl = null;
             if (command.ProfilePicture is not null)
             {
-                profilePictureUrl = await supabaseService.UploadFileAsync(
+                profilePictureUrl = await fileStorage.UploadFileAsync(
                     command.ProfilePicture,
                     "profilePicture",
                     "profile-pictures",

@@ -23,7 +23,7 @@ public class BookAppointmentCommandHandler(
     IProfessionalModuleApi professionalModuleApi,
     IPatientsModuleApi patientsModuleApi,
     IIdentityModuleApi identityModuleApi,
-    EmailService emailService) : ICommandHandler<BookAppointmentCommand>
+    IEmailSender emailService) : ICommandHandler<BookAppointmentCommand>
 {
     public async Task<Result> Handle(BookAppointmentCommand command, CancellationToken cancellationToken)
     {

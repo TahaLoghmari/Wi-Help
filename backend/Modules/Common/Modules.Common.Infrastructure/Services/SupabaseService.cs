@@ -5,7 +5,7 @@ using FileOptions = Supabase.Storage.FileOptions;
 
 namespace Modules.Common.Infrastructure.Services;
 
-public class SupabaseService 
+public class SupabaseService : IFileStorage
 {
     public readonly Supabase.Client _client;
     public readonly string _supabaseUrl;

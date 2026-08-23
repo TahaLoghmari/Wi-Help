@@ -73,8 +73,11 @@ using (var scope = app.Services.CreateScope())
     var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
     await IdentityDataSeeder.SeedAdminUserAsync(userManager, configuration);
 
-    var supabaseService = scope.ServiceProvider.GetRequiredService<SupabaseService>();
-    await supabaseService.InitializeAsync();
+    if (!app.Environment.IsEnvironment("Testing"))
+    {
+        var supabaseService = scope.ServiceProvider.GetRequiredService<SupabaseService>();
+        await supabaseService.InitializeAsync();
+    }
 }
 
 app.UseExceptionHandler();
@@ -108,3 +111,5 @@ catch (Exception ex)
 }
 
 await app.RunAsync();
+
+public partial class Program;

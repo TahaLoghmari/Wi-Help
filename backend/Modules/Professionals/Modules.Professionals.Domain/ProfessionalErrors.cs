@@ -36,4 +36,8 @@ public class ProfessionalErrors
     public static Error Unauthorized() => Error.Unauthorized(
         "Professional.Unauthorized",
         "Professional ID claim is missing or invalid.");
+
+    public static Error InvalidVerificationDocument(string description) => Error.Validation(
+        "Professional.InvalidVerificationDocument",
+        description);
 }

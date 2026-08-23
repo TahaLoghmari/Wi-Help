@@ -7,6 +7,7 @@ public static class GetProfessionalAvailabilityUtility
     public static List<TimeSlotResponse> CalculateAvailabilitySlots(
         TimeSlotResponse? latestSlot,
         DateTime currentTimeUtc,
+        DateOnly date,
         bool considerTime,
         TimeOnly startTime,
         TimeOnly endTime,
@@ -34,6 +35,11 @@ public static class GetProfessionalAvailabilityUtility
 
             var isBooked = bookedSessions.Any(session =>
             {
+                if (DateOnly.FromDateTime(session.ScheduledAt) != date)
+                {
+                    return false;
+                }
+
                 var sessionStart = session.ScheduledAt.TimeOfDay;
                 var sessionEnd = sessionStart.Add(TimeSpan.FromMinutes(session.Minutes));
                 var slotStart = currentTime.ToTimeSpan();

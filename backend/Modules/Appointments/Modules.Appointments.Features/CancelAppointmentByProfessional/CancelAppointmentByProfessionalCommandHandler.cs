@@ -21,7 +21,7 @@ public class CancelAppointmentByProfessionalCommandHandler(
     INotificationsModuleApi notificationsModuleApi,
     IPatientsModuleApi patientsModuleApi,
     IProfessionalModuleApi professionalModuleApi,
-    EmailService emailService) : ICommandHandler<CancelAppointmentByProfessionalCommand>
+    IEmailSender emailService) : ICommandHandler<CancelAppointmentByProfessionalCommand>
 {
     public async Task<Result> Handle(CancelAppointmentByProfessionalCommand command, CancellationToken cancellationToken)
     {
