@@ -40,3 +40,19 @@ jobs:
       - name: Run frontend tests
         run: npm run test:run
         working-directory: frontend
+
+  mobile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - name: Install mobile dependencies
+        run: npm ci
+        working-directory: mobile
+      - name: Run mobile tests
+        run: npm run test:run
+        working-directory: mobile
