@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useReducer, useState } from "react";
 import {
   Image,
   KeyboardAvoidingView,
@@ -8,13 +8,14 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useForm, UseFormReturn, FieldValues } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
+import Toast from "react-native-toast-message";
 import { Button } from "@/components/ui/button";
 import { ProgressBar } from "@/components/ui/progress-bar";
-import { useRegisterPatient } from "@/api/auth/register-patient";
-import { useRegisterProfessional } from "@/api/auth/register-professional";
+import { useRegisterPatient } from "@/features/auth/api/register-patient";
+import { useRegisterProfessional } from "@/features/auth/api/register-professional";
 import {
   patientSchema,
   professionalSchema,
@@ -25,18 +26,20 @@ import {
   PatientFormDefaults,
   ProfessionalFormDefaults,
 } from "@/features/auth/lib/auth-form-defaults";
-import {
-  useRegisterRoleStore,
-  type RegisterRole,
-} from "@/features/auth/stores/use-register-role-store";
-import { useStepsStore } from "@/features/auth/stores/use-steps-store";
 import { useAppNavigation } from "@/hooks/use-app-navigation";
+import { useHandleApiError } from "@/hooks/use-handle-api-error";
 import { cn } from "@/lib/utils";
 import { getProgressValue } from "@/features/auth/lib/utils";
 import { Step1Form } from "./step-1-form";
 import { Step2Form } from "./step-2-form";
 import { Step3PatientForm } from "./step-3-patient-form";
 import { Step3ProfessionalForm } from "./step-3-professional-form";
+import { type RegisterFieldPath } from "./register-types";
+import {
+  initialRegistrationFlowState,
+  registrationFlowReducer,
+  type RegisterRole,
+} from "./registration-flow";
 
 const TOTAL_STEPS = 3;
 
@@ -45,12 +48,11 @@ const TOTAL_STEPS = 3;
 export function RegisterScreen() {
   const { t } = useTranslation();
   const { goToLogin, goBack } = useAppNavigation();
-  const { registerRole, setRegisterRole } = useRegisterRoleStore();
-  const { step, nextStep, prevStep, setStep } = useStepsStore();
-
-  useEffect(() => {
-    setStep(1);
-  }, [setStep]);
+  const handleApiError = useHandleApiError();
+  const [{ role: registerRole, step }, dispatch] = useReducer(
+    registrationFlowReducer,
+    initialRegistrationFlowState,
+  );
 
   const registerPatient = useRegisterPatient();
   const registerProfessional = useRegisterProfessional();
@@ -74,8 +76,7 @@ export function RegisterScreen() {
 
   const handleRoleSwitcher = (role: RegisterRole) => {
     if (role === registerRole) return;
-    setRegisterRole(role);
-    setStep(1);
+    dispatch({ type: "set-role", role });
     patientForm.reset(PatientFormDefaults());
     professionalForm.reset(ProfessionalFormDefaults());
   };
@@ -101,7 +102,7 @@ export function RegisterScreen() {
     "gender",
     "dateOfBirth",
     "phoneNumber",
-  ];
+  ] satisfies RegisterFieldPath[];
 
   const step2Fields = [
     "address.street",
@@ -109,25 +110,40 @@ export function RegisterScreen() {
     "address.postalCode",
     "address.countryId",
     "address.stateId",
-  ];
+  ] satisfies RegisterFieldPath[];
 
   const handleNext = async () => {
-    const activeForm = (
-      isPatient ? patientForm : professionalForm
-    ) as UseFormReturn<FieldValues>;
     const fields = step === 1 ? step1Fields : step2Fields;
-    const isValid = await activeForm.trigger(fields);
-    if (isValid) nextStep();
+    const isValid = isPatient
+      ? await patientForm.trigger(fields)
+      : await professionalForm.trigger(fields);
+    if (isValid) dispatch({ type: "next" });
+  };
+
+  const registrationCallbacks = {
+    onSuccess: () => {
+      dispatch({ type: "reset" });
+      Toast.show({
+        type: "success",
+        text1: t("auth.accountCreated"),
+        text2: t("auth.checkEmailToConfirm"),
+      });
+      goToLogin();
+    },
+    onError: handleApiError,
   };
 
   const handleSubmit = () => {
     if (isPatient) {
       patientForm.handleSubmit((data) => {
-        registerPatient.mutate({ ...data, role: "patient" });
+        registerPatient.mutate(
+          { ...data, role: "patient" },
+          registrationCallbacks,
+        );
       })();
     } else {
       professionalForm.handleSubmit((data) => {
-        registerProfessional.mutate(data);
+        registerProfessional.mutate(data, registrationCallbacks);
       })();
     }
   };
@@ -159,7 +175,7 @@ export function RegisterScreen() {
             <View className="mb-6 flex-row items-center gap-x-2.5">
               <View className="h-12 w-12 items-center justify-center rounded-xl bg-green-50">
                 <Image
-                  source={require("@/assets/images/icon-2.png")}
+                  source={require("../../../../../assets/images/icon-2.png")}
                   className="h-8 w-8"
                   resizeMode="contain"
                   accessibilityLabel="Wi Help logo"
@@ -252,7 +268,7 @@ export function RegisterScreen() {
             {step > 1 && (
               <Button
                 variant="outline"
-                onPress={prevStep}
+                onPress={() => dispatch({ type: "previous" })}
                 className="w-24"
                 accessibilityLabel={t("common.back")}
               >

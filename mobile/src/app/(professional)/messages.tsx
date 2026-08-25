@@ -1,3 +1,3 @@
-import { MessagesScreen } from "@/features/messaging/components/messages-screen";
+import { MessagesScreen } from "@/features/messaging";
 
 export default MessagesScreen;

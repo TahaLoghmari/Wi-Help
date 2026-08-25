@@ -6,28 +6,28 @@ import Animated, {
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
-import { useCurrentUser } from "@/api/auth/use-current-user";
-import { useGetProfessionalAppointments } from "@/api/appointments/get-professional-appointments";
-import { useRespondToAppointment } from "@/api/appointments/respond-to-appointment";
-import { useCancelAppointmentByProfessional } from "@/api/appointments/cancel-appointment-by-professional";
-import { useCompleteAppointment } from "@/api/appointments/complete-appointment";
-import { AppointmentCard } from "@/features/appointments/components/appointment-card";
-import { CompleteAppointmentModal } from "@/features/appointments/components/complete-appointment-modal";
+import { useCurrentUser } from "@/entities/session";
 import {
   AppointmentStatus,
   type AppointmentDto,
-} from "@/features/appointments/types/api.types";
+  useGetProfessionalAppointments,
+} from "@/entities/appointment";
+import { useCancelAppointmentByProfessional } from "@/features/appointments/api/cancel-appointment-by-professional";
+import { useCompleteAppointment } from "@/features/appointments/api/complete-appointment";
+import { useRespondToAppointment } from "@/features/appointments/api/respond-to-appointment";
+import { AppointmentCard } from "@/features/appointments/components/appointment-card";
+import { CompleteAppointmentModal } from "@/features/appointments/components/complete-appointment-modal";
 import { useTranslation } from "react-i18next";
 import { AppHeader } from "@/components/app-header";
-import { useNotifications } from "@/api/notifications/get-notifications";
-import { useSelectedAppointmentStore } from "@/features/appointments/stores/use-selected-appointment-store";
 import {
   FILTER_TABS,
   getGreetingKey,
   formatHeaderDate,
-  isSameDay,
-  type AppointmentStats,
 } from "@/features/appointments/lib/utils";
+import {
+  filterAppointmentsByStatus,
+  getAppointmentStats,
+} from "@/features/appointments/lib/appointment-presentation";
 
 import { TodayStatsGrid } from "./today-stats-grid";
 import { TotalSummaryCard } from "./total-summary-card";
@@ -47,10 +47,6 @@ export function AppointmentsScreen() {
     useState<AppointmentDto | null>(null);
 
   const { data: user } = useCurrentUser();
-  const { data: notificationsData } = useNotifications();
-  const hasUnread =
-    notificationsData?.pages.flatMap((p) => p.items).some((n) => !n.isRead) ??
-    false;
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useGetProfessionalAppointments();
 
@@ -63,38 +59,13 @@ export function AppointmentsScreen() {
     [data],
   );
 
-  const stats = useMemo<AppointmentStats>(() => {
-    const todayItems = allAppointments.filter((a) => isSameDay(a.startDate));
-    return {
-      todayConfirmed: todayItems.filter(
-        (a) => a.status === AppointmentStatus.Confirmed,
-      ).length,
-      todayOffered: todayItems.filter(
-        (a) => a.status === AppointmentStatus.Offered,
-      ).length,
-      todayCompleted: todayItems.filter(
-        (a) => a.status === AppointmentStatus.Completed,
-      ).length,
-      todayCancelled: todayItems.filter(
-        (a) => a.status === AppointmentStatus.Cancelled,
-      ).length,
-      totalConfirmed: allAppointments.filter(
-        (a) => a.status === AppointmentStatus.Confirmed,
-      ).length,
-      totalOffered: allAppointments.filter(
-        (a) => a.status === AppointmentStatus.Offered,
-      ).length,
-      totalCompleted: allAppointments.filter(
-        (a) => a.status === AppointmentStatus.Completed,
-      ).length,
-      totalCancelled: allAppointments.filter(
-        (a) => a.status === AppointmentStatus.Cancelled,
-      ).length,
-    };
-  }, [allAppointments]);
+  const stats = useMemo(
+    () => getAppointmentStats(allAppointments, new Date()),
+    [allAppointments],
+  );
 
   const filteredAppointments = useMemo(
-    () => allAppointments.filter((a) => a.status === activeTab),
+    () => filterAppointmentsByStatus(allAppointments, activeTab),
     [allAppointments, activeTab],
   );
 
@@ -129,11 +100,9 @@ export function AppointmentsScreen() {
 
   const handleViewDetails = useCallback(
     (appointmentId: string) => {
-      const appt = allAppointments.find((a) => a.id === appointmentId);
-      if (appt) useSelectedAppointmentStore.getState().setAppointment(appt);
       router.push(`/(professional)/appointment/${appointmentId}`);
     },
-    [allAppointments],
+    [],
   );
 
   const listHeader = (
@@ -227,7 +196,7 @@ export function AppointmentsScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-brand-bg" edges={["top"]}>
-      <AppHeader scrollY={scrollY} user={user} hasUnread={hasUnread} />
+      <AppHeader scrollY={scrollY} user={user} />
       <Animated.FlatList
         data={filteredAppointments}
         keyExtractor={keyExtractor}
@@ -249,10 +218,14 @@ export function AppointmentsScreen() {
         visible={pendingCompleteAppointment !== null}
         appointment={pendingCompleteAppointment}
         onClose={() => setPendingCompleteAppointment(null)}
-        onSubmit={(req) => {
-          completeMutation.mutate(req, {
-            onSuccess: () => setPendingCompleteAppointment(null),
-          });
+        onSubmit={(values) => {
+          if (!pendingCompleteAppointment) return;
+          completeMutation.mutate(
+            { appointmentId: pendingCompleteAppointment.id, ...values },
+            {
+              onSuccess: () => setPendingCompleteAppointment(null),
+            },
+          );
         }}
         isLoading={completeMutation.isPending}
       />

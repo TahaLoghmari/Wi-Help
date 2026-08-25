@@ -1,3 +1,3 @@
-import { ScheduleScreen } from "@/features/professionals/components/schedule/schedule-screen";
+import { ScheduleScreen } from "@/features/professionals";
 
 export default ScheduleScreen;

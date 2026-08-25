@@ -9,14 +9,12 @@ import {
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import { type ReviewReplyDto } from "@/features/reviews/types/api.types";
+import { type ReviewReplyDto } from "@/entities/review";
 
 interface ReviewReplyItemProps {
   reply: ReviewReplyDto;
   timeAgo: (dateString: string) => string;
-  /** Currently logged-in user's ID */
-  currentUserId?: string;
-  isAdmin?: boolean;
+  canManage: boolean;
   onEditReply?: (replyId: string, comment: string) => void;
   onDeleteReply?: (replyId: string) => void;
   isEditLoading?: boolean;
@@ -26,8 +24,7 @@ interface ReviewReplyItemProps {
 export const ReviewReplyItem = React.memo(function ReviewReplyItem({
   reply,
   timeAgo,
-  currentUserId,
-  isAdmin = false,
+  canManage,
   onEditReply,
   onDeleteReply,
   isEditLoading = false,
@@ -47,9 +44,6 @@ export const ReviewReplyItem = React.memo(function ReviewReplyItem({
     reply.firstName && reply.lastName
       ? `${reply.firstName[0]}${reply.lastName[0]}`.toUpperCase()
       : "?";
-
-  const canManage =
-    (currentUserId != null && reply.userId === currentUserId) || isAdmin;
 
   const handleStartEdit = useCallback(() => {
     setEditText(reply.comment);

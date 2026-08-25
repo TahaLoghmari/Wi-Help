@@ -1,12 +1,11 @@
 import React from "react";
 import { View } from "react-native";
-import { Controller, useWatch, type UseFormReturn } from "react-hook-form";
+import { Controller, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { useGetCountries } from "@/api/auth/get-countries";
-import { useGetStatesByCountry } from "@/api/auth/get-states";
-import { type AnyFormReturn } from "@/features/auth/types/api.types";
+import { useGetCountries, useGetStatesByCountry } from "@/entities/location";
+import { asRegisterForm, type AnyFormReturn } from "./register-types";
 
 interface Step2FormProps {
   form: AnyFormReturn;
@@ -14,11 +13,11 @@ interface Step2FormProps {
 
 export function Step2Form({ form }: Step2FormProps) {
   const { t } = useTranslation();
+  const registerForm = asRegisterForm(form);
   const {
     control,
     formState: { errors },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } = form as UseFormReturn<any>;
+  } = registerForm;
   const addrErr = (errors.address ?? {}) as Record<
     string,
     { message?: string }
@@ -104,11 +103,7 @@ export function Step2Form({ form }: Step2FormProps) {
             value={value as string}
             onValueChange={(v) => {
               onChange(v);
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              (form as unknown as UseFormReturn<Record<string, any>>).setValue(
-                "address.stateId",
-                "",
-              );
+              registerForm.setValue("address.stateId", "");
             }}
             error={addrErr.countryId?.message}
             placeholder={t("placeholders.country")}

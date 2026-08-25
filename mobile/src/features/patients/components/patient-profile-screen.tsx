@@ -12,43 +12,23 @@ import {
   ScrollView,
   ActivityIndicator,
   Animated,
-  FlatList,
-  RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import Toast from "react-native-toast-message";
 
-import { useCurrentUser } from "@/api/auth/use-current-user";
-import { useGetCurrentPatient } from "@/api/patients/get-current-patient";
-import { useGetPatientById } from "@/api/patients/get-patient-by-id";
-import { useGetPatientReviews } from "@/api/reviews/get-patient-reviews";
-import { useGetPatientReviewStats } from "@/api/reviews/get-patient-review-stats";
-import { useSubmitPatientReview } from "@/api/reviews/submit-patient-review";
-import { useUpdateReview } from "@/api/reviews/update-review";
-import { useDeleteReview } from "@/api/reviews/delete-review";
-import { useToggleReviewLike } from "@/api/reviews/like-review";
-import { useReplyToReview } from "@/api/reviews/reply-to-review";
-import { useGetCurrentProfessional } from "@/api/professionals/get-current-professional";
-import { useGetStatesByCountry } from "@/api/auth/get-states";
-import { useGetCountries } from "@/api/auth/get-countries";
-import { useGetRelationships } from "@/api/patients/get-relationships";
-import { useEditReply } from "@/api/reviews/edit-reply";
-import { useDeleteReply } from "@/api/reviews/delete-reply";
+import { useCurrentUser } from "@/entities/session";
+import { useGetCountries, useGetStatesByCountry } from "@/entities/location";
+import {
+  type FullPatientDto,
+  useGetCurrentPatient,
+  useGetPatientById,
+  useGetRelationships,
+} from "@/entities/patient";
+import { useGetCurrentProfessional } from "@/entities/professional";
 
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-// eslint-disable-next-line import/no-restricted-paths
-import { StarRating } from "@/features/reviews/components/star-rating";
-// eslint-disable-next-line import/no-restricted-paths
-import { PatientReviewCard } from "@/features/reviews/components/patient-review-card";
-// eslint-disable-next-line import/no-restricted-paths
-import { AddPatientReviewForm } from "@/features/reviews/components/add-patient-review-form";
-
-// eslint-disable-next-line import/no-restricted-paths
-import type { ReviewDto } from "@/features/reviews/types/api.types";
-import type { FullPatientDto } from "@/features/patients/types/api.types";
+import { ReviewsSection } from "@/features/reviews";
 
 // ─── Tab definitions ──────────────────────────────────────────────────────────
 
@@ -140,43 +120,6 @@ function TagList({
           <Text className="text-xs text-brand-secondary">{item}</Text>
         </View>
       ))}
-    </View>
-  );
-}
-
-// ─── Review Stats Header ──────────────────────────────────────────────────────
-
-function ReviewStatsHeader({
-  averageRating,
-  totalCount,
-}: {
-  averageRating: number;
-  totalCount: number;
-}) {
-  const filledStars = Math.round(averageRating);
-  return (
-    <View className="flex-row items-center mb-4">
-      <View
-        className="flex-row items-center gap-1 rounded-full border border-brand-secondary/15 bg-white px-2.5 py-1"
-        style={{ alignSelf: "flex-start" }}
-      >
-        <View className="flex-row items-center gap-0.5">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Ionicons
-              key={i}
-              name="star"
-              size={11}
-              color={i < filledStars ? "#f5a623" : "rgba(0,84,110,0.15)"}
-            />
-          ))}
-        </View>
-        <Text className="ml-1 text-[12px] font-semibold text-brand-dark">
-          {averageRating.toFixed(1)}
-        </Text>
-        <Text className="text-[11px] text-brand-secondary/50">
-          ({totalCount})
-        </Text>
-      </View>
     </View>
   );
 }
@@ -331,353 +274,6 @@ function OverviewTab({ patient }: { patient: FullPatientDto }) {
         </>
       )}
     </ScrollView>
-  );
-}
-
-// ─── Reviews Tab ──────────────────────────────────────────────────────────────
-
-interface ReviewsTabProps {
-  patientId: string;
-  currentUserId?: string;
-  currentProfessionalId?: string;
-  isPatient: boolean;
-  isAdmin: boolean;
-}
-
-function ReviewsTab({
-  patientId,
-  currentUserId,
-  currentProfessionalId,
-  isPatient,
-  isAdmin,
-}: ReviewsTabProps) {
-  const { t } = useTranslation();
-
-  const { data: statsData } = useGetPatientReviewStats(patientId);
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-    refetch,
-    isRefetching,
-  } = useGetPatientReviews(patientId);
-
-  const reviews = useMemo(
-    () => data?.pages.flatMap((p) => p.items) ?? [],
-    [data],
-  );
-
-  // Find current professional's existing review for edit
-  const myReview = useMemo(
-    () =>
-      currentProfessionalId
-        ? reviews.find((r) => r.author.id === currentProfessionalId)
-        : undefined,
-    [reviews, currentProfessionalId],
-  );
-
-  const submitMutation = useSubmitPatientReview(patientId);
-  const updateMutation = useUpdateReview(patientId);
-  const deleteMutation = useDeleteReview(patientId);
-  const likeMutation = useToggleReviewLike(patientId);
-  const replyMutation = useReplyToReview(patientId);
-  const editReplyMutation = useEditReply(patientId);
-  const deleteReplyMutation = useDeleteReply(patientId);
-
-  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
-  const [deleteTargetReplyId, setDeleteTargetReplyId] = useState<string | null>(
-    null,
-  );
-  const [deleteTargetReplyReviewId, setDeleteTargetReplyReviewId] = useState<
-    string | null
-  >(null);
-
-  const handleSubmitReview = useCallback(
-    (comment: string, rating: number) => {
-      if (!currentProfessionalId) return;
-      submitMutation.mutate(
-        { patientId, comment, rating },
-        {
-          onError: () => {
-            Toast.show({
-              type: "error",
-              text1: t("errors.unexpected"),
-            });
-          },
-        },
-      );
-    },
-    [currentProfessionalId, patientId, submitMutation, t],
-  );
-
-  const handleEdit = useCallback(
-    (reviewId: string, comment: string, rating: number) => {
-      updateMutation.mutate(
-        { reviewId, data: { comment, rating } },
-        {
-          onError: () => {
-            Toast.show({ type: "error", text1: t("errors.unexpected") });
-          },
-        },
-      );
-    },
-    [updateMutation, t],
-  );
-
-  const handleConfirmDelete = useCallback(() => {
-    if (!deleteTargetId) return;
-    deleteMutation.mutate(deleteTargetId, {
-      onSuccess: () => setDeleteTargetId(null),
-      onError: () => {
-        setDeleteTargetId(null);
-        Toast.show({ type: "error", text1: t("errors.unexpected") });
-      },
-    });
-  }, [deleteTargetId, deleteMutation, t]);
-
-  const handleLike = useCallback(
-    (reviewId: string, isLiked: boolean) => {
-      likeMutation.mutate({ reviewId, isLiked });
-    },
-    [likeMutation],
-  );
-
-  const handleReply = useCallback(
-    (reviewId: string, comment: string) => {
-      replyMutation.mutate(
-        { reviewId, data: { comment } },
-        {
-          onError: () => {
-            Toast.show({ type: "error", text1: t("errors.unexpected") });
-          },
-        },
-      );
-    },
-    [replyMutation, t],
-  );
-
-  const handleEditReply = useCallback(
-    (reviewId: string, replyId: string, comment: string) => {
-      editReplyMutation.mutate(
-        { reviewId, replyId, patientId, data: { comment } },
-        {
-          onError: () => {
-            Toast.show({ type: "error", text1: t("errors.unexpected") });
-          },
-        },
-      );
-    },
-    [editReplyMutation, patientId, t],
-  );
-
-  const handleDeleteReply = useCallback((reviewId: string, replyId: string) => {
-    setDeleteTargetReplyReviewId(reviewId);
-    setDeleteTargetReplyId(replyId);
-  }, []);
-
-  const handleConfirmDeleteReply = useCallback(() => {
-    if (!deleteTargetReplyId || !deleteTargetReplyReviewId) return;
-    deleteReplyMutation.mutate(
-      { reviewId: deleteTargetReplyReviewId, replyId: deleteTargetReplyId },
-      {
-        onSuccess: () => {
-          setDeleteTargetReplyId(null);
-          setDeleteTargetReplyReviewId(null);
-        },
-        onError: () => {
-          setDeleteTargetReplyId(null);
-          setDeleteTargetReplyReviewId(null);
-          Toast.show({ type: "error", text1: t("errors.unexpected") });
-        },
-      },
-    );
-  }, [deleteTargetReplyId, deleteTargetReplyReviewId, deleteReplyMutation, t]);
-
-  const renderItem = useCallback(
-    ({ item }: { item: ReviewDto }) => (
-      <PatientReviewCard
-        review={item}
-        currentProfessionalId={currentProfessionalId}
-        currentUserId={currentUserId}
-        isPatient={isPatient}
-        isAdmin={isAdmin}
-        onLike={handleLike}
-        onReply={handleReply}
-        onEdit={handleEdit}
-        onDelete={(id) => setDeleteTargetId(id)}
-        onEditReply={handleEditReply}
-        onDeleteReply={handleDeleteReply}
-        isLikeLoading={
-          likeMutation.isPending && likeMutation.variables?.reviewId === item.id
-        }
-        isReplyLoading={
-          replyMutation.isPending &&
-          replyMutation.variables?.reviewId === item.id
-        }
-        editingReplyId={
-          editReplyMutation.isPending
-            ? (editReplyMutation.variables?.replyId ?? null)
-            : null
-        }
-        deletingReplyId={
-          deleteReplyMutation.isPending
-            ? (deleteReplyMutation.variables?.replyId ?? null)
-            : null
-        }
-      />
-    ),
-    [
-      currentProfessionalId,
-      currentUserId,
-      isPatient,
-      isAdmin,
-      handleLike,
-      handleReply,
-      handleEdit,
-      handleEditReply,
-      handleDeleteReply,
-      likeMutation,
-      replyMutation,
-      editReplyMutation,
-      deleteReplyMutation,
-    ],
-  );
-
-  const renderFooter = useCallback(
-    () =>
-      hasNextPage ? (
-        <View className="items-center py-4">
-          {isFetchingNextPage ? (
-            <ActivityIndicator size="small" color="#00546e" />
-          ) : (
-            <Pressable
-              className="px-4 py-2 rounded-full border border-brand-secondary/20"
-              onPress={() => fetchNextPage()}
-              accessibilityRole="button"
-            >
-              <Text className="text-xs text-brand-secondary">
-                {t("patientProfile.reviews.loadMore")}
-              </Text>
-            </Pressable>
-          )}
-        </View>
-      ) : null,
-    [hasNextPage, isFetchingNextPage, fetchNextPage, t],
-  );
-
-  const listHeader = useMemo(
-    () => (
-      <View>
-        {/* Stats */}
-        {statsData && statsData.totalCount > 0 && (
-          <ReviewStatsHeader
-            averageRating={statsData.averageRating}
-            totalCount={statsData.totalCount}
-          />
-        )}
-
-        {/* Add / Edit review form (professional only) */}
-        {currentProfessionalId && !myReview && (
-          <AddPatientReviewForm
-            onSubmit={handleSubmitReview}
-            isLoading={submitMutation.isPending}
-          />
-        )}
-
-        {reviews.length === 0 && !isLoading && (
-          <View className="items-center py-10 gap-2">
-            <Ionicons
-              name="chatbubble-outline"
-              size={36}
-              color="rgba(0,84,110,0.2)"
-            />
-            <Text className="text-base font-semibold text-brand-dark">
-              {t("patientProfile.reviews.noReviews")}
-            </Text>
-            <Text className="text-sm text-brand-secondary/60 text-center">
-              {t("patientProfile.reviews.noReviewsDesc")}
-            </Text>
-          </View>
-        )}
-      </View>
-    ),
-    [
-      statsData,
-      currentProfessionalId,
-      myReview,
-      handleSubmitReview,
-      submitMutation.isPending,
-      reviews.length,
-      isLoading,
-      t,
-    ],
-  );
-
-  if (isLoading) {
-    return (
-      <View className="flex-1 items-center justify-center">
-        <ActivityIndicator size="large" color="#00546e" />
-      </View>
-    );
-  }
-
-  return (
-    <>
-      <FlatList
-        data={reviews}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        ListHeaderComponent={listHeader}
-        ListFooterComponent={renderFooter}
-        contentContainerStyle={{
-          paddingHorizontal: 16,
-          paddingBottom: 32,
-          paddingTop: 8,
-        }}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefetching}
-            onRefresh={refetch}
-            tintColor="#00546e"
-          />
-        }
-        onEndReached={() =>
-          hasNextPage && !isFetchingNextPage && fetchNextPage()
-        }
-        onEndReachedThreshold={0.3}
-      />
-
-      {/* Delete review confirm dialog */}
-      <ConfirmDialog
-        visible={deleteTargetId !== null}
-        title={t("patientProfile.reviews.deleteReview")}
-        subtitle={t("patientProfile.reviews.confirmDelete")}
-        confirmLabel={t("patientProfile.reviews.deleteReview")}
-        dismissLabel={t("common.cancel")}
-        onConfirm={handleConfirmDelete}
-        onDismiss={() => setDeleteTargetId(null)}
-        destructive
-        isLoading={deleteMutation.isPending}
-      />
-      {/* Delete reply confirm dialog */}
-      <ConfirmDialog
-        visible={deleteTargetReplyId !== null}
-        title={t("patientProfile.reviews.deleteReview")}
-        subtitle={t("patientProfile.reviews.confirmDelete")}
-        confirmLabel={t("patientProfile.reviews.deleteReview")}
-        dismissLabel={t("common.cancel")}
-        onConfirm={handleConfirmDeleteReply}
-        onDismiss={() => {
-          setDeleteTargetReplyId(null);
-          setDeleteTargetReplyReviewId(null);
-        }}
-        destructive
-        isLoading={deleteReplyMutation.isPending}
-      />
-    </>
   );
 }
 
@@ -919,14 +515,20 @@ export function PatientProfileScreen({
         {activeTab === "overview" ? (
           <OverviewTab patient={patient} />
         ) : (
-          <ReviewsTab
-            patientId={patient.id}
-            currentUserId={currentUser?.id}
-            currentProfessionalId={
-              isProfessionalViewer ? currentProfessional?.id : undefined
-            }
-            isPatient={viewerRole === "Patient"}
-            isAdmin={viewerRole === "Admin"}
+          <ReviewsSection
+            subject={{ id: patient.id, kind: "patient" }}
+            viewer={{
+              userId: currentUser?.id,
+              profileId: isProfessionalViewer
+                ? currentProfessional?.id
+                : undefined,
+              role:
+                viewerRole === "Professional"
+                  ? "Professional"
+                  : viewerRole === "Admin"
+                    ? "Admin"
+                    : "Patient",
+            }}
           />
         )}
       </Animated.View>

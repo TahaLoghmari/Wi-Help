@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from "expo-router";
-import { AppointmentDetailScreen } from "@/features/appointments/components/appointment/appointment-detail-screen";
+import { AppointmentDetailScreen } from "@/features/appointments";
 
 export default function AppointmentDetailRoute() {
   const { id } = useLocalSearchParams<{ id: string }>();

@@ -1,3 +1,3 @@
-import { AppointmentsScreen } from "@/features/appointments/components/appointments-screen";
+import { AppointmentsScreen } from "@/features/appointments";
 
 export default AppointmentsScreen;

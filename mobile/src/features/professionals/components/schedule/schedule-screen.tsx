@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useReducer, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import Animated, {
   useAnimatedScrollHandler,
@@ -8,19 +8,18 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import { AppHeader } from "@/components/app-header";
-import { useCurrentUser } from "@/api/auth/use-current-user";
-import { useNotifications } from "@/api/notifications/get-notifications";
-import { useGetCurrentProfessional } from "@/api/professionals/get-current-professional";
-import { useGetSchedule } from "@/api/professionals/get-schedule";
-import { useSetupSchedule } from "@/api/professionals/setup-schedule";
+import { useCurrentUser } from "@/entities/session";
 import {
-  type AvailabilityDayDto,
-  type AvailabilitySlotDto,
-} from "@/features/professionals/types/schedule.types";
+  useGetCurrentProfessional,
+  useGetSchedule,
+} from "@/entities/professional";
+import { useSetupSchedule } from "@/features/professionals/api/setup-schedule";
 import {
-  DISPLAY_ORDER,
-  mergeWithAllDays,
-} from "@/features/professionals/lib/utils";
+  createInitialScheduleDraft,
+  isScheduleDraftDirty,
+  scheduleDraftReducer,
+} from "@/features/professionals/lib/schedule-draft";
+import { DISPLAY_ORDER } from "@/features/professionals/lib/utils";
 import { DayCard } from "./day-card";
 import { SlotEditModal } from "./slot-edit-modal";
 import { ScheduleSkeleton } from "./schedule-skeleton";
@@ -43,10 +42,6 @@ export function ScheduleScreen() {
   });
 
   const { data: user } = useCurrentUser();
-  const { data: notificationsData } = useNotifications();
-  const hasUnread =
-    notificationsData?.pages.flatMap((p) => p.items).some((n) => !n.isRead) ??
-    false;
   const { data: professional, isLoading: isProfessionalLoading } =
     useGetCurrentProfessional();
   const { data: scheduleData, isLoading: isScheduleLoading } = useGetSchedule(
@@ -56,34 +51,24 @@ export function ScheduleScreen() {
   const saveMutation = useSetupSchedule();
 
   // ── Local draft state ─────────────────────────────────────────────────────
-  const [localDays, setLocalDays] = useState<AvailabilityDayDto[]>(() =>
-    mergeWithAllDays([]),
+  const [scheduleDraft, dispatchScheduleDraft] = useReducer(
+    scheduleDraftReducer,
+    undefined,
+    createInitialScheduleDraft,
   );
-  const [savedDays, setSavedDays] = useState<AvailabilityDayDto[]>(() =>
-    mergeWithAllDays([]),
-  );
+  const localDays = scheduleDraft.days;
+  const isDirty = isScheduleDraftDirty(scheduleDraft);
 
   // Populate from server
   useEffect(() => {
-    if (scheduleData) {
-      const merged = mergeWithAllDays(scheduleData.days);
-      setLocalDays(merged);
-      setSavedDays(merged);
+    if (scheduleData && professional?.id) {
+      dispatchScheduleDraft({
+        type: "serverLoaded",
+        professionalId: professional.id,
+        days: scheduleData.days,
+      });
     }
-  }, [scheduleData]);
-
-  const isDirty = useMemo(() => {
-    const normalize = (days: AvailabilityDayDto[]) =>
-      days.map((d) => ({
-        dayOfWeek: d.dayOfWeek,
-        isActive: d.isActive,
-        availabilitySlots: d.isActive ? d.availabilitySlots : [],
-      }));
-    return (
-      JSON.stringify(normalize(localDays)) !==
-      JSON.stringify(normalize(savedDays))
-    );
-  }, [localDays, savedDays]);
+  }, [professional?.id, scheduleData]);
 
   // ── Modal state ────────────────────────────────────────────────────────────
   const [modalVisible, setModalVisible] = useState(false);
@@ -95,21 +80,7 @@ export function ScheduleScreen() {
   // ── Day operations ─────────────────────────────────────────────────────────
 
   const handleToggleActive = useCallback((dayOfWeek: number) => {
-    setLocalDays((prev) =>
-      prev.map((d) => {
-        if (d.dayOfWeek !== dayOfWeek) return d;
-        const newIsActive = !d.isActive;
-        return {
-          ...d,
-          isActive: newIsActive,
-          // When activating with no slots, add a default slot
-          availabilitySlots:
-            newIsActive && d.availabilitySlots.length === 0
-              ? [{ startTime: "09:00", endTime: "10:00" }]
-              : d.availabilitySlots,
-        };
-      }),
-    );
+    dispatchScheduleDraft({ type: "dayToggled", dayOfWeek });
   }, []);
 
   const handleAddSlot = useCallback((dayOfWeek: number) => {
@@ -136,45 +107,28 @@ export function ScheduleScreen() {
 
   const handleDeleteSlot = useCallback(
     (dayOfWeek: number, slotIndex: number) => {
-      setLocalDays((prev) =>
-        prev.map((d) => {
-          if (d.dayOfWeek !== dayOfWeek) return d;
-          return {
-            ...d,
-            availabilitySlots: d.availabilitySlots.filter(
-              (_, i) => i !== slotIndex,
-            ),
-          };
-        }),
-      );
+      dispatchScheduleDraft({ type: "slotDeleted", dayOfWeek, slotIndex });
     },
     [],
   );
 
   const handleModalSave = useCallback(
     (startTime: string, endTime: string) => {
-      setLocalDays((prev) =>
-        prev.map((d) => {
-          if (d.dayOfWeek !== editingDayOfWeek) return d;
-          const newSlot: AvailabilitySlotDto = { startTime, endTime };
-
-          if (editingSlotIndex === null) {
-            // Add new slot
-            return {
-              ...d,
-              availabilitySlots: [...d.availabilitySlots, newSlot],
-            };
-          } else {
-            // Update existing slot (preserve id if present)
-            const updated = [...d.availabilitySlots];
-            updated[editingSlotIndex] = {
-              ...updated[editingSlotIndex],
+      dispatchScheduleDraft(
+        editingSlotIndex === null
+          ? {
+              type: "slotAdded",
+              dayOfWeek: editingDayOfWeek,
               startTime,
               endTime,
-            };
-            return { ...d, availabilitySlots: updated };
-          }
-        }),
+            }
+          : {
+              type: "slotEdited",
+              dayOfWeek: editingDayOfWeek,
+              slotIndex: editingSlotIndex,
+              startTime,
+              endTime,
+            },
       );
       setModalVisible(false);
     },
@@ -191,7 +145,10 @@ export function ScheduleScreen() {
     const snapshot = localDays;
     saveMutation.mutate(snapshot, {
       onSuccess: () => {
-        setSavedDays(snapshot);
+        dispatchScheduleDraft({
+          type: "saveSucceeded",
+          submittedDays: snapshot,
+        });
       },
     });
   }, [localDays, saveMutation]);
@@ -200,7 +157,7 @@ export function ScheduleScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-brand-bg" edges={["top"]}>
-      <AppHeader scrollY={scrollY} user={user} hasUnread={hasUnread} />
+      <AppHeader scrollY={scrollY} user={user} />
 
       <Animated.ScrollView
         style={{ flex: 1 }}

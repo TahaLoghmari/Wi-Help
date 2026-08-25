@@ -10,17 +10,12 @@ import Animated, {
 import { router } from "expo-router";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { AppHeader } from "@/components/app-header";
-import { useCurrentUser } from "@/api/auth/use-current-user";
-import { useNotifications } from "@/api/notifications/get-notifications";
+import { useCurrentUser } from "@/entities/session";
 import { ROUTE_PATHS } from "@/config/routes";
 
 export function MoreScreen() {
   const { t } = useTranslation();
   const { data: user } = useCurrentUser();
-  const { data: notificationsData } = useNotifications();
-  const hasUnread =
-    notificationsData?.pages.flatMap((p) => p.items).some((n) => !n.isRead) ??
-    false;
 
   const scrollY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler((event) => {
@@ -29,7 +24,7 @@ export function MoreScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-brand-bg" edges={["top"]}>
-      <AppHeader scrollY={scrollY} user={user} hasUnread={hasUnread} />
+      <AppHeader scrollY={scrollY} user={user} />
       <Animated.ScrollView
         className="flex-1"
         contentContainerClassName="px-5 pb-8"

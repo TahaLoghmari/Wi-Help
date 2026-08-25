@@ -15,8 +15,8 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import { useTranslation } from "react-i18next";
-import { type AppointmentDto } from "@/features/appointments/types/api.types";
-import { type CompleteAppointmentRequest } from "@/features/appointments/types/api.types";
+import { type AppointmentDto } from "@/entities/appointment";
+import { type CompleteAppointmentFormValues } from "@/features/appointments/types/completion-form.types";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -24,7 +24,7 @@ interface CompleteAppointmentModalProps {
   visible: boolean;
   appointment: AppointmentDto | null;
   onClose: () => void;
-  onSubmit: (request: CompleteAppointmentRequest) => void;
+  onSubmit: (values: CompleteAppointmentFormValues) => void;
   isLoading: boolean;
 }
 
@@ -109,7 +109,6 @@ export function CompleteAppointmentModal({
     }
     if (!appointment) return;
     onSubmit({
-      appointmentId: appointment.id,
       prescriptionPdf,
       prescriptionTitle: prescriptionTitle.trim() || undefined,
       prescriptionNotes: prescriptionNotes.trim() || undefined,

@@ -16,12 +16,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { AppHeader } from "@/components/app-header";
-import { useCurrentUser } from "@/api/auth/use-current-user";
-import { useNotifications } from "@/api/notifications/get-notifications";
-import { useGetConversations } from "@/api/messaging/get-conversations";
+import { useCurrentUser } from "@/entities/session";
+import {
+  type ConversationDto,
+  useGetConversations,
+} from "@/entities/messaging";
 import { useOnlineUsers } from "@/lib/signalr/use-chat-hub";
-import { type ConversationDto } from "@/features/messaging/types/messaging.types";
-import { sortConversations } from "@/features/messaging/lib/utils";
+import { projectConversations } from "@/features/messaging/lib/projection";
 import { ChatCard } from "./chat-card";
 import { ChatListSkeleton } from "./chat-list-skeleton";
 import { ChatListEmpty } from "./chat-list-empty";
@@ -33,10 +34,6 @@ export function MessagesScreen() {
   const [query, setQuery] = useState("");
 
   const { data: user } = useCurrentUser();
-  const { data: notificationsData } = useNotifications();
-  const hasUnread =
-    notificationsData?.pages.flatMap((p) => p.items).some((n) => !n.isRead) ??
-    false;
 
   const {
     data: conversations,
@@ -47,20 +44,10 @@ export function MessagesScreen() {
 
   const onlineUsers = useOnlineUsers();
 
-  const sorted = useMemo(
-    () => sortConversations(conversations ?? []),
-    [conversations],
+  const filtered = useMemo(
+    () => projectConversations(conversations ?? [], query),
+    [conversations, query],
   );
-
-  const filtered = useMemo(() => {
-    if (!query.trim()) return sorted;
-    const q = query.toLowerCase();
-    return sorted.filter((c) =>
-      `${c.otherParticipantFirstName} ${c.otherParticipantLastName}`
-        .toLowerCase()
-        .includes(q),
-    );
-  }, [sorted, query]);
 
   const handleConversationPress = useCallback(
     (conversation: ConversationDto) => {
@@ -144,7 +131,7 @@ export function MessagesScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-brand-bg" edges={["top"]}>
-      <AppHeader scrollY={scrollY} user={user} hasUnread={hasUnread} />
+      <AppHeader scrollY={scrollY} user={user} />
 
       <Animated.FlatList
         data={isLoading ? [] : filtered}

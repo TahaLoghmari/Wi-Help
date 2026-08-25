@@ -1,5 +1,5 @@
 import React from "react";
-import { RegisterScreen } from "@/features/auth/components/register/register-screen";
+import { RegisterScreen } from "@/features/auth";
 
 export default function RegisterRoute() {
   return <RegisterScreen />;

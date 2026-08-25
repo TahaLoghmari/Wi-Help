@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocalSearchParams } from "expo-router";
 import { router } from "expo-router";
-import { PatientProfileScreen } from "@/features/patients/components/patient-profile-screen";
+import { PatientProfileScreen } from "@/features/patients";
 
 export default function PatientProfileRoute() {
   const { id, backRoute } = useLocalSearchParams<{

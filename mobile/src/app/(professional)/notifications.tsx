@@ -1,4 +1,4 @@
-import { NotificationsScreen } from "@/features/notifications/components/notifications-screen";
+import { NotificationsScreen } from "@/features/notifications";
 
 export default function NotificationsRoute() {
   return <NotificationsScreen />;

@@ -4,42 +4,25 @@ import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
-import { type CountryDto } from "@/types/enums.types";
-import { useGetStatesByCountry } from "@/api/auth/get-states";
-import { type PatientDto } from "@/features/patients/types/api.types";
+import { type PatientDto } from "@/entities/patient";
 import { calcAge, getInitials } from "@/features/patients/lib/utils";
 
 interface PatientCardProps {
   patient: PatientDto;
-  countries: CountryDto[];
+  location: string;
   onMessage: (patient: PatientDto) => void;
   onViewProfile: (patient: PatientDto) => void;
 }
 
 export const PatientCard = React.memo(function PatientCard({
   patient,
-  countries,
+  location,
   onMessage,
   onViewProfile,
 }: PatientCardProps) {
   const { t } = useTranslation();
   const age = calcAge(patient.dateOfBirth);
   const initials = getInitials(patient.firstName, patient.lastName);
-
-  const { data: states } = useGetStatesByCountry(
-    patient.address?.countryId ?? "",
-  );
-
-  const stateKey = states?.find((s) => s.id === patient.address?.stateId)?.key;
-  const countryKey = countries.find(
-    (c) => c.id === patient.address?.countryId,
-  )?.key;
-  const locationParts = [
-    patient.address?.city,
-    stateKey ? t(`lookups.${stateKey}`) : undefined,
-    countryKey ? t(`lookups.${countryKey}`) : undefined,
-  ].filter(Boolean);
-  const location = locationParts.join(", ");
 
   return (
     <View style={styles.card} className="mx-4 mb-3.5 bg-white rounded-2xl p-4">

@@ -1,3 +1,3 @@
-import { MoreScreen } from "@/features/professionals/components/more/more-screen";
+import { MoreScreen } from "@/features/professionals";
 
 export default MoreScreen;

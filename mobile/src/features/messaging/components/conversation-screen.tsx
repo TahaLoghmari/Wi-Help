@@ -15,14 +15,18 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useCurrentUser } from "@/api/auth/use-current-user";
-import { useGetMessages } from "@/api/messaging/get-messages";
-import { useSendMessage } from "@/api/messaging/send-message";
-import { useMarkMessagesAsRead } from "@/api/messaging/mark-messages-as-read";
-import { useMarkMessagesAsDelivered } from "@/api/messaging/mark-messages-as-delivered";
+import { useCurrentUser } from "@/entities/session";
+import {
+  useGetMessages,
+  useMarkMessagesAsDelivered,
+  useMarkMessagesAsRead,
+} from "@/entities/messaging";
+import { useSendMessage } from "@/features/messaging/api/send-message";
 import { useOnlineUsers, useConversationHub } from "@/lib/signalr/use-chat-hub";
-import { type MessageDto } from "@/features/messaging/types/messaging.types";
-import { getDateLabel, isSameDay } from "@/features/messaging/lib/utils";
+import {
+  projectMessagePages,
+  type ConversationListItem,
+} from "@/features/messaging/lib/projection";
 import { ConversationHeader } from "./conversation-header";
 import { ConversationFooter } from "./conversation-footer";
 import { MessageBubble } from "./message-bubble";
@@ -37,18 +41,6 @@ interface ConversationScreenProps {
   backRoute?: string;
 }
 
-type ListItem =
-  | { type: "date"; key: string; label: string }
-  | {
-      type: "message";
-      key: string;
-      message: MessageDto;
-      isOwn: boolean;
-      showAvatar: boolean;
-      isLastInGroup: boolean;
-    }
-  | { type: "typing"; key: string };
-
 export function ConversationScreen({
   conversationId,
   participantId,
@@ -60,7 +52,7 @@ export function ConversationScreen({
   const { data: user } = useCurrentUser();
   const onlineUsers = useOnlineUsers();
   const isOnline = onlineUsers.has(participantId);
-  const flatListRef = useRef<FlatList<ListItem>>(null);
+  const flatListRef = useRef<FlatList<ConversationListItem>>(null);
 
   const {
     data: messagesData,
@@ -86,59 +78,16 @@ export function ConversationScreen({
       keyboard.height.value > 0 ? keyboard.height.value - insets.bottom + 8 : 0,
   }));
 
-  const allMessages = useMemo(() => {
-    if (!messagesData) return [];
-    const pages = [...messagesData.pages].reverse();
-    const msgs: MessageDto[] = [];
-    for (const page of pages) {
-      msgs.push(...page.messages);
-    }
-    return msgs;
-  }, [messagesData]);
-
-  const listItems = useMemo<ListItem[]>(() => {
-    const items: ListItem[] = [];
-
-    for (let i = 0; i < allMessages.length; i++) {
-      const msg = allMessages[i];
-      const prevMsg = i > 0 ? allMessages[i - 1] : null;
-
-      if (!prevMsg || !isSameDay(prevMsg.createdAt, msg.createdAt)) {
-        items.push({
-          type: "date",
-          key: `date-${msg.createdAt}`,
-          label: getDateLabel(msg.createdAt),
-        });
-      }
-
-      const isOwn = msg.senderId === user?.id;
-      const nextMsg = i < allMessages.length - 1 ? allMessages[i + 1] : null;
-      const isFirstInGroup =
-        !prevMsg ||
-        prevMsg.senderId !== msg.senderId ||
-        !isSameDay(prevMsg.createdAt, msg.createdAt);
-      const isLastInGroup =
-        !nextMsg ||
-        nextMsg.senderId !== msg.senderId ||
-        !isSameDay(msg.createdAt, nextMsg.createdAt);
-      const showAvatar = !isOwn && isFirstInGroup;
-
-      items.push({
-        type: "message",
-        key: msg.id,
-        message: msg,
-        isOwn,
-        showAvatar,
-        isLastInGroup,
-      });
-    }
-
-    if (isContactTyping) {
-      items.push({ type: "typing", key: "typing-indicator" });
-    }
-
-    return items;
-  }, [allMessages, user?.id, isContactTyping]);
+  const { messages: allMessages, items: listItems } = useMemo(
+    () =>
+      projectMessagePages({
+        pages: messagesData?.pages ?? [],
+        currentUserId: user?.id,
+        isContactTyping,
+        now: new Date(),
+      }),
+    [messagesData, user?.id, isContactTyping],
+  );
 
   useEffect(() => {
     if (conversationId && allMessages.length > 0) {
@@ -202,7 +151,7 @@ export function ConversationScreen({
   );
 
   const renderItem = useCallback(
-    ({ item }: { item: ListItem }) => {
+    ({ item }: { item: ConversationListItem }) => {
       if (item.type === "date") {
         return (
           <View className="items-center my-4">

@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from "expo-router";
-import { ConversationScreen } from "@/features/messaging/components/conversation-screen";
+import { ConversationScreen } from "@/features/messaging";
 
 export default function ConversationRoute() {
   const {

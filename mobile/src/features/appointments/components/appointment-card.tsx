@@ -5,10 +5,8 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { cn } from "@/lib/utils";
-import {
-  type AppointmentDto,
-  AppointmentStatus,
-} from "@/features/appointments/types/api.types";
+import { type AppointmentDto } from "@/entities/appointment";
+import { getAppointmentActionPolicy } from "@/features/appointments/lib/appointment-presentation";
 import {
   formatDate,
   calculateAge,
@@ -40,9 +38,8 @@ export const AppointmentCard = React.memo(function AppointmentCard({
   const statusStyle = statusStyles[status] ?? statusStyles.Offered;
   const urgencyStyle = urgencyStyles[urgency] ?? urgencyStyles.Low;
 
-  const isOffered = status === AppointmentStatus.Offered;
-  const isConfirmed = status === AppointmentStatus.Confirmed;
-  const showActions = isOffered || isConfirmed;
+  const { canAccept, canDecline, canComplete, canCancel, showActions } =
+    getAppointmentActionPolicy(status);
 
   const todayLabel = t("professional.dashboard.appointments.today");
   const formattedDate = formatDate(startDate, todayLabel);
@@ -187,7 +184,7 @@ export const AppointmentCard = React.memo(function AppointmentCard({
 
       {/* Action row */}
       <View className="flex-row items-center gap-2 px-5 pt-3 pb-5">
-        {isOffered && (
+        {canAccept && canDecline && (
           <>
             <Pressable
               className="flex-1 bg-brand-dark py-3 rounded-full items-center active:opacity-80"
@@ -211,7 +208,7 @@ export const AppointmentCard = React.memo(function AppointmentCard({
             </Pressable>
           </>
         )}
-        {isConfirmed && (
+        {canComplete && canCancel && (
           <>
             <Pressable
               className="flex-1 bg-brand-dark py-3 rounded-full items-center active:opacity-80"

@@ -1,4 +1,4 @@
-import { AppointmentStatus } from "@/features/appointments/types/api.types";
+import { AppointmentStatus } from "@/entities/appointment";
 
 // ─── Date helpers ─────────────────────────────────────────────────────────────
 
@@ -73,16 +73,6 @@ export function formatDateOnly(dateString: string): string {
   });
 }
 
-export function isSameDay(dateString: string): boolean {
-  const date = new Date(dateString);
-  const today = new Date();
-  return (
-    date.getFullYear() === today.getFullYear() &&
-    date.getMonth() === today.getMonth() &&
-    date.getDate() === today.getDate()
-  );
-}
-
 export function getGreetingKey(): "morning" | "afternoon" | "evening" {
   const hour = new Date().getHours();
   if (hour < 12) return "morning";
@@ -131,19 +121,6 @@ export const cardShadow = {
   shadowRadius: 12,
   elevation: 3,
 };
-
-// ─── Stats types ──────────────────────────────────────────────────────────────
-
-export interface AppointmentStats {
-  todayConfirmed: number;
-  todayOffered: number;
-  todayCompleted: number;
-  todayCancelled: number;
-  totalConfirmed: number;
-  totalOffered: number;
-  totalCompleted: number;
-  totalCancelled: number;
-}
 
 // ─── Filter tabs ──────────────────────────────────────────────────────────────
 

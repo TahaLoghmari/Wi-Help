@@ -12,12 +12,11 @@ import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { useGetAppointmentById } from "@/api/appointments/get-appointment-by-id";
-import { useRespondToAppointment } from "@/api/appointments/respond-to-appointment";
-import { useCancelAppointmentByProfessional } from "@/api/appointments/cancel-appointment-by-professional";
-import { useCompleteAppointment } from "@/api/appointments/complete-appointment";
+import { useGetAppointmentById } from "@/entities/appointment";
+import { useCancelAppointmentByProfessional } from "@/features/appointments/api/cancel-appointment-by-professional";
+import { useCompleteAppointment } from "@/features/appointments/api/complete-appointment";
+import { useRespondToAppointment } from "@/features/appointments/api/respond-to-appointment";
 import { CompleteAppointmentModal } from "@/features/appointments/components/complete-appointment-modal";
-import { AppointmentStatus } from "@/features/appointments/types/api.types";
 import { cn } from "@/lib/utils";
 import {
   calculateAge,
@@ -28,6 +27,10 @@ import {
   urgencyStyles,
   cardShadow,
 } from "@/features/appointments/lib/utils";
+import {
+  getAppointmentActionPolicy,
+  projectAppointmentTimeline,
+} from "@/features/appointments/lib/appointment-presentation";
 import {
   timelineDotColors,
   type TimelineRow,
@@ -112,9 +115,8 @@ export function AppointmentDetailScreen({ id }: AppointmentDetailScreenProps) {
   const formattedStart = formatDateTime(startDate);
   const alertSubtitle = `${patientName} · ${formattedStart}`;
 
-  const isOffered = status === AppointmentStatus.Offered;
-  const isConfirmed = status === AppointmentStatus.Confirmed;
-  const showActions = isOffered || isConfirmed;
+  const { canAccept, canDecline, canComplete, canCancel, showActions } =
+    getAppointmentActionPolicy(status);
   const isAnyLoading =
     respondMutation.isPending ||
     cancelMutation.isPending ||
@@ -125,36 +127,14 @@ export function AppointmentDetailScreen({ id }: AppointmentDetailScreenProps) {
     ? `${t("professional.dashboard.stats.offered")} · ${formatDateTime(appointment.offeredAt)}`
     : null;
 
-  // Timeline rows — only non-null timestamps
-  const timelineRows: TimelineRow[] = [];
-  if (appointment.offeredAt)
-    timelineRows.push({
-      key: "offeredAt",
-      label: t("professional.dashboard.appointments.detail.offeredAt"),
-      value: formatDateTime(appointment.offeredAt),
-      dotColor: timelineDotColors.offeredAt,
-    });
-  if (appointment.confirmedAt)
-    timelineRows.push({
-      key: "confirmedAt",
-      label: t("professional.dashboard.appointments.detail.confirmedAt"),
-      value: formatDateTime(appointment.confirmedAt),
-      dotColor: timelineDotColors.confirmedAt,
-    });
-  if (appointment.completedAt)
-    timelineRows.push({
-      key: "completedAt",
-      label: t("professional.dashboard.appointments.detail.completedAt"),
-      value: formatDateTime(appointment.completedAt),
-      dotColor: timelineDotColors.completedAt,
-    });
-  if (appointment.cancelledAt)
-    timelineRows.push({
-      key: "cancelledAt",
-      label: t("professional.dashboard.appointments.detail.cancelledAt"),
-      value: formatDateTime(appointment.cancelledAt),
-      dotColor: timelineDotColors.cancelledAt,
-    });
+  const timelineRows: TimelineRow[] = projectAppointmentTimeline(
+    appointment,
+  ).map(({ key, occurredAt }) => ({
+    key,
+    label: t(`professional.dashboard.appointments.detail.${key}`),
+    value: formatDateTime(occurredAt),
+    dotColor: timelineDotColors[key],
+  }));
 
   return (
     <SafeAreaView className="flex-1 bg-brand-bg" edges={["top", "bottom"]}>
@@ -463,7 +443,7 @@ export function AppointmentDetailScreen({ id }: AppointmentDetailScreenProps) {
               gap: 10,
             }}
           >
-            {isOffered && (
+            {canAccept && canDecline && (
               <>
                 <Pressable
                   onPress={handleAccept}
@@ -524,7 +504,7 @@ export function AppointmentDetailScreen({ id }: AppointmentDetailScreenProps) {
                 </Pressable>
               </>
             )}
-            {isConfirmed && (
+            {canComplete && canCancel && (
               <>
                 <Pressable
                   onPress={() => setShowCompleteModal(true)}
@@ -587,13 +567,16 @@ export function AppointmentDetailScreen({ id }: AppointmentDetailScreenProps) {
           visible={showCompleteModal}
           appointment={showCompleteModal ? appointment : null}
           onClose={() => setShowCompleteModal(false)}
-          onSubmit={(req) => {
-            completeMutation.mutate(req, {
-              onSuccess: () => {
-                setShowCompleteModal(false);
-                router.back();
+          onSubmit={(values) => {
+            completeMutation.mutate(
+              { appointmentId: appointment.id, ...values },
+              {
+                onSuccess: () => {
+                  setShowCompleteModal(false);
+                  router.back();
+                },
               },
-            });
+            );
           }}
           isLoading={completeMutation.isPending}
         />

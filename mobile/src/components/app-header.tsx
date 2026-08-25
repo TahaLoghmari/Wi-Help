@@ -9,22 +9,19 @@ import Animated, {
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { router, usePathname } from "expo-router";
-import { type UserDto } from "@/types/enums.types";
+import { useHasUnreadNotifications } from "@/entities/notification";
+import { type UserDto } from "@/entities/session";
 import { ROUTE_PATHS } from "@/config/routes";
 
 interface AppHeaderProps {
   scrollY?: SharedValue<number>;
   user?: UserDto | null;
-  hasUnread?: boolean;
 }
 
-export function AppHeader({
-  scrollY,
-  user,
-  hasUnread = false,
-}: AppHeaderProps) {
+export function AppHeader({ scrollY, user }: AppHeaderProps) {
   const pathname = usePathname();
   const isOnNotifications = pathname === "/notifications";
+  const hasUnread = useHasUnreadNotifications();
 
   const borderStyle = useAnimatedStyle(() => ({
     opacity: scrollY

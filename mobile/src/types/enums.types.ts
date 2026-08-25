@@ -16,47 +16,7 @@ export interface PaginationResultDto<T> {
   hasNextPage: boolean;
 }
 
-export interface Address {
-  street: string;
-  city: string;
-  postalCode: string;
-  countryId: string;
-  stateId: string;
-}
-
 export interface LookupDto {
   id: string;
   key: string;
-}
-
-export interface CountryDto {
-  id: string;
-  key: string;
-}
-
-export interface StateDto {
-  id: string;
-  key: string;
-}
-
-export interface LocationCoordinates {
-  latitude: number;
-  longitude: number;
-  accuracy: number;
-  timestamp: string;
-}
-
-export interface UserDto {
-  id: string;
-  firstName: string;
-  lastName: string;
-  dateOfBirth: string;
-  gender: string;
-  phoneNumber: string;
-  email: string;
-  address: Address;
-  profilePictureUrl: string;
-  role: string;
-  location?: LocationCoordinates | null;
-  isOnboardingCompleted: boolean;
 }

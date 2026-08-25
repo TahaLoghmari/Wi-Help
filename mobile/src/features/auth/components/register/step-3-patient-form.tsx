@@ -3,7 +3,7 @@ import { Controller, type UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { useGetRelationships } from "@/api/patients/get-relationships";
+import { useGetRelationships } from "@/entities/patient";
 import { type PatientFormValues } from "@/features/auth/lib/auth-validation-schemas";
 
 interface Step3PatientFormProps {

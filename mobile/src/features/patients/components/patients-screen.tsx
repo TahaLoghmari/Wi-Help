@@ -14,14 +14,18 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { useCurrentUser } from "@/api/auth/use-current-user";
-import { useGetCountries } from "@/api/auth/get-countries";
-import { useGetProfessionalPatients } from "@/api/patients/get-professional-patients";
-import { useGetConversations } from "@/api/messaging/get-conversations";
-import { type PatientDto } from "@/features/patients/types/api.types";
+import { useQueries } from "@tanstack/react-query";
+import {
+  getStatesByCountryQueryOptions,
+  useGetCountries,
+} from "@/entities/location";
+import {
+  type PatientDto,
+  useGetProfessionalPatients,
+} from "@/entities/patient";
+import { useCurrentUser } from "@/entities/session";
 import { ROUTE_PATHS } from "@/config/routes";
 import { AppHeader } from "@/components/app-header";
-import { useNotifications } from "@/api/notifications/get-notifications";
 import { PatientCard } from "./patient-card";
 import { LoadingSkeleton } from "./loading-skeleton";
 import { EmptyState } from "./empty-state";
@@ -30,17 +34,16 @@ import { EmptyState } from "./empty-state";
 
 const keyExtractor = (item: PatientDto) => item.id;
 
-export function PatientsScreen() {
+interface PatientsScreenProps {
+  onMessage: (patient: PatientDto) => void;
+}
+
+export function PatientsScreen({ onMessage }: PatientsScreenProps) {
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
 
   const { data: user } = useCurrentUser();
-  const { data: notificationsData } = useNotifications();
-  const hasUnread =
-    notificationsData?.pages.flatMap((p) => p.items).some((n) => !n.isRead) ??
-    false;
   const { data: countries = [] } = useGetCountries();
-  const { data: conversationsData = [] } = useGetConversations();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useGetProfessionalPatients();
 
@@ -48,6 +51,51 @@ export function PatientsScreen() {
     () => data?.pages.flatMap((p) => p.items) ?? [],
     [data],
   );
+
+  const countryIds = useMemo(
+    () => [
+      ...new Set(
+        allPatients
+          .map((patient) => patient.address?.countryId)
+          .filter((countryId): countryId is string => !!countryId),
+      ),
+    ],
+    [allPatients],
+  );
+  const stateQueries = useQueries({
+    queries: countryIds.map((countryId) =>
+      getStatesByCountryQueryOptions(countryId),
+    ),
+  });
+
+  const locationsByPatientId = useMemo(() => {
+    const statesByCountryId = new Map(
+      countryIds.map(
+        (countryId, index) =>
+          [countryId, stateQueries[index].data ?? []] as const,
+      ),
+    );
+
+    return new Map(
+      allPatients.map((patient) => {
+        const stateKey = statesByCountryId
+          .get(patient.address?.countryId ?? "")
+          ?.find((state) => state.id === patient.address?.stateId)?.key;
+        const countryKey = countries.find(
+          (country) => country.id === patient.address?.countryId,
+        )?.key;
+        const location = [
+          patient.address?.city,
+          stateKey ? t(`lookups.${stateKey}`) : undefined,
+          countryKey ? t(`lookups.${countryKey}`) : undefined,
+        ]
+          .filter(Boolean)
+          .join(", ");
+
+        return [patient.id, location] as const;
+      }),
+    );
+  }, [allPatients, countries, countryIds, stateQueries, t]);
 
   const totalCount = data?.pages[0]?.totalCount ?? 0;
 
@@ -61,30 +109,6 @@ export function PatientsScreen() {
         p.email.toLowerCase().includes(q),
     );
   }, [allPatients, query]);
-
-  const handleMessage = useCallback(
-    (patient: PatientDto) => {
-      const conversation = conversationsData.find(
-        (c) => c.otherParticipantId === patient.userId,
-      );
-      if (!conversation) {
-        router.push(ROUTE_PATHS.PROFESSIONAL.MESSAGES);
-        return;
-      }
-      router.push({
-        pathname: ROUTE_PATHS.PROFESSIONAL.CONVERSATION_PATHNAME,
-        params: {
-          id: conversation.id,
-          participantId: patient.userId,
-          firstName: patient.firstName,
-          lastName: patient.lastName,
-          profilePictureUrl: patient.profilePictureUrl ?? "",
-          backRoute: ROUTE_PATHS.PROFESSIONAL.PATIENTS,
-        },
-      });
-    },
-    [conversationsData],
-  );
 
   const handleViewProfile = useCallback((patient: PatientDto) => {
     router.push({
@@ -159,12 +183,12 @@ export function PatientsScreen() {
     ({ item }: { item: PatientDto }) => (
       <PatientCard
         patient={item}
-        countries={countries}
-        onMessage={handleMessage}
+        location={locationsByPatientId.get(item.id) ?? ""}
+        onMessage={onMessage}
         onViewProfile={handleViewProfile}
       />
     ),
-    [countries, handleMessage, handleViewProfile],
+    [locationsByPatientId, onMessage, handleViewProfile],
   );
 
   const handleEndReached = useCallback(() => {
@@ -179,7 +203,7 @@ export function PatientsScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-brand-bg" edges={["top"]}>
-      <AppHeader scrollY={scrollY} user={user} hasUnread={hasUnread} />
+      <AppHeader scrollY={scrollY} user={user} />
       <Animated.FlatList
         data={isLoading ? [] : filtered}
         keyExtractor={keyExtractor}

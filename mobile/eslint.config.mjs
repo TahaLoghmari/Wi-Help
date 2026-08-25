@@ -104,14 +104,14 @@ export default [
             {
               target: "./src/features/professionals",
               from: "./src/features",
-              except: ["./professionals"],
+              except: ["./professionals", "./reviews/index.ts"],
               message:
                 "Cross-feature imports are forbidden. Import from shared modules or compose at the app level.",
             },
             {
               target: "./src/features/patients",
               from: "./src/features",
-              except: ["./patients"],
+              except: ["./patients", "./reviews/index.ts"],
               message:
                 "Cross-feature imports are forbidden. Import from shared modules or compose at the app level.",
             },
@@ -141,24 +141,120 @@ export default [
             // features cannot import from app
             {
               target: "./src/features",
-              from: "./src/app",
+              from: ["./src/app", "./src/app-composition"],
               message:
                 "Features cannot import from the app layer. Flow: shared → features → app.",
+            },
+            // entities cannot depend on features or composition
+            {
+              target: "./src/entities",
+              from: ["./src/features", "./src/app", "./src/app-composition"],
+              message:
+                "Entities cannot import feature or composition code. Flow: shared → entities → features → app.",
+            },
+            // entity dependencies are isolated, except for foundational location contracts
+            {
+              target: "./src/entities/appointment",
+              from: "./src/entities",
+              except: ["./appointment"],
+              message: "Appointment cannot depend on sibling entities.",
+            },
+            {
+              target: "./src/entities/messaging",
+              from: "./src/entities",
+              except: ["./messaging"],
+              message: "Messaging cannot depend on sibling entities.",
+            },
+            {
+              target: "./src/entities/notification",
+              from: "./src/entities",
+              except: ["./notification"],
+              message: "Notification cannot depend on sibling entities.",
+            },
+            {
+              target: "./src/entities/review",
+              from: "./src/entities",
+              except: ["./review"],
+              message: "Review cannot depend on sibling entities.",
+            },
+            {
+              target: "./src/entities/patient",
+              from: "./src/entities",
+              except: ["./patient", "./location"],
+              message:
+                "Patient can depend only on foundational location contracts.",
+            },
+            {
+              target: "./src/entities/professional",
+              from: "./src/entities",
+              except: ["./professional", "./location"],
+              message:
+                "Professional can depend only on foundational location contracts.",
+            },
+            {
+              target: "./src/entities/session",
+              from: "./src/entities",
+              except: ["./session", "./location"],
+              message:
+                "Session can depend only on foundational location contracts.",
+            },
+            {
+              target: "./src/entities/location",
+              from: "./src/entities",
+              except: ["./location"],
+              message: "Location cannot depend on sibling entities.",
             },
             // shared modules cannot import from features or app
             {
               target: [
-                "./src/components",
                 "./src/hooks",
                 "./src/lib",
                 "./src/types",
                 "./src/config",
-                "./src/providers",
                 "./src/locales",
               ],
-              from: ["./src/features", "./src/app"],
+              from: [
+                "./src/entities",
+                "./src/features",
+                "./src/app",
+                "./src/app-composition",
+              ],
               message:
-                "Shared modules cannot import from features or the app layer. Flow: shared → features → app.",
+                "Shared infrastructure cannot import domain or composition code.",
+            },
+            // application UI/providers may consume entities, but not features or composition
+            {
+              target: ["./src/components", "./src/providers"],
+              from: ["./src/features", "./src/app", "./src/app-composition"],
+              message:
+                "Application UI and providers cannot import feature or composition code.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ["src/app/**/*.{ts,tsx}", "src/app-composition/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["../*"],
+              message:
+                "Relative parent imports are forbidden. Use absolute imports with @/ prefix.",
+            },
+            {
+              group: ["@/features/*/*"],
+              message:
+                "Composition must import a feature's public interface from @/features/<feature>.",
+            },
+            {
+              group: ["@/entities/*/*"],
+              message:
+                "Composition must import an entity's public interface from @/entities/<entity>.",
             },
           ],
         },

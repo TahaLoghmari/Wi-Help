@@ -1,16 +1,20 @@
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
 import { Redirect } from "expo-router";
-import { useCurrentUser } from "@/api/auth/use-current-user";
+import {
+  type AuthorizedSessionRole,
+  useCurrentUser,
+} from "@/entities/session";
 import { ROUTE_PATHS } from "@/config/routes";
+import { GuardErrorState } from "./guard-error-state";
 
 interface AuthGuardProps {
   children: React.ReactNode;
-  role?: "Professional" | "Patient";
+  role?: AuthorizedSessionRole;
 }
 
 export function AuthGuard({ children, role }: AuthGuardProps) {
-  const { data: user, isPending } = useCurrentUser();
+  const { data: user, isPending, isError, refetch } = useCurrentUser();
 
   if (isPending) {
     return (
@@ -20,7 +24,11 @@ export function AuthGuard({ children, role }: AuthGuardProps) {
     );
   }
 
-  if (!user) {
+  if (isError) {
+    return <GuardErrorState onRetry={refetch} />;
+  }
+
+  if (!user || user.role === "Unknown") {
     return <Redirect href={ROUTE_PATHS.AUTH.LOGIN} />;
   }
 

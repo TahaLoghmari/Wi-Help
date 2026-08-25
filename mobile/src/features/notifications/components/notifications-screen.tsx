@@ -13,10 +13,13 @@ import Animated, {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import { AppHeader } from "@/components/app-header";
-import { useCurrentUser } from "@/api/auth/use-current-user";
-import { useNotifications } from "@/api/notifications/get-notifications";
-import { useMarkNotificationAsRead } from "@/api/notifications/mark-notification-as-read";
-import { useMarkAllNotificationsAsRead } from "@/api/notifications/mark-all-notifications-as-read";
+import { useCurrentUser } from "@/entities/session";
+import {
+  useHasUnreadNotifications,
+  useMarkAllNotificationsAsRead,
+  useMarkNotificationAsRead,
+  useNotifications,
+} from "@/entities/notification";
 import { type NotificationFilter } from "@/features/notifications/types/notifications.types";
 import {
   buildListItems,
@@ -36,6 +39,7 @@ export function NotificationsScreen() {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<NotificationFilter>("all");
   const { data: user } = useCurrentUser();
+  const hasUnread = useHasUnreadNotifications();
 
   const {
     data,
@@ -50,11 +54,6 @@ export function NotificationsScreen() {
   const allNotifications = useMemo(
     () => data?.pages.flatMap((p) => p.items) ?? [],
     [data],
-  );
-
-  const hasUnread = useMemo(
-    () => allNotifications.some((n) => !n.isRead),
-    [allNotifications],
   );
 
   const filteredNotifications = useMemo(
@@ -155,7 +154,7 @@ export function NotificationsScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-brand-bg" edges={["top"]}>
-      <AppHeader scrollY={scrollY} user={user} hasUnread={hasUnread} />
+      <AppHeader scrollY={scrollY} user={user} />
 
       <Animated.FlatList
         data={isLoading ? [] : listItems}

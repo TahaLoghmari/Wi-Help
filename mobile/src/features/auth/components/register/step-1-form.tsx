@@ -1,12 +1,12 @@
 import React from "react";
 import { Pressable, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Controller, type UseFormReturn } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { DateInput } from "@/components/ui/date-input";
 import { Input } from "@/components/ui/input";
-import { type AnyFormReturn } from "./register-types";
+import { asRegisterForm, type AnyFormReturn } from "./register-types";
 
 interface Step1FormProps {
   form: AnyFormReturn;
@@ -27,8 +27,7 @@ export function Step1Form({
   const {
     control,
     formState: { errors },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } = form as UseFormReturn<any>;
+  } = asRegisterForm(form);
 
   return (
     <>

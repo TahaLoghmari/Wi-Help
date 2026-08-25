@@ -1,16 +1,4 @@
-import { type Address } from "@/types/enums.types";
-import { type UseFormReturn } from "react-hook-form";
-import {
-  type PatientFormValues,
-  type ProfessionalFormValues,
-} from "@/features/auth/lib/auth-validation-schemas";
-
-export {
-  type UserDto,
-  type LocationCoordinates,
-  type CountryDto,
-  type StateDto,
-} from "@/types/enums.types";
+import { type Address } from "@/entities/location";
 
 export interface EmergencyContact {
   fullName: string;
@@ -75,7 +63,3 @@ export interface LoginResponseDto {
   accessToken: string;
   refreshToken: string;
 }
-
-export type AnyFormReturn =
-  | UseFormReturn<PatientFormValues>
-  | UseFormReturn<ProfessionalFormValues>;

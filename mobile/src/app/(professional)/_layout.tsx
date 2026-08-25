@@ -5,6 +5,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import { AuthGuard } from "@/components/guards/auth-guard";
 import { SignalRProvider } from "@/providers/signalr-provider";
+import { messagingRealtimeAdapterFactory } from "@/features/messaging";
+import { notificationRealtimeAdapterFactory } from "@/features/notifications";
 
 export default function ProfessionalLayout() {
   const insets = useSafeAreaInsets();
@@ -13,7 +15,10 @@ export default function ProfessionalLayout() {
 
   return (
     <AuthGuard role="Professional">
-      <SignalRProvider>
+      <SignalRProvider
+        messagingAdapterFactory={messagingRealtimeAdapterFactory}
+        notificationAdapterFactory={notificationRealtimeAdapterFactory}
+      >
         <Tabs
           screenOptions={{
             headerShown: false,

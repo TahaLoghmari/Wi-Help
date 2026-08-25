@@ -7,8 +7,10 @@ import {
 import { AppState, type AppStateStatus } from "react-native";
 import { env } from "@/config/env";
 import { tokenStorage } from "@/lib/token-storage";
+import type { RealtimeLifecycleError } from "./realtime-types";
 
 type ConnectionStateListener = (state: HubConnectionState) => void;
+type ErrorListener = (error: RealtimeLifecycleError) => void;
 type EventHandler = (...args: unknown[]) => void;
 
 interface HubConfig {
@@ -20,6 +22,7 @@ export class SignalRService {
   private connection: HubConnection | null = null;
   private isStopping = false;
   private stateListeners = new Set<ConnectionStateListener>();
+  private errorListeners = new Set<ErrorListener>();
   private eventHandlers = new Map<string, Set<EventHandler>>();
   private appStateSubscription: ReturnType<
     typeof AppState.addEventListener
@@ -114,6 +117,7 @@ export class SignalRService {
       await connection.start();
       this.notifyStateListeners(HubConnectionState.Connected);
     } catch (err: unknown) {
+      let failure = err;
       const message = err instanceof Error ? err.message : String(err);
       if (message.includes("401") || message.includes("Unauthorized")) {
         const refreshed = await this.refreshToken();
@@ -123,6 +127,7 @@ export class SignalRService {
             this.notifyStateListeners(HubConnectionState.Connected);
             return;
           } catch (retryErr) {
+            failure = retryErr;
             console.error(
               `[SignalR:${this.hubPath}] failed after token refresh:`,
               retryErr,
@@ -131,7 +136,9 @@ export class SignalRService {
         }
       }
       this.notifyStateListeners(HubConnectionState.Disconnected);
-      console.error(`[SignalR:${this.hubPath}] connection failed:`, err);
+      this.notifyErrorListeners({ operation: "start", cause: failure });
+      console.error(`[SignalR:${this.hubPath}] connection failed:`, failure);
+      throw failure;
     }
   }
 
@@ -156,10 +163,12 @@ export class SignalRService {
       try {
         await this.connection.invoke(method, ...args);
       } catch (err) {
+        this.notifyErrorListeners({ operation: "invoke", method, cause: err });
         console.error(
           `[SignalR:${this.hubPath}] invoke ${method} failed:`,
           err,
         );
+        throw err;
       }
     }
   }
@@ -184,9 +193,22 @@ export class SignalRService {
     };
   }
 
+  onError(listener: ErrorListener): () => void {
+    this.errorListeners.add(listener);
+    return () => {
+      this.errorListeners.delete(listener);
+    };
+  }
+
   private notifyStateListeners(state: HubConnectionState) {
     for (const listener of this.stateListeners) {
       listener(state);
+    }
+  }
+
+  private notifyErrorListeners(error: RealtimeLifecycleError) {
+    for (const listener of this.errorListeners) {
+      listener(error);
     }
   }
 

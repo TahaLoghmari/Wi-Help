@@ -1,8 +1,5 @@
 import { StyleSheet } from "react-native";
-import type {
-  ConversationDto,
-  MessageDto,
-} from "@/features/messaging/types/messaging.types";
+import type { MessageDto } from "@/entities/messaging";
 
 export const CARD_SHADOW = StyleSheet.create({
   card: {
@@ -65,9 +62,8 @@ export function formatBubbleTime(dateStr: string): string {
   });
 }
 
-export function getDateLabel(dateStr: string): string {
+export function getDateLabel(dateStr: string, now = new Date()): string {
   const date = new Date(dateStr);
-  const now = new Date();
 
   const isToday =
     date.getDate() === now.getDate() &&
@@ -109,16 +105,6 @@ export function getMessagePreview(
       ? `${message.content.slice(0, 60)}…`
       : message.content;
   return { text, isOwn };
-}
-
-export function sortConversations(
-  conversations: ConversationDto[],
-): ConversationDto[] {
-  return [...conversations].sort(
-    (a, b) =>
-      new Date(b.lastActivityAt).getTime() -
-      new Date(a.lastActivityAt).getTime(),
-  );
 }
 
 export type MessageGroup = {

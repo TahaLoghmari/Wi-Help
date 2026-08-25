@@ -1,7 +1,7 @@
 import type {
   RawAvailabilityDayDto,
   AvailabilityDayDto,
-} from "@/features/professionals/types/schedule.types";
+} from "@/entities/professional";
 
 // ─── Constants ─────────────────────────────────────────────────────────────────
 
