@@ -1,16 +1,12 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Appointments.Domain;
-using Modules.Appointments.Domain.Entities;
-using Modules.Appointments.Domain.Enums;
-using Modules.Appointments.Infrastructure.Database;
+using Modules.Appointments.Domain.Ports;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.DTOs;
-using Modules.Common.Infrastructure.Services;
-using Modules.Common.Infrastructure.Templates;
-using Modules.Notifications.Domain.Enums;
+using Modules.Appointments.Features.Templates;
+using Modules.Common.Features.DTOs;
 using Modules.Notifications.PublicApi;
+using Modules.Notifications.PublicApi.Contracts;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
 using Modules.Identity.PublicApi;
@@ -18,7 +14,7 @@ using Modules.Identity.PublicApi;
 namespace Modules.Appointments.Features.CancelAppointment;
 
 public class CancelAppointmentCommandHandler(
-    AppointmentsDbContext appointmentsDbContext,
+    IAppointmentWorkflow appointmentsWorkflow,
     ILogger<CancelAppointmentCommandHandler> logger,
     INotificationsModuleApi notificationsModuleApi,
     IPatientsModuleApi patientsModuleApi,
@@ -32,18 +28,20 @@ public class CancelAppointmentCommandHandler(
             "Patient {PatientId} cancelling appointment {AppointmentId}",
             command.PatientId, command.AppointmentId);
         
-        var appointment = await appointmentsDbContext.Appointments.FirstOrDefaultAsync(
-            ap => ap.Id == command.AppointmentId && ap.PatientId == command.PatientId, 
+        var intent = await appointmentsWorkflow.PreparePatientCancellationAsync(
+            command.AppointmentId,
+            command.PatientId,
             cancellationToken);
             
-        if (appointment is null)
+        if (intent is null)
         {
             logger.LogWarning("Appointment {AppointmentId} not found for patient {PatientId}", 
                 command.AppointmentId, command.PatientId);
             return Result.Failure(AppointmentErrors.AppointmentNotFound(command.AppointmentId));
         }
 
-        if (appointment.Status != AppointmentStatus.Offered && appointment.Status != AppointmentStatus.Confirmed)
+        var appointment = intent.Appointment;
+        if (!intent.CanTransition)
         {
             logger.LogWarning(
                 "Cannot cancel appointment {AppointmentId} in status {Status}",
@@ -122,8 +120,7 @@ public class CancelAppointmentCommandHandler(
             }
         }
 
-        appointment.Cancel();
-        await appointmentsDbContext.SaveChangesAsync(cancellationToken);
+        await appointmentsWorkflow.FinalizePatientCancellationAsync(intent, cancellationToken);
 
         logger.LogInformation("Appointment {AppointmentId} cancelled by patient", command.AppointmentId);
 

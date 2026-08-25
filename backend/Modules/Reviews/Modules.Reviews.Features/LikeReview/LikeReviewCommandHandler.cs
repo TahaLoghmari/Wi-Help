@@ -1,15 +1,14 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Reviews.Domain.Entities;
-using Modules.Reviews.Infrastructure.Database;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Reviews.Domain;
+using Modules.Reviews.Domain.Abstractions;
 
 namespace Modules.Reviews.Features.LikeReview;
 
 internal sealed class LikeReviewCommandHandler(
-    ReviewsDbContext reviewsDbContext,
+    ILikeReviewPort reviews,
     ILogger<LikeReviewCommandHandler> logger) : ICommandHandler<LikeReviewCommand>
 {
     public async Task<Result> Handle(LikeReviewCommand command, CancellationToken cancellationToken)
@@ -19,8 +18,7 @@ internal sealed class LikeReviewCommandHandler(
             command.ReviewId, command.UserId);
 
         // Check if review exists
-        var reviewExists = await reviewsDbContext.Reviews
-            .AnyAsync(r => r.Id == command.ReviewId, cancellationToken);
+        var reviewExists = await reviews.ReviewExistsAsync(command.ReviewId, cancellationToken);
 
         if (!reviewExists)
         {
@@ -29,10 +27,7 @@ internal sealed class LikeReviewCommandHandler(
         }
 
         // Check if already liked
-        var existingLike = await reviewsDbContext.ReviewLikes
-            .FirstOrDefaultAsync(
-                rl => rl.ReviewId == command.ReviewId && rl.UserId == command.UserId,
-                cancellationToken);
+        var existingLike = await reviews.GetLikeAsync(command.ReviewId, command.UserId, cancellationToken);
 
         if (existingLike != null)
         {
@@ -44,12 +39,10 @@ internal sealed class LikeReviewCommandHandler(
 
         var like = new ReviewLike(command.ReviewId, command.UserId);
 
-        reviewsDbContext.ReviewLikes.Add(like);
-        await reviewsDbContext.SaveChangesAsync(cancellationToken);
+        await reviews.AddLikeAsync(like, cancellationToken);
 
         logger.LogInformation("Review {ReviewId} liked by user {UserId}", command.ReviewId, command.UserId);
 
         return Result.Success();
     }
 }
-

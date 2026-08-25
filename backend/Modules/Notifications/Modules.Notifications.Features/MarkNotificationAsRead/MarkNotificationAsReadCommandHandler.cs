@@ -1,31 +1,25 @@
-using Microsoft.EntityFrameworkCore;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Notifications.Domain;
-using Modules.Notifications.Domain.Entities;
-using Modules.Notifications.Infrastructure.Database;
+using Modules.Notifications.Domain.Operations;
 
 namespace Modules.Notifications.Features.MarkNotificationAsRead;
 
-public sealed class MarkNotificationAsReadCommandHandler(NotificationsDbContext dbContext)
+public sealed class MarkNotificationAsReadCommandHandler(INotificationInbox notificationInbox)
     : ICommandHandler<MarkNotificationAsReadCommand>
 {
     public async Task<Result> Handle(
         MarkNotificationAsReadCommand command,
         CancellationToken cancellationToken)
     {
-        var notification = await dbContext.Notifications
-            .FirstOrDefaultAsync(n => n.Id == command.Id && n.UserId == command.UserId, cancellationToken);
+        bool notificationExists = await notificationInbox.MarkAsync(
+            command.Id,
+            command.UserId,
+            cancellationToken);
 
-        if (notification is null)
+        if (!notificationExists)
         {
             return Result.Failure(NotificationErrors.NotFound(command.Id));
-        }
-
-        if (!notification.IsRead)
-        {
-            notification.MarkAsRead();
-            await dbContext.SaveChangesAsync(cancellationToken);
         }
 
         return Result.Success();

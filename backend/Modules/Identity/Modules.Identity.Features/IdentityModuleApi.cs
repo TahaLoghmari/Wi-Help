@@ -1,19 +1,20 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.Services;
+using Modules.Common.Features.Abstractions;
 using Modules.Identity.Domain.Entities;
 using Modules.Identity.Domain;
-using Modules.Identity.Infrastructure.Services;
+using Modules.Identity.Domain.Ports;
 using Modules.Identity.PublicApi;
 using Modules.Identity.PublicApi.Contracts;
 
 namespace Modules.Identity.Features;
 
 public class IdentityModuleApi(
-    UserManager<User> userManager,
-    IdentityEmailService identityEmailService,
+    IIdentityAccountOperations accounts,
+    IIdentityCredentialOperations credentials,
+    IIdentityClaimOperations claims,
+    IIdentityLockoutOperations lockout,
+    IIdentityEmail identityEmail,
     IFileStorage fileStorage,
     ILogger<IdentityModuleApi> logger) : IIdentityModuleApi
 {
@@ -23,7 +24,7 @@ public class IdentityModuleApi(
     {
         logger.LogInformation("Creating user for email: {Email}", request.Email);
 
-        var existingUser = await userManager.FindByEmailAsync(request.Email);
+        var existingUser = await accounts.FindByEmailAsync(request.Email);
         if (existingUser != null)
         {
             logger.LogWarning("User creation failed - email already exists: {Email}", request.Email);
@@ -39,7 +40,7 @@ public class IdentityModuleApi(
             request.Email,
             request.Address);
 
-        IdentityResult result = await userManager.CreateAsync(user, request.Password);
+        var result = await accounts.CreateAsync(user, request.Password);
 
         if (!result.Succeeded)
         {
@@ -52,8 +53,8 @@ public class IdentityModuleApi(
         logger.LogInformation("User created successfully for {Email}, UserId: {UserId}",
             request.Email, user.Id);
 
-        await identityEmailService.SendConfirmationEmail(user);
-        await userManager.AddToRoleAsync(user, request.Role);
+        await identityEmail.SendConfirmationEmail(user);
+        await accounts.AddToRoleAsync(user, request.Role);
 
         logger.LogInformation("Email confirmation sent and role assigned for UserId: {UserId}", user.Id);
 
@@ -66,7 +67,7 @@ public class IdentityModuleApi(
     {
         logger.LogInformation("Retrieving user by ID: {UserId}", userId);
 
-        var user = await userManager.FindByIdAsync(userId.ToString());
+        var user = await accounts.FindByIdAsync(userId.ToString());
         if (user is null)
         {
             logger.LogWarning("User not found for UserId: {UserId}", userId);
@@ -97,7 +98,7 @@ public class IdentityModuleApi(
     {
         logger.LogInformation("Updating user for UserId: {UserId}", request.UserId);
 
-        var user = await userManager.FindByIdAsync(request.UserId.ToString());
+        var user = await accounts.FindByIdAsync(request.UserId.ToString());
         if (user is null)
         {
             logger.LogWarning("User not found for update: {UserId}", request.UserId);
@@ -116,7 +117,7 @@ public class IdentityModuleApi(
             request.Address,
             string.IsNullOrWhiteSpace(request.ProfilePictureUrl) ? user.ProfilePictureUrl : request.ProfilePictureUrl);
 
-        IdentityResult result = await userManager.UpdateAsync(user);
+        var result = await accounts.UpdateAsync(user);
 
         if (!result.Succeeded)
         {
@@ -137,12 +138,9 @@ public class IdentityModuleApi(
     {
         logger.LogInformation("Retrieving users by IDs");
 
-        var users = await userManager.Users
-            .AsNoTracking()
-            .Where(u => userIds.Contains(u.Id))
-            .ToListAsync(cancellationToken);
+        var matchingUsers = await accounts.GetUsersByIdsAsync(userIds, cancellationToken);
 
-        var userResponses = users.Select(user => new UserDto(
+        var userResponses = matchingUsers.Select(user => new UserDto(
             user.Id,
             user.Email!,
             user.FirstName,
@@ -168,14 +166,14 @@ public class IdentityModuleApi(
     {
         logger.LogInformation("Adding claim {ClaimType} to user {UserId}", claimType, userId);
 
-        var user = await userManager.FindByIdAsync(userId.ToString());
+        var user = await accounts.FindByIdAsync(userId.ToString());
         if (user is null)
         {
             logger.LogWarning("User not found for UserId: {UserId}", userId);
             return Result.Failure(Error.NotFound("IdentityApi.UserNotFound", $"User with ID '{userId}' not found."));
         }
 
-        var result = await userManager.AddClaimAsync(user, new System.Security.Claims.Claim(claimType, claimValue));
+        var result = await claims.AddClaimAsync(user, new System.Security.Claims.Claim(claimType, claimValue));
         if (!result.Succeeded)
         {
             logger.LogError("Failed to add claim {ClaimType} to user {UserId}. Errors: {Errors}",
@@ -193,14 +191,14 @@ public class IdentityModuleApi(
     {
         logger.LogInformation("Banning user {UserId}", userId);
 
-        var user = await userManager.FindByIdAsync(userId.ToString());
+        var user = await accounts.FindByIdAsync(userId.ToString());
         if (user is null)
         {
             logger.LogWarning("User not found for UserId: {UserId}", userId);
             return Result.Failure(Error.NotFound("IdentityApi.UserNotFound", $"User with ID '{userId}' not found."));
         }
 
-        var result = await userManager.SetLockoutEnabledAsync(user, true);
+        var result = await lockout.SetLockoutEnabledAsync(user, true);
         if (!result.Succeeded)
         {
             logger.LogError("Failed to enable lockout for user {UserId}", userId);
@@ -208,7 +206,7 @@ public class IdentityModuleApi(
         }
 
         // Set lockout end date to far in the future (effectively permanent ban)
-        var lockoutResult = await userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
+        var lockoutResult = await lockout.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
         if (!lockoutResult.Succeeded)
         {
             logger.LogError("Failed to set lockout date for user {UserId}", userId);
@@ -225,14 +223,14 @@ public class IdentityModuleApi(
     {
         logger.LogInformation("Unbanning user {UserId}", userId);
 
-        var user = await userManager.FindByIdAsync(userId.ToString());
+        var user = await accounts.FindByIdAsync(userId.ToString());
         if (user is null)
         {
             logger.LogWarning("User not found for UserId: {UserId}", userId);
             return Result.Failure(Error.NotFound("IdentityApi.UserNotFound", $"User with ID '{userId}' not found."));
         }
 
-        var result = await userManager.SetLockoutEndDateAsync(user, null);
+        var result = await lockout.SetLockoutEndDateAsync(user, null);
         if (!result.Succeeded)
         {
             logger.LogError("Failed to remove lockout for user {UserId}", userId);
@@ -250,7 +248,7 @@ public class IdentityModuleApi(
     {
         logger.LogInformation("Resetting password for user {UserId}", userId);
 
-        var user = await userManager.FindByIdAsync(userId.ToString());
+        var user = await accounts.FindByIdAsync(userId.ToString());
         if (user is null)
         {
             logger.LogWarning("User not found for UserId: {UserId}", userId);
@@ -258,7 +256,7 @@ public class IdentityModuleApi(
         }
 
         // Remove current password
-        var removeResult = await userManager.RemovePasswordAsync(user);
+        var removeResult = await credentials.RemovePasswordAsync(user);
         if (!removeResult.Succeeded)
         {
             logger.LogError("Failed to remove password for user {UserId}", userId);
@@ -266,7 +264,7 @@ public class IdentityModuleApi(
         }
 
         // Add new password
-        var addResult = await userManager.AddPasswordAsync(user, newPassword);
+        var addResult = await credentials.AddPasswordAsync(user, newPassword);
         if (!addResult.Succeeded)
         {
             logger.LogError("Failed to add new password for user {UserId}. Errors: {Errors}",
@@ -282,9 +280,9 @@ public class IdentityModuleApi(
     {
         logger.LogInformation("Retrieving users with role: {Role}", role);
 
-        var users = await userManager.GetUsersInRoleAsync(role);
+        var roleUsers = await accounts.GetUsersInRoleAsync(role);
         
-        var userDtos = users.Select(user => new UserDto(
+        var userDtos = roleUsers.Select(user => new UserDto(
             user.Id,
             user.Email!,
             user.FirstName,
@@ -309,7 +307,7 @@ public class IdentityModuleApi(
     {
         logger.LogInformation("Completing onboarding for user {UserId}", request.UserId);
 
-        var user = await userManager.FindByIdAsync(request.UserId.ToString());
+        var user = await accounts.FindByIdAsync(request.UserId.ToString());
         if (user is null)
         {
             logger.LogWarning("User not found for UserId: {UserId}", request.UserId);
@@ -322,7 +320,7 @@ public class IdentityModuleApi(
             request.PhoneNumber,
             request.Address);
 
-        var result = await userManager.UpdateAsync(user);
+        var result = await accounts.UpdateAsync(user);
         if (!result.Succeeded)
         {
             logger.LogError("Failed to complete onboarding for user {UserId}. Errors: {Errors}",
@@ -340,7 +338,7 @@ public class IdentityModuleApi(
     {
         logger.LogInformation("Checking onboarding status for user {UserId}", userId);
 
-        var user = await userManager.FindByIdAsync(userId.ToString());
+        var user = await accounts.FindByIdAsync(userId.ToString());
         if (user is null)
         {
             logger.LogWarning("User not found for UserId: {UserId}", userId);

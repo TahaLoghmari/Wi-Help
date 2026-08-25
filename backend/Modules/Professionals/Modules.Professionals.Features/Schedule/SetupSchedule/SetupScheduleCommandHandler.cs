@@ -1,16 +1,14 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain.Entities;
 using Modules.Professionals.Features.Schedule.SetupSchedule;
-using Modules.Professionals.Infrastructure.Database;
-using Modules.Professionals.Infrastructure.DTOs;
+using Modules.Professionals.Domain.Ports;
 
 namespace Modules.Professionals.Features.Schedule.SetupSchedule;
 
 public class SetupScheduleCommandHandler(
-    ProfessionalsDbContext professionalsDbContext,
+    IProfessionalScheduleOperations scheduleOperations,
     ILogger<SetupScheduleCommand> logger) : ICommandHandler<SetupScheduleCommand>
 {
     public async Task<Result> Handle(SetupScheduleCommand command, CancellationToken cancellationToken)
@@ -18,14 +16,11 @@ public class SetupScheduleCommandHandler(
         logger.LogInformation("Setting schedule for professional {ProfessionalId}", command.ProfessionalId);
 
         // fetch all professional's days with available slots
-        var exisitingDayAvailabilities = await professionalsDbContext.AvailabilityDays
-            .Include(ad => ad.AvailabilitySlots)
-            .Where(ad => ad.ProfessionalId == command.ProfessionalId)
-            .ToListAsync(cancellationToken);
+        var exisitingDayAvailabilities = await scheduleOperations.GetAvailabilityDaysAsync(command.ProfessionalId, cancellationToken);
 
         foreach (var dayRequest in command.DayAvailabilities)
         {
-            var availabilityDay = exisitingDayAvailabilities.Find(exD => exD.DayOfWeek == dayRequest.DayOfWeek);
+            var availabilityDay = exisitingDayAvailabilities.FirstOrDefault(exD => exD.DayOfWeek == dayRequest.DayOfWeek);
             if (availabilityDay is null) // if this day exists in the new schedule and doesn't exist already create it
             {
                 availabilityDay = new AvailabilityDay(
@@ -33,7 +28,7 @@ public class SetupScheduleCommandHandler(
                     dayRequest.DayOfWeek,
                     dayRequest.IsActive);
                 
-                await professionalsDbContext.AvailabilityDays.AddAsync(availabilityDay, cancellationToken);
+                scheduleOperations.AddAvailabilityDay(availabilityDay);
             }
 
             // Update day active status 
@@ -43,11 +38,9 @@ public class SetupScheduleCommandHandler(
             if (!dayRequest.IsActive) continue;
 
             // Remove existing availabilities for this day
-            var existingAvailabilities = await professionalsDbContext.AvailabilitySlots
-                .Where(a => a.AvailabilityDayId == availabilityDay.Id)
-                .ToListAsync(cancellationToken);
+            var existingAvailabilities = await scheduleOperations.GetAvailabilitySlotsAsync(availabilityDay.Id, cancellationToken);
 
-            professionalsDbContext.AvailabilitySlots.RemoveRange(existingAvailabilities);
+            scheduleOperations.RemoveAvailabilitySlots(existingAvailabilities);
 
             // Create new availabilities
             foreach (var timeSlot in dayRequest.AvailabilitySlots)
@@ -88,11 +81,11 @@ public class SetupScheduleCommandHandler(
                     timeStart,
                     timeEnd);
 
-                await professionalsDbContext.AvailabilitySlots.AddAsync(availability, cancellationToken);
+                scheduleOperations.AddAvailabilitySlot(availability);
             }
         }
 
-        await professionalsDbContext.SaveChangesAsync(cancellationToken);
+        await scheduleOperations.SaveChangesAsync(cancellationToken);
         logger.LogInformation("Successfully set schedule for professional {ProfessionalId}",
             command.ProfessionalId);
         

@@ -2,13 +2,13 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.Domain;
-using Modules.Identity.Features.DTOs;
-using Modules.Identity.Infrastructure.Services;
+using Modules.Identity.Domain.DTOs;
+using Modules.Identity.Domain.Ports;
 
 namespace Modules.Identity.Features.Auth.Refresh;
 
 public sealed class RefreshCommandHandler(
-    TokenManagementService tokenManagementService,
+    ITokenManagement tokenManagement,
     ILogger<RefreshCommandHandler> logger) : ICommandHandler<RefreshCommand, AccessTokensDto>
 {
     public async Task<Result<AccessTokensDto>> Handle(
@@ -23,7 +23,7 @@ public sealed class RefreshCommandHandler(
             return Result<AccessTokensDto>.Failure(IdentityErrors.RefreshTokenMissing());
         }
 
-        Result<AccessTokensDto> result = await tokenManagementService.RefreshUserTokens(command.RefreshTokenValue, cancellationToken);
+        Result<AccessTokensDto> result = await tokenManagement.RefreshUserTokens(command.RefreshTokenValue, cancellationToken);
 
         if (result.IsSuccess)
         {

@@ -1,23 +1,19 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 
 namespace Modules.Professionals.Features.Educations.GetEducations;
 
 public class GetEducationsQueryHandler(
-    ProfessionalsDbContext dbContext,
+    IProfessionalQualificationsOperations qualificationsOperations,
     ILogger<GetEducationsQueryHandler> logger) : IQueryHandler<GetEducationsQuery, List<EducationDto>>
 {
     public async Task<Result<List<EducationDto>>> Handle(GetEducationsQuery query, CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting educations for professional {ProfessionalId}", query.ProfessionalId);
 
-        var educations = await dbContext.Educations
-            .AsNoTracking()
-            .Where(e => e.ProfessionalId == query.ProfessionalId)
-            .OrderByDescending(e => e.StartYear)
+        var educations = (await qualificationsOperations.GetEducationsAsync(query.ProfessionalId, cancellationToken))
             .Select(e => new EducationDto(
                 e.Id,
                 e.Institution,
@@ -30,7 +26,7 @@ public class GetEducationsQueryHandler(
                 e.IsCurrentlyStudying,
                 e.CreatedAt,
                 e.UpdatedAt))
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         logger.LogInformation("Found {Count} educations for professional {ProfessionalId}", 
             educations.Count, query.ProfessionalId);

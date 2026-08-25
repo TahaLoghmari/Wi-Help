@@ -1,21 +1,20 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Identity.Domain.Entities;
 using Modules.Identity.Domain;
+using Modules.Identity.Domain.Ports;
 
 namespace Modules.Identity.Features.Auth.ConfirmEmail;
 
 public sealed class ConfirmEmailCommandHandler(
-    UserManager<User> userManager,
+    IIdentityAccountOperations accounts,
     ILogger<ConfirmEmailCommandHandler> logger) : ICommandHandler<ConfirmEmailCommand>
 {
     public async Task<Result> Handle(
         ConfirmEmailCommand command,
         CancellationToken cancellationToken)
     {
-        var user = await userManager.FindByIdAsync(command.UserId);
+        var user = await accounts.FindByIdAsync(command.UserId);
         if (user is null)
         {
             logger.LogWarning("Email confirmation failed - user not found for UserId: {UserId}", 
@@ -23,7 +22,7 @@ public sealed class ConfirmEmailCommandHandler(
             return Result.Failure(IdentityErrors.UserNotFound());
         }
         
-        var result = await userManager.ConfirmEmailAsync(user, command.Token);
+        var result = await accounts.ConfirmEmailAsync(user, command.Token);
         
         if (!result.Succeeded)
         {

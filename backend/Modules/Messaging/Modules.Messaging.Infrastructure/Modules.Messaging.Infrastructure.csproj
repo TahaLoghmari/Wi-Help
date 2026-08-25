@@ -16,13 +16,11 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" />
     <PackageReference Include="EFCore.NamingConventions" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR" />
     <PackageReference Include="Hangfire.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Modules.Messaging.Domain\Modules.Messaging.Domain.csproj" />
-    <ProjectReference Include="..\Modules.Messaging.PublicApi\Modules.Messaging.PublicApi.csproj" />
   </ItemGroup>
 
 </Project>

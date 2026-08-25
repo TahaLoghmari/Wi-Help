@@ -3,7 +3,8 @@ using System.Net.Mail;
 using Hangfire;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Features.Abstractions;
+using Modules.Common.Features.DTOs;
 using Modules.Common.Infrastructure.Settings;
 
 namespace Modules.Common.Infrastructure.Services;

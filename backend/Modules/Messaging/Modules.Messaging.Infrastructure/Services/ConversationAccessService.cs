@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Modules.Messaging.Domain.Ports;
 using Modules.Messaging.Infrastructure.Database;
-using Modules.Messaging.PublicApi;
 
 namespace Modules.Messaging.Infrastructure.Services;
 

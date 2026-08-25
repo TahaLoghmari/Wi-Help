@@ -1,28 +1,23 @@
-using Microsoft.EntityFrameworkCore;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Features.DTOs;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
-using Modules.Reviews.Infrastructure.Database;
+using Modules.Reviews.Domain.Abstractions;
 
 namespace Modules.Reviews.Features.GetReviewsForAdmin;
 
 internal sealed class GetReviewsForAdminHandler(
-    ReviewsDbContext dbContext,
+    IGetReviewsForAdminPort reviewsPort,
     IPatientsModuleApi patientsModuleApi,
     IProfessionalModuleApi professionalModuleApi)
     : IQueryHandler<GetReviewsForAdminQuery, PaginationResultDto<ReviewAdminDto>>
 {
     public async Task<Result<PaginationResultDto<ReviewAdminDto>>> Handle(GetReviewsForAdminQuery query, CancellationToken cancellationToken)
     {
-        var totalCount = await dbContext.Reviews.CountAsync(cancellationToken);
-
-        var reviews = await dbContext.Reviews
-            .OrderByDescending(r => r.CreatedAt)
-            .Skip((query.Page - 1) * query.PageSize)
-            .Take(query.PageSize)
-            .ToListAsync(cancellationToken);
+        var reviewsPage = await reviewsPort.GetAsync(query.Page, query.PageSize, cancellationToken);
+        var reviews = reviewsPage.Reviews;
+        var totalCount = reviewsPage.TotalCount;
 
         if (reviews.Count == 0)
         {

@@ -7,8 +7,4 @@
     <RootNamespace>Modules.Reviews.PublicApi</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Features\Modules.Common.Features.csproj" />
-  </ItemGroup>
-
 </Project>

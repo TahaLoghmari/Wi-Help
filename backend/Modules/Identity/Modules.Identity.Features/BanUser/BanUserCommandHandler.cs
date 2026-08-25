@@ -1,13 +1,13 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Identity.Domain.Entities;
+using Modules.Identity.Domain.Ports;
 
 namespace Modules.Identity.Features.BanUser;
 
 internal sealed class BanUserCommandHandler(
-    UserManager<User> userManager,
+    IIdentityAccountOperations accounts,
+    IIdentityLockoutOperations lockout,
     ILogger<BanUserCommandHandler> logger)
     : ICommandHandler<BanUserCommand>
 {
@@ -15,7 +15,7 @@ internal sealed class BanUserCommandHandler(
     {
         logger.LogInformation("Updating ban status for user {UserId} to {IsBanned}", request.UserId, request.IsBanned);
 
-        var user = await userManager.FindByIdAsync(request.UserId.ToString());
+        var user = await accounts.FindByIdAsync(request.UserId.ToString());
         if (user is null)
         {
             return Result.Failure(Error.NotFound("Identity.UserNotFound", $"User with ID '{request.UserId}' not found."));
@@ -23,23 +23,23 @@ internal sealed class BanUserCommandHandler(
 
         if (request.IsBanned)
         {
-            var result = await userManager.SetLockoutEnabledAsync(user, true);
+            var result = await lockout.SetLockoutEnabledAsync(user, true);
             if (!result.Succeeded)
             {
                 return Result.Failure(Error.Failure("Identity.BanFailed", "Failed to enable lockout."));
             }
 
-            var lockoutResult = await userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
+            var lockoutResult = await lockout.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
             if (!lockoutResult.Succeeded)
             {
                 return Result.Failure(Error.Failure("Identity.BanFailed", "Failed to set lockout end date."));
             }
 
-            await userManager.UpdateSecurityStampAsync(user);
+            await lockout.UpdateSecurityStampAsync(user);
         }
         else
         {
-            var result = await userManager.SetLockoutEndDateAsync(user, null);
+            var result = await lockout.SetLockoutEndDateAsync(user, null);
             if (!result.Succeeded)
             {
                 return Result.Failure(Error.Failure("Identity.UnbanFailed", "Failed to remove lockout."));

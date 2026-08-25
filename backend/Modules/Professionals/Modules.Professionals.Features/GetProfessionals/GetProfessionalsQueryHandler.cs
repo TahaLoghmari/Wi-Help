@@ -1,19 +1,18 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Features.DTOs;
 using Modules.Identity.PublicApi;
 using Modules.Professionals.Features.GetProfessional;
 using Modules.Professionals.Features.GetServices;
 using Modules.Professionals.Features.GetSpecializations;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 
 namespace Modules.Professionals.Features.GetProfessionals;
 
 public sealed class GetProfessionalsQueryHandler(
     IIdentityModuleApi identityApi,
-    ProfessionalsDbContext dbContext,
+    IProfessionalProfileOperations profileOperations,
     ILogger<GetProfessionalsQueryHandler> logger) : IQueryHandler<GetProfessionalsQuery, PaginationResultDto<GetProfessionalDto>>
 {
     public async Task<Result<PaginationResultDto<GetProfessionalDto>>> Handle(
@@ -22,18 +21,7 @@ public sealed class GetProfessionalsQueryHandler(
     {
         logger.LogInformation("Retrieving professionals with filters: {@Query}", query);
 
-        var professionalsQuery = dbContext.Professionals
-            .Include(p => p.Specialization)
-            .Include(p => p.Services)
-            .AsNoTracking()
-            .AsQueryable();
-
-        if (query.MaxPrice.HasValue)
-        {
-            professionalsQuery = professionalsQuery.Where(p => p.VisitPrice <= query.MaxPrice.Value);
-        }
-
-        var professionals = await professionalsQuery.ToListAsync(cancellationToken);
+        var professionals = await profileOperations.GetAllWithDetailsAsync(query.MaxPrice, cancellationToken);
 
         if (professionals.Count == 0)
         {

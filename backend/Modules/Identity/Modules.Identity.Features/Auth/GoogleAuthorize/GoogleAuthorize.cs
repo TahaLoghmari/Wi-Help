@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Modules.Common.Features.Abstractions;
-using Modules.Identity.Infrastructure.Services;
+using Modules.Identity.Domain.Ports;
 
 namespace Modules.Identity.Features.Auth.GoogleAuthorize;
 
@@ -12,7 +12,7 @@ internal sealed class GoogleAuthorize : IEndpoint
     {
         app.MapGet(IdentityEndpoints.GoogleAuthorize, (
                 string? role,
-                GoogleTokensProvider googleTokensProvider) =>
+                IGoogleAuthentication googleAuthentication) =>
             {
                 // For sign-in, role can be null/empty. For sign-up, it must be Patient or Professional
                 if (!string.IsNullOrEmpty(role) && role != "Patient" && role != "Professional")
@@ -21,7 +21,7 @@ internal sealed class GoogleAuthorize : IEndpoint
                 }
 
                 // Pass role as-is (can be null for sign-in flow)
-                var authorizationUrl = googleTokensProvider.GenerateAuthorizationUrl(role);
+                var authorizationUrl = googleAuthentication.GenerateAuthorizationUrl(role);
 
                 return Results.Ok(new GoogleAuthResponseDto(authorizationUrl));
             })

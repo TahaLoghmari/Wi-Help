@@ -1,32 +1,33 @@
-using Microsoft.EntityFrameworkCore;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.DTOs;
-using Modules.Notifications.Infrastructure.Database;
+using Modules.Common.Features.DTOs;
+using Modules.Notifications.Domain.Operations;
 
 namespace Modules.Notifications.Features.GetNotifications;
 
-public sealed class GetNotificationsQueryHandler(NotificationsDbContext dbContext)
+public sealed class GetNotificationsQueryHandler(INotificationInbox notificationInbox)
     : IQueryHandler<GetNotificationsQuery, PaginationResultDto<GetNotificationsDto>>
 {
     public async Task<Result<PaginationResultDto<GetNotificationsDto>>> Handle(
         GetNotificationsQuery query,
         CancellationToken cancellationToken)
     {
-        IQueryable<GetNotificationsDto> notificationQuery = dbContext.Notifications
-            .AsNoTracking()
-            .Where(n => n.UserId == query.UserId)
-            .OrderByDescending(n => n.CreatedAt)
-            .Select(n => new GetNotificationsDto(
-                n.Id,
-                n.Title,
-                n.Message,
-                n.Type,
-                n.IsRead,
-                n.CreatedAt));
-
-        var paginationResult = await PaginationResultDto<GetNotificationsDto>.CreateAsync(
-            notificationQuery, query.Page, query.PageSize, cancellationToken);
+        var notificationPage = await notificationInbox.GetAsync(
+            query.UserId,
+            query.Page,
+            query.PageSize,
+            cancellationToken);
+        var notifications = notificationPage.Items
+            .Select(notification => new GetNotificationsDto(
+                notification.Id,
+                notification.Title,
+                notification.Message,
+                notification.Type,
+                notification.IsRead,
+                notification.CreatedAt))
+            .ToList();
+        var paginationResult = PaginationResultDto<GetNotificationsDto>.Create(
+            notifications, query.Page, query.PageSize, notificationPage.TotalCount);
 
         return Result<PaginationResultDto<GetNotificationsDto>>.Success(paginationResult);
     }

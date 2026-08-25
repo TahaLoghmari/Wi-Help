@@ -1,5 +1,3 @@
-using Modules.Professionals.Domain.Enums;
-
 namespace Modules.Professionals.PublicApi.Contracts;
 
 public sealed record ProfessionalAdminDto(

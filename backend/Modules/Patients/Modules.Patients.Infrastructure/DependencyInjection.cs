@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Modules.Patients.Domain.Ports;
+using Modules.Patients.Infrastructure.Adapters;
 using Modules.Patients.Infrastructure.Database;
 
 namespace Modules.Patients.Infrastructure;
@@ -16,8 +18,11 @@ public static class DependencyInjection
                 npgsqlOptions.MigrationsHistoryTable(DbConsts.MigrationHistoryTableName, DbConsts.PatientsSchemaName))
             .UseSnakeCaseNamingConvention()
         );
+        services.AddScoped<IPatientCatalogOperations, PatientCatalogOperations>();
+        services.AddScoped<IPatientProfileOperations, PatientProfileOperations>();
+        services.AddScoped<IPatientOnboardingOperations, PatientOnboardingOperations>();
+        services.AddScoped<IPatientAdminOperations, PatientAdminOperations>();
+        services.AddScoped<IPatientModuleApiPort, PatientModuleApiEfAdapter>();
         return services;
     }
 }
-
-

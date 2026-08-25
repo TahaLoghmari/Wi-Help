@@ -16,7 +16,8 @@ public class CreateConversation : IEndpoint
                 ICommandHandler<CreateConversationCommand, Guid> handler,
                 CancellationToken cancellationToken) =>
             {
-                var currentUserIdString = httpContext.User.FindFirst("sub")?.Value;
+                var currentUserIdString = httpContext.User.FindFirst("sub")?.Value ??
+                                          httpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
                 if (!Guid.TryParse(currentUserIdString, out Guid currentUserId))
                 {
                     return Results.Unauthorized();
@@ -47,4 +48,3 @@ public class CreateConversation : IEndpoint
         Guid Participant1Id,
         Guid Participant2Id);
 }
-

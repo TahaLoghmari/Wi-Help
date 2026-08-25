@@ -1,9 +1,7 @@
-using Microsoft.EntityFrameworkCore;
-using Modules.Appointments.Domain.Entities;
-using Modules.Appointments.Infrastructure.Database;
+using Modules.Appointments.Domain.Ports;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Features.DTOs;
 using Modules.Patients.PublicApi;
 using Modules.Patients.PublicApi.Contracts;
 using Modules.Professionals.PublicApi;
@@ -11,7 +9,7 @@ using Modules.Professionals.PublicApi;
 namespace Modules.Appointments.Features.GetProfessionalAppointments;
 
 public sealed class GetProfessionalAppointmentsQueryHandler(
-    AppointmentsDbContext dbContext,
+    IAppointmentRead appointments,
     IPatientsModuleApi patientsApi,
     IProfessionalModuleApi professionalApi)
     : IQueryHandler<GetProfessionalAppointmentsQuery, PaginationResultDto<GetProfessionalAppointmentsDto>>
@@ -29,14 +27,11 @@ public sealed class GetProfessionalAppointmentsQueryHandler(
 
         var professionalId = professionalResult.Value.Id;
 
-        IQueryable<Appointment> baseQuery = dbContext.Appointments
-            .AsNoTracking()
-            .Where(a => a.ProfessionalId == professionalId)
-            .OrderByDescending(a => a.StartDate);
-        
-        // Pagination
-        PaginationResultDto<Appointment> paginatedAppointments = await PaginationResultDto<Appointment>.CreateAsync(
-            baseQuery, query.Page, query.PageSize, cancellationToken);
+        var paginatedAppointments = await appointments.GetProfessionalAppointmentsPageAsync(
+            professionalId,
+            query.Page,
+            query.PageSize,
+            cancellationToken);
 
         // get all patientIds from current professional's appointments
         var patientIds = paginatedAppointments.Items.Select(a => a.PatientId).Distinct().ToList();
@@ -56,8 +51,8 @@ public sealed class GetProfessionalAppointmentsQueryHandler(
         return Result<PaginationResultDto<GetProfessionalAppointmentsDto>>.Success(new PaginationResultDto<GetProfessionalAppointmentsDto>
         {
             Items = dtos,
-            Page = paginatedAppointments.Page,
-            PageSize = paginatedAppointments.PageSize,
+            Page = query.Page,
+            PageSize = query.PageSize,
             TotalCount = paginatedAppointments.TotalCount
         });
     }

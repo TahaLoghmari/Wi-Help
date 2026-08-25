@@ -1,9 +1,7 @@
-using Microsoft.EntityFrameworkCore;
-using Modules.Appointments.Domain.Entities;
-using Modules.Appointments.Infrastructure.Database;
+using Modules.Appointments.Domain.Ports;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Features.DTOs;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
 using Modules.Professionals.PublicApi.Contracts;
@@ -11,7 +9,7 @@ using Modules.Professionals.PublicApi.Contracts;
 namespace Modules.Appointments.Features.GetPatientAppointments;
 
 public sealed class GetPatientAppointmentsQueryHandler(
-    AppointmentsDbContext dbContext,
+    IAppointmentRead appointments,
     IPatientsModuleApi patientsApi,
     IProfessionalModuleApi professionalApi)
     : IQueryHandler<GetPatientAppointmentsQuery, PaginationResultDto<GetPatientAppointmentsDto>>
@@ -29,14 +27,11 @@ public sealed class GetPatientAppointmentsQueryHandler(
 
         var patientId = patientResult.Value.Id;
 
-        IQueryable<Appointment> baseQuery = dbContext.Appointments
-            .AsNoTracking()
-            .Where(a => a.PatientId == patientId)
-            .OrderByDescending(a => a.StartDate);
-        
-        // Pagination
-        PaginationResultDto<Appointment> paginatedAppointments = await PaginationResultDto<Appointment>.CreateAsync(
-            baseQuery, query.Page, query.PageSize, cancellationToken);
+        var paginatedAppointments = await appointments.GetPatientAppointmentsPageAsync(
+            patientId,
+            query.Page,
+            query.PageSize,
+            cancellationToken);
 
         // get all professionalIds from current patient's appointments
         var professionalIds = paginatedAppointments.Items.Select(a => a.ProfessionalId).Distinct().ToList();
@@ -56,8 +51,8 @@ public sealed class GetPatientAppointmentsQueryHandler(
         return Result<PaginationResultDto<GetPatientAppointmentsDto>>.Success(new PaginationResultDto<GetPatientAppointmentsDto>
         {
             Items = dtos,
-            Page = paginatedAppointments.Page,
-            PageSize = paginatedAppointments.PageSize,
+            Page = query.Page,
+            PageSize = query.PageSize,
             TotalCount = paginatedAppointments.TotalCount
         });
     }

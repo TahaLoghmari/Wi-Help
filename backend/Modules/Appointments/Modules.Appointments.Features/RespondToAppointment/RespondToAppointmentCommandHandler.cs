@@ -1,17 +1,14 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Appointments.Domain;
-using Modules.Appointments.Domain.Enums;
-using Modules.Appointments.Infrastructure.Database;
+using Modules.Appointments.Domain.Ports;
 using Modules.Appointments.PublicApi;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.DTOs;
-using Modules.Common.Infrastructure.Services;
-using Modules.Common.Infrastructure.Templates;
+using Modules.Appointments.Features.Templates;
+using Modules.Common.Features.DTOs;
 using Modules.Messaging.PublicApi;
-using Modules.Notifications.Domain.Enums;
 using Modules.Notifications.PublicApi;
+using Modules.Notifications.PublicApi.Contracts;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
 using Modules.Professionals.PublicApi.Contracts;
@@ -20,7 +17,7 @@ using Modules.Identity.PublicApi;
 namespace Modules.Appointments.Features.RespondToAppointment;
 
 public class RespondToAppointmentCommandHandler(
-    AppointmentsDbContext appointmentsDbContext,
+    IAppointmentWorkflow appointmentsWorkflow,
     ILogger<RespondToAppointmentCommandHandler> logger,
     INotificationsModuleApi notificationsModuleApi,
     IPatientsModuleApi patientsModuleApi,
@@ -35,16 +32,20 @@ public class RespondToAppointmentCommandHandler(
             "Professional user {UserId} responding to appointment {AppointmentId} with action: {Action}",
             command.ProfessionalId, command.AppointmentId, command.IsAccepted ? "Accept" : "Cancel");
         
-        var appointment = await appointmentsDbContext.Appointments.FirstOrDefaultAsync(ap => ap.Id == command.AppointmentId 
-            && ap.ProfessionalId == command.ProfessionalId, cancellationToken);
+        var intent = await appointmentsWorkflow.PrepareProfessionalResponseAsync(
+            command.AppointmentId,
+            command.ProfessionalId,
+            command.IsAccepted,
+            cancellationToken);
             
-        if (appointment is null)
+        if (intent is null)
         {
             logger.LogWarning("Appointment {AppointmentId} not found", command.AppointmentId);
             return Result.Failure(AppointmentErrors.AppointmentNotFound(command.AppointmentId));
         }
 
-        if (appointment.Status != AppointmentStatus.Offered)
+        var appointment = intent.Appointment;
+        if (!intent.CanTransition)
         {
             logger.LogWarning(
                 "Cannot respond to appointment {AppointmentId} in status {Status}",
@@ -74,7 +75,6 @@ public class RespondToAppointmentCommandHandler(
 
         if (command.IsAccepted)
         {
-            appointment.Confirm();
             logger.LogInformation("Appointment {AppointmentId} confirmed", command.AppointmentId);
 
             // Send notification to patient
@@ -151,7 +151,6 @@ public class RespondToAppointmentCommandHandler(
         }
         else
         {
-            appointment.Cancel();
             logger.LogInformation("Appointment {AppointmentId} cancelled", command.AppointmentId);
 
             // Send notification to patient
@@ -199,9 +198,8 @@ public class RespondToAppointmentCommandHandler(
             }
         }
 
-        await appointmentsDbContext.SaveChangesAsync(cancellationToken);
+        await appointmentsWorkflow.FinalizeProfessionalResponseAsync(intent, cancellationToken);
 
         return Result.Success();
     }
 }
-

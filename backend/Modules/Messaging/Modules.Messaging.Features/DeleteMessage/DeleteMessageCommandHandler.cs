@@ -1,24 +1,19 @@
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Messaging.Domain;
-using Modules.Messaging.Infrastructure;
-using Modules.Messaging.Infrastructure.Database;
+using Modules.Messaging.Domain.Ports;
 
 namespace Modules.Messaging.Features.DeleteMessage;
 
 public class DeleteMessageCommandHandler(
-    MessagingDbContext messagingDbContext,
-    IHubContext<ChatHub> hubContext,
+    IConversationOperations conversationOperations,
+    IMessagingRealtimeEvents realtimeEvents,
     ILogger<DeleteMessageCommandHandler> logger) : ICommandHandler<DeleteMessageCommand>
 {
     public async Task<Result> Handle(DeleteMessageCommand command, CancellationToken cancellationToken)
     {
-        var message = await messagingDbContext.Messages
-            .Include(m => m.Conversation)
-            .FirstOrDefaultAsync(m => m.Id == command.MessageId, cancellationToken);
+        var message = await conversationOperations.GetMessageAsync(command.MessageId, cancellationToken);
 
         if (message == null)
         {
@@ -35,19 +30,14 @@ public class DeleteMessageCommandHandler(
         }
 
         message.Delete();
-        await messagingDbContext.SaveChangesAsync(cancellationToken);
+        await conversationOperations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Message {MessageId} deleted by user {UserId}", command.MessageId, command.UserId);
 
         // Notify all participants in the conversation
         try
         {
-            await hubContext.Clients.Group($"conversation_{message.ConversationId}")
-                .SendAsync("MessageDeleted", new
-                {
-                    MessageId = message.Id,
-                    ConversationId = message.ConversationId
-                }, cancellationToken);
+            await realtimeEvents.MessageDeletedAsync(message.Id, message.ConversationId, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -58,4 +48,3 @@ public class DeleteMessageCommandHandler(
         return Result.Success();
     }
 }
-

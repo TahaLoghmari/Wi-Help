@@ -1,6 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using Modules.Appointments.Domain;
-using Modules.Appointments.Infrastructure.Database;
+using Modules.Appointments.Domain.Ports;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Patients.PublicApi;
@@ -8,7 +7,7 @@ using Modules.Patients.PublicApi;
 namespace Modules.Appointments.Features.GetAppointmentById;
 
 public sealed class GetAppointmentByIdQueryHandler(
-    AppointmentsDbContext dbContext,
+    IAppointmentRead appointments,
     IPatientsModuleApi patientsApi)
     : IQueryHandler<GetAppointmentByIdQuery, GetAppointmentByIdDto>
 {
@@ -16,11 +15,10 @@ public sealed class GetAppointmentByIdQueryHandler(
         GetAppointmentByIdQuery query,
         CancellationToken cancellationToken)
     {
-        var appointment = await dbContext.Appointments
-            .AsNoTracking()
-            .FirstOrDefaultAsync(
-                a => a.Id == query.AppointmentId && a.ProfessionalId == query.ProfessionalId,
-                cancellationToken);
+        var appointment = await appointments.GetProfessionalAppointmentAsync(
+            query.AppointmentId,
+            query.ProfessionalId,
+            cancellationToken);
 
         if (appointment is null)
         {

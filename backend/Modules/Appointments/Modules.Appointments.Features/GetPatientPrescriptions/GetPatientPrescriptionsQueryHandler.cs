@@ -1,15 +1,14 @@
-using Microsoft.EntityFrameworkCore;
-using Modules.Appointments.Infrastructure.Database;
+using Modules.Appointments.Domain.Ports;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Features.DTOs;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
 
 namespace Modules.Appointments.Features.GetPatientPrescriptions;
 
 public sealed class GetPatientPrescriptionsQueryHandler(
-    AppointmentsDbContext dbContext,
+    IAppointmentRead appointments,
     IPatientsModuleApi patientsApi,
     IProfessionalModuleApi professionalApi)
     : IQueryHandler<GetPatientPrescriptionsQuery, PaginationResultDto<PrescriptionDto>>
@@ -27,13 +26,11 @@ public sealed class GetPatientPrescriptionsQueryHandler(
 
         var patientId = patientResult.Value.Id;
 
-        var baseQuery = dbContext.Prescriptions
-            .AsNoTracking()
-            .Where(p => p.PatientId == patientId)
-            .OrderByDescending(p => p.IssuedAt);
-
-        var paginatedPrescriptions = await PaginationResultDto<Domain.Entities.Prescription>.CreateAsync(
-            baseQuery, query.Page, query.PageSize, cancellationToken);
+        var paginatedPrescriptions = await appointments.GetPatientPrescriptionsPageAsync(
+            patientId,
+            query.Page,
+            query.PageSize,
+            cancellationToken);
 
         // Get professional info for prescriptions
         var professionalIds = paginatedPrescriptions.Items.Select(p => p.ProfessionalId).Distinct().ToList();
@@ -68,8 +65,8 @@ public sealed class GetPatientPrescriptionsQueryHandler(
         return Result<PaginationResultDto<PrescriptionDto>>.Success(new PaginationResultDto<PrescriptionDto>
         {
             Items = dtos,
-            Page = paginatedPrescriptions.Page,
-            PageSize = paginatedPrescriptions.PageSize,
+            Page = query.Page,
+            PageSize = query.PageSize,
             TotalCount = paginatedPrescriptions.TotalCount
         });
     }

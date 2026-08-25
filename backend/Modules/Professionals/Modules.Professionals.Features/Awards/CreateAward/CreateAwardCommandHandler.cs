@@ -1,24 +1,22 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain;
 using Modules.Professionals.Domain.Entities;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 
 namespace Modules.Professionals.Features.Awards.CreateAward;
 
 public class CreateAwardCommandHandler(
-    ProfessionalsDbContext dbContext,
+    IProfessionalProfileOperations profileOperations,
+    IProfessionalQualificationsOperations qualificationsOperations,
     ILogger<CreateAwardCommandHandler> logger) : ICommandHandler<CreateAwardCommand, AwardDto>
 {
     public async Task<Result<AwardDto>> Handle(CreateAwardCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Creating award for professional {ProfessionalId}", command.ProfessionalId);
 
-        var professional = await dbContext.Professionals
-            .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Id == command.ProfessionalId, cancellationToken);
+        var professional = await profileOperations.FindByIdReadOnlyAsync(command.ProfessionalId, cancellationToken);
 
         if (professional is null)
         {
@@ -33,8 +31,8 @@ public class CreateAwardCommandHandler(
             command.Description,
             command.YearReceived);
 
-        dbContext.Awards.Add(award);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        qualificationsOperations.Add(award);
+        await qualificationsOperations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Award created with ID {AwardId} for professional {ProfessionalId}", 
             award.Id, command.ProfessionalId);

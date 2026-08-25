@@ -1,13 +1,11 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Professionals.Infrastructure.Database;
-using Modules.Professionals.Infrastructure.DTOs;
+using Modules.Professionals.Domain.Ports;
 
 namespace Modules.Professionals.Features.Schedule.Get;
 
-public class GetScheduleQueryHandler(ProfessionalsDbContext professionalsDbContext, ILogger<GetScheduleQuery> logger)
+public class GetScheduleQueryHandler(IProfessionalScheduleOperations scheduleOperations, ILogger<GetScheduleQuery> logger)
     : IQueryHandler<GetScheduleQuery, GetScheduleDto>
 {
     public async Task<Result<GetScheduleDto>> Handle(
@@ -18,8 +16,7 @@ public class GetScheduleQueryHandler(ProfessionalsDbContext professionalsDbConte
         logger.LogInformation("Getting schedule for professional {ProfessionalId}", query.ProfessionalId);
         
         // retrieve all professional available days with availability slots
-        var dayAvailabilities = await professionalsDbContext.AvailabilityDays.Include(ad => ad.AvailabilitySlots)
-            .Where(ad => ad.ProfessionalId == query.ProfessionalId).AsNoTracking().ToListAsync(cancellationToken);
+        var dayAvailabilities = await scheduleOperations.GetAvailabilityDaysReadOnlyAsync(query.ProfessionalId, cancellationToken);
 
         var dayAvailabilitiesResult = new List<AvailabilityDayDto>();
     

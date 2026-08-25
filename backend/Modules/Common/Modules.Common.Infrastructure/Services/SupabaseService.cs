@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Modules.Common.Features.Abstractions;
 using Supabase.Storage;
 using FileOptions = Supabase.Storage.FileOptions;
 

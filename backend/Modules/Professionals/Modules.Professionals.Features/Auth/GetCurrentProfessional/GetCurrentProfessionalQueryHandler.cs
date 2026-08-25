@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
@@ -6,13 +5,13 @@ using Modules.Identity.PublicApi;
 using Modules.Professionals.Domain;
 using Modules.Professionals.Features.GetServices;
 using Modules.Professionals.Features.GetSpecializations;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 
 namespace Modules.Professionals.Features.Auth.GetCurrentProfessional;
 
 public sealed class GetCurrentProfessionalQueryHandler(
     IIdentityModuleApi identityApi,
-    ProfessionalsDbContext dbContext,
+    IProfessionalProfileOperations profileOperations,
     ILogger<GetCurrentProfessionalQueryHandler> logger) : IQueryHandler<GetCurrentProfessionalQuery, GetCurrentProfessionalDto>
 {
     public async Task<Result<GetCurrentProfessionalDto>> Handle(
@@ -30,10 +29,7 @@ public sealed class GetCurrentProfessionalQueryHandler(
 
         var user = userResult.Value;
 
-        var professional = await dbContext.Professionals
-            .Include(p => p.Specialization)
-            .Include(p => p.Services)
-            .FirstOrDefaultAsync(p => p.UserId == query.UserId, cancellationToken);
+        var professional = await profileOperations.FindByUserIdWithDetailsAsync(query.UserId, cancellationToken);
 
         if (professional is null)
         {

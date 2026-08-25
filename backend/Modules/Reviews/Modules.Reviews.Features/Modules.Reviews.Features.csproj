@@ -13,13 +13,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Modules.Reviews.Domain\Modules.Reviews.Domain.csproj" />
-    <ProjectReference Include="..\Modules.Reviews.Infrastructure\Modules.Reviews.Infrastructure.csproj" />
-    <ProjectReference Include="..\Modules.Reviews.PublicApi\Modules.Reviews.PublicApi.csproj" />
     <ProjectReference Include="..\..\Patients\Modules.Patients.PublicApi\Modules.Patients.PublicApi.csproj" />
     <ProjectReference Include="..\..\Identity\Modules.Identity.PublicApi\Modules.Identity.PublicApi.csproj" />
     <ProjectReference Include="..\..\Professionals\Modules.Professionals.PublicApi\Modules.Professionals.PublicApi.csproj" />
     <ProjectReference Include="..\..\Notifications\Modules.Notifications.PublicApi\Modules.Notifications.PublicApi.csproj" />
-    <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Infrastructure\Modules.Common.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\Modules\Common\Modules.Common.Features\Modules.Common.Features.csproj" />
   </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

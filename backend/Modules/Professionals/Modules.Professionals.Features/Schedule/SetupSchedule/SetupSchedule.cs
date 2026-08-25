@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Routing;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain;
-using Modules.Professionals.Infrastructure.DTOs;
+using Modules.Professionals.Features.Schedule;
 
 namespace Modules.Professionals.Features.Schedule.SetupSchedule;
 
@@ -43,4 +43,3 @@ public class SetupSchedule : IEndpoint
         public List<AvailabilityDayDto>? DayAvailabilities { get; init; }
     }
 }
-

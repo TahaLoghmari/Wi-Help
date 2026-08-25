@@ -1,16 +1,15 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.Services;
 using Modules.Professionals.Domain;
 using Modules.Professionals.Domain.Entities;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 
 namespace Modules.Professionals.Features.UploadVerificationDocument;
 
 public sealed class UploadVerificationDocumentCommandHandler(
-    ProfessionalsDbContext dbContext,
+    IProfessionalProfileOperations profileOperations,
+    IVerificationDocumentOperations documentOperations,
     IFileStorage fileStorage,
     ILogger<UploadVerificationDocumentCommandHandler> logger) : ICommandHandler<UploadVerificationDocumentCommand>
 {
@@ -49,8 +48,7 @@ public sealed class UploadVerificationDocumentCommandHandler(
             }
         }
 
-        var professional = await dbContext.Professionals
-            .FirstOrDefaultAsync(p => p.UserId == command.UserId, cancellationToken);
+        var professional = await profileOperations.FindByUserIdAsync(command.UserId, cancellationToken);
 
         if (professional is null)
         {
@@ -64,9 +62,8 @@ public sealed class UploadVerificationDocumentCommandHandler(
             "verification-documents",
             cancellationToken);
 
-        var existingDocument = await dbContext.VerificationDocuments
-            .FirstOrDefaultAsync(vd => vd.ProfessionalId == professional.Id && vd.Type == command.DocumentType, 
-                cancellationToken);
+        var existingDocument = await documentOperations.FindByProfessionalAndTypeAsync(
+            professional.Id, command.DocumentType, cancellationToken);
 
         if (existingDocument is not null)
         {
@@ -81,12 +78,12 @@ public sealed class UploadVerificationDocumentCommandHandler(
                 command.DocumentType,
                 documentUrl);
             
-            dbContext.VerificationDocuments.Add(newDocument);
+            documentOperations.Add(newDocument);
             logger.LogInformation("Created new verification document for ProfessionalId: {ProfessionalId}, Type: {Type}", 
                 professional.Id, command.DocumentType);
         }
 
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await documentOperations.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }

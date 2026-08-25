@@ -1,14 +1,13 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 
 namespace Modules.Professionals.Features.Educations.UpdateEducation;
 
 public class UpdateEducationCommandHandler(
-    ProfessionalsDbContext dbContext,
+    IProfessionalQualificationsOperations qualificationsOperations,
     ILogger<UpdateEducationCommandHandler> logger) : ICommandHandler<UpdateEducationCommand, EducationDto>
 {
     public async Task<Result<EducationDto>> Handle(UpdateEducationCommand command, CancellationToken cancellationToken)
@@ -16,9 +15,7 @@ public class UpdateEducationCommandHandler(
         logger.LogInformation("Updating education {EducationId} for professional {ProfessionalId}", 
             command.EducationId, command.ProfessionalId);
 
-        var education = await dbContext.Educations
-            .FirstOrDefaultAsync(e => e.Id == command.EducationId && e.ProfessionalId == command.ProfessionalId, 
-                cancellationToken);
+        var education = await qualificationsOperations.FindEducationAsync(command.EducationId, command.ProfessionalId, cancellationToken);
 
         if (education is null)
         {
@@ -36,7 +33,7 @@ public class UpdateEducationCommandHandler(
             command.EndYear,
             command.IsCurrentlyStudying);
 
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await qualificationsOperations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Education {EducationId} updated successfully", command.EducationId);
 

@@ -1,28 +1,22 @@
-using Microsoft.EntityFrameworkCore;
-using Modules.Appointments.Infrastructure.Database;
+using Modules.Appointments.Domain.Ports;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Features.DTOs;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
 
 namespace Modules.Appointments.Features.GetAllPrescriptionsForAdmin;
 
 internal sealed class GetAllPrescriptionsForAdminHandler(
-    AppointmentsDbContext dbContext,
+    IAppointmentRead appointments,
     IPatientsModuleApi patientsModuleApi,
     IProfessionalModuleApi professionalModuleApi)
     : IQueryHandler<GetAllPrescriptionsForAdminQuery, PaginationResultDto<PrescriptionAdminDto>>
 {
     public async Task<Result<PaginationResultDto<PrescriptionAdminDto>>> Handle(GetAllPrescriptionsForAdminQuery query, CancellationToken cancellationToken)
     {
-        var totalCount = await dbContext.Prescriptions.CountAsync(cancellationToken);
-
-        var prescriptions = await dbContext.Prescriptions
-            .OrderByDescending(p => p.CreatedAt)
-            .Skip((query.Page - 1) * query.PageSize)
-            .Take(query.PageSize)
-            .ToListAsync(cancellationToken);
+        var prescriptionsPage = await appointments.GetAdminPrescriptionsPageAsync(query.Page, query.PageSize, cancellationToken);
+        var prescriptions = prescriptionsPage.Items;
 
         if (prescriptions.Count == 0)
         {
@@ -31,7 +25,7 @@ internal sealed class GetAllPrescriptionsForAdminHandler(
                 Items = [],
                 Page = query.Page,
                 PageSize = query.PageSize,
-                TotalCount = totalCount
+                TotalCount = prescriptionsPage.TotalCount
             });
         }
 
@@ -68,7 +62,7 @@ internal sealed class GetAllPrescriptionsForAdminHandler(
             Items = dtos,
             Page = query.Page,
             PageSize = query.PageSize,
-            TotalCount = totalCount
+            TotalCount = prescriptionsPage.TotalCount
         });
     }
 }

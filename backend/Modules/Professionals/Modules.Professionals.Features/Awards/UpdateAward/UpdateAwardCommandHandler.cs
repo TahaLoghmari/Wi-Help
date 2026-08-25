@@ -1,14 +1,13 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 
 namespace Modules.Professionals.Features.Awards.UpdateAward;
 
 public class UpdateAwardCommandHandler(
-    ProfessionalsDbContext dbContext,
+    IProfessionalQualificationsOperations qualificationsOperations,
     ILogger<UpdateAwardCommandHandler> logger) : ICommandHandler<UpdateAwardCommand, AwardDto>
 {
     public async Task<Result<AwardDto>> Handle(UpdateAwardCommand command, CancellationToken cancellationToken)
@@ -16,9 +15,7 @@ public class UpdateAwardCommandHandler(
         logger.LogInformation("Updating award {AwardId} for professional {ProfessionalId}", 
             command.AwardId, command.ProfessionalId);
 
-        var award = await dbContext.Awards
-            .FirstOrDefaultAsync(a => a.Id == command.AwardId && a.ProfessionalId == command.ProfessionalId, 
-                cancellationToken);
+        var award = await qualificationsOperations.FindAwardAsync(command.AwardId, command.ProfessionalId, cancellationToken);
 
         if (award is null)
         {
@@ -32,7 +29,7 @@ public class UpdateAwardCommandHandler(
             command.Description,
             command.YearReceived);
 
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await qualificationsOperations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Award {AwardId} updated successfully", command.AwardId);
 

@@ -1,5 +1,5 @@
 using Modules.Common.Features.Abstractions;
-using Modules.Identity.Features.DTOs;
+using Modules.Identity.Domain.DTOs;
 
 namespace Modules.Identity.Features.Auth.Refresh;
 

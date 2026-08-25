@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Modules.Common.Features.Abstractions;
-using Modules.Identity.Infrastructure.Services;
+using Modules.Identity.Domain.Ports;
 
 namespace Modules.Identity.Features.Auth.Logout;
 
@@ -12,8 +12,8 @@ public class Logout : IEndpoint
     {
         app.MapPost(IdentityEndpoints.Logout, async (
                 HttpContext context,
-                CookieService cookieService,
-                TokenManagementService tokenManagementService,
+                IAuthCookies authCookies,
+                ITokenManagement tokenManagement,
                 CancellationToken cancellationToken) =>
             {
                 string? refreshTokenValue = context.Request.Cookies["refreshToken"];
@@ -24,9 +24,9 @@ public class Logout : IEndpoint
                 }
                 if (!string.IsNullOrEmpty(refreshTokenValue))
                 {
-                    await tokenManagementService.RemoveRefreshToken(refreshTokenValue, cancellationToken);
+                    await tokenManagement.RemoveRefreshToken(refreshTokenValue, cancellationToken);
                 }
-                cookieService.RemoveCookies(context.Response);
+                authCookies.RemoveCookies(context.Response);
                 return Results.Ok();
             })
             .WithTags(Tags.Authentication);

@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
-using Modules.Identity.Domain.Entities;
-using Modules.Identity.Infrastructure.Services;
+using Modules.Identity.Domain.Ports;
 
 namespace Modules.Identity.Features.Auth.GoogleCallback;
 
@@ -19,10 +17,10 @@ internal sealed class GoogleCallback : IEndpoint
                 string? state,
                 string? error,
                 HttpContext httpContext,
-                GoogleTokensProvider googleTokensProvider,
-                TokenManagementService tokenManagementService,
-                CookieService cookieService,
-                UserManager<User> userManager,
+                IGoogleAuthentication googleAuthentication,
+                ITokenManagement tokenManagement,
+                IAuthCookies authCookies,
+                IIdentityAccountOperations accounts,
                 IConfiguration configuration,
                 ILogger<GoogleCallback> logger,
                 CancellationToken cancellationToken) =>
@@ -52,7 +50,7 @@ internal sealed class GoogleCallback : IEndpoint
                 logger.LogInformation("Processing Google callback. IsSignIn: {IsSignIn}, Role: {Role}", isSignIn, role);
 
                 // Exchange code for tokens
-                var googleTokens = await googleTokensProvider.ExchangeCodeForTokensAsync(code, cancellationToken);
+                var googleTokens = await googleAuthentication.ExchangeCodeForTokensAsync(code, cancellationToken);
                 if (googleTokens is null)
                 {
                     logger.LogError("Failed to exchange code for tokens");
@@ -60,7 +58,7 @@ internal sealed class GoogleCallback : IEndpoint
                 }
 
                 // Get user info from Google
-                var googleUser = await googleTokensProvider.GetGoogleUserInfoAsync(googleTokens.IdToken);
+                var googleUser = await googleAuthentication.GetGoogleUserInfoAsync(googleTokens.IdToken);
                 if (googleUser is null)
                 {
                     logger.LogError("Failed to get user info from Google");
@@ -68,7 +66,7 @@ internal sealed class GoogleCallback : IEndpoint
                 }
 
                 // For sign-in flow, only find existing users. For sign-up, create if not exists.
-                var (user, isNewUser) = await googleTokensProvider.FindOrCreateUserAsync(googleUser, role, isSignIn, cancellationToken);
+                var (user, isNewUser) = await googleAuthentication.FindOrCreateUserAsync(googleUser, role, isSignIn, cancellationToken);
                 
                 if (user is null && isSignIn)
                 {
@@ -83,18 +81,18 @@ internal sealed class GoogleCallback : IEndpoint
                 }
 
                 // Get user role
-                var userRoles = await userManager.GetRolesAsync(user);
+                var userRoles = await accounts.GetRolesAsync(user);
                 var userRole = userRoles.FirstOrDefault() ?? role;
 
                 // Create tokens
-                var accessTokens = await tokenManagementService.CreateAndStoreTokens(
+                var accessTokens = await tokenManagement.CreateAndStoreTokens(
                     user.Id,
                     userRole,
                     user.Email!,
                     cancellationToken);
 
                 // Set cookies
-                cookieService.AddCookies(httpContext.Response, accessTokens);
+                authCookies.AddCookies(httpContext.Response, accessTokens);
 
                 logger.LogInformation("Google authentication successful for UserId: {UserId}, IsNewUser: {IsNewUser}, OnboardingCompleted: {OnboardingCompleted}",
                     user.Id, isNewUser, user.IsOnboardingCompleted);

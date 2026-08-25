@@ -1,15 +1,13 @@
 using Microsoft.Extensions.Logging;
 using Modules.Appointments.Domain.Entities;
-using Modules.Appointments.Domain.Enums;
-using Modules.Appointments.Infrastructure.Database;
+using Modules.Appointments.Domain.Ports;
 using Modules.Appointments.PublicApi;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.DTOs;
-using Modules.Common.Infrastructure.Services;
-using Modules.Common.Infrastructure.Templates;
-using Modules.Notifications.Domain.Enums;
+using Modules.Appointments.Features.Templates;
+using Modules.Common.Features.DTOs;
 using Modules.Notifications.PublicApi;
+using Modules.Notifications.PublicApi.Contracts;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
 using Modules.Identity.PublicApi;
@@ -17,7 +15,7 @@ using Modules.Identity.PublicApi;
 namespace Modules.Appointments.Features.BookAppointment;
 
 public class BookAppointmentCommandHandler(
-    AppointmentsDbContext appointmentsDbContext,
+    IBookAppointmentStore appointmentsStore,
     ILogger<BookAppointmentCommandHandler> logger,
     INotificationsModuleApi notificationsModuleApi,
     IProfessionalModuleApi professionalModuleApi,
@@ -40,8 +38,7 @@ public class BookAppointmentCommandHandler(
             command.Urgency,
             command.Notes);
 
-        appointmentsDbContext.Appointments.Add(appointment);
-        await appointmentsDbContext.SaveChangesAsync(cancellationToken);
+        await appointmentsStore.AddAsync(appointment, cancellationToken);
 
         logger.LogInformation("Appointment scheduled with ID {AppointmentId}", appointment.Id);
 

@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Modules.Identity.Features.DTOs;
+using Modules.Identity.Domain.DTOs;
+using Modules.Identity.Domain.Ports;
 using Modules.Identity.Infrastructure.Settings;
 
 namespace Modules.Identity.Infrastructure.Services;
@@ -11,7 +12,7 @@ namespace Modules.Identity.Infrastructure.Services;
 public sealed class CookieService(
     IOptions<JwtSettings> jwtAuthSettings,
     IWebHostEnvironment environment,
-    IConfiguration configuration)
+    IConfiguration configuration) : IAuthCookies
 {
     private readonly JwtSettings _jwtAuthSettings = jwtAuthSettings.Value;
     private readonly string? _cookieDomain = configuration["DOMAIN"];

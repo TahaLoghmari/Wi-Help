@@ -1,13 +1,12 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Patients.Infrastructure.Database;
+using Modules.Patients.Domain.Ports;
 
 namespace Modules.Patients.Features.GetRelationships;
 
 public sealed class GetRelationshipsQueryHandler(
-    PatientsDbContext dbContext,
+    IPatientCatalogOperations patientCatalog,
     ILogger<GetRelationshipsQueryHandler> logger) : IQueryHandler<GetRelationshipsQuery, List<RelationshipDto>>
 {
     public async Task<Result<List<RelationshipDto>>> Handle(
@@ -16,11 +15,9 @@ public sealed class GetRelationshipsQueryHandler(
     {
         logger.LogInformation("Retrieving all relationships");
 
-        var relationships = await dbContext.Relationships
-            .AsNoTracking()
-            .OrderBy(r => r.Key)
-            .Select(r => new RelationshipDto(r.Id, r.Key))
-            .ToListAsync(cancellationToken);
+        var relationships = (await patientCatalog.GetRelationshipsAsync(cancellationToken))
+            .Select(relationship => new RelationshipDto(relationship.Id, relationship.Key))
+            .ToList();
 
         logger.LogInformation("Retrieved {Count} relationships", relationships.Count);
 

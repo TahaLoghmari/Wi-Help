@@ -1,14 +1,13 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 
 namespace Modules.Professionals.Features.Experiences.UpdateExperience;
 
 public class UpdateExperienceCommandHandler(
-    ProfessionalsDbContext dbContext,
+    IProfessionalQualificationsOperations qualificationsOperations,
     ILogger<UpdateExperienceCommandHandler> logger) : ICommandHandler<UpdateExperienceCommand, ExperienceDto>
 {
     public async Task<Result<ExperienceDto>> Handle(UpdateExperienceCommand command, CancellationToken cancellationToken)
@@ -16,9 +15,7 @@ public class UpdateExperienceCommandHandler(
         logger.LogInformation("Updating experience {ExperienceId} for professional {ProfessionalId}", 
             command.ExperienceId, command.ProfessionalId);
 
-        var experience = await dbContext.WorkExperiences
-            .FirstOrDefaultAsync(e => e.Id == command.ExperienceId && e.ProfessionalId == command.ProfessionalId, 
-                cancellationToken);
+        var experience = await qualificationsOperations.FindExperienceAsync(command.ExperienceId, command.ProfessionalId, cancellationToken);
 
         if (experience is null)
         {
@@ -35,7 +32,7 @@ public class UpdateExperienceCommandHandler(
             command.EndYear,
             command.IsCurrentPosition);
 
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await qualificationsOperations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Experience {ExperienceId} updated successfully", command.ExperienceId);
 

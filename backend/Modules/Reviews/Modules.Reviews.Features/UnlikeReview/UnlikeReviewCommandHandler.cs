@@ -1,14 +1,13 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Modules.Reviews.Infrastructure.Database;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Reviews.Domain;
+using Modules.Reviews.Domain.Abstractions;
 
 namespace Modules.Reviews.Features.UnlikeReview;
 
 internal sealed class UnlikeReviewCommandHandler(
-    ReviewsDbContext reviewsDbContext,
+    IUnlikeReviewPort reviews,
     ILogger<UnlikeReviewCommandHandler> logger) : ICommandHandler<UnlikeReviewCommand>
 {
     public async Task<Result> Handle(UnlikeReviewCommand command, CancellationToken cancellationToken)
@@ -17,10 +16,7 @@ internal sealed class UnlikeReviewCommandHandler(
             "Unliking review {ReviewId} by user {UserId}",
             command.ReviewId, command.UserId);
 
-        var like = await reviewsDbContext.ReviewLikes
-            .FirstOrDefaultAsync(
-                rl => rl.ReviewId == command.ReviewId && rl.UserId == command.UserId,
-                cancellationToken);
+        var like = await reviews.GetLikeAsync(command.ReviewId, command.UserId, cancellationToken);
 
         if (like == null)
         {
@@ -30,12 +26,10 @@ internal sealed class UnlikeReviewCommandHandler(
             return Result.Failure(ReviewErrors.LikeNotFound(command.ReviewId, command.UserId));
         }
 
-        reviewsDbContext.ReviewLikes.Remove(like);
-        await reviewsDbContext.SaveChangesAsync(cancellationToken);
+        await reviews.RemoveLikeAsync(like, cancellationToken);
 
         logger.LogInformation("Review {ReviewId} unliked by user {UserId}", command.ReviewId, command.UserId);
 
         return Result.Success();
     }
 }
-

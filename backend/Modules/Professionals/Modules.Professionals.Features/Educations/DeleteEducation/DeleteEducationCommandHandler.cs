@@ -1,14 +1,13 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 
 namespace Modules.Professionals.Features.Educations.DeleteEducation;
 
 public class DeleteEducationCommandHandler(
-    ProfessionalsDbContext dbContext,
+    IProfessionalQualificationsOperations qualificationsOperations,
     ILogger<DeleteEducationCommandHandler> logger) : ICommandHandler<DeleteEducationCommand>
 {
     public async Task<Result> Handle(DeleteEducationCommand command, CancellationToken cancellationToken)
@@ -16,9 +15,7 @@ public class DeleteEducationCommandHandler(
         logger.LogInformation("Deleting education {EducationId} for professional {ProfessionalId}", 
             command.EducationId, command.ProfessionalId);
 
-        var education = await dbContext.Educations
-            .FirstOrDefaultAsync(e => e.Id == command.EducationId && e.ProfessionalId == command.ProfessionalId, 
-                cancellationToken);
+        var education = await qualificationsOperations.FindEducationAsync(command.EducationId, command.ProfessionalId, cancellationToken);
 
         if (education is null)
         {
@@ -26,8 +23,8 @@ public class DeleteEducationCommandHandler(
             return Result.Failure(ProfessionalErrors.EducationNotFound(command.EducationId));
         }
 
-        dbContext.Educations.Remove(education);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        qualificationsOperations.Remove(education);
+        await qualificationsOperations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Education {EducationId} deleted successfully", command.EducationId);
 

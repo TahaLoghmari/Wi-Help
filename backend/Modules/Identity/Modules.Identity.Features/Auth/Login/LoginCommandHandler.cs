@@ -1,17 +1,17 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Identity.Domain.Entities;
 using Modules.Identity.Domain;
-using Modules.Identity.Features.DTOs;
-using Modules.Identity.Infrastructure.Services;
+using Modules.Identity.Domain.DTOs;
+using Modules.Identity.Domain.Ports;
 
 namespace Modules.Identity.Features.Auth.Login;
 
 public sealed class LoginCommandHandler(
-    UserManager<User> userManager,
-    TokenManagementService tokenManagementService,
+    IIdentityAccountOperations accounts,
+    IIdentityCredentialOperations credentials,
+    IIdentityLockoutOperations lockout,
+    ITokenManagement tokenManagement,
     ILogger<LoginCommandHandler> logger) : ICommandHandler<LoginCommand,AccessTokensDto>
 {
     public async Task<Result<AccessTokensDto>> Handle(
@@ -20,7 +20,7 @@ public sealed class LoginCommandHandler(
     {
         logger.LogInformation("Login attempt started for {Email}", command.Email);
 
-        User? user = await userManager.FindByEmailAsync(command.Email);
+        var user = await accounts.FindByEmailAsync(command.Email);
         
         if (user is null)
         {
@@ -28,21 +28,21 @@ public sealed class LoginCommandHandler(
             return Result<AccessTokensDto>.Failure(IdentityErrors.InvalidCredentials());
         }
 
-        if (!await userManager.IsEmailConfirmedAsync(user))
+        if (!await accounts.IsEmailConfirmedAsync(user))
         {
             logger.LogWarning("Login failed - email not confirmed for {Email}, UserId: {UserId}", 
                 command.Email, user.Id);
             return Result<AccessTokensDto>.Failure(IdentityErrors.EmailNotConfirmed());
         }
 
-        if (await userManager.IsLockedOutAsync(user))
+        if (await lockout.IsLockedOutAsync(user))
         {
             logger.LogWarning("Login failed - user is locked out for {Email}, UserId: {UserId}", 
                 command.Email, user.Id);
             return Result<AccessTokensDto>.Failure(IdentityErrors.UserLockedOut());
         }
 
-        var result = await userManager.CheckPasswordAsync(user, command.Password);
+        var result = await credentials.CheckPasswordAsync(user, command.Password);
 
         if (!result)
         {
@@ -51,9 +51,9 @@ public sealed class LoginCommandHandler(
             return Result<AccessTokensDto>.Failure(IdentityErrors.InvalidCredentials());
         }
         
-        var userRoles = await userManager.GetRolesAsync(user);
+        var userRoles = await accounts.GetRolesAsync(user);
         
-        AccessTokensDto tokens = await tokenManagementService.CreateAndStoreTokens(user.Id,userRoles[0], command.Email, cancellationToken);
+        AccessTokensDto tokens = await tokenManagement.CreateAndStoreTokens(user.Id, userRoles[0], command.Email, cancellationToken);
 
         logger.LogInformation("Login successful for {Email}, UserId: {UserId}",
             command.Email, user.Id);

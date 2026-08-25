@@ -1,14 +1,14 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 
 namespace Modules.Professionals.Features.GetVerificationDocuments;
 
 public sealed class GetVerificationDocumentsQueryHandler(
-    ProfessionalsDbContext dbContext,
+    IProfessionalProfileOperations profileOperations,
+    IVerificationDocumentOperations documentOperations,
     ILogger<GetVerificationDocumentsQueryHandler> logger) : IQueryHandler<GetVerificationDocumentsQuery, List<VerificationDocumentDto>>
 {
     public async Task<Result<List<VerificationDocumentDto>>> Handle(
@@ -17,9 +17,7 @@ public sealed class GetVerificationDocumentsQueryHandler(
     {
         logger.LogInformation("Retrieving verification documents for UserId: {UserId}", query.UserId);
 
-        var professional = await dbContext.Professionals
-            .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.UserId == query.UserId, cancellationToken);
+        var professional = await profileOperations.FindByUserIdReadOnlyAsync(query.UserId, cancellationToken);
 
         if (professional is null)
         {
@@ -27,9 +25,7 @@ public sealed class GetVerificationDocumentsQueryHandler(
             return Result<List<VerificationDocumentDto>>.Failure(ProfessionalErrors.NotFound(query.UserId));
         }
 
-        var documents = await dbContext.VerificationDocuments
-            .AsNoTracking()
-            .Where(vd => vd.ProfessionalId == professional.Id)
+        var documents = (await documentOperations.GetByProfessionalIdAsync(professional.Id, cancellationToken))
             .Select(vd => new VerificationDocumentDto(
                 vd.Id,
                 vd.Type,
@@ -37,7 +33,7 @@ public sealed class GetVerificationDocumentsQueryHandler(
                 vd.Status,
                 vd.UploadedAt,
                 vd.ReviewedAt))
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         logger.LogInformation("Found {Count} verification documents for ProfessionalId: {ProfessionalId}", 
             documents.Count, professional.Id);

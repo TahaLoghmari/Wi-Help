@@ -1,19 +1,18 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.PublicApi;
 using Modules.Patients.Domain;
+using Modules.Patients.Domain.Ports;
 using Modules.Patients.Features.GetAllergies;
 using Modules.Patients.Features.GetConditions;
 using Modules.Patients.Features.GetMedications;
-using Modules.Patients.Infrastructure.Database;
 
 namespace Modules.Patients.Features.Auth.GetCurrentPatient;
 
 public sealed class GetCurrentPatientQueryHandler(
     IIdentityModuleApi identityApi,
-    PatientsDbContext dbContext,
+    IPatientProfileOperations patientProfile,
     ILogger<GetCurrentPatientQueryHandler> logger) : IQueryHandler<GetCurrentPatientQuery, GetCurrentPatientDto>
 {
     public async Task<Result<GetCurrentPatientDto>> Handle(
@@ -31,11 +30,7 @@ public sealed class GetCurrentPatientQueryHandler(
 
         var user = userResult.Value;
 
-        var patient = await dbContext.Patients
-            .Include(p => p.Allergies)
-            .Include(p => p.Conditions)
-            .Include(p => p.Medications)
-            .FirstOrDefaultAsync(p => p.UserId == query.UserId, cancellationToken);
+        var patient = await patientProfile.GetByUserIdAsync(query.UserId, cancellationToken);
 
         if (patient is null)
         {

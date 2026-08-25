@@ -1,24 +1,22 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain;
 using Modules.Professionals.Domain.Entities;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 
 namespace Modules.Professionals.Features.Experiences.CreateExperience;
 
 public class CreateExperienceCommandHandler(
-    ProfessionalsDbContext dbContext,
+    IProfessionalProfileOperations profileOperations,
+    IProfessionalQualificationsOperations qualificationsOperations,
     ILogger<CreateExperienceCommandHandler> logger) : ICommandHandler<CreateExperienceCommand, ExperienceDto>
 {
     public async Task<Result<ExperienceDto>> Handle(CreateExperienceCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Creating experience for professional {ProfessionalId}", command.ProfessionalId);
 
-        var professional = await dbContext.Professionals
-            .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Id == command.ProfessionalId, cancellationToken);
+        var professional = await profileOperations.FindByIdReadOnlyAsync(command.ProfessionalId, cancellationToken);
 
         if (professional is null)
         {
@@ -36,8 +34,8 @@ public class CreateExperienceCommandHandler(
             command.EndYear,
             command.IsCurrentPosition);
 
-        dbContext.WorkExperiences.Add(experience);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        qualificationsOperations.Add(experience);
+        await qualificationsOperations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Experience created with ID {ExperienceId} for professional {ProfessionalId}", 
             experience.Id, command.ProfessionalId);

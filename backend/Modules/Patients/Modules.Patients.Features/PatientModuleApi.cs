@@ -1,26 +1,20 @@
-
-
-using Microsoft.EntityFrameworkCore;
 using Modules.Common.Features.Results;
-using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Features.DTOs;
 using Modules.Identity.PublicApi;
 using Modules.Patients.Domain;
-using Modules.Patients.Infrastructure.Database;
+using Modules.Patients.Domain.Ports;
 using Modules.Patients.PublicApi;
 using Modules.Patients.PublicApi.Contracts;
 
 namespace Modules.Patients.Features;
 
 public class PatientModuleApi(
-    PatientsDbContext dbContext,
+    IPatientModuleApiPort patientPort,
     IIdentityModuleApi identityApi) : IPatientsModuleApi
 {
     public async Task<Result<List<PatientDto>>> GetPatientsByIdsAsync(IEnumerable<Guid> patientIds, CancellationToken cancellationToken = default)
     {
-        var patients = await dbContext.Patients
-            .AsNoTracking()
-            .Where(p => patientIds.Contains(p.Id))
-            .ToListAsync(cancellationToken);
+        var patients = await patientPort.GetPatientsByIdsAsync(patientIds, cancellationToken);
 
         if (patients.Count == 0)
         {
@@ -52,8 +46,11 @@ public class PatientModuleApi(
                     user.DateOfBirth,
                     user.Gender,
                     user.Address,
-                    p.EmergencyContact,
-                    p.MobilityStatus,
+                    new EmergencyContact(
+                        p.EmergencyContact.FullName,
+                        p.EmergencyContact.PhoneNumber,
+                        p.EmergencyContact.RelationshipId),
+                    (MobilityStatus?)p.MobilityStatus,
                     p.Bio
                 );
             }
@@ -68,9 +65,7 @@ public class PatientModuleApi(
 
     public async Task<Result<PatientDto>> GetPatientByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        var patient = await dbContext.Patients
-            .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.UserId == userId, cancellationToken);
+        var patient = await patientPort.GetPatientByUserIdAsync(userId, cancellationToken);
 
         if (patient is null)
         {
@@ -97,8 +92,11 @@ public class PatientModuleApi(
             user.DateOfBirth,
             user.Gender,
             user.Address,
-            patient.EmergencyContact,
-            patient.MobilityStatus,
+            new EmergencyContact(
+                patient.EmergencyContact.FullName,
+                patient.EmergencyContact.PhoneNumber,
+                patient.EmergencyContact.RelationshipId),
+            (MobilityStatus?)patient.MobilityStatus,
             patient.Bio
         );
 
@@ -110,16 +108,7 @@ public class PatientModuleApi(
         int pageSize,
         CancellationToken cancellationToken = default)
     {
-        var baseQuery = dbContext.Patients
-            .AsNoTracking()
-            .OrderBy(p => p.Id);
-
-        var totalCount = await baseQuery.CountAsync(cancellationToken);
-
-        var patients = await baseQuery
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync(cancellationToken);
+        var (patients, totalCount) = await patientPort.GetPatientsForAdminAsync(page, pageSize, cancellationToken);
 
         // Get user IDs
         var userIds = patients.Select(p => p.UserId).ToList();

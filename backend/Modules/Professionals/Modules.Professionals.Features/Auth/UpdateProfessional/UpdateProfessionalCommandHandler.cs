@@ -1,11 +1,9 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Modules.Common.Infrastructure.Services;
+using Modules.Common.Features.Abstractions;
 using Modules.Identity.PublicApi;
 using Modules.Professionals.Domain;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 using System.Transactions;
-using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.PublicApi.Contracts;
 
@@ -13,7 +11,8 @@ namespace Modules.Professionals.Features.Auth.UpdateProfessional;
 
 public sealed class UpdateProfessionalCommandHandler(
     IIdentityModuleApi identityApi,
-    ProfessionalsDbContext dbContext,
+    IProfessionalProfileOperations profileOperations,
+    IProfessionalCatalogOperations catalogOperations,
     IFileStorage fileStorage,
     ILogger<UpdateProfessionalCommandHandler> logger) : ICommandHandler<UpdateProfessionalCommand>
 {
@@ -63,9 +62,7 @@ public sealed class UpdateProfessionalCommandHandler(
 
             logger.LogInformation("Identity fields updated successfully for UserId: {UserId}", command.UserId);
             
-            var professional = await dbContext.Professionals
-                .Include(p => p.Services)
-                .FirstOrDefaultAsync(p => p.UserId == command.UserId, cancellationToken);
+            var professional = await profileOperations.FindByUserIdWithDetailsAsync(command.UserId, cancellationToken);
 
             if (professional is null)
             {
@@ -75,9 +72,7 @@ public sealed class UpdateProfessionalCommandHandler(
 
             if (command.SpecializationId.HasValue)
             {
-                var specialization = await dbContext.Specializations
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(s => s.Id == command.SpecializationId.Value, cancellationToken);
+                var specialization = await catalogOperations.FindSpecializationAsync(command.SpecializationId.Value, cancellationToken);
 
                 if (specialization is null)
                 {
@@ -96,11 +91,9 @@ public sealed class UpdateProfessionalCommandHandler(
             {
                 var serviceIdsSet = command.ServiceIds.ToHashSet();
 
+                var newServices = await catalogOperations.GetServicesByIdsAsync(serviceIdsSet, cancellationToken);
                 var missingIds = serviceIdsSet
-                    .Except(await dbContext.Services
-                        .Where(s => serviceIdsSet.Contains(s.Id))
-                        .Select(s => s.Id)
-                        .ToListAsync(cancellationToken))
+                    .Except(newServices.Select(s => s.Id))
                     .ToList();
 
                 if (missingIds.Count > 0)
@@ -109,14 +102,10 @@ public sealed class UpdateProfessionalCommandHandler(
                     return Result.Failure(ProfessionalErrors.ServiceNotFound(missingIds.First()));
                 }
 
-                var newServices = await dbContext.Services
-                    .Where(s => serviceIdsSet.Contains(s.Id))
-                    .ToListAsync(cancellationToken);
-
-                professional.UpdateServices(newServices);
+                professional.UpdateServices(newServices.ToList());
             }
 
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await profileOperations.SaveChangesAsync(cancellationToken);
 
             logger.LogInformation("Professional updated successfully for UserId: {UserId}, ProfessionalId: {ProfessionalId}",
                 command.UserId, professional.Id);

@@ -8,8 +8,6 @@ public static class DependencyInjection
     public static IServiceCollection AddMessagingModule(this IServiceCollection services)
     {
         services.AddScoped<IMessagingModuleApi, MessagingModuleApi>();
-        
         return services;
     }
 }
-

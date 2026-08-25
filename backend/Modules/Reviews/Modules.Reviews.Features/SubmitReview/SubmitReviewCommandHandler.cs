@@ -1,20 +1,19 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Notifications.Domain.Enums;
 using Modules.Notifications.PublicApi;
+using Modules.Notifications.PublicApi.Contracts;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
 using Modules.Reviews.Domain;
+using Modules.Reviews.Domain.Abstractions;
 using Modules.Reviews.Domain.Entities;
 using Modules.Reviews.Domain.Enums;
-using Modules.Reviews.Infrastructure.Database;
 
 namespace Modules.Reviews.Features.SubmitReview;
 
 internal sealed class SubmitReviewCommandHandler(
-    ReviewsDbContext dbContext,
+    ISubmitReviewPort reviews,
     ILogger<SubmitReviewCommandHandler> logger,
     IPatientsModuleApi patientsApi,
     IProfessionalModuleApi professionalsApi,
@@ -35,11 +34,8 @@ internal sealed class SubmitReviewCommandHandler(
         if (!professionalsResult.IsSuccess || professionalsResult.Value.Count == 0)
             return Result.Failure(ReviewErrors.ProfessionalNotFound(command.ProfessionalId));
 
-        var exists = await dbContext.Reviews.AnyAsync(
-            r => r.PatientId == command.PatientId
-                 && r.ProfessionalId == command.ProfessionalId
-                 && r.Type == command.Type,
-            cancellationToken);
+        var exists = await reviews.ExistsAsync(
+            command.PatientId, command.ProfessionalId, command.Type, cancellationToken);
 
         if (exists)
             return Result.Failure(ReviewErrors.AlreadyExists(command.PatientId, command.ProfessionalId));
@@ -51,8 +47,7 @@ internal sealed class SubmitReviewCommandHandler(
             command.Rating,
             command.Type);
 
-        dbContext.Reviews.Add(review);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await reviews.AddAsync(review, cancellationToken);
 
         logger.LogInformation("Review submitted with ID {ReviewId}", review.Id);
 

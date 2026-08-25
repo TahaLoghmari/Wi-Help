@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
@@ -6,12 +5,12 @@ using Modules.Identity.PublicApi;
 using Modules.Messaging.Domain;
 using Modules.Messaging.Domain.Entities;
 using Modules.Messaging.Domain.Enums;
-using Modules.Messaging.Infrastructure.Database;
+using Modules.Messaging.Domain.Ports;
 
 namespace Modules.Messaging.Features.CreateConversation;
 
 public class CreateConversationCommandHandler(
-    MessagingDbContext messagingDbContext,
+    IConversationOperations conversationOperations,
     IIdentityModuleApi identityApi,
     ILogger<CreateConversationCommandHandler> logger) : ICommandHandler<CreateConversationCommand, Guid>
 {
@@ -32,11 +31,10 @@ public class CreateConversationCommandHandler(
         }
 
         // Check if conversation already exists between these participants
-        var existingConversation = await messagingDbContext.Conversations
-            .FirstOrDefaultAsync(c =>
-                (c.Participant1Id == command.Participant1Id && c.Participant2Id == command.Participant2Id) ||
-                (c.Participant1Id == command.Participant2Id && c.Participant2Id == command.Participant1Id),
-                cancellationToken);
+        var existingConversation = await conversationOperations.FindAsync(
+            command.Participant1Id,
+            command.Participant2Id,
+            cancellationToken);
 
         if (existingConversation != null)
         {
@@ -50,8 +48,7 @@ public class CreateConversationCommandHandler(
             command.Participant2Id,
             ConversationType.ProfessionalPatient);
 
-        messagingDbContext.Conversations.Add(conversation);
-        await messagingDbContext.SaveChangesAsync(cancellationToken);
+        await conversationOperations.CreateAsync(conversation, cancellationToken);
 
         logger.LogInformation("Created conversation {ConversationId} between {Participant1Id} and {Participant2Id}",
             conversation.Id, command.Participant1Id, command.Participant2Id);
@@ -59,4 +56,3 @@ public class CreateConversationCommandHandler(
         return Result<Guid>.Success(conversation.Id);
     }
 }
-

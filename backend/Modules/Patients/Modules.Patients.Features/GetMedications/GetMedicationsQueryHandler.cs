@@ -1,13 +1,12 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Patients.Infrastructure.Database;
+using Modules.Patients.Domain.Ports;
 
 namespace Modules.Patients.Features.GetMedications;
 
 public sealed class GetMedicationsQueryHandler(
-    PatientsDbContext dbContext,
+    IPatientCatalogOperations patientCatalog,
     ILogger<GetMedicationsQueryHandler> logger) : IQueryHandler<GetMedicationsQuery, List<MedicationDto>>
 {
     public async Task<Result<List<MedicationDto>>> Handle(
@@ -16,11 +15,9 @@ public sealed class GetMedicationsQueryHandler(
     {
         logger.LogInformation("Retrieving all medications");
 
-        var medications = await dbContext.Medications
-            .AsNoTracking()
-            .OrderBy(m => m.Key)
-            .Select(m => new MedicationDto(m.Id, m.Key))
-            .ToListAsync(cancellationToken);
+        var medications = (await patientCatalog.GetMedicationsAsync(cancellationToken))
+            .Select(medication => new MedicationDto(medication.Id, medication.Key))
+            .ToList();
 
         logger.LogInformation("Retrieved {Count} medications", medications.Count);
 

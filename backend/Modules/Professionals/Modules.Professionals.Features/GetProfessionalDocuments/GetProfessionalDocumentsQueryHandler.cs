@@ -1,15 +1,15 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain;
 using Modules.Professionals.Features.GetVerificationDocuments;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 
 namespace Modules.Professionals.Features.GetProfessionalDocuments;
 
 public sealed class GetProfessionalDocumentsQueryHandler(
-    ProfessionalsDbContext dbContext,
+    IProfessionalProfileOperations profileOperations,
+    IVerificationDocumentOperations documentOperations,
     ILogger<GetProfessionalDocumentsQueryHandler> logger) : IQueryHandler<GetProfessionalDocumentsQuery, List<VerificationDocumentDto>>
 {
     public async Task<Result<List<VerificationDocumentDto>>> Handle(
@@ -18,9 +18,7 @@ public sealed class GetProfessionalDocumentsQueryHandler(
     {
         logger.LogInformation("Retrieving verification documents for ProfessionalId: {ProfessionalId}", query.ProfessionalId);
 
-        var professional = await dbContext.Professionals
-            .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Id == query.ProfessionalId, cancellationToken);
+        var professional = await profileOperations.FindByIdReadOnlyAsync(query.ProfessionalId, cancellationToken);
 
         if (professional is null)
         {
@@ -28,9 +26,7 @@ public sealed class GetProfessionalDocumentsQueryHandler(
             return Result<List<VerificationDocumentDto>>.Failure(ProfessionalErrors.NotFound(query.ProfessionalId));
         }
 
-        var documents = await dbContext.VerificationDocuments
-            .AsNoTracking()
-            .Where(vd => vd.ProfessionalId == professional.Id)
+        var documents = (await documentOperations.GetByProfessionalIdAsync(professional.Id, cancellationToken))
             .Select(vd => new VerificationDocumentDto(
                 vd.Id,
                 vd.Type,
@@ -38,7 +34,7 @@ public sealed class GetProfessionalDocumentsQueryHandler(
                 vd.Status,
                 vd.UploadedAt,
                 vd.ReviewedAt))
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         logger.LogInformation("Found {Count} verification documents for ProfessionalId: {ProfessionalId}", 
             documents.Count, professional.Id);

@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
@@ -6,13 +5,13 @@ using Modules.Identity.PublicApi;
 using Modules.Identity.PublicApi.Contracts;
 using Modules.Patients.Domain;
 using Modules.Patients.Domain.Entities;
-using Modules.Patients.Infrastructure.Database;
+using Modules.Patients.Domain.Ports;
 
 namespace Modules.Patients.Features.Auth.CompleteOnboarding;
 
 public sealed class CompletePatientOnboardingCommandHandler(
     IIdentityModuleApi identityApi,
-    PatientsDbContext dbContext,
+    IPatientOnboardingOperations patientOnboarding,
     ILogger<CompletePatientOnboardingCommandHandler> logger) : ICommandHandler<CompletePatientOnboardingCommand>
 {
     public async Task<Result> Handle(
@@ -24,14 +23,11 @@ public sealed class CompletePatientOnboardingCommandHandler(
         // Validate relationship exists if provided
         if (command.EmergencyContact.RelationshipId.HasValue)
         {
-            var relationship = await dbContext.Relationships
-                .AsNoTracking()
-                .FirstOrDefaultAsync(r => r.Id == command.EmergencyContact.RelationshipId.Value, cancellationToken);
-
-            if (relationship is null)
+            var relationshipId = command.EmergencyContact.RelationshipId.Value;
+            if (!await patientOnboarding.RelationshipExistsAsync(relationshipId, cancellationToken))
             {
-                logger.LogWarning("Relationship not found: {RelationshipId}", command.EmergencyContact.RelationshipId.Value);
-                return Result.Failure(PatientErrors.RelationshipNotFound(command.EmergencyContact.RelationshipId.Value));
+                logger.LogWarning("Relationship not found: {RelationshipId}", relationshipId);
+                return Result.Failure(PatientErrors.RelationshipNotFound(relationshipId));
             }
         }
 
@@ -54,14 +50,13 @@ public sealed class CompletePatientOnboardingCommandHandler(
         }
 
         // Check if patient already exists
-        var existingPatient = await dbContext.Patients
-            .FirstOrDefaultAsync(p => p.UserId == command.UserId, cancellationToken);
+        var existingPatient = await patientOnboarding.GetPatientByUserIdAsync(command.UserId, cancellationToken);
 
         if (existingPatient is not null)
         {
             // Update existing patient's emergency contact
             existingPatient.Update(emergencyContact: command.EmergencyContact);
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await patientOnboarding.SaveChangesAsync(cancellationToken);
             
             logger.LogInformation("Updated existing patient for UserId: {UserId}", command.UserId);
             return Result.Success();
@@ -70,8 +65,8 @@ public sealed class CompletePatientOnboardingCommandHandler(
         // Create new patient
         var patient = new Patient(command.UserId, command.EmergencyContact);
 
-        dbContext.Patients.Add(patient);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await patientOnboarding.AddPatientAsync(patient, cancellationToken);
+        await patientOnboarding.SaveChangesAsync(cancellationToken);
 
         var addClaimResult = await identityApi.AddClaimAsync(
             command.UserId, 

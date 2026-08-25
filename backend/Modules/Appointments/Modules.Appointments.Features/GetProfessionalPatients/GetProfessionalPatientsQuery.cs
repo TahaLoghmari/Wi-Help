@@ -1,5 +1,5 @@
 using Modules.Common.Features.Abstractions;
-using Modules.Common.Infrastructure.DTOs;
+using Modules.Common.Features.DTOs;
 using Modules.Patients.PublicApi.Contracts;
 
 namespace Modules.Appointments.Features.GetProfessionalPatients;

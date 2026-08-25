@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using Modules.Notifications.Infrastructure;
 using Modules.Notifications.PublicApi;
 
 namespace Modules.Notifications.Features;

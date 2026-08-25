@@ -1,23 +1,20 @@
-using Microsoft.EntityFrameworkCore;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain.Entities;
-using Modules.Professionals.Infrastructure.Database;
+using Modules.Professionals.Domain.Ports;
 using Modules.Notifications.PublicApi;
-using Modules.Notifications.Domain.Enums;
+using Modules.Notifications.PublicApi.Contracts;
 
 namespace Modules.Professionals.Features.UpdateDocumentStatus;
 
 internal sealed class UpdateDocumentStatusHandler(
-    ProfessionalsDbContext dbContext,
+    IVerificationDocumentOperations documentOperations,
     INotificationsModuleApi notificationsModuleApi)
     : ICommandHandler<UpdateDocumentStatusCommand>
 {
     public async Task<Result> Handle(UpdateDocumentStatusCommand command, CancellationToken cancellationToken)
     {
-        var document = await dbContext.VerificationDocuments
-            .Include(d => d.Professional)
-            .FirstOrDefaultAsync(d => d.Id == command.DocumentId, cancellationToken);
+        var document = await documentOperations.FindByIdWithProfessionalAsync(command.DocumentId, cancellationToken);
 
         if (document is null)
         {
@@ -26,7 +23,7 @@ internal sealed class UpdateDocumentStatusHandler(
 
         document.UpdateStatus(command.Status);
 
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await documentOperations.SaveChangesAsync(cancellationToken);
 
         await notificationsModuleApi.AddNotificationAsync(
             document.Professional.UserId.ToString(),

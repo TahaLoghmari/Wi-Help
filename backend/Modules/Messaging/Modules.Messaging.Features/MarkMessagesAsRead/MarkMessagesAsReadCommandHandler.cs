@@ -1,25 +1,21 @@
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Messaging.Domain;
 using Modules.Messaging.Domain.Enums;
-using Modules.Messaging.Infrastructure;
-using Modules.Messaging.Infrastructure.Database;
+using Modules.Messaging.Domain.Ports;
 
 namespace Modules.Messaging.Features.MarkMessagesAsRead;
 
 public class MarkMessagesAsReadCommandHandler(
-    MessagingDbContext messagingDbContext,
-    IHubContext<ChatHub> hubContext,
+    IConversationOperations conversationOperations,
+    IMessagingRealtimeEvents realtimeEvents,
     ILogger<MarkMessagesAsReadCommandHandler> logger) : ICommandHandler<MarkMessagesAsReadCommand>
 {
     public async Task<Result> Handle(MarkMessagesAsReadCommand command, CancellationToken cancellationToken)
     {
         // Verify conversation exists and user is a participant
-        var conversation = await messagingDbContext.Conversations
-            .FirstOrDefaultAsync(c => c.Id == command.ConversationId, cancellationToken);
+        var conversation = await conversationOperations.GetConversationAsync(command.ConversationId, cancellationToken);
 
         if (conversation == null)
         {
@@ -34,14 +30,10 @@ public class MarkMessagesAsReadCommandHandler(
             return Result.Failure(MessagingErrors.NotParticipant());
         }
 
-        // Mark all unread messages from other participants as read
-        // DeletedAt filter is handled by global query filter in MessagingDbContext
-        var unreadMessages = await messagingDbContext.Messages
-            .Where(m =>
-                m.ConversationId == command.ConversationId &&
-                m.SenderId != command.UserId &&
-                m.Status != MessageStatus.Read)
-            .ToListAsync(cancellationToken);
+        var unreadMessages = await conversationOperations.GetUnreadMessagesAsync(
+            command.ConversationId,
+            command.UserId,
+            cancellationToken);
 
         foreach (var message in unreadMessages)
         {
@@ -50,7 +42,7 @@ public class MarkMessagesAsReadCommandHandler(
 
         if (unreadMessages.Count > 0)
         {
-            await messagingDbContext.SaveChangesAsync(cancellationToken);
+            await conversationOperations.SaveChangesAsync(cancellationToken);
             logger.LogInformation("Marked {Count} messages as read in conversation {ConversationId} by user {UserId}",
                 unreadMessages.Count, command.ConversationId, command.UserId);
 
@@ -60,12 +52,11 @@ public class MarkMessagesAsReadCommandHandler(
                 var senderIds = unreadMessages.Select(m => m.SenderId).Distinct().ToList();
                 foreach (var senderId in senderIds)
                 {
-                    await hubContext.Clients.Group($"user_{senderId}")
-                        .SendAsync("MessagesRead", new
-                        {
-                            ConversationId = command.ConversationId,
-                            ReadBy = command.UserId
-                        }, cancellationToken);
+                    await realtimeEvents.MessagesReadAsync(
+                        senderId,
+                        command.ConversationId,
+                        command.UserId,
+                        cancellationToken);
                 }
             }
             catch (Exception ex)
@@ -79,4 +70,3 @@ public class MarkMessagesAsReadCommandHandler(
         return Result.Success();
     }
 }
-
