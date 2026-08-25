@@ -104,14 +104,14 @@ export default [
             {
               target: "./src/features/professionals",
               from: "./src/features",
-              except: ["./professionals", "./reviews/index.ts"],
+              except: ["./professionals"],
               message:
                 "Cross-feature imports are forbidden. Import from shared modules or compose at the app level.",
             },
             {
               target: "./src/features/patients",
               from: "./src/features",
-              except: ["./patients", "./reviews/index.ts"],
+              except: ["./patients"],
               message:
                 "Cross-feature imports are forbidden. Import from shared modules or compose at the app level.",
             },

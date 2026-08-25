@@ -7,6 +7,12 @@ let refreshPromise: Promise<boolean> | null = null;
 let refreshAttempts = 0;
 const MAX_REFRESH_ATTEMPTS = 1;
 
+function createHttpError(status: number) {
+  return Object.assign(new Error(`Request failed with status ${status}`), {
+    status,
+  });
+}
+
 export async function request<T>(
   endpoint: string,
   options: RequestInit = {},
@@ -103,11 +109,12 @@ export async function request<T>(
       try {
         problemDetails = await response.json();
       } catch {
-        throw new Error(`Request failed with status ${response.status}`);
+        throw createHttpError(response.status);
       }
+      problemDetails.status ??= response.status;
       throw problemDetails;
     } else {
-      throw new Error(`Request failed with status ${response.status}`);
+      throw createHttpError(response.status);
     }
   }
 

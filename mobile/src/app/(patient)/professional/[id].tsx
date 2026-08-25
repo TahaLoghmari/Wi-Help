@@ -1,12 +1,12 @@
 import { useLocalSearchParams } from "expo-router";
 import { router } from "expo-router";
-import { ProfessionalProfileScreen } from "@/features/professionals";
+import { ProfessionalProfileComposition } from "@/app-composition/profile-reviews";
 
 export default function ProfessionalProfileRoute() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   return (
-    <ProfessionalProfileScreen
+    <ProfessionalProfileComposition
       professionalId={id}
       onBack={() => router.back()}
     />

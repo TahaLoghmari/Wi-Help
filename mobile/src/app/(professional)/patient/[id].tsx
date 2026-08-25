@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocalSearchParams } from "expo-router";
 import { router } from "expo-router";
-import { PatientProfileScreen } from "@/features/patients";
+import { PatientProfileComposition } from "@/app-composition/profile-reviews";
 
 export default function PatientProfileRoute() {
   const { id, backRoute } = useLocalSearchParams<{
@@ -17,5 +17,5 @@ export default function PatientProfileRoute() {
     }
   };
 
-  return <PatientProfileScreen patientId={id} onBack={handleBack} />;
+  return <PatientProfileComposition patientId={id} onBack={handleBack} />;
 }

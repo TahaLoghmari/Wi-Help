@@ -1,7 +1,7 @@
 import { ActivityIndicator, View } from "react-native";
 import { router } from "expo-router";
+import { ProfessionalProfileComposition } from "@/app-composition/profile-reviews";
 import { useGetCurrentProfessional } from "@/entities/professional";
-import { ProfessionalProfileScreen } from "@/features/professionals";
 
 export default function MyProfileRoute() {
   const { data: professional, isPending } = useGetCurrentProfessional();
@@ -15,7 +15,7 @@ export default function MyProfileRoute() {
   }
 
   return (
-    <ProfessionalProfileScreen
+    <ProfessionalProfileComposition
       professionalId={professional.id}
       onBack={() => router.back()}
     />

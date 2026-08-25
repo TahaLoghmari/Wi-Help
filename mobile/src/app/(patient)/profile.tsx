@@ -1,7 +1,7 @@
 import React from "react";
-import { PatientProfileScreen } from "@/features/patients";
+import { PatientProfileComposition } from "@/app-composition/profile-reviews";
 
 export default function PatientProfileRoute() {
   // Own profile — no patientId, no back button (navigated from header)
-  return <PatientProfileScreen />;
+  return <PatientProfileComposition />;
 }

@@ -74,6 +74,21 @@ describe("AuthGuard", () => {
     expect(refetch).toHaveBeenCalledTimes(1);
   });
 
+  it("redirects an anonymous session to login", async () => {
+    mockCurrentUser(null);
+
+    await render(
+      <AuthGuard>
+        <Text>Protected content</Text>
+      </AuthGuard>,
+    );
+
+    expect(screen.queryByText("Protected content")).not.toBeOnTheScreen();
+    expect(mockRedirect).toHaveBeenCalledWith({
+      href: ROUTE_PATHS.AUTH.LOGIN,
+    });
+  });
+
   it("does not grant a patient access to a professional route", async () => {
     mockCurrentUser(user);
 
@@ -126,6 +141,19 @@ describe("GuestGuard", () => {
     fireEvent.press(screen.getByRole("button", { name: "Try Again" }));
 
     expect(refetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders guest content for an anonymous session", async () => {
+    mockCurrentUser(null);
+
+    await render(
+      <GuestGuard>
+        <Text>Guest content</Text>
+      </GuestGuard>,
+    );
+
+    expect(screen.getByText("Guest content")).toBeOnTheScreen();
+    expect(mockRedirect).not.toHaveBeenCalled();
   });
 
   it("does not route a user with no recognized role into a role app", async () => {

@@ -296,6 +296,7 @@ export const ReviewCard = React.memo(function ReviewCard({
             className="flex-row items-center gap-1.5"
             onPress={handleToggleReplyInput}
             accessibilityRole="button"
+            accessibilityLabel={t("patientProfile.reviews.reply")}
           >
             <Ionicons
               name="chatbubble-outline"

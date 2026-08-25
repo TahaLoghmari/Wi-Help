@@ -71,4 +71,15 @@ describe("useCurrentUser", () => {
       expect(result.current.data).toEqual({ ...user, role: "Unknown" }),
     );
   });
+
+  it("exposes an unauthorized response as an anonymous session", async () => {
+    jest.mocked(api.get).mockRejectedValue({ status: 401 });
+
+    const { result } = await renderHook(() => useCurrentUser(), {
+      wrapper: createWrapper(),
+    });
+
+    await waitFor(() => expect(result.current.data).toBeNull());
+    expect(result.current.isError).toBe(false);
+  });
 });
