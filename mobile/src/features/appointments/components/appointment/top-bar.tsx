@@ -1,13 +1,13 @@
 import React from "react";
 import { View, Text, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
 
 interface TopBarProps {
   title: string;
+  onBack: () => void;
 }
 
-export function TopBar({ title }: TopBarProps) {
+export function TopBar({ title, onBack }: TopBarProps) {
   return (
     <View
       style={{
@@ -21,7 +21,7 @@ export function TopBar({ title }: TopBarProps) {
     >
       <Pressable
         className="w-10 h-10 rounded-full bg-brand-secondary/10 items-center justify-center active:opacity-80"
-        onPress={() => router.back()}
+        onPress={onBack}
         accessibilityLabel="Go back"
         accessibilityRole="button"
       >

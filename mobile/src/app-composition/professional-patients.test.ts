@@ -26,14 +26,7 @@ describe("getProfessionalPatientMessageRoute", () => {
       getProfessionalPatientMessageRoute(patient, [conversation]),
     ).toEqual({
       pathname: "/(professional)/conversation/[id]",
-      params: {
-        id: "conversation-1",
-        participantId: "patient-user-1",
-        firstName: "Ada",
-        lastName: "Lovelace",
-        profilePictureUrl: "",
-        backRoute: "/(professional)/patients",
-      },
+      params: { id: "conversation-1" },
     });
 
     expect(getProfessionalPatientMessageRoute(patient, [])).toBe(

@@ -7,13 +7,15 @@ import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
-import { router } from "expo-router";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { AppHeader } from "@/components/app-header";
 import { useCurrentUser } from "@/entities/session";
-import { ROUTE_PATHS } from "@/config/routes";
 
-export function MoreScreen() {
+interface MoreScreenProps {
+  onOpenProfile: () => void;
+}
+
+export function MoreScreen({ onOpenProfile }: MoreScreenProps) {
   const { t } = useTranslation();
   const { data: user } = useCurrentUser();
 
@@ -46,7 +48,7 @@ export function MoreScreen() {
         <View className="overflow-hidden rounded-2xl border border-gray-100 bg-white mb-6">
           <Pressable
             className="flex-row items-center justify-between px-4 py-3.5 active:opacity-70"
-            onPress={() => router.push(ROUTE_PATHS.PROFESSIONAL.MY_PROFILE)}
+            onPress={onOpenProfile}
             accessibilityRole="button"
             accessibilityLabel={t("professional.more.myProfile")}
           >

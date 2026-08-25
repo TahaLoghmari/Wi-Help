@@ -3,7 +3,6 @@ import { View, Text, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
 import { getInitials } from "@/features/messaging/lib/utils";
 import { HeaderTypingDots } from "./typing-dots";
 
@@ -13,7 +12,7 @@ interface ConversationHeaderProps {
   profilePictureUrl: string | null;
   isOnline: boolean;
   isTyping: boolean;
-  backRoute?: string;
+  onBack: () => void;
 }
 
 export function ConversationHeader({
@@ -22,7 +21,7 @@ export function ConversationHeader({
   profilePictureUrl,
   isOnline,
   isTyping,
-  backRoute,
+  onBack,
 }: ConversationHeaderProps) {
   const initials = getInitials(firstName, lastName);
 
@@ -30,15 +29,7 @@ export function ConversationHeader({
     <SafeAreaView edges={["top"]} className="bg-brand-bg">
       <View className="flex-row items-center px-4 py-3">
         <Pressable
-          onPress={() => {
-            if (backRoute) {
-              router.navigate(
-                backRoute as Parameters<typeof router.navigate>[0],
-              );
-            } else {
-              router.navigate("/(professional)/messages");
-            }
-          }}
+          onPress={onBack}
           className="w-9 h-9 rounded-full bg-brand-secondary/10 items-center justify-center mr-3 active:opacity-80"
           hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }}
           accessibilityLabel="Go back"

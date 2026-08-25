@@ -1,16 +1,19 @@
 import React from "react";
 import { View, Text, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 
-export function BackRow() {
+interface BackRowProps {
+  onBack: () => void;
+}
+
+export function BackRow({ onBack }: BackRowProps) {
   const { t } = useTranslation();
   return (
     <View className="flex-row items-center gap-3 px-4 py-2">
       <Pressable
         className="w-9 h-9 rounded-full border border-brand-secondary/15 items-center justify-center"
-        onPress={() => router.back()}
+        onPress={onBack}
         accessibilityLabel="Go back"
         accessibilityRole="button"
       >

@@ -16,6 +16,8 @@ const mockPatientMutate = jest.fn();
 const mockProfessionalMutate = jest.fn();
 const mockResetPatient = jest.fn();
 const mockResetProfessional = jest.fn();
+const mockTriggerPatient = jest.fn();
+const mockTriggerProfessional = jest.fn();
 const mockUseForm = jest.fn();
 
 const commonFormData = {
@@ -107,7 +109,7 @@ describe("RegisterScreen registration orchestration", () => {
         if ("emergencyContact" in defaultValues) {
           return {
             reset: mockResetPatient,
-            trigger: jest.fn().mockResolvedValue(true),
+            trigger: mockTriggerPatient,
             handleSubmit: (
               submit: (data: typeof patientFormData) => void,
             ) => () => submit(patientFormData),
@@ -116,13 +118,15 @@ describe("RegisterScreen registration orchestration", () => {
 
         return {
           reset: mockResetProfessional,
-          trigger: jest.fn().mockResolvedValue(true),
+          trigger: mockTriggerProfessional,
           handleSubmit: (
             submit: (data: typeof professionalFormData) => void,
           ) => () => submit(professionalFormData),
         };
       },
     );
+    mockTriggerPatient.mockResolvedValue(true);
+    mockTriggerProfessional.mockResolvedValue(true);
   });
 
   async function advanceToSubmit() {
@@ -139,6 +143,40 @@ describe("RegisterScreen registration orchestration", () => {
       ).toBeTruthy(),
     );
   }
+
+  it("does not advance when the active form step is invalid", async () => {
+    mockTriggerPatient.mockResolvedValueOnce(false);
+    await render(<RegisterScreen />);
+
+    await userEvent
+      .setup()
+      .press(screen.getByRole("button", { name: "common.continue" }));
+
+    await waitFor(() => expect(mockTriggerPatient).toHaveBeenCalledTimes(1));
+    expect(screen.getByRole("button", { name: "common.continue" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "common.back" })).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: "common.register" }),
+    ).toBeNull();
+  });
+
+  it("resets both forms and returns to the first step when switching roles", async () => {
+    await render(<RegisterScreen />);
+    const user = userEvent.setup();
+    await user.press(screen.getByRole("button", { name: "common.continue" }));
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "common.back" })).toBeTruthy(),
+    );
+
+    await user.press(
+      screen.getByRole("button", { name: "auth.roles.professional" }),
+    );
+
+    expect(mockResetPatient).toHaveBeenCalledTimes(1);
+    expect(mockResetProfessional).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole("button", { name: "common.continue" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "common.back" })).toBeNull();
+  });
 
   it("handles patient registration success at the screen", async () => {
     await render(<RegisterScreen />);

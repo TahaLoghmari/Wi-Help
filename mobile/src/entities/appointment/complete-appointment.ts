@@ -1,13 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Toast from "react-native-toast-message";
-import { api } from "@/lib/api-client";
 import { API_ENDPOINTS } from "@/config/endpoints";
-import { useHandleApiError } from "@/hooks/use-handle-api-error";
-import { type ProblemDetailsDto } from "@/types/enums.types";
-import {
-  appointmentKeys,
-  type CompleteAppointmentRequest,
-} from "@/entities/appointment";
+import { api } from "@/lib/api-client";
+import type { ProblemDetailsDto } from "@/types/enums.types";
+import type { CompleteAppointmentRequest } from "./contracts";
+import { appointmentKeys } from "./keys";
 
 function completeAppointment(request: CompleteAppointmentRequest) {
   const formData = new FormData();
@@ -30,19 +26,16 @@ function completeAppointment(request: CompleteAppointmentRequest) {
 
 export function useCompleteAppointment() {
   const queryClient = useQueryClient();
-  const handleApiError = useHandleApiError();
 
   return useMutation<void, ProblemDetailsDto, CompleteAppointmentRequest>({
     mutationFn: completeAppointment,
     onSuccess: (_, request) => {
-      Toast.show({ type: "success", text1: "Appointment completed" });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: appointmentKeys.lists(),
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: appointmentKeys.detail(request.appointmentId),
       });
     },
-    onError: handleApiError,
   });
 }

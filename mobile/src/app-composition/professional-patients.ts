@@ -15,13 +15,6 @@ export function getProfessionalPatientMessageRoute(
 
   return {
     pathname: ROUTE_PATHS.PROFESSIONAL.CONVERSATION_PATHNAME,
-    params: {
-      id: conversation.id,
-      participantId: patient.userId,
-      firstName: patient.firstName,
-      lastName: patient.lastName,
-      profilePictureUrl: patient.profilePictureUrl ?? "",
-      backRoute: ROUTE_PATHS.PROFESSIONAL.PATIENTS,
-    },
+    params: { id: conversation.id },
   };
 }

@@ -1,18 +1,15 @@
 import type { QueryClient } from "@tanstack/react-query";
-import Toast from "react-native-toast-message";
-import { appointmentKeys } from "@/entities/appointment";
-import { messagingKeys } from "@/entities/messaging";
 import { notificationKeys } from "@/entities/notification";
-import { reviewKeys } from "@/entities/review";
-import { SignalRService } from "@/lib/signalr/signalr-service";
 import type {
   RealtimeAdapter,
-  RealtimeAdapterFactory,
   RealtimeHub,
   RealtimeLifecycleSnapshot,
 } from "@/lib/signalr/realtime-types";
 import { HubConnectionState } from "@microsoft/signalr";
-import { decodeNotificationReceived } from "./notification-events";
+import {
+  decodeNotificationReceived,
+  type NotificationReceived,
+} from "./notification-events";
 
 interface NotificationToast {
   type: "info";
@@ -24,12 +21,14 @@ interface CreateNotificationRealtimeAdapterOptions {
   hub: RealtimeHub;
   queryClient: QueryClient;
   showNotification(notification: NotificationToast): void;
+  onNotification(notification: NotificationReceived): void;
 }
 
 export function createNotificationRealtimeAdapter({
   hub,
   queryClient,
   showNotification,
+  onNotification,
 }: CreateNotificationRealtimeAdapterOptions): RealtimeAdapter {
   let snapshot: RealtimeLifecycleSnapshot = {
     connectionState: HubConnectionState.Disconnected,
@@ -66,18 +65,7 @@ export function createNotificationRealtimeAdapter({
       text1: notification.title,
       text2: notification.message,
     });
-
-    if (notification.role === "Professional") {
-      queryClient.invalidateQueries({ queryKey: appointmentKeys.all });
-      queryClient.invalidateQueries({ queryKey: messagingKeys.conversations });
-      queryClient.invalidateQueries({ queryKey: reviewKeys.all });
-      queryClient.invalidateQueries({ queryKey: reviewKeys.allStats });
-    } else if (notification.role === "Patient") {
-      queryClient.invalidateQueries({ queryKey: appointmentKeys.patientList });
-      queryClient.invalidateQueries({ queryKey: messagingKeys.conversations });
-      queryClient.invalidateQueries({ queryKey: reviewKeys.all });
-      queryClient.invalidateQueries({ queryKey: reviewKeys.allStats });
-    }
+    onNotification(notification);
   });
 
   return {
@@ -99,14 +87,3 @@ export function createNotificationRealtimeAdapter({
     },
   };
 }
-
-export const notificationRealtimeAdapterFactory: RealtimeAdapterFactory<RealtimeAdapter> =
-  {
-    create(queryClient) {
-      return createNotificationRealtimeAdapter({
-        hub: new SignalRService({ hubPath: "/hubs/notifications" }),
-        queryClient,
-        showNotification: (notification) => Toast.show(notification),
-      });
-    },
-  };

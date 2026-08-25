@@ -6,7 +6,7 @@ import {
 } from "@microsoft/signalr";
 import { AppState, type AppStateStatus } from "react-native";
 import { env } from "@/config/env";
-import { tokenStorage } from "@/lib/token-storage";
+import { session as sharedSession, type Session } from "@/lib/session";
 import type { RealtimeLifecycleError } from "./realtime-types";
 
 type ConnectionStateListener = (state: HubConnectionState) => void;
@@ -16,6 +16,7 @@ type EventHandler = (...args: unknown[]) => void;
 interface HubConfig {
   hubPath: string;
   onReconnected?: () => void;
+  session?: Session;
 }
 
 export class SignalRService {
@@ -29,10 +30,13 @@ export class SignalRService {
   > | null = null;
   private readonly hubPath: string;
   private readonly onReconnected?: () => void;
+  private readonly session: Session;
+  private lifecycleGeneration = 0;
 
   constructor(config: HubConfig) {
     this.hubPath = config.hubPath;
     this.onReconnected = config.onReconnected;
+    this.session = config.session ?? sharedSession;
   }
 
   get state(): HubConnectionState {
@@ -57,11 +61,12 @@ export class SignalRService {
       this.removeAllNativeListeners();
       this.connection = null;
     }
+    const lifecycleGeneration = ++this.lifecycleGeneration;
 
     const connection = new HubConnectionBuilder()
       .withUrl(`${env.apiUrl}${this.hubPath}`, {
         accessTokenFactory: async () => {
-          const token = await tokenStorage.getAccessToken();
+          const token = await this.session.getAccessToken();
           return token ?? "";
         },
       })
@@ -115,15 +120,31 @@ export class SignalRService {
 
     try {
       await connection.start();
+      if (
+        lifecycleGeneration !== this.lifecycleGeneration ||
+        this.connection !== connection
+      ) {
+        return;
+      }
       this.notifyStateListeners(HubConnectionState.Connected);
     } catch (err: unknown) {
       let failure = err;
       const message = err instanceof Error ? err.message : String(err);
       if (message.includes("401") || message.includes("Unauthorized")) {
-        const refreshed = await this.refreshToken();
-        if (refreshed) {
+        const refreshed = await this.session.refresh();
+        if (
+          refreshed &&
+          lifecycleGeneration === this.lifecycleGeneration &&
+          this.connection === connection
+        ) {
           try {
             await connection.start();
+            if (
+              lifecycleGeneration !== this.lifecycleGeneration ||
+              this.connection !== connection
+            ) {
+              return;
+            }
             this.notifyStateListeners(HubConnectionState.Connected);
             return;
           } catch (retryErr) {
@@ -143,6 +164,7 @@ export class SignalRService {
   }
 
   async stop(): Promise<void> {
+    this.lifecycleGeneration++;
     this.isStopping = true;
     this.removeAllNativeListeners();
 
@@ -234,28 +256,4 @@ export class SignalRService {
     }
   };
 
-  private async refreshToken(): Promise<boolean> {
-    try {
-      const refreshToken = await tokenStorage.getRefreshToken();
-      if (!refreshToken) return false;
-      const res = await fetch(`${env.apiUrl}/auth/refresh`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ refreshToken }),
-      });
-      if (res.ok) {
-        const data = (await res.json()) as {
-          accessToken: string;
-          refreshToken: string;
-        };
-        await tokenStorage.setTokens(data.accessToken, data.refreshToken);
-        return true;
-      }
-      await tokenStorage.clearTokens();
-      return false;
-    } catch {
-      await tokenStorage.clearTokens();
-      return false;
-    }
-  }
 }

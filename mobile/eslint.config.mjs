@@ -235,6 +235,35 @@ export default [
     },
   },
   {
+    files: ["src/features/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "expo-router",
+              message:
+                "Features expose semantic navigation callbacks; Expo Router belongs in app composition.",
+            },
+          ],
+          patterns: [
+            {
+              group: ["../*"],
+              message:
+                "Relative parent imports are forbidden. Use absolute imports with @/ prefix.",
+            },
+            {
+              group: ["@/entities/*/*"],
+              message:
+                "Features must import an entity's public interface from @/entities/<entity>.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ["src/app/**/*.{ts,tsx}", "src/app-composition/**/*.{ts,tsx}"],
     rules: {
       "no-restricted-imports": [

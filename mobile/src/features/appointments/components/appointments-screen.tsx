@@ -5,16 +5,17 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
 import { useCurrentUser } from "@/entities/session";
 import {
   AppointmentStatus,
   type AppointmentDto,
+  useCancelAppointmentByProfessional,
+  useCompleteAppointment,
   useGetProfessionalAppointments,
+  useRespondToAppointment,
 } from "@/entities/appointment";
-import { useCancelAppointmentByProfessional } from "@/features/appointments/api/cancel-appointment-by-professional";
-import { useCompleteAppointment } from "@/features/appointments/api/complete-appointment";
-import { useRespondToAppointment } from "@/features/appointments/api/respond-to-appointment";
+import Toast from "react-native-toast-message";
+import { useHandleApiError } from "@/hooks/use-handle-api-error";
 import { AppointmentCard } from "@/features/appointments/components/appointment-card";
 import { CompleteAppointmentModal } from "@/features/appointments/components/complete-appointment-modal";
 import { useTranslation } from "react-i18next";
@@ -38,7 +39,13 @@ import { EmptyState } from "./empty-state";
 
 const keyExtractor = (item: AppointmentDto) => item.id;
 
-export function AppointmentsScreen() {
+interface AppointmentsScreenProps {
+  onOpenAppointment: (appointmentId: string) => void;
+}
+
+export function AppointmentsScreen({
+  onOpenAppointment,
+}: AppointmentsScreenProps) {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<AppointmentStatus>(
     AppointmentStatus.Offered,
@@ -53,6 +60,7 @@ export function AppointmentsScreen() {
   const respondMutation = useRespondToAppointment();
   const cancelMutation = useCancelAppointmentByProfessional();
   const completeMutation = useCompleteAppointment();
+  const handleApiError = useHandleApiError();
 
   const allAppointments = useMemo(
     () => data?.pages.flatMap((p) => p.items) ?? [],
@@ -71,23 +79,41 @@ export function AppointmentsScreen() {
 
   const handleAccept = useCallback(
     (appointmentId: string) => {
-      respondMutation.mutate({ appointmentId, isAccepted: true });
+      respondMutation.mutate(
+        { appointmentId, isAccepted: true },
+        {
+          onSuccess: () =>
+            Toast.show({ type: "success", text1: "Appointment accepted" }),
+          onError: handleApiError,
+        },
+      );
     },
-    [respondMutation.mutate], // eslint-disable-line react-hooks/exhaustive-deps
+    [handleApiError, respondMutation],
   );
 
   const handleDecline = useCallback(
     (appointmentId: string) => {
-      respondMutation.mutate({ appointmentId, isAccepted: false });
+      respondMutation.mutate(
+        { appointmentId, isAccepted: false },
+        {
+          onSuccess: () =>
+            Toast.show({ type: "success", text1: "Appointment declined" }),
+          onError: handleApiError,
+        },
+      );
     },
-    [respondMutation.mutate], // eslint-disable-line react-hooks/exhaustive-deps
+    [handleApiError, respondMutation],
   );
 
   const handleCancel = useCallback(
     (appointmentId: string) => {
-      cancelMutation.mutate(appointmentId);
+      cancelMutation.mutate(appointmentId, {
+        onSuccess: () =>
+          Toast.show({ type: "success", text1: "Appointment cancelled" }),
+        onError: handleApiError,
+      });
     },
-    [cancelMutation.mutate], // eslint-disable-line react-hooks/exhaustive-deps
+    [cancelMutation, handleApiError],
   );
 
   const handleComplete = useCallback(
@@ -100,9 +126,9 @@ export function AppointmentsScreen() {
 
   const handleViewDetails = useCallback(
     (appointmentId: string) => {
-      router.push(`/(professional)/appointment/${appointmentId}`);
+      onOpenAppointment(appointmentId);
     },
-    [],
+    [onOpenAppointment],
   );
 
   const listHeader = (
@@ -223,7 +249,14 @@ export function AppointmentsScreen() {
           completeMutation.mutate(
             { appointmentId: pendingCompleteAppointment.id, ...values },
             {
-              onSuccess: () => setPendingCompleteAppointment(null),
+              onSuccess: () => {
+                Toast.show({
+                  type: "success",
+                  text1: "Appointment completed",
+                });
+                setPendingCompleteAppointment(null);
+              },
+              onError: handleApiError,
             },
           );
         }}

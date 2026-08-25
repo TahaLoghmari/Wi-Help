@@ -42,17 +42,19 @@ class FakeHub implements RealtimeHub {
 }
 
 describe("notification realtime adapter", () => {
-  it("preserves professional cache and toast policy for valid payloads", () => {
+  it("owns notification cache and UI behavior while emitting valid payloads", () => {
     const hub = new FakeHub();
     const invalidateQueries = jest.fn();
     const showNotification = jest.fn();
+    const onNotification = jest.fn();
     createNotificationRealtimeAdapter({
       hub,
       queryClient: { invalidateQueries } as unknown as QueryClient,
       showNotification,
+      onNotification,
     });
 
-    hub.emit("NotificationReceived", {
+    const notification = {
       id: "notification-1",
       title: "New appointment",
       message: "An appointment was created",
@@ -60,30 +62,30 @@ describe("notification realtime adapter", () => {
       role: "Professional",
       isRead: false,
       createdAt: "2026-08-25T10:00:00.000Z",
-    });
+    };
+    hub.emit("NotificationReceived", notification);
 
     expect(invalidateQueries.mock.calls).toEqual([
       [{ queryKey: ["notifications"] }],
-      [{ queryKey: ["appointments"] }],
-      [{ queryKey: ["conversations"] }],
-      [{ queryKey: ["reviews"] }],
-      [{ queryKey: ["review-stats"] }],
     ]);
     expect(showNotification).toHaveBeenCalledWith({
       type: "info",
       text1: "New appointment",
       text2: "An appointment was created",
     });
+    expect(onNotification).toHaveBeenCalledWith(notification);
   });
 
   it("ignores malformed payloads", () => {
     const hub = new FakeHub();
     const invalidateQueries = jest.fn();
     const showNotification = jest.fn();
+    const onNotification = jest.fn();
     createNotificationRealtimeAdapter({
       hub,
       queryClient: { invalidateQueries } as unknown as QueryClient,
       showNotification,
+      onNotification,
     });
 
     hub.emit("NotificationReceived", {
@@ -92,6 +94,7 @@ describe("notification realtime adapter", () => {
 
     expect(invalidateQueries).not.toHaveBeenCalled();
     expect(showNotification).not.toHaveBeenCalled();
+    expect(onNotification).not.toHaveBeenCalled();
   });
 
   it("exposes start failures through its lifecycle snapshot", async () => {
@@ -105,6 +108,7 @@ describe("notification realtime adapter", () => {
       hub,
       queryClient: { invalidateQueries: jest.fn() } as unknown as QueryClient,
       showNotification: jest.fn(),
+      onNotification: jest.fn(),
     });
     const listener = jest.fn();
     adapter.subscribe(listener);

@@ -1,14 +1,23 @@
 import { request } from "./api-client";
+import { session } from "./session";
 
-jest.mock("@/lib/token-storage", () => ({
-  tokenStorage: {
+jest.mock("@/lib/session", () => ({
+  session: {
     getAccessToken: jest.fn(async () => null),
     getRefreshToken: jest.fn(async () => null),
-    clearTokens: jest.fn(async () => undefined),
+    setTokens: jest.fn(async () => undefined),
+    clear: jest.fn(async () => undefined),
+    refresh: jest.fn(async () => false),
   },
 }));
 
 describe("request", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.mocked(session.getAccessToken).mockResolvedValue(null);
+    jest.mocked(session.refresh).mockResolvedValue(false);
+  });
+
   afterEach(() => {
     jest.restoreAllMocks();
   });
@@ -36,5 +45,51 @@ describe("request", () => {
     );
 
     await expect(request("/auth/me")).rejects.toMatchObject({ status: 401 });
+  });
+
+  it("refreshes once and retries an unauthorized request with the new token", async () => {
+    jest
+      .mocked(session.getAccessToken)
+      .mockResolvedValueOnce("expired-token")
+      .mockResolvedValueOnce("new-token");
+    jest.mocked(session.refresh).mockResolvedValue(true);
+    const fetchSpy = jest
+      .spyOn(global, "fetch")
+      .mockResolvedValueOnce(new Response(null, { status: 401 }))
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ id: "user-1" }), { status: 200 }),
+      );
+
+    await expect(request<{ id: string }>("/auth/me")).resolves.toEqual({
+      id: "user-1",
+    });
+
+    expect(session.refresh).toHaveBeenCalledTimes(1);
+    expect(fetchSpy).toHaveBeenNthCalledWith(
+      2,
+      expect.any(String),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          Authorization: "Bearer new-token",
+        }),
+      }),
+    );
+  });
+
+  it("allows a later request to refresh after an earlier refresh failed", async () => {
+    jest
+      .mocked(session.refresh)
+      .mockResolvedValueOnce(false)
+      .mockResolvedValueOnce(true);
+    jest
+      .spyOn(global, "fetch")
+      .mockResolvedValueOnce(new Response(null, { status: 401 }))
+      .mockResolvedValueOnce(new Response(null, { status: 401 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ ok: true })));
+
+    await expect(request("/first")).rejects.toMatchObject({ status: 401 });
+    await expect(request("/second")).resolves.toEqual({ ok: true });
+
+    expect(session.refresh).toHaveBeenCalledTimes(2);
   });
 });

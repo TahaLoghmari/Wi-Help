@@ -13,7 +13,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { AppHeader } from "@/components/app-header";
 import { useCurrentUser } from "@/entities/session";
@@ -29,7 +28,11 @@ import { ChatListEmpty } from "./chat-list-empty";
 
 const keyExtractor = (item: ConversationDto) => item.id;
 
-export function MessagesScreen() {
+interface MessagesScreenProps {
+  onOpenConversation: (conversationId: string) => void;
+}
+
+export function MessagesScreen({ onOpenConversation }: MessagesScreenProps) {
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
 
@@ -51,19 +54,9 @@ export function MessagesScreen() {
 
   const handleConversationPress = useCallback(
     (conversation: ConversationDto) => {
-      router.push({
-        pathname: "/(professional)/conversation/[id]",
-        params: {
-          id: conversation.id,
-          participantId: conversation.otherParticipantId,
-          firstName: conversation.otherParticipantFirstName,
-          lastName: conversation.otherParticipantLastName,
-          profilePictureUrl:
-            conversation.otherParticipantProfilePictureUrl ?? "",
-        },
-      });
+      onOpenConversation(conversation.id);
     },
-    [],
+    [onOpenConversation],
   );
 
   const scrollY = useSharedValue(0);

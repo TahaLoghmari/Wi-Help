@@ -10,12 +10,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { useGetAppointmentById } from "@/entities/appointment";
-import { useCancelAppointmentByProfessional } from "@/features/appointments/api/cancel-appointment-by-professional";
-import { useCompleteAppointment } from "@/features/appointments/api/complete-appointment";
-import { useRespondToAppointment } from "@/features/appointments/api/respond-to-appointment";
+import Toast from "react-native-toast-message";
+import {
+  useCancelAppointmentByProfessional,
+  useCompleteAppointment,
+  useGetAppointmentById,
+  useRespondToAppointment,
+} from "@/entities/appointment";
+import { useHandleApiError } from "@/hooks/use-handle-api-error";
 import { CompleteAppointmentModal } from "@/features/appointments/components/complete-appointment-modal";
 import { cn } from "@/lib/utils";
 import {
@@ -46,9 +49,15 @@ const ACTION_FOOTER_HEIGHT = 150;
 
 interface AppointmentDetailScreenProps {
   id: string;
+  onBack: () => void;
+  onOpenPatient: (patientId: string) => void;
 }
 
-export function AppointmentDetailScreen({ id }: AppointmentDetailScreenProps) {
+export function AppointmentDetailScreen({
+  id,
+  onBack,
+  onOpenPatient,
+}: AppointmentDetailScreenProps) {
   const { t } = useTranslation();
   const { data: appointment, isPending, isError } = useGetAppointmentById(id);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
@@ -58,6 +67,7 @@ export function AppointmentDetailScreen({ id }: AppointmentDetailScreenProps) {
   const respondMutation = useRespondToAppointment();
   const cancelMutation = useCancelAppointmentByProfessional();
   const completeMutation = useCompleteAppointment();
+  const handleApiError = useHandleApiError();
 
   const handleAccept = useCallback(() => setActiveDialog("accept"), []);
   const handleDecline = useCallback(() => setActiveDialog("decline"), []);
@@ -70,7 +80,7 @@ export function AppointmentDetailScreen({ id }: AppointmentDetailScreenProps) {
   if (isPending) {
     return (
       <SafeAreaView className="flex-1 bg-brand-bg" edges={["top", "bottom"]}>
-        <TopBar title={screenTitle} />
+        <TopBar title={screenTitle} onBack={onBack} />
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#00546e" />
         </View>
@@ -81,7 +91,7 @@ export function AppointmentDetailScreen({ id }: AppointmentDetailScreenProps) {
   if (isError || !appointment) {
     return (
       <SafeAreaView className="flex-1 bg-brand-bg" edges={["top", "bottom"]}>
-        <TopBar title={screenTitle} />
+        <TopBar title={screenTitle} onBack={onBack} />
         <View className="flex-1 items-center justify-center px-6 gap-3">
           <Ionicons
             name="alert-circle-outline"
@@ -92,7 +102,7 @@ export function AppointmentDetailScreen({ id }: AppointmentDetailScreenProps) {
             {t("professional.dashboard.appointments.detail.notFound")}
           </Text>
           <Pressable
-            onPress={() => router.back()}
+            onPress={onBack}
             accessibilityRole="button"
             accessibilityLabel="Go back"
           >
@@ -138,7 +148,7 @@ export function AppointmentDetailScreen({ id }: AppointmentDetailScreenProps) {
 
   return (
     <SafeAreaView className="flex-1 bg-brand-bg" edges={["top", "bottom"]}>
-      <TopBar title={screenTitle} />
+      <TopBar title={screenTitle} onBack={onBack} />
 
       <View style={{ flex: 1 }}>
         <ScrollView
@@ -263,9 +273,7 @@ export function AppointmentDetailScreen({ id }: AppointmentDetailScreenProps) {
             <View className="bg-white rounded-2xl" style={cardShadow}>
               <Pressable
                 className="p-4 flex-row items-center gap-4 active:opacity-80"
-                onPress={() =>
-                  router.push(`/(professional)/patient/${patient.id}`)
-                }
+                onPress={() => onOpenPatient(patient.id)}
                 accessibilityRole="button"
                 accessibilityLabel={t(
                   "professional.dashboard.appointments.detail.viewPatient",
@@ -572,9 +580,14 @@ export function AppointmentDetailScreen({ id }: AppointmentDetailScreenProps) {
               { appointmentId: appointment.id, ...values },
               {
                 onSuccess: () => {
+                  Toast.show({
+                    type: "success",
+                    text1: "Appointment completed",
+                  });
                   setShowCompleteModal(false);
-                  router.back();
+                  onBack();
                 },
+                onError: handleApiError,
               },
             );
           }}
@@ -596,7 +609,16 @@ export function AppointmentDetailScreen({ id }: AppointmentDetailScreenProps) {
             setActiveDialog(null);
             respondMutation.mutate(
               { appointmentId: appointment.id, isAccepted: true },
-              { onSuccess: () => router.back() },
+              {
+                onSuccess: () => {
+                  Toast.show({
+                    type: "success",
+                    text1: "Appointment accepted",
+                  });
+                  onBack();
+                },
+                onError: handleApiError,
+              },
             );
           }}
           onDismiss={() => setActiveDialog(null)}
@@ -616,7 +638,16 @@ export function AppointmentDetailScreen({ id }: AppointmentDetailScreenProps) {
             setActiveDialog(null);
             respondMutation.mutate(
               { appointmentId: appointment.id, isAccepted: false },
-              { onSuccess: () => router.back() },
+              {
+                onSuccess: () => {
+                  Toast.show({
+                    type: "success",
+                    text1: "Appointment declined",
+                  });
+                  onBack();
+                },
+                onError: handleApiError,
+              },
             );
           }}
           onDismiss={() => setActiveDialog(null)}
@@ -636,7 +667,14 @@ export function AppointmentDetailScreen({ id }: AppointmentDetailScreenProps) {
           onConfirm={() => {
             setActiveDialog(null);
             cancelMutation.mutate(appointment.id, {
-              onSuccess: () => router.back(),
+              onSuccess: () => {
+                Toast.show({
+                  type: "success",
+                  text1: "Appointment cancelled",
+                });
+                onBack();
+              },
+              onError: handleApiError,
             });
           }}
           onDismiss={() => setActiveDialog(null)}

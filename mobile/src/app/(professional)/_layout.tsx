@@ -3,10 +3,8 @@ import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
+import { AuthenticatedRealtimeProvider } from "@/app-composition/authenticated-realtime-provider";
 import { AuthGuard } from "@/components/guards/auth-guard";
-import { SignalRProvider } from "@/providers/signalr-provider";
-import { messagingRealtimeAdapterFactory } from "@/features/messaging";
-import { notificationRealtimeAdapterFactory } from "@/features/notifications";
 
 export default function ProfessionalLayout() {
   const insets = useSafeAreaInsets();
@@ -15,10 +13,7 @@ export default function ProfessionalLayout() {
 
   return (
     <AuthGuard role="Professional">
-      <SignalRProvider
-        messagingAdapterFactory={messagingRealtimeAdapterFactory}
-        notificationAdapterFactory={notificationRealtimeAdapterFactory}
-      >
+      <AuthenticatedRealtimeProvider>
         <Tabs
           screenOptions={{
             headerShown: false,
@@ -124,7 +119,7 @@ export default function ProfessionalLayout() {
             }}
           />
         </Tabs>
-      </SignalRProvider>
+      </AuthenticatedRealtimeProvider>
     </AuthGuard>
   );
 }

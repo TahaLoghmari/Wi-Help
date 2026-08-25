@@ -12,8 +12,10 @@ import { useCurrentUser } from "@/entities/session";
 import {
   useGetCurrentProfessional,
   useGetSchedule,
+  useSetupSchedule,
 } from "@/entities/professional";
-import { useSetupSchedule } from "@/features/professionals/api/setup-schedule";
+import Toast from "react-native-toast-message";
+import { useHandleApiError } from "@/hooks/use-handle-api-error";
 import {
   createInitialScheduleDraft,
   isScheduleDraftDirty,
@@ -49,6 +51,7 @@ export function ScheduleScreen() {
   );
   const isLoading = isProfessionalLoading || isScheduleLoading;
   const saveMutation = useSetupSchedule();
+  const handleApiError = useHandleApiError();
 
   // ── Local draft state ─────────────────────────────────────────────────────
   const [scheduleDraft, dispatchScheduleDraft] = useReducer(
@@ -149,9 +152,11 @@ export function ScheduleScreen() {
           type: "saveSucceeded",
           submittedDays: snapshot,
         });
+        Toast.show({ type: "success", text1: "Schedule saved successfully" });
       },
+      onError: handleApiError,
     });
-  }, [localDays, saveMutation]);
+  }, [handleApiError, localDays, saveMutation]);
 
   // ── Render ─────────────────────────────────────────────────────────────────
 

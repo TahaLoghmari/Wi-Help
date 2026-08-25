@@ -1,2 +1,3 @@
 export { NotificationsScreen } from "./components/notifications-screen";
-export { notificationRealtimeAdapterFactory } from "./realtime/notification-realtime-adapter";
+export { createNotificationRealtimeAdapter } from "./realtime/notification-realtime-adapter";
+export type { NotificationReceived } from "./realtime/notification-events";

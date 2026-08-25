@@ -18,11 +18,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { useCurrentUser } from "@/entities/session";
 import {
   useGetMessages,
+  useGetConversations,
   useMarkMessagesAsDelivered,
   useMarkMessagesAsRead,
+  useSendMessage,
 } from "@/entities/messaging";
-import { useSendMessage } from "@/features/messaging/api/send-message";
+import { useHandleApiError } from "@/hooks/use-handle-api-error";
 import { useOnlineUsers, useConversationHub } from "@/lib/signalr/use-chat-hub";
+import { useDelayedScroll } from "@/features/messaging/hooks/use-delayed-scroll";
 import {
   projectMessagePages,
   type ConversationListItem,
@@ -34,35 +37,40 @@ import { TypingBubble } from "./typing-bubble";
 
 interface ConversationScreenProps {
   conversationId: string;
-  participantId: string;
-  firstName: string;
-  lastName: string;
-  profilePictureUrl: string;
-  backRoute?: string;
+  onBack: () => void;
 }
 
 export function ConversationScreen({
   conversationId,
-  participantId,
-  firstName,
-  lastName,
-  profilePictureUrl,
-  backRoute,
+  onBack,
 }: ConversationScreenProps) {
   const { data: user } = useCurrentUser();
+  const { data: conversations, isLoading: isLoadingConversations } =
+    useGetConversations();
+  const conversation = conversations?.find(({ id }) => id === conversationId);
+  const participantId = conversation?.otherParticipantId ?? "";
+  const firstName = conversation?.otherParticipantFirstName ?? "";
+  const lastName = conversation?.otherParticipantLastName ?? "";
+  const profilePictureUrl =
+    conversation?.otherParticipantProfilePictureUrl ?? "";
   const onlineUsers = useOnlineUsers();
   const isOnline = onlineUsers.has(participantId);
   const flatListRef = useRef<FlatList<ConversationListItem>>(null);
+  const scrollToEnd = useCallback(() => {
+    flatListRef.current?.scrollToEnd({ animated: true });
+  }, []);
+  const scheduleScrollToEnd = useDelayedScroll(scrollToEnd);
 
   const {
     data: messagesData,
-    isLoading,
+    isLoading: isLoadingMessages,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
   } = useGetMessages(conversationId);
 
   const sendMessageMutation = useSendMessage();
+  const handleApiError = useHandleApiError();
   const markAsRead = useMarkMessagesAsRead();
   const markAsDelivered = useMarkMessagesAsDelivered();
 
@@ -90,34 +98,30 @@ export function ConversationScreen({
   );
 
   useEffect(() => {
-    if (conversationId && allMessages.length > 0) {
+    if (conversation && allMessages.length > 0) {
       markAsRead.mutate(conversationId);
     }
-  }, [conversationId, allMessages.length, markAsRead]);
+  }, [conversation, conversationId, allMessages.length, markAsRead]);
 
   useEffect(() => {
-    if (conversationId) {
+    if (conversation) {
       markAsDelivered.mutate(conversationId);
     }
-  }, [conversationId, markAsDelivered]);
+  }, [conversation, conversationId, markAsDelivered]);
 
   const prevMessageCount = useRef(0);
   useEffect(() => {
     if (allMessages.length > prevMessageCount.current) {
-      setTimeout(() => {
-        flatListRef.current?.scrollToEnd({ animated: true });
-      }, 100);
+      scheduleScrollToEnd();
     }
     prevMessageCount.current = allMessages.length;
-  }, [allMessages.length]);
+  }, [allMessages.length, scheduleScrollToEnd]);
 
   useEffect(() => {
     if (isContactTyping) {
-      setTimeout(() => {
-        flatListRef.current?.scrollToEnd({ animated: true });
-      }, 100);
+      scheduleScrollToEnd();
     }
-  }, [isContactTyping]);
+  }, [isContactTyping, scheduleScrollToEnd]);
 
   const handleSend = useCallback(
     (content: string) => {
@@ -125,14 +129,18 @@ export function ConversationScreen({
         { conversationId, request: { content } },
         {
           onSuccess: () => {
-            setTimeout(() => {
-              flatListRef.current?.scrollToEnd({ animated: true });
-            }, 100);
+            scheduleScrollToEnd();
           },
+          onError: handleApiError,
         },
       );
     },
-    [conversationId, sendMessageMutation],
+    [
+      conversationId,
+      handleApiError,
+      scheduleScrollToEnd,
+      sendMessageMutation,
+    ],
   );
 
   const handleLoadEarlier = useCallback(() => {
@@ -199,63 +207,89 @@ export function ConversationScreen({
         className="flex-1 bg-brand-bg"
         style={Platform.OS === "android" ? androidKeyboardStyle : undefined}
       >
-        <ConversationHeader
-          firstName={firstName}
-          lastName={lastName}
-          profilePictureUrl={profilePictureUrl || null}
-          isOnline={isOnline}
-          isTyping={isContactTyping}
-          backRoute={backRoute}
-        />
-
-        {isLoading ? (
+        {isLoadingConversations || isLoadingMessages ? (
           <View className="flex-1 items-center justify-center">
             <ActivityIndicator size="large" color="#14d3ac" />
           </View>
-        ) : allMessages.length === 0 && !isContactTyping ? (
-          <View className="flex-1 items-center justify-center px-8">
+        ) : !conversation ? (
+          <View className="flex-1 items-center justify-center px-8 gap-4">
             <Ionicons
-              name="chatbubble-outline"
+              name="chatbubble-ellipses-outline"
               size={48}
               color="rgba(0,84,110,0.25)"
             />
-            <Text className="text-brand-secondary/50 text-base font-medium mt-4 text-center">
-              No messages yet
+            <Text className="text-brand-secondary/60 text-base font-medium text-center">
+              Conversation unavailable
             </Text>
-            <Text className="text-brand-secondary/40 text-sm mt-1 text-center">
-              Send a message to start the conversation
+            <Text
+              accessibilityRole="button"
+              accessibilityLabel="Go back"
+              onPress={onBack}
+              className="text-brand-teal text-sm font-semibold"
+            >
+              Go back
             </Text>
           </View>
         ) : (
-          <FlatList
-            ref={flatListRef}
-            data={listItems}
-            keyExtractor={(item) => item.key}
-            renderItem={renderItem}
-            ListHeaderComponent={listHeader}
-            onScroll={handleScroll}
-            scrollEventThrottle={400}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingTop: 8, paddingBottom: 8 }}
-            keyboardDismissMode="on-drag"
-            keyboardShouldPersistTaps="handled"
-            onContentSizeChange={() => {
-              if (prevMessageCount.current === 0 && allMessages.length > 0) {
-                flatListRef.current?.scrollToEnd({ animated: false });
-              }
-            }}
-            maintainVisibleContentPosition={{
-              minIndexForVisible: 0,
-            }}
-          />
-        )}
+          <>
+            <ConversationHeader
+              firstName={firstName}
+              lastName={lastName}
+              profilePictureUrl={profilePictureUrl || null}
+              isOnline={isOnline}
+              isTyping={isContactTyping}
+              onBack={onBack}
+            />
 
-        <ConversationFooter
-          onSend={handleSend}
-          onTypingStart={startTyping}
-          onTypingStop={stopTyping}
-          isSending={sendMessageMutation.isPending}
-        />
+            {allMessages.length === 0 && !isContactTyping ? (
+              <View className="flex-1 items-center justify-center px-8">
+                <Ionicons
+                  name="chatbubble-outline"
+                  size={48}
+                  color="rgba(0,84,110,0.25)"
+                />
+                <Text className="text-brand-secondary/50 text-base font-medium mt-4 text-center">
+                  No messages yet
+                </Text>
+                <Text className="text-brand-secondary/40 text-sm mt-1 text-center">
+                  Send a message to start the conversation
+                </Text>
+              </View>
+            ) : (
+              <FlatList
+                ref={flatListRef}
+                data={listItems}
+                keyExtractor={(item) => item.key}
+                renderItem={renderItem}
+                ListHeaderComponent={listHeader}
+                onScroll={handleScroll}
+                scrollEventThrottle={400}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingTop: 8, paddingBottom: 8 }}
+                keyboardDismissMode="on-drag"
+                keyboardShouldPersistTaps="handled"
+                onContentSizeChange={() => {
+                  if (
+                    prevMessageCount.current === 0 &&
+                    allMessages.length > 0
+                  ) {
+                    flatListRef.current?.scrollToEnd({ animated: false });
+                  }
+                }}
+                maintainVisibleContentPosition={{
+                  minIndexForVisible: 0,
+                }}
+              />
+            )}
+
+            <ConversationFooter
+              onSend={handleSend}
+              onTypingStart={startTyping}
+              onTypingStop={stopTyping}
+              isSending={sendMessageMutation.isPending}
+            />
+          </>
+        )}
       </Animated.View>
     </KeyboardAvoidingView>
   );

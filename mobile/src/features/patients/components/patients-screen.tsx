@@ -12,7 +12,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useQueries } from "@tanstack/react-query";
 import {
@@ -24,7 +23,6 @@ import {
   useGetProfessionalPatients,
 } from "@/entities/patient";
 import { useCurrentUser } from "@/entities/session";
-import { ROUTE_PATHS } from "@/config/routes";
 import { AppHeader } from "@/components/app-header";
 import { PatientCard } from "./patient-card";
 import { LoadingSkeleton } from "./loading-skeleton";
@@ -36,9 +34,13 @@ const keyExtractor = (item: PatientDto) => item.id;
 
 interface PatientsScreenProps {
   onMessage: (patient: PatientDto) => void;
+  onOpenPatient: (patient: PatientDto) => void;
 }
 
-export function PatientsScreen({ onMessage }: PatientsScreenProps) {
+export function PatientsScreen({
+  onMessage,
+  onOpenPatient,
+}: PatientsScreenProps) {
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
 
@@ -110,13 +112,6 @@ export function PatientsScreen({ onMessage }: PatientsScreenProps) {
     );
   }, [allPatients, query]);
 
-  const handleViewProfile = useCallback((patient: PatientDto) => {
-    router.push({
-      pathname: ROUTE_PATHS.PROFESSIONAL.PATIENT_PROFILE_PATHNAME,
-      params: { id: patient.id, backRoute: ROUTE_PATHS.PROFESSIONAL.PATIENTS },
-    });
-  }, []);
-
   const scrollY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler((event) => {
     scrollY.value = event.contentOffset.y;
@@ -185,10 +180,10 @@ export function PatientsScreen({ onMessage }: PatientsScreenProps) {
         patient={item}
         location={locationsByPatientId.get(item.id) ?? ""}
         onMessage={onMessage}
-        onViewProfile={handleViewProfile}
+        onViewProfile={onOpenPatient}
       />
     ),
-    [locationsByPatientId, onMessage, handleViewProfile],
+    [locationsByPatientId, onMessage, onOpenPatient],
   );
 
   const handleEndReached = useCallback(() => {

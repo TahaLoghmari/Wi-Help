@@ -3,6 +3,7 @@ import {
   HubConnectionState,
   type HubConnection,
 } from "@microsoft/signalr";
+import type { Session } from "@/lib/session";
 import { SignalRService } from "./signalr-service";
 
 jest.mock("@microsoft/signalr", () => {
@@ -42,6 +43,18 @@ function mockConnectionBuilder(connection: HubConnection) {
   jest
     .mocked(HubConnectionBuilder)
     .mockImplementation(() => builder as unknown as HubConnectionBuilder);
+}
+
+function createSession(): jest.Mocked<Session> {
+  return {
+    getAccessToken: jest.fn(async () => "access-token"),
+    getRefreshToken: jest.fn(async () => "refresh-token"),
+    setTokens: jest.fn<Promise<void>, [Parameters<Session["setTokens"]>[0]]>(
+      async () => undefined,
+    ),
+    clear: jest.fn(async () => undefined),
+    refresh: jest.fn(async () => false),
+  };
 }
 
 describe("SignalRService", () => {
@@ -86,5 +99,47 @@ describe("SignalRService", () => {
       method: "SendMessage",
       cause: failure,
     });
+  });
+
+  it("uses the shared session to refresh and retry an unauthorized start", async () => {
+    const connection = createConnection();
+    jest
+      .mocked(connection.start)
+      .mockRejectedValueOnce(new Error("401 Unauthorized"))
+      .mockResolvedValueOnce(undefined);
+    mockConnectionBuilder(connection);
+    const session = createSession();
+    session.refresh.mockResolvedValue(true);
+    const service = new SignalRService({
+      hubPath: "/hubs/test",
+      session,
+    });
+
+    await expect(service.start()).resolves.toBeUndefined();
+
+    expect(session.refresh).toHaveBeenCalledTimes(1);
+    expect(connection.start).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not publish connected after the service is stopped during startup", async () => {
+    let resolveStart!: () => void;
+    const connection = createConnection();
+    jest.mocked(connection.start).mockReturnValue(
+      new Promise<void>((resolve) => {
+        resolveStart = resolve;
+      }),
+    );
+    mockConnectionBuilder(connection);
+    const service = new SignalRService({ hubPath: "/hubs/test" });
+    const listener = jest.fn();
+    service.onStateChange(listener);
+
+    const start = service.start();
+    await service.stop();
+    resolveStart();
+    await start;
+
+    expect(listener).not.toHaveBeenLastCalledWith(HubConnectionState.Connected);
+    expect(service.state).toBe(HubConnectionState.Disconnected);
   });
 });

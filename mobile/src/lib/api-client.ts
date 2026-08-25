@@ -1,11 +1,7 @@
 import type { ProblemDetailsDto } from "@/types/enums.types";
 import { env } from "@/config/env";
 import { API_ENDPOINTS } from "@/config/endpoints";
-import { tokenStorage } from "@/lib/token-storage";
-
-let refreshPromise: Promise<boolean> | null = null;
-let refreshAttempts = 0;
-const MAX_REFRESH_ATTEMPTS = 1;
+import { session } from "@/lib/session";
 
 function createHttpError(status: number) {
   return Object.assign(new Error(`Request failed with status ${status}`), {
@@ -32,7 +28,7 @@ export async function request<T>(
     Object.assign(headers, options.headers);
   }
 
-  const accessToken = await tokenStorage.getAccessToken();
+  const accessToken = await session.getAccessToken();
   if (accessToken) {
     headers["Authorization"] = `Bearer ${accessToken}`;
   }
@@ -47,51 +43,9 @@ export async function request<T>(
     response.status === 401 &&
     !endpoint.includes(API_ENDPOINTS.AUTH.REFRESH) &&
     !endpoint.includes(API_ENDPOINTS.AUTH.LOGIN) &&
-    refreshAttempts < MAX_REFRESH_ATTEMPTS &&
     retryCount === 0
   ) {
-    if (!refreshPromise) {
-      refreshPromise = (async () => {
-        const refreshToken = await tokenStorage.getRefreshToken();
-        if (!refreshToken) {
-          refreshAttempts++;
-          return false;
-        }
-
-        try {
-          const res = await fetch(
-            `${env.apiUrl}${API_ENDPOINTS.AUTH.REFRESH}`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ refreshToken }),
-            },
-          );
-
-          if (res.ok) {
-            const data = (await res.json()) as {
-              accessToken: string;
-              refreshToken: string;
-            };
-            await tokenStorage.setTokens(data.accessToken, data.refreshToken);
-            refreshAttempts = 0;
-            return true;
-          } else {
-            refreshAttempts++;
-            await tokenStorage.clearTokens();
-            return false;
-          }
-        } catch {
-          refreshAttempts++;
-          await tokenStorage.clearTokens();
-          return false;
-        } finally {
-          refreshPromise = null;
-        }
-      })();
-    }
-
-    const refreshSuccess = await refreshPromise;
+    const refreshSuccess = await session.refresh();
 
     if (refreshSuccess) {
       return request(endpoint, options, retryCount + 1);

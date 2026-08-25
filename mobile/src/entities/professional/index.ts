@@ -25,3 +25,4 @@ export { useGetSchedule } from "./get-schedule";
 export { useGetServicesBySpecialization } from "./get-services-by-specialization";
 export { useGetSpecializations } from "./get-specializations";
 export { professionalKeys } from "./keys";
+export { useSetupSchedule } from "./setup-schedule";

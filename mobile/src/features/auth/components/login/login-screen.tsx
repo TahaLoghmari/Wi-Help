@@ -21,10 +21,12 @@ import {
 } from "@/features/auth/lib/auth-validation-schemas";
 import { LoginFormDefaults } from "@/features/auth/lib/auth-form-defaults";
 import { useAppNavigation } from "@/hooks/use-app-navigation";
+import { useHandleApiError } from "@/hooks/use-handle-api-error";
 
 export function LoginScreen() {
   const { t } = useTranslation();
   const loginMutation = useLogin();
+  const handleApiError = useHandleApiError();
   const { goToRegister, goToWelcome } = useAppNavigation();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -40,7 +42,7 @@ export function LoginScreen() {
   });
 
   const onSubmit = (data: LoginFormValues) => {
-    loginMutation.mutate(data);
+    loginMutation.mutate(data, { onError: handleApiError });
   };
 
   return (
