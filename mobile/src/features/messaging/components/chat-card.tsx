@@ -95,7 +95,7 @@ export const ChatCard = React.memo(function ChatCard({
         <View className="items-end gap-1.5">
           {conversation.lastMessage && (
             <Text className="text-xs text-brand-secondary/50">
-              {formatMessageTime(conversation.lastMessage.createdAt)}
+              {formatMessageTime(conversation.lastMessage.createdAt, new Date())}
             </Text>
           )}
           {conversation.unreadCount > 0 && (

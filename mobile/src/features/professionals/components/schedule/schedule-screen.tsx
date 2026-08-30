@@ -7,8 +7,7 @@ import Animated, {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
-import { AppHeader } from "@/components/app-header";
-import { useCurrentUser } from "@/entities/session";
+import type { AppHeaderRenderer } from "@/components/app-header";
 import {
   useGetCurrentProfessional,
   useGetSchedule,
@@ -36,14 +35,17 @@ const SAVE_BUTTON_SHADOW = {
   elevation: 4,
 };
 
-export function ScheduleScreen() {
+export function ScheduleScreen({
+  renderHeader,
+}: {
+  renderHeader?: AppHeaderRenderer;
+}) {
   const { t } = useTranslation();
   const scrollY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler((event) => {
     scrollY.value = event.contentOffset.y;
   });
 
-  const { data: user } = useCurrentUser();
   const { data: professional, isLoading: isProfessionalLoading } =
     useGetCurrentProfessional();
   const { data: scheduleData, isLoading: isScheduleLoading } = useGetSchedule(
@@ -162,7 +164,7 @@ export function ScheduleScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-brand-bg" edges={["top"]}>
-      <AppHeader scrollY={scrollY} user={user} />
+      {renderHeader?.(scrollY)}
 
       <Animated.ScrollView
         style={{ flex: 1 }}

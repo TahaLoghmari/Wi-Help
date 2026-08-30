@@ -122,7 +122,7 @@ export function AppointmentDetailScreen({
   const urgencyStyle = urgencyStyles[urgency] ?? urgencyStyles.Low;
 
   const patientName = `${patient.firstName} ${patient.lastName}`;
-  const formattedStart = formatDateTime(startDate);
+  const formattedStart = formatDateTime(startDate, new Date());
   const alertSubtitle = `${patientName} · ${formattedStart}`;
 
   const { canAccept, canDecline, canComplete, canCancel, showActions } =
@@ -134,7 +134,7 @@ export function AppointmentDetailScreen({
 
   // Banner timestamp — earliest lifecycle event
   const bannerTimestamp = appointment.offeredAt
-    ? `${t("professional.dashboard.stats.offered")} · ${formatDateTime(appointment.offeredAt)}`
+    ? `${t("professional.dashboard.stats.offered")} · ${formatDateTime(appointment.offeredAt, new Date())}`
     : null;
 
   const timelineRows: TimelineRow[] = projectAppointmentTimeline(
@@ -142,7 +142,7 @@ export function AppointmentDetailScreen({
   ).map(({ key, occurredAt }) => ({
     key,
     label: t(`professional.dashboard.appointments.detail.${key}`),
-    value: formatDateTime(occurredAt),
+    value: formatDateTime(occurredAt, new Date()),
     dotColor: timelineDotColors[key],
   }));
 
@@ -324,7 +324,7 @@ export function AppointmentDetailScreen({
                           color: "#00546e",
                         }}
                       >
-                        {calculateAge(patient.dateOfBirth)}{" "}
+                        {calculateAge(patient.dateOfBirth, new Date())}{" "}
                         {t("professional.dashboard.appointments.detail.yrs")}
                       </Text>
                     </View>

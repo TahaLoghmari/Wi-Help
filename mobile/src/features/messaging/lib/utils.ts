@@ -15,9 +15,8 @@ export function getInitials(firstName: string, lastName: string): string {
   return `${firstName[0] ?? ""}${lastName[0] ?? ""}`.toUpperCase();
 }
 
-export function formatMessageTime(dateStr: string): string {
+export function formatMessageTime(dateStr: string, now: Date): string {
   const date = new Date(dateStr);
-  const now = new Date();
 
   const isToday =
     date.getDate() === now.getDate() &&
@@ -62,7 +61,7 @@ export function formatBubbleTime(dateStr: string): string {
   });
 }
 
-export function getDateLabel(dateStr: string, now = new Date()): string {
+export function getDateLabel(dateStr: string, now: Date): string {
   const date = new Date(dateStr);
 
   const isToday =

@@ -1,5 +1,20 @@
 import z from "zod";
 
+export function isValidDateOfBirth(date: string, now: Date): boolean {
+  const parts = date.split("/");
+  if (parts.length !== 3) return false;
+  const [day, month, year] = parts.map(Number);
+  if (!day || !month || !year || year < 1000) return false;
+
+  const selectedDate = new Date(year, month - 1, day);
+  return (
+    selectedDate.getFullYear() === year &&
+    selectedDate.getMonth() === month - 1 &&
+    selectedDate.getDate() === day &&
+    selectedDate <= now
+  );
+}
+
 const addressSchema = z.object({
   street: z
     .string()
@@ -58,14 +73,7 @@ const commonFields = {
     .string()
     .min(1, { message: "Date of Birth is required." })
     .refine(
-      (date) => {
-        const parts = date.split("/");
-        if (parts.length !== 3) return false;
-        const [day, month, year] = parts.map(Number);
-        if (!day || !month || !year || year < 1000) return false;
-        const selectedDate = new Date(year, month - 1, day);
-        return !isNaN(selectedDate.getTime()) && selectedDate <= new Date();
-      },
+      (date) => isValidDateOfBirth(date, new Date()),
       { message: "Date of Birth cannot be in the future." },
     ),
   gender: z

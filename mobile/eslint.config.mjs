@@ -1,8 +1,46 @@
+import { readdirSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import checkFile from "eslint-plugin-check-file";
 import importPlugin from "eslint-plugin-import";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
+
+const projectRoot = fileURLToPath(new URL(".", import.meta.url));
+
+function childDirectoryNames(relativePath) {
+  return readdirSync(new URL(relativePath, import.meta.url), {
+    withFileTypes: true,
+  })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
+}
+
+const featureIsolationZones = childDirectoryNames("./src/features/").map(
+  (feature) => ({
+    target: `./src/features/${feature}`,
+    from: "./src/features",
+    except: [`./${feature}`],
+    message:
+      "Cross-feature imports are forbidden. Import from shared modules or compose at the app level.",
+  }),
+);
+
+const entityExceptions = {
+  patient: ["./location"],
+  professional: ["./location"],
+  session: ["./location"],
+};
+
+const entityIsolationZones = childDirectoryNames("./src/entities/").map(
+  (entity) => ({
+    target: `./src/entities/${entity}`,
+    from: "./src/entities",
+    except: [`./${entity}`, ...(entityExceptions[entity] ?? [])],
+    message: `${entity} cannot depend on sibling entities.`,
+  }),
+);
 
 export default [
   {
@@ -36,7 +74,7 @@ export default [
     settings: {
       "import/resolver": {
         typescript: {
-          project: "./tsconfig.json",
+          project: fileURLToPath(new URL("./tsconfig.json", import.meta.url)),
         },
       },
     },
@@ -44,6 +82,8 @@ export default [
       // ── React Hooks ────────────────────────────────────────────────
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
+
+      "import/no-cycle": ["error", { ignoreExternal: true }],
 
       // ── TypeScript ─────────────────────────────────────────────────
       "@typescript-eslint/no-explicit-any": "warn",
@@ -85,57 +125,10 @@ export default [
       "import/no-restricted-paths": [
         "error",
         {
+          basePath: projectRoot,
           zones: [
             // ── Forbid cross-feature imports ───────────────────────
-            {
-              target: "./src/features/auth",
-              from: "./src/features",
-              except: ["./auth"],
-              message:
-                "Cross-feature imports are forbidden. Import from shared modules or compose at the app level.",
-            },
-            {
-              target: "./src/features/appointments",
-              from: "./src/features",
-              except: ["./appointments"],
-              message:
-                "Cross-feature imports are forbidden. Import from shared modules or compose at the app level.",
-            },
-            {
-              target: "./src/features/professionals",
-              from: "./src/features",
-              except: ["./professionals"],
-              message:
-                "Cross-feature imports are forbidden. Import from shared modules or compose at the app level.",
-            },
-            {
-              target: "./src/features/patients",
-              from: "./src/features",
-              except: ["./patients"],
-              message:
-                "Cross-feature imports are forbidden. Import from shared modules or compose at the app level.",
-            },
-            {
-              target: "./src/features/notifications",
-              from: "./src/features",
-              except: ["./notifications"],
-              message:
-                "Cross-feature imports are forbidden. Import from shared modules or compose at the app level.",
-            },
-            {
-              target: "./src/features/messaging",
-              from: "./src/features",
-              except: ["./messaging"],
-              message:
-                "Cross-feature imports are forbidden. Import from shared modules or compose at the app level.",
-            },
-            {
-              target: "./src/features/reviews",
-              from: "./src/features",
-              except: ["./reviews"],
-              message:
-                "Cross-feature imports are forbidden. Import from shared modules or compose at the app level.",
-            },
+            ...featureIsolationZones,
 
             // ── Enforce unidirectional codebase ────────────────────
             // features cannot import from app
@@ -153,57 +146,7 @@ export default [
                 "Entities cannot import feature or composition code. Flow: shared → entities → features → app.",
             },
             // entity dependencies are isolated, except for foundational location contracts
-            {
-              target: "./src/entities/appointment",
-              from: "./src/entities",
-              except: ["./appointment"],
-              message: "Appointment cannot depend on sibling entities.",
-            },
-            {
-              target: "./src/entities/messaging",
-              from: "./src/entities",
-              except: ["./messaging"],
-              message: "Messaging cannot depend on sibling entities.",
-            },
-            {
-              target: "./src/entities/notification",
-              from: "./src/entities",
-              except: ["./notification"],
-              message: "Notification cannot depend on sibling entities.",
-            },
-            {
-              target: "./src/entities/review",
-              from: "./src/entities",
-              except: ["./review"],
-              message: "Review cannot depend on sibling entities.",
-            },
-            {
-              target: "./src/entities/patient",
-              from: "./src/entities",
-              except: ["./patient", "./location"],
-              message:
-                "Patient can depend only on foundational location contracts.",
-            },
-            {
-              target: "./src/entities/professional",
-              from: "./src/entities",
-              except: ["./professional", "./location"],
-              message:
-                "Professional can depend only on foundational location contracts.",
-            },
-            {
-              target: "./src/entities/session",
-              from: "./src/entities",
-              except: ["./session", "./location"],
-              message:
-                "Session can depend only on foundational location contracts.",
-            },
-            {
-              target: "./src/entities/location",
-              from: "./src/entities",
-              except: ["./location"],
-              message: "Location cannot depend on sibling entities.",
-            },
+            ...entityIsolationZones,
             // shared modules cannot import from features or app
             {
               target: [
@@ -228,6 +171,31 @@ export default [
               from: ["./src/features", "./src/app", "./src/app-composition"],
               message:
                 "Application UI and providers cannot import feature or composition code.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ["src/hooks/**/*.{ts,tsx}", "src/components/**/*.{ts,tsx}"],
+    ignores: ["src/components/guards/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "expo-router",
+              message:
+                "Shared hooks and UI expose semantic navigation callbacks; Expo Router belongs in app composition.",
+            },
+          ],
+          patterns: [
+            {
+              group: ["../*"],
+              message:
+                "Relative parent imports are forbidden. Use absolute imports with @/ prefix.",
             },
           ],
         },

@@ -8,9 +8,8 @@ import {
   useGetRelationships,
 } from "@/entities/patient";
 
-function calcAge(dob: string): number {
+function calcAge(dob: string, now: Date): number {
   const birth = new Date(dob);
-  const now = new Date();
   let age = now.getFullYear() - birth.getFullYear();
   const month = now.getMonth() - birth.getMonth();
   if (month < 0 || (month === 0 && now.getDate() < birth.getDate())) age--;
@@ -196,7 +195,7 @@ export function PatientProfileOverview({
         <InfoRow
           icon="calendar-outline"
           label={t("patientProfile.overview.dob")}
-          value={`${formatDob(patient.dateOfBirth)} · ${calcAge(patient.dateOfBirth)} yrs`}
+          value={`${formatDob(patient.dateOfBirth)} · ${calcAge(patient.dateOfBirth, new Date())} yrs`}
         />
       </View>
 

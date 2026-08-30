@@ -2,22 +2,24 @@ import { AppointmentStatus } from "@/entities/appointment";
 
 // ─── Date helpers ─────────────────────────────────────────────────────────────
 
-export function calculateAge(dateOfBirth: string): number {
+export function calculateAge(dateOfBirth: string, now: Date): number {
   const dob = new Date(dateOfBirth);
-  const today = new Date();
-  let age = today.getFullYear() - dob.getFullYear();
-  const m = today.getMonth() - dob.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+  let age = now.getFullYear() - dob.getFullYear();
+  const m = now.getMonth() - dob.getMonth();
+  if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) age--;
   return age;
 }
 
-export function formatDate(dateString: string, todayLabel: string): string {
+export function formatDate(
+  dateString: string,
+  todayLabel: string,
+  now: Date,
+): string {
   const date = new Date(dateString);
-  const today = new Date();
   const isToday =
-    date.getFullYear() === today.getFullYear() &&
-    date.getMonth() === today.getMonth() &&
-    date.getDate() === today.getDate();
+    date.getFullYear() === now.getFullYear() &&
+    date.getMonth() === now.getMonth() &&
+    date.getDate() === now.getDate();
 
   const hours = String(date.getHours()).padStart(2, "0");
   const minutes = String(date.getMinutes()).padStart(2, "0");
@@ -33,13 +35,12 @@ export function formatDate(dateString: string, todayLabel: string): string {
   return `${dayName}, ${dayMonth} · ${time}`;
 }
 
-export function formatDateTime(dateString: string): string {
+export function formatDateTime(dateString: string, now: Date): string {
   const date = new Date(dateString);
-  const today = new Date();
   const isToday =
-    date.getFullYear() === today.getFullYear() &&
-    date.getMonth() === today.getMonth() &&
-    date.getDate() === today.getDate();
+    date.getFullYear() === now.getFullYear() &&
+    date.getMonth() === now.getMonth() &&
+    date.getDate() === now.getDate();
 
   const hours = String(date.getHours()).padStart(2, "0");
   const minutes = String(date.getMinutes()).padStart(2, "0");
@@ -73,15 +74,15 @@ export function formatDateOnly(dateString: string): string {
   });
 }
 
-export function getGreetingKey(): "morning" | "afternoon" | "evening" {
-  const hour = new Date().getHours();
+export function getGreetingKey(now: Date): "morning" | "afternoon" | "evening" {
+  const hour = now.getHours();
   if (hour < 12) return "morning";
   if (hour < 18) return "afternoon";
   return "evening";
 }
 
-export function formatHeaderDate(): string {
-  return new Date().toLocaleDateString("en-US", {
+export function formatHeaderDate(now: Date): string {
+  return now.toLocaleDateString("en-US", {
     weekday: "short",
     day: "numeric",
     month: "short",

@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { router } from "expo-router";
+import { ProfessionalAppHeader } from "@/app-composition/professional-app-header";
 import { getProfessionalPatientMessageRoute } from "@/app-composition/professional-patients";
 import { ROUTE_PATHS } from "@/config/routes";
 import { useGetConversations } from "@/entities/messaging";
@@ -28,6 +29,7 @@ export default function ProfessionalPatientsRoute() {
 
   return (
     <PatientsScreen
+      renderHeader={(scrollY) => <ProfessionalAppHeader scrollY={scrollY} />}
       onMessage={handleMessage}
       onOpenPatient={handleOpenPatient}
     />

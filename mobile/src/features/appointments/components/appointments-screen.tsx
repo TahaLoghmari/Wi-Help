@@ -19,7 +19,7 @@ import { useHandleApiError } from "@/hooks/use-handle-api-error";
 import { AppointmentCard } from "@/features/appointments/components/appointment-card";
 import { CompleteAppointmentModal } from "@/features/appointments/components/complete-appointment-modal";
 import { useTranslation } from "react-i18next";
-import { AppHeader } from "@/components/app-header";
+import type { AppHeaderRenderer } from "@/components/app-header";
 import {
   FILTER_TABS,
   getGreetingKey,
@@ -41,10 +41,12 @@ const keyExtractor = (item: AppointmentDto) => item.id;
 
 interface AppointmentsScreenProps {
   onOpenAppointment: (appointmentId: string) => void;
+  renderHeader?: AppHeaderRenderer;
 }
 
 export function AppointmentsScreen({
   onOpenAppointment,
+  renderHeader,
 }: AppointmentsScreenProps) {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<AppointmentStatus>(
@@ -137,7 +139,7 @@ export function AppointmentsScreen({
       <View className="flex-row items-end justify-between px-4">
         <View className="gap-1 flex-1 mr-2">
           <Text className="text-2xl font-semibold text-brand-dark tracking-tight">
-            {t(`professional.dashboard.greetings.${getGreetingKey()}`)}, Dr.{" "}
+            {t(`professional.dashboard.greetings.${getGreetingKey(new Date())}`)}, Dr.{" "}
             {user?.lastName ?? "…"}
           </Text>
           <Text className="text-base text-brand-secondary/80">
@@ -145,7 +147,7 @@ export function AppointmentsScreen({
           </Text>
         </View>
         <Text className="text-sm font-medium text-brand-secondary/60 mb-0.5">
-          {formatHeaderDate()}
+          {formatHeaderDate(new Date())}
         </Text>
       </View>
 
@@ -222,7 +224,7 @@ export function AppointmentsScreen({
 
   return (
     <SafeAreaView className="flex-1 bg-brand-bg" edges={["top"]}>
-      <AppHeader scrollY={scrollY} user={user} />
+      {renderHeader?.(scrollY)}
       <Animated.FlatList
         data={filteredAppointments}
         keyExtractor={keyExtractor}

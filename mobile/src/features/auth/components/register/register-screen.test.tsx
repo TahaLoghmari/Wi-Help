@@ -68,13 +68,6 @@ jest.mock("@/features/auth/api/register-professional", () => ({
   }),
 }));
 
-jest.mock("@/hooks/use-app-navigation", () => ({
-  useAppNavigation: () => ({
-    goToLogin: mockGoToLogin,
-    goBack: mockGoBack,
-  }),
-}));
-
 jest.mock("@/hooks/use-handle-api-error", () => ({
   useHandleApiError: jest.fn(() => mockHandleApiError),
 }));
@@ -144,9 +137,15 @@ describe("RegisterScreen registration orchestration", () => {
     );
   }
 
+  function renderRegisterScreen() {
+    return render(
+      <RegisterScreen onBack={mockGoBack} onLogin={mockGoToLogin} />,
+    );
+  }
+
   it("does not advance when the active form step is invalid", async () => {
     mockTriggerPatient.mockResolvedValueOnce(false);
-    await render(<RegisterScreen />);
+    await renderRegisterScreen();
 
     await userEvent
       .setup()
@@ -161,7 +160,7 @@ describe("RegisterScreen registration orchestration", () => {
   });
 
   it("resets both forms and returns to the first step when switching roles", async () => {
-    await render(<RegisterScreen />);
+    await renderRegisterScreen();
     const user = userEvent.setup();
     await user.press(screen.getByRole("button", { name: "common.continue" }));
     await waitFor(() =>
@@ -179,7 +178,7 @@ describe("RegisterScreen registration orchestration", () => {
   });
 
   it("handles patient registration success at the screen", async () => {
-    await render(<RegisterScreen />);
+    await renderRegisterScreen();
     await advanceToSubmit();
 
     await userEvent.setup().press(
@@ -207,7 +206,7 @@ describe("RegisterScreen registration orchestration", () => {
   });
 
   it("handles professional registration success at the screen", async () => {
-    await render(<RegisterScreen />);
+    await renderRegisterScreen();
     await userEvent.setup().press(
       screen.getByRole("button", { name: "auth.roles.professional" }),
     );
@@ -239,7 +238,7 @@ describe("RegisterScreen registration orchestration", () => {
 
   it("handles registration errors at the screen", async () => {
     const error = { title: "DuplicateEmail" };
-    await render(<RegisterScreen />);
+    await renderRegisterScreen();
     await advanceToSubmit();
 
     await userEvent.setup().press(

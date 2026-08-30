@@ -14,7 +14,7 @@ import Animated, {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import { AppHeader } from "@/components/app-header";
+import type { AppHeaderRenderer } from "@/components/app-header";
 import { useCurrentUser } from "@/entities/session";
 import {
   type ConversationDto,
@@ -30,9 +30,13 @@ const keyExtractor = (item: ConversationDto) => item.id;
 
 interface MessagesScreenProps {
   onOpenConversation: (conversationId: string) => void;
+  renderHeader?: AppHeaderRenderer;
 }
 
-export function MessagesScreen({ onOpenConversation }: MessagesScreenProps) {
+export function MessagesScreen({
+  onOpenConversation,
+  renderHeader,
+}: MessagesScreenProps) {
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
 
@@ -124,7 +128,7 @@ export function MessagesScreen({ onOpenConversation }: MessagesScreenProps) {
 
   return (
     <SafeAreaView className="flex-1 bg-brand-bg" edges={["top"]}>
-      <AppHeader scrollY={scrollY} user={user} />
+      {renderHeader?.(scrollY)}
 
       <Animated.FlatList
         data={isLoading ? [] : filtered}

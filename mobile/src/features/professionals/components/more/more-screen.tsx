@@ -8,16 +8,15 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
-import { AppHeader } from "@/components/app-header";
-import { useCurrentUser } from "@/entities/session";
+import type { AppHeaderRenderer } from "@/components/app-header";
 
 interface MoreScreenProps {
   onOpenProfile: () => void;
+  renderHeader?: AppHeaderRenderer;
 }
 
-export function MoreScreen({ onOpenProfile }: MoreScreenProps) {
+export function MoreScreen({ onOpenProfile, renderHeader }: MoreScreenProps) {
   const { t } = useTranslation();
-  const { data: user } = useCurrentUser();
 
   const scrollY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler((event) => {
@@ -26,7 +25,7 @@ export function MoreScreen({ onOpenProfile }: MoreScreenProps) {
 
   return (
     <SafeAreaView className="flex-1 bg-brand-bg" edges={["top"]}>
-      <AppHeader scrollY={scrollY} user={user} />
+      {renderHeader?.(scrollY)}
       <Animated.ScrollView
         className="flex-1"
         contentContainerClassName="px-5 pb-8"

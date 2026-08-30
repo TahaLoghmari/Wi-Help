@@ -42,7 +42,7 @@ export const AppointmentCard = React.memo(function AppointmentCard({
     getAppointmentActionPolicy(status);
 
   const todayLabel = t("professional.dashboard.appointments.today");
-  const formattedDate = formatDate(startDate, todayLabel);
+  const formattedDate = formatDate(startDate, todayLabel, new Date());
   const patientName = `${patient.firstName} ${patient.lastName}`;
   const dialogSubtitle = `${patientName} · ${formattedDate}`;
 
@@ -93,7 +93,7 @@ export const AppointmentCard = React.memo(function AppointmentCard({
               {patientName}
             </Text>
             <Text className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mt-0.5">
-              {calculateAge(patient.dateOfBirth)}{" "}
+              {calculateAge(patient.dateOfBirth, new Date())}{" "}
               {t("professional.dashboard.appointments.detail.yrs")}
             </Text>
           </View>

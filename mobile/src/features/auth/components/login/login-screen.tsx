@@ -20,14 +20,17 @@ import {
   type LoginFormValues,
 } from "@/features/auth/lib/auth-validation-schemas";
 import { LoginFormDefaults } from "@/features/auth/lib/auth-form-defaults";
-import { useAppNavigation } from "@/hooks/use-app-navigation";
 import { useHandleApiError } from "@/hooks/use-handle-api-error";
 
-export function LoginScreen() {
+interface LoginScreenProps {
+  onBack: () => void;
+  onRegister: () => void;
+}
+
+export function LoginScreen({ onBack, onRegister }: LoginScreenProps) {
   const { t } = useTranslation();
   const loginMutation = useLogin();
   const handleApiError = useHandleApiError();
-  const { goToRegister, goToWelcome } = useAppNavigation();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -56,7 +59,7 @@ export function LoginScreen() {
         {/* Back button */}
         <Pressable
           className="ml-6 mt-14 h-10 w-10 items-center justify-center rounded-full bg-gray-100"
-          onPress={goToWelcome}
+          onPress={onBack}
           accessibilityLabel="Go back"
           accessibilityRole="button"
         >
@@ -246,7 +249,7 @@ export function LoginScreen() {
             {t("auth.dontHaveAccount")}{" "}
           </Text>
           <Pressable
-            onPress={goToRegister}
+            onPress={onRegister}
             accessibilityLabel={t("auth.welcome.getStarted")}
             accessibilityRole="button"
           >

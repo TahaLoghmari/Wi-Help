@@ -1,4 +1,4 @@
-import React from "react";
+import React, { type ReactNode } from "react";
 import { View, Text, Pressable } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -8,21 +8,26 @@ import Animated, {
 } from "react-native-reanimated";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
-import { router, usePathname } from "expo-router";
-import { useHasUnreadNotifications } from "@/entities/notification";
-import { type UserDto } from "@/entities/session";
-import { ROUTE_PATHS } from "@/config/routes";
 
 interface AppHeaderProps {
   scrollY?: SharedValue<number>;
-  user?: UserDto | null;
+  profilePictureUrl?: string | null;
+  hasUnreadNotifications: boolean;
+  isOnNotifications: boolean;
+  onOpenNotifications: () => void;
+  onOpenProfile: () => void;
 }
 
-export function AppHeader({ scrollY, user }: AppHeaderProps) {
-  const pathname = usePathname();
-  const isOnNotifications = pathname === "/notifications";
-  const hasUnread = useHasUnreadNotifications();
+export type AppHeaderRenderer = (scrollY: SharedValue<number>) => ReactNode;
 
+export function AppHeader({
+  scrollY,
+  profilePictureUrl,
+  hasUnreadNotifications,
+  isOnNotifications,
+  onOpenNotifications,
+  onOpenProfile,
+}: AppHeaderProps) {
   const borderStyle = useAnimatedStyle(() => ({
     opacity: scrollY
       ? interpolate(scrollY.value, [0, 8], [0, 1], Extrapolation.CLAMP)
@@ -49,13 +54,7 @@ export function AppHeader({ scrollY, user }: AppHeaderProps) {
         <Pressable
           className="relative"
           hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
-          onPress={() => {
-            if (!isOnNotifications) {
-              user?.role === "Professional"
-                ? router.push(ROUTE_PATHS.PROFESSIONAL.NOTIFICATIONS)
-                : router.push(ROUTE_PATHS.PATIENT.NOTIFICATIONS);
-            }
-          }}
+          onPress={isOnNotifications ? undefined : onOpenNotifications}
           accessibilityLabel="Notifications"
           accessibilityRole="button"
         >
@@ -64,7 +63,7 @@ export function AppHeader({ scrollY, user }: AppHeaderProps) {
             size={24}
             color={isOnNotifications ? "#00394a" : "#00546e"}
           />
-          {hasUnread && !isOnNotifications && (
+          {hasUnreadNotifications && !isOnNotifications && (
             <View className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-brand-teal border border-brand-bg" />
           )}
         </Pressable>
@@ -75,17 +74,11 @@ export function AppHeader({ scrollY, user }: AppHeaderProps) {
           hitSlop={{ top: 4, right: 4, bottom: 4, left: 4 }}
           accessibilityLabel="Profile"
           accessibilityRole="button"
-          onPress={() => {
-            if (user?.role === "Patient") {
-              router.push(ROUTE_PATHS.PATIENT.PROFILE);
-            } else if (user?.role === "Professional") {
-              router.push(ROUTE_PATHS.PROFESSIONAL.MY_PROFILE);
-            }
-          }}
+          onPress={onOpenProfile}
         >
-          {user?.profilePictureUrl ? (
+          {profilePictureUrl ? (
             <Image
-              source={{ uri: user.profilePictureUrl }}
+              source={{ uri: profilePictureUrl }}
               style={{ width: 36, height: 36 }}
               contentFit="cover"
             />

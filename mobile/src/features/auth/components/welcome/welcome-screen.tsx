@@ -5,12 +5,15 @@ import { Ionicons } from "@expo/vector-icons";
 import Animated from "react-native-reanimated";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { useAppNavigation } from "@/hooks/use-app-navigation";
 import { useBounce } from "@/features/auth/hooks/use-bounce";
 
-export function WelcomeScreen() {
+interface WelcomeScreenProps {
+  onLogin: () => void;
+  onRegister: () => void;
+}
+
+export function WelcomeScreen({ onLogin, onRegister }: WelcomeScreenProps) {
   const { t, i18n } = useTranslation();
-  const { goToLogin, goToRegister } = useAppNavigation();
 
   const currentLang = i18n.language?.slice(0, 2) ?? "en";
   const toggleLang = () => {
@@ -107,14 +110,14 @@ export function WelcomeScreen() {
         {/* Action buttons */}
         <View className="gap-y-3">
           <Button
-            onPress={goToLogin}
+            onPress={onLogin}
             accessibilityLabel={t("auth.welcome.signIn")}
           >
             {t("auth.welcome.signIn")}
           </Button>
           <Button
             variant="outline"
-            onPress={goToRegister}
+            onPress={onRegister}
             accessibilityLabel={t("auth.welcome.getStarted")}
           >
             {t("auth.welcome.getStarted")}

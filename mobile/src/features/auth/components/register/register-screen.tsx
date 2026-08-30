@@ -26,7 +26,6 @@ import {
   PatientFormDefaults,
   ProfessionalFormDefaults,
 } from "@/features/auth/lib/auth-form-defaults";
-import { useAppNavigation } from "@/hooks/use-app-navigation";
 import { useHandleApiError } from "@/hooks/use-handle-api-error";
 import { cn } from "@/lib/utils";
 import { getProgressValue } from "@/features/auth/lib/utils";
@@ -45,9 +44,13 @@ const TOTAL_STEPS = 3;
 
 // ── RegisterScreen ────────────────────────────────────────────────────────────
 
-export function RegisterScreen() {
+interface RegisterScreenProps {
+  onBack: () => void;
+  onLogin: () => void;
+}
+
+export function RegisterScreen({ onBack, onLogin }: RegisterScreenProps) {
   const { t } = useTranslation();
-  const { goToLogin, goBack } = useAppNavigation();
   const handleApiError = useHandleApiError();
   const [{ role: registerRole, step }, dispatch] = useReducer(
     registrationFlowReducer,
@@ -128,7 +131,7 @@ export function RegisterScreen() {
         text1: t("auth.accountCreated"),
         text2: t("auth.checkEmailToConfirm"),
       });
-      goToLogin();
+      onLogin();
     },
     onError: handleApiError,
   };
@@ -162,7 +165,7 @@ export function RegisterScreen() {
         {/* Back button */}
         <Pressable
           className="ml-6 mt-14 h-10 w-10 items-center justify-center rounded-full bg-gray-100"
-          onPress={goBack}
+          onPress={onBack}
           accessibilityLabel="Go back"
           accessibilityRole="button"
         >
@@ -326,7 +329,7 @@ export function RegisterScreen() {
             {t("auth.alreadyHaveAccount")}{" "}
           </Text>
           <Pressable
-            onPress={goToLogin}
+            onPress={onLogin}
             accessibilityLabel={t("auth.signIn")}
             accessibilityRole="button"
           >

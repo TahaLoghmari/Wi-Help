@@ -12,8 +12,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
-import { AppHeader } from "@/components/app-header";
-import { useCurrentUser } from "@/entities/session";
+import type { AppHeaderRenderer } from "@/components/app-header";
 import {
   useHasUnreadNotifications,
   useMarkAllNotificationsAsRead,
@@ -35,10 +34,13 @@ import { SkeletonList } from "./skeleton-list";
 
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 
-export function NotificationsScreen() {
+export function NotificationsScreen({
+  renderHeader,
+}: {
+  renderHeader?: AppHeaderRenderer;
+}) {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<NotificationFilter>("all");
-  const { data: user } = useCurrentUser();
   const hasUnread = useHasUnreadNotifications();
 
   const {
@@ -65,7 +67,7 @@ export function NotificationsScreen() {
   const { mutate: markAllAsRead } = useMarkAllNotificationsAsRead();
 
   const listItems = useMemo(
-    () => buildListItems(filteredNotifications),
+    () => buildListItems(filteredNotifications, new Date()),
     [filteredNotifications],
   );
 
@@ -154,7 +156,7 @@ export function NotificationsScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-brand-bg" edges={["top"]}>
-      <AppHeader scrollY={scrollY} user={user} />
+      {renderHeader?.(scrollY)}
 
       <Animated.FlatList
         data={isLoading ? [] : listItems}

@@ -3,7 +3,6 @@ import { act, renderHook, waitFor } from "@testing-library/react-native";
 import type { ReactNode } from "react";
 import Toast from "react-native-toast-message";
 import { useHandleApiError } from "@/hooks/use-handle-api-error";
-import { useAppNavigation } from "@/hooks/use-app-navigation";
 import { api } from "@/lib/api-client";
 import { useRegisterPatient } from "./register-patient";
 import { useRegisterProfessional } from "./register-professional";
@@ -19,10 +18,6 @@ jest.mock("react-native-toast-message", () => ({
 
 jest.mock("@/hooks/use-handle-api-error", () => ({
   useHandleApiError: jest.fn(() => jest.fn()),
-}));
-
-jest.mock("@/hooks/use-app-navigation", () => ({
-  useAppNavigation: jest.fn(() => ({ goToLogin: jest.fn() })),
 }));
 
 jest.mock("react-i18next", () => ({
@@ -87,7 +82,6 @@ describe("registration mutations", () => {
       patientPayload,
     );
     expect(Toast.show).not.toHaveBeenCalled();
-    expect(useAppNavigation).not.toHaveBeenCalled();
     expect(useHandleApiError).not.toHaveBeenCalled();
   });
 
@@ -106,7 +100,6 @@ describe("registration mutations", () => {
       professionalPayload,
     );
     expect(Toast.show).not.toHaveBeenCalled();
-    expect(useAppNavigation).not.toHaveBeenCalled();
     expect(useHandleApiError).not.toHaveBeenCalled();
   });
 });

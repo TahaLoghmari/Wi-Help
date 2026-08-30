@@ -1,4 +1,7 @@
-import { loginFormSchema } from "./auth-validation-schemas";
+import {
+  isValidDateOfBirth,
+  loginFormSchema,
+} from "./auth-validation-schemas";
 
 describe("loginFormSchema", () => {
   it("accepts valid credentials", () => {
@@ -22,5 +25,18 @@ describe("loginFormSchema", () => {
         "Password must be at least 8 characters.",
       );
     }
+  });
+});
+
+describe("date of birth validation", () => {
+  const now = new Date(2026, 7, 30);
+
+  it("uses the supplied date when rejecting future birth dates", () => {
+    expect(isValidDateOfBirth("30/08/2026", now)).toBe(true);
+    expect(isValidDateOfBirth("31/08/2026", now)).toBe(false);
+  });
+
+  it("rejects impossible calendar dates", () => {
+    expect(isValidDateOfBirth("31/02/2020", now)).toBe(false);
   });
 });

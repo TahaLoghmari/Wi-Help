@@ -11,11 +11,10 @@ export function getDayKey(dateString: string): string {
   return dateString.slice(0, 10); // YYYY-MM-DD
 }
 
-export function getDayLabel(dayKey: string): string {
-  const today = new Date();
-  const todayKey = today.toISOString().slice(0, 10);
-  const yesterday = new Date(today);
-  yesterday.setDate(today.getDate() - 1);
+export function getDayLabel(dayKey: string, now: Date): string {
+  const todayKey = now.toISOString().slice(0, 10);
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
   const yesterdayKey = yesterday.toISOString().slice(0, 10);
 
   if (dayKey === todayKey) return "Today";
@@ -25,8 +24,7 @@ export function getDayLabel(dayKey: string): string {
   return date.toLocaleDateString("en-US", { day: "numeric", month: "short" });
 }
 
-export function getRelativeTime(dateString: string): string {
-  const now = new Date();
+export function getRelativeTime(dateString: string, now: Date): string {
   const date = new Date(dateString);
   const diffMs = now.getTime() - date.getTime();
   const diffMinutes = Math.floor(diffMs / (1000 * 60));
@@ -111,7 +109,10 @@ export type NotificationItem = {
 };
 export type ListItem = SectionHeaderItem | NotificationItem;
 
-export function buildListItems(notifications: NotificationDto[]): ListItem[] {
+export function buildListItems(
+  notifications: NotificationDto[],
+  now: Date,
+): ListItem[] {
   if (notifications.length === 0) return [];
 
   const grouped = new Map<string, NotificationDto[]>();
@@ -130,7 +131,7 @@ export function buildListItems(notifications: NotificationDto[]): ListItem[] {
     items.push({
       _kind: "header",
       key: `header-${dayKey}`,
-      label: getDayLabel(dayKey),
+      label: getDayLabel(dayKey, now),
     });
     for (const n of group) {
       items.push({ _kind: "notification", key: n.id, notification: n });

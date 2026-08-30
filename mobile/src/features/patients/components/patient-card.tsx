@@ -21,7 +21,7 @@ export const PatientCard = React.memo(function PatientCard({
   onViewProfile,
 }: PatientCardProps) {
   const { t } = useTranslation();
-  const age = calcAge(patient.dateOfBirth);
+  const age = calcAge(patient.dateOfBirth, new Date());
   const initials = getInitials(patient.firstName, patient.lastName);
 
   return (

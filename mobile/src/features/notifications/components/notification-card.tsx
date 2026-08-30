@@ -61,7 +61,7 @@ export const NotificationCard = React.memo(function NotificationCard({
             {notification.message}
           </Text>
           <Text className="text-[10px] text-brand-secondary/50 mt-1.5">
-            {getRelativeTime(notification.createdAt)}
+            {getRelativeTime(notification.createdAt, new Date())}
           </Text>
         </View>
 

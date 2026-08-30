@@ -22,8 +22,7 @@ import {
   type PatientDto,
   useGetProfessionalPatients,
 } from "@/entities/patient";
-import { useCurrentUser } from "@/entities/session";
-import { AppHeader } from "@/components/app-header";
+import type { AppHeaderRenderer } from "@/components/app-header";
 import { PatientCard } from "./patient-card";
 import { LoadingSkeleton } from "./loading-skeleton";
 import { EmptyState } from "./empty-state";
@@ -35,16 +34,17 @@ const keyExtractor = (item: PatientDto) => item.id;
 interface PatientsScreenProps {
   onMessage: (patient: PatientDto) => void;
   onOpenPatient: (patient: PatientDto) => void;
+  renderHeader?: AppHeaderRenderer;
 }
 
 export function PatientsScreen({
   onMessage,
   onOpenPatient,
+  renderHeader,
 }: PatientsScreenProps) {
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
 
-  const { data: user } = useCurrentUser();
   const { data: countries = [] } = useGetCountries();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useGetProfessionalPatients();
@@ -198,7 +198,7 @@ export function PatientsScreen({
 
   return (
     <SafeAreaView className="flex-1 bg-brand-bg" edges={["top"]}>
-      <AppHeader scrollY={scrollY} user={user} />
+      {renderHeader?.(scrollY)}
       <Animated.FlatList
         data={isLoading ? [] : filtered}
         keyExtractor={keyExtractor}

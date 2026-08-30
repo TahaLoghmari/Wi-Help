@@ -15,24 +15,11 @@ import {
   type ReviewSubject,
   type ReviewViewer,
 } from "@/features/reviews/review-capabilities";
+import { getRelativeReviewTime } from "@/features/reviews/lib/review-date";
 import { StarRating } from "./star-rating";
 import { ReviewReplyItem } from "./review-reply-item";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
-
-function timeAgo(dateString: string): string {
-  const diff = Date.now() - new Date(dateString).getTime();
-  const minutes = Math.floor(diff / 60_000);
-  if (minutes < 1) return "Just now";
-  if (minutes < 60) return `${minutes}m ago`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  if (days < 7) return `${days}d ago`;
-  const weeks = Math.floor(days / 7);
-  if (weeks < 5) return `${weeks}w ago`;
-  return `${Math.floor(days / 30)}mo ago`;
-}
 
 function formatReviewDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString("en-US", {
@@ -77,6 +64,7 @@ export const ReviewCard = React.memo(function ReviewCard({
   editingReplyId = null,
   deletingReplyId = null,
 }: ReviewCardProps) {
+  const now = new Date();
   const { t } = useTranslation();
   const [showReplies, setShowReplies] = useState(false);
   const [showReplyInput, setShowReplyInput] = useState(false);
@@ -205,7 +193,7 @@ export const ReviewCard = React.memo(function ReviewCard({
               size={13}
             />
             <Text className="text-[10px] text-brand-secondary/50">
-              {formatReviewDate(review.createdAt)} · {timeAgo(review.createdAt)}
+              {formatReviewDate(review.createdAt)} · {getRelativeReviewTime(review.createdAt, now)}
             </Text>
           </View>
         </View>
@@ -367,7 +355,7 @@ export const ReviewCard = React.memo(function ReviewCard({
             <ReviewReplyItem
               key={reply.id}
               reply={reply}
-              timeAgo={timeAgo}
+              timeAgo={(dateString) => getRelativeReviewTime(dateString, now)}
               canManage={
                 getReviewCapabilities({
                   subject,
