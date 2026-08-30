@@ -139,7 +139,7 @@ describe("ReviewsSection", () => {
         subject={{ id: "professional-1", kind: "professional" }}
         viewer={{
           userId: "user-1",
-          profileId: "patient-1",
+          profileId: "patient-2",
           role: "Patient",
         }}
       />,

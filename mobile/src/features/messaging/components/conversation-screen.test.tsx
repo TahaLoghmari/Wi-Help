@@ -3,6 +3,7 @@ import type { ConversationDto } from "@/entities/messaging";
 import { ConversationScreen } from "./conversation-screen";
 
 const mockUseGetConversations = jest.fn();
+const mockUseGetMessages = jest.fn();
 const mockMutate = jest.fn();
 
 jest.mock("react-native-reanimated", () => {
@@ -29,13 +30,7 @@ jest.mock("@/entities/session", () => ({
 
 jest.mock("@/entities/messaging", () => ({
   useGetConversations: () => mockUseGetConversations(),
-  useGetMessages: () => ({
-    data: { pages: [] },
-    isLoading: false,
-    fetchNextPage: jest.fn(),
-    hasNextPage: false,
-    isFetchingNextPage: false,
-  }),
+  useGetMessages: () => mockUseGetMessages(),
   useMarkMessagesAsDelivered: () => ({ mutate: mockMutate }),
   useMarkMessagesAsRead: () => ({ mutate: mockMutate }),
   useSendMessage: () => ({ mutate: mockMutate, isPending: false }),
@@ -72,6 +67,14 @@ describe("ConversationScreen", () => {
       data: [conversation],
       isLoading: false,
     });
+    mockUseGetMessages.mockReturnValue({
+      data: { pages: [] },
+      isLoading: false,
+      isError: false,
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isFetchingNextPage: false,
+    });
   });
 
   it("derives participant metadata from the canonical conversation and delegates back", async () => {
@@ -94,17 +97,41 @@ describe("ConversationScreen", () => {
     expect(onBack).toHaveBeenCalledTimes(1);
   });
 
-  it("does not render an interactive conversation when its canonical data is unavailable", async () => {
-    mockUseGetConversations.mockReturnValue({ data: [], isLoading: false });
+  it("keeps the conversation usable when list metadata is unavailable", async () => {
+    mockUseGetConversations.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: true,
+    });
 
     await render(
       <ConversationScreen
-        conversationId="missing-conversation"
+        conversationId="conversation-1"
         onBack={jest.fn()}
       />,
     );
 
+    expect(screen.getByText("Conversation")).toBeTruthy();
+    expect(screen.getByText("No messages yet")).toBeTruthy();
+    expect(screen.getByLabelText("Message input")).toBeTruthy();
+  });
+
+  it("does not render an interactive conversation when messages are unavailable", async () => {
+    mockUseGetConversations.mockReturnValue({ data: [], isLoading: false });
+    mockUseGetMessages.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: true,
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isFetchingNextPage: false,
+    });
+
+    await render(
+      <ConversationScreen conversationId="missing" onBack={jest.fn()} />,
+    );
+
     expect(screen.getByText("Conversation unavailable")).toBeTruthy();
-    expect(screen.queryByText("No messages yet")).toBeNull();
+    expect(screen.queryByLabelText("Message input")).toBeNull();
   });
 });

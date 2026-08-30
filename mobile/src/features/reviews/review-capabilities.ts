@@ -24,22 +24,28 @@ export function getReviewCapabilities({
 }: ReviewCapabilityInput) {
   const ownsReview =
     viewer.profileId != null && viewer.profileId === reviewAuthorId;
-  const hasElevatedReplyAccess =
+  const ownsSubject =
+    viewer.profileId != null &&
+    viewer.profileId === subject.id &&
+    ((subject.kind === "patient" && viewer.role === "Patient") ||
+      (subject.kind === "professional" && viewer.role === "Professional"));
+  const canLikeReview =
+    ownsReview ||
+    ownsSubject ||
+    viewer.role === "Patient" ||
     viewer.role === "Admin" ||
     (subject.kind === "professional" && viewer.role === "Professional");
-  const canInteract =
-    ownsReview || viewer.role === "Patient" || hasElevatedReplyAccess;
 
   return {
     canSubmitReview:
       subject.kind === "patient"
         ? viewer.role === "Professional" && viewer.profileId != null
         : viewer.role === "Patient",
-    canLikeReview: canInteract,
-    canReplyToReview: canInteract,
+    canLikeReview,
+    canReplyToReview: ownsReview || ownsSubject,
     canManageReview: ownsReview,
     canManageReply:
-      hasElevatedReplyAccess ||
+      viewer.role === "Admin" ||
       (viewer.userId != null && viewer.userId === replyOwnerUserId),
   };
 }

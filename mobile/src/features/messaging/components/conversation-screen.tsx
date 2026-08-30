@@ -45,11 +45,10 @@ export function ConversationScreen({
   onBack,
 }: ConversationScreenProps) {
   const { data: user } = useCurrentUser();
-  const { data: conversations, isLoading: isLoadingConversations } =
-    useGetConversations();
+  const { data: conversations } = useGetConversations();
   const conversation = conversations?.find(({ id }) => id === conversationId);
   const participantId = conversation?.otherParticipantId ?? "";
-  const firstName = conversation?.otherParticipantFirstName ?? "";
+  const firstName = conversation?.otherParticipantFirstName ?? "Conversation";
   const lastName = conversation?.otherParticipantLastName ?? "";
   const profilePictureUrl =
     conversation?.otherParticipantProfilePictureUrl ?? "";
@@ -64,6 +63,7 @@ export function ConversationScreen({
   const {
     data: messagesData,
     isLoading: isLoadingMessages,
+    isError: isMessagesError,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -98,16 +98,14 @@ export function ConversationScreen({
   );
 
   useEffect(() => {
-    if (conversation && allMessages.length > 0) {
+    if (allMessages.length > 0) {
       markAsRead.mutate(conversationId);
     }
-  }, [conversation, conversationId, allMessages.length, markAsRead]);
+  }, [conversationId, allMessages.length, markAsRead]);
 
   useEffect(() => {
-    if (conversation) {
-      markAsDelivered.mutate(conversationId);
-    }
-  }, [conversation, conversationId, markAsDelivered]);
+    markAsDelivered.mutate(conversationId);
+  }, [conversationId, markAsDelivered]);
 
   const prevMessageCount = useRef(0);
   useEffect(() => {
@@ -207,11 +205,11 @@ export function ConversationScreen({
         className="flex-1 bg-brand-bg"
         style={Platform.OS === "android" ? androidKeyboardStyle : undefined}
       >
-        {isLoadingConversations || isLoadingMessages ? (
+        {isLoadingMessages ? (
           <View className="flex-1 items-center justify-center">
             <ActivityIndicator size="large" color="#14d3ac" />
           </View>
-        ) : !conversation ? (
+        ) : isMessagesError ? (
           <View className="flex-1 items-center justify-center px-8 gap-4">
             <Ionicons
               name="chatbubble-ellipses-outline"

@@ -8,6 +8,7 @@ import {
 const mockUseCurrentUser = jest.fn();
 const mockUseGetCurrentPatient = jest.fn();
 const mockUseGetCurrentProfessional = jest.fn();
+const mockReviewsSection = jest.fn((_props: unknown) => null);
 
 jest.mock("@/entities/session", () => ({
   useCurrentUser: () => mockUseCurrentUser(),
@@ -40,7 +41,7 @@ jest.mock("@/features/professionals", () => ({
 }));
 
 jest.mock("@/features/reviews", () => ({
-  ReviewsSection: () => null,
+  ReviewsSection: (props: unknown) => mockReviewsSection(props),
 }));
 
 describe("profile review composition", () => {
@@ -77,4 +78,28 @@ describe("profile review composition", () => {
       });
     },
   );
+
+  it("passes the viewer profile identity needed for subject authorization", async () => {
+    mockUseCurrentUser.mockReturnValue({
+      data: { id: "professional-user", role: "Professional" },
+    });
+    mockUseGetCurrentProfessional.mockReturnValue({
+      data: { id: "professional-1" },
+    });
+
+    await render(
+      <ProfessionalProfileComposition professionalId="professional-1" />,
+    );
+
+    expect(mockReviewsSection).toHaveBeenCalledWith(
+      expect.objectContaining({
+        subject: { id: "professional-1", kind: "professional" },
+        viewer: {
+          userId: "professional-user",
+          profileId: "professional-1",
+          role: "Professional",
+        },
+      }),
+    );
+  });
 });

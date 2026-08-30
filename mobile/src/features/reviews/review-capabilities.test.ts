@@ -43,7 +43,7 @@ describe("getReviewCapabilities", () => {
     });
   });
 
-  it("preserves professional-profile interaction permissions by viewer role", () => {
+  it("allows only the review author or reviewed subject to reply", () => {
     const subject = { id: "professional-1", kind: "professional" } as const;
 
     expect(
@@ -51,7 +51,7 @@ describe("getReviewCapabilities", () => {
         subject,
         viewer: {
           userId: "patient-user",
-          profileId: "patient-1",
+          profileId: "patient-2",
           role: "Patient",
         },
         reviewAuthorId: "patient-2",
@@ -61,14 +61,18 @@ describe("getReviewCapabilities", () => {
       canSubmitReview: true,
       canLikeReview: true,
       canReplyToReview: true,
-      canManageReview: false,
+      canManageReview: true,
       canManageReply: false,
     });
 
     expect(
       getReviewCapabilities({
         subject,
-        viewer: { userId: "professional-user", role: "Professional" },
+        viewer: {
+          userId: "professional-user",
+          profileId: "professional-1",
+          role: "Professional",
+        },
         reviewAuthorId: "patient-2",
         replyOwnerUserId: "other-user",
       }),
@@ -77,8 +81,37 @@ describe("getReviewCapabilities", () => {
       canLikeReview: true,
       canReplyToReview: true,
       canManageReview: false,
-      canManageReply: true,
+      canManageReply: false,
     });
+
+    expect(
+      getReviewCapabilities({
+        subject,
+        viewer: {
+          userId: "unrelated-professional-user",
+          profileId: "professional-2",
+          role: "Professional",
+        },
+        reviewAuthorId: "patient-2",
+        replyOwnerUserId: "other-user",
+      }),
+    ).toMatchObject({
+      canReplyToReview: false,
+      canManageReply: false,
+    });
+
+    expect(
+      getReviewCapabilities({
+        subject,
+        viewer: {
+          userId: "unrelated-patient-user",
+          profileId: "patient-3",
+          role: "Patient",
+        },
+        reviewAuthorId: "patient-2",
+        replyOwnerUserId: "other-user",
+      }).canReplyToReview,
+    ).toBe(false);
   });
 
   it("allows reply owners and admins to manage replies without managing reviews", () => {
@@ -102,7 +135,7 @@ describe("getReviewCapabilities", () => {
       }),
     ).toMatchObject({
       canLikeReview: true,
-      canReplyToReview: true,
+      canReplyToReview: false,
       canManageReview: false,
       canManageReply: true,
     });

@@ -30,10 +30,15 @@ export function PatientProfileComposition(
   props: PatientProfileCompositionProps,
 ) {
   const { data: currentUser } = useCurrentUser();
+  const { data: currentPatient } = useGetCurrentPatient({
+    enabled: currentUser?.role === "Patient",
+  });
   const { data: currentProfessional } = useGetCurrentProfessional({
     enabled: currentUser?.role === "Professional",
   });
   const role = getViewerRole(currentUser?.role);
+  const profileId =
+    role === "Patient" ? currentPatient?.id : currentProfessional?.id;
 
   return (
     <PatientProfileScreen
@@ -43,8 +48,7 @@ export function PatientProfileComposition(
           subject={{ id: patientId, kind: "patient" }}
           viewer={{
             userId: currentUser?.id,
-            profileId:
-              role === "Professional" ? currentProfessional?.id : undefined,
+            profileId,
             role,
           }}
         />
@@ -60,7 +64,12 @@ export function ProfessionalProfileComposition(
   const { data: currentPatient } = useGetCurrentPatient({
     enabled: currentUser?.role === "Patient",
   });
+  const { data: currentProfessional } = useGetCurrentProfessional({
+    enabled: currentUser?.role === "Professional",
+  });
   const role = getViewerRole(currentUser?.role);
+  const profileId =
+    role === "Patient" ? currentPatient?.id : currentProfessional?.id;
 
   return (
     <ProfessionalProfileScreen
@@ -70,7 +79,7 @@ export function ProfessionalProfileComposition(
           subject={{ id: professionalId, kind: "professional" }}
           viewer={{
             userId: currentUser?.id,
-            profileId: role === "Patient" ? currentPatient?.id : undefined,
+            profileId,
             role,
           }}
         />
