@@ -4,7 +4,10 @@ import type {
   RealtimeHub,
   RealtimeLifecycleError,
 } from "@/lib/signalr/realtime-types";
-import { createMessagingRealtimeAdapter } from "./messaging-realtime-adapter";
+import {
+  createMessagingRealtimeAdapter,
+  createMessagingRealtimeAdapterFactory,
+} from "./messaging-realtime-adapter";
 
 class FakeHub implements RealtimeHub {
   isConnected = false;
@@ -162,5 +165,23 @@ describe("messaging realtime adapter", () => {
       connectionState: HubConnectionState.Disconnected,
       error: null,
     });
+  });
+
+  it("constructs its hub through the injected factory and preserves reconnect behavior", () => {
+    const hub = new FakeHub();
+    let onReconnected: (() => void) | undefined;
+    const createHub = jest.fn(
+      (options: { onReconnected(): void }): RealtimeHub => {
+        onReconnected = options.onReconnected;
+        return hub;
+      },
+    );
+    const factory = createMessagingRealtimeAdapterFactory(createHub);
+
+    factory.create({ invalidateQueries: jest.fn() } as unknown as QueryClient);
+    onReconnected?.();
+
+    expect(createHub).toHaveBeenCalledTimes(1);
+    expect(hub.invoke).toHaveBeenCalledWith("GetOnlineUsers");
   });
 });

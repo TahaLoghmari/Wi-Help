@@ -9,13 +9,8 @@ import { useCurrentUser } from "@/entities/session";
 import {
   AppointmentStatus,
   type AppointmentDto,
-  useCancelAppointmentByProfessional,
-  useCompleteAppointment,
   useGetProfessionalAppointments,
-  useRespondToAppointment,
 } from "@/entities/appointment";
-import Toast from "react-native-toast-message";
-import { useHandleApiError } from "@/hooks/use-handle-api-error";
 import { AppointmentCard } from "@/features/appointments/components/appointment-card";
 import { CompleteAppointmentModal } from "@/features/appointments/components/complete-appointment-modal";
 import { useTranslation } from "react-i18next";
@@ -34,6 +29,7 @@ import { TodayStatsGrid } from "./today-stats-grid";
 import { TotalSummaryCard } from "./total-summary-card";
 import { FilterTabs } from "@/components/filter-tabs";
 import { EmptyState } from "./empty-state";
+import { useAppointmentActions } from "@/features/appointments/hooks/use-appointment-actions";
 
 // ─── Main Screen ─────────────────────────────────────────────────────────────
 
@@ -59,10 +55,7 @@ export function AppointmentsScreen({
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useGetProfessionalAppointments();
 
-  const respondMutation = useRespondToAppointment();
-  const cancelMutation = useCancelAppointmentByProfessional();
-  const completeMutation = useCompleteAppointment();
-  const handleApiError = useHandleApiError();
+  const actions = useAppointmentActions();
 
   const allAppointments = useMemo(
     () => data?.pages.flatMap((p) => p.items) ?? [],
@@ -80,42 +73,18 @@ export function AppointmentsScreen({
   );
 
   const handleAccept = useCallback(
-    (appointmentId: string) => {
-      respondMutation.mutate(
-        { appointmentId, isAccepted: true },
-        {
-          onSuccess: () =>
-            Toast.show({ type: "success", text1: "Appointment accepted" }),
-          onError: handleApiError,
-        },
-      );
-    },
-    [handleApiError, respondMutation],
+    (appointmentId: string) => actions.respond(appointmentId, true),
+    [actions],
   );
 
   const handleDecline = useCallback(
-    (appointmentId: string) => {
-      respondMutation.mutate(
-        { appointmentId, isAccepted: false },
-        {
-          onSuccess: () =>
-            Toast.show({ type: "success", text1: "Appointment declined" }),
-          onError: handleApiError,
-        },
-      );
-    },
-    [handleApiError, respondMutation],
+    (appointmentId: string) => actions.respond(appointmentId, false),
+    [actions],
   );
 
   const handleCancel = useCallback(
-    (appointmentId: string) => {
-      cancelMutation.mutate(appointmentId, {
-        onSuccess: () =>
-          Toast.show({ type: "success", text1: "Appointment cancelled" }),
-        onError: handleApiError,
-      });
-    },
-    [cancelMutation, handleApiError],
+    (appointmentId: string) => actions.cancel(appointmentId),
+    [actions],
   );
 
   const handleComplete = useCallback(
@@ -248,21 +217,13 @@ export function AppointmentsScreen({
         onClose={() => setPendingCompleteAppointment(null)}
         onSubmit={(values) => {
           if (!pendingCompleteAppointment) return;
-          completeMutation.mutate(
-            { appointmentId: pendingCompleteAppointment.id, ...values },
-            {
-              onSuccess: () => {
-                Toast.show({
-                  type: "success",
-                  text1: "Appointment completed",
-                });
-                setPendingCompleteAppointment(null);
-              },
-              onError: handleApiError,
-            },
+          actions.complete(
+            pendingCompleteAppointment.id,
+            values,
+            () => setPendingCompleteAppointment(null),
           );
         }}
-        isLoading={completeMutation.isPending}
+        isLoading={actions.isCompleting}
       />
     </SafeAreaView>
   );

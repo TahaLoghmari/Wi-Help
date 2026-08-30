@@ -10,10 +10,13 @@ function getCurrentProfessional() {
   );
 }
 
-export function useGetCurrentProfessional() {
+export function useGetCurrentProfessional(
+  { enabled = true }: { enabled?: boolean } = {},
+) {
   return useQuery<ProfessionalSelfDto>({
     queryKey: professionalKeys.currentProfessional,
     queryFn: getCurrentProfessional,
+    enabled,
     retry: false,
   });
 }

@@ -6,6 +6,7 @@ import {
   waitFor,
 } from "@testing-library/react-native";
 import type { ReactNode } from "react";
+import Toast from "react-native-toast-message";
 import { api } from "@/lib/api-client";
 import { ReviewsSection } from "./reviews-section";
 
@@ -165,4 +166,156 @@ describe("ReviewsSection", () => {
     );
   });
 
+  it("dismisses the delete dialog and shows the existing error toast when review deletion fails", async () => {
+    jest.mocked(api.get).mockImplementation(async (url) => {
+      if (url.startsWith("/reviews/stats")) {
+        return { averageRating: 5, totalCount: 1 };
+      }
+      return {
+        items: [
+          {
+            id: "review-1",
+            comment: "My review",
+            rating: 5,
+            type: 1,
+            createdAt: "2026-08-25T10:00:00.000Z",
+            updatedAt: "2026-08-25T10:00:00.000Z",
+            author: {
+              id: "patient-1",
+              firstName: "Grace",
+              lastName: "Hopper",
+            },
+            likesCount: 0,
+            repliesCount: 0,
+            isLiked: false,
+            replies: [],
+          },
+        ],
+        page: 1,
+        pageSize: 10,
+        totalCount: 1,
+        totalPages: 1,
+        hasPreviousPage: false,
+        hasNextPage: false,
+      };
+    });
+    jest.mocked(api.delete).mockRejectedValue(new Error("failed"));
+
+    await render(
+      <ReviewsSection
+        subject={{ id: "professional-1", kind: "professional" }}
+        viewer={{
+          userId: "user-1",
+          profileId: "patient-1",
+          role: "Patient",
+        }}
+      />,
+      { wrapper: createWrapper() },
+    );
+
+    const user = userEvent.setup();
+    await user.press(
+      await screen.findByRole("button", {
+        name: "patientProfile.reviews.deleteReview",
+      }),
+    );
+    const deleteLabels = screen.getAllByText(
+      "professionalProfile.reviews.deleteReview",
+    );
+    await user.press(deleteLabels[deleteLabels.length - 1]);
+
+    await waitFor(() =>
+      expect(api.delete).toHaveBeenCalledWith("/reviews/review-1"),
+    );
+    await waitFor(() =>
+      expect(Toast.show).toHaveBeenCalledWith({
+        type: "error",
+        text1: "errors.unexpected",
+      }),
+    );
+    expect(
+      screen.queryByText("professionalProfile.reviews.confirmDelete"),
+    ).not.toBeOnTheScreen();
+  });
+
+  it("deletes the selected reply from its review and dismisses the dialog", async () => {
+    jest.mocked(api.get).mockImplementation(async (url) => {
+      if (url.startsWith("/reviews/stats")) {
+        return { averageRating: 5, totalCount: 1 };
+      }
+      return {
+        items: [
+          {
+            id: "review-1",
+            comment: "Helpful visit",
+            rating: 5,
+            type: 1,
+            createdAt: "2026-08-25T10:00:00.000Z",
+            updatedAt: "2026-08-25T10:00:00.000Z",
+            author: {
+              id: "patient-2",
+              firstName: "Ada",
+              lastName: "Lovelace",
+            },
+            likesCount: 0,
+            repliesCount: 1,
+            isLiked: false,
+            replies: [
+              {
+                id: "reply-1",
+                reviewId: "review-1",
+                userId: "user-1",
+                comment: "Thank you",
+                createdAt: "2026-08-25T11:00:00.000Z",
+                updatedAt: "2026-08-25T11:00:00.000Z",
+                firstName: "Grace",
+                lastName: "Hopper",
+              },
+            ],
+          },
+        ],
+        page: 1,
+        pageSize: 10,
+        totalCount: 1,
+        totalPages: 1,
+        hasPreviousPage: false,
+        hasNextPage: false,
+      };
+    });
+
+    await render(
+      <ReviewsSection
+        subject={{ id: "professional-1", kind: "professional" }}
+        viewer={{
+          userId: "user-1",
+          profileId: "patient-1",
+          role: "Patient",
+        }}
+      />,
+      { wrapper: createWrapper() },
+    );
+
+    const user = userEvent.setup();
+    await user.press(
+      await screen.findByText("1 patientProfile.reviews.replies"),
+    );
+    await user.press(
+      screen.getByRole("button", {
+        name: "patientProfile.reviews.deleteReview",
+      }),
+    );
+    const deleteLabels = screen.getAllByText(
+      "professionalProfile.reviews.deleteReview",
+    );
+    await user.press(deleteLabels[deleteLabels.length - 1]);
+
+    await waitFor(() =>
+      expect(api.delete).toHaveBeenCalledWith(
+        "/reviews/review-1/replies/reply-1",
+      ),
+    );
+    expect(
+      screen.queryByText("professionalProfile.reviews.confirmDelete"),
+    ).not.toBeOnTheScreen();
+  });
 });

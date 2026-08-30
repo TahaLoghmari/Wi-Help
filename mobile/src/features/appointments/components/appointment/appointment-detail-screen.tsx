@@ -11,14 +11,9 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import Toast from "react-native-toast-message";
 import {
-  useCancelAppointmentByProfessional,
-  useCompleteAppointment,
   useGetAppointmentById,
-  useRespondToAppointment,
 } from "@/entities/appointment";
-import { useHandleApiError } from "@/hooks/use-handle-api-error";
 import { CompleteAppointmentModal } from "@/features/appointments/components/complete-appointment-modal";
 import { cn } from "@/lib/utils";
 import {
@@ -40,6 +35,7 @@ import {
 } from "@/features/appointments/lib/constants";
 import { SectionLabel } from "./section-label";
 import { TopBar } from "./top-bar";
+import { useAppointmentActions } from "@/features/appointments/hooks/use-appointment-actions";
 
 // ─── Footer height (paddingTop + btn + gap + btn + paddingBottom) ─────────────
 // 8 + 56 + 10 + 56 + 16 = 146 — add a few px safety margin
@@ -64,10 +60,7 @@ export function AppointmentDetailScreen({
   type DialogKind = "accept" | "decline" | "cancel" | null;
   const [activeDialog, setActiveDialog] = useState<DialogKind>(null);
 
-  const respondMutation = useRespondToAppointment();
-  const cancelMutation = useCancelAppointmentByProfessional();
-  const completeMutation = useCompleteAppointment();
-  const handleApiError = useHandleApiError();
+  const actions = useAppointmentActions();
 
   const handleAccept = useCallback(() => setActiveDialog("accept"), []);
   const handleDecline = useCallback(() => setActiveDialog("decline"), []);
@@ -128,9 +121,7 @@ export function AppointmentDetailScreen({
   const { canAccept, canDecline, canComplete, canCancel, showActions } =
     getAppointmentActionPolicy(status);
   const isAnyLoading =
-    respondMutation.isPending ||
-    cancelMutation.isPending ||
-    completeMutation.isPending;
+    actions.isResponding || actions.isCancelling || actions.isCompleting;
 
   // Banner timestamp — earliest lifecycle event
   const bannerTimestamp = appointment.offeredAt
@@ -471,7 +462,7 @@ export function AppointmentDetailScreen({
                   accessibilityRole="button"
                   accessibilityLabel="Accept appointment"
                 >
-                  {respondMutation.isPending && (
+                  {actions.isResponding && (
                     <ActivityIndicator size="small" color="#ffffff" />
                   )}
                   <Text
@@ -576,22 +567,12 @@ export function AppointmentDetailScreen({
           appointment={showCompleteModal ? appointment : null}
           onClose={() => setShowCompleteModal(false)}
           onSubmit={(values) => {
-            completeMutation.mutate(
-              { appointmentId: appointment.id, ...values },
-              {
-                onSuccess: () => {
-                  Toast.show({
-                    type: "success",
-                    text1: "Appointment completed",
-                  });
-                  setShowCompleteModal(false);
-                  onBack();
-                },
-                onError: handleApiError,
-              },
-            );
+            actions.complete(appointment.id, values, () => {
+              setShowCompleteModal(false);
+              onBack();
+            });
           }}
-          isLoading={completeMutation.isPending}
+          isLoading={actions.isCompleting}
         />
 
         {/* ── Confirmation dialogs ── */}
@@ -607,22 +588,10 @@ export function AppointmentDetailScreen({
           )}
           onConfirm={() => {
             setActiveDialog(null);
-            respondMutation.mutate(
-              { appointmentId: appointment.id, isAccepted: true },
-              {
-                onSuccess: () => {
-                  Toast.show({
-                    type: "success",
-                    text1: "Appointment accepted",
-                  });
-                  onBack();
-                },
-                onError: handleApiError,
-              },
-            );
+            actions.respond(appointment.id, true, onBack);
           }}
           onDismiss={() => setActiveDialog(null)}
-          isLoading={respondMutation.isPending}
+          isLoading={actions.isResponding}
         />
         <ConfirmDialog
           visible={activeDialog === "decline"}
@@ -636,22 +605,10 @@ export function AppointmentDetailScreen({
           )}
           onConfirm={() => {
             setActiveDialog(null);
-            respondMutation.mutate(
-              { appointmentId: appointment.id, isAccepted: false },
-              {
-                onSuccess: () => {
-                  Toast.show({
-                    type: "success",
-                    text1: "Appointment declined",
-                  });
-                  onBack();
-                },
-                onError: handleApiError,
-              },
-            );
+            actions.respond(appointment.id, false, onBack);
           }}
           onDismiss={() => setActiveDialog(null)}
-          isLoading={respondMutation.isPending}
+          isLoading={actions.isResponding}
           destructive
         />
         <ConfirmDialog
@@ -666,19 +623,10 @@ export function AppointmentDetailScreen({
           )}
           onConfirm={() => {
             setActiveDialog(null);
-            cancelMutation.mutate(appointment.id, {
-              onSuccess: () => {
-                Toast.show({
-                  type: "success",
-                  text1: "Appointment cancelled",
-                });
-                onBack();
-              },
-              onError: handleApiError,
-            });
+            actions.cancel(appointment.id, onBack);
           }}
           onDismiss={() => setActiveDialog(null)}
-          isLoading={cancelMutation.isPending}
+          isLoading={actions.isCancelling}
           destructive
         />
       </View>

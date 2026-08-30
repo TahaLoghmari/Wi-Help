@@ -59,7 +59,7 @@ export function PatientProfileScreen({
     data: ownPatient,
     isPending: ownPending,
     isError: ownError,
-  } = useGetCurrentPatient();
+  } = useGetCurrentPatient({ enabled: isOwnProfile });
   const {
     data: byIdPatient,
     isPending: byIdPending,

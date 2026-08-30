@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -12,8 +12,6 @@ import { useTranslation } from "react-i18next";
 import Toast from "react-native-toast-message";
 import {
   type ReviewDto,
-  useDeleteReply,
-  useDeleteReview,
   useEditReply,
   useGetReviews,
   useGetReviewStats,
@@ -30,6 +28,7 @@ import {
 } from "@/features/reviews/review-capabilities";
 import { ReviewCard } from "./review-card";
 import { ReviewForm } from "./review-form";
+import { useReviewDeletionWorkflow } from "./use-review-deletion-workflow";
 
 interface ReviewsSectionProps {
   subject: ReviewSubject;
@@ -105,25 +104,17 @@ export function ReviewsSection({ subject, viewer }: ReviewsSectionProps) {
 
   const submitMutation = useSubmitReview(subject.id);
   const updateMutation = useUpdateReview(subject.id);
-  const deleteMutation = useDeleteReview(subject.id);
   const likeMutation = useToggleReviewLike(subject.id);
   const replyMutation = useReplyToReview(subject.id);
   const editReplyMutation = useEditReply(subject.id);
-  const deleteReplyMutation = useDeleteReply(subject.id);
-
-  const [reviewPendingDeleteId, setReviewPendingDeleteId] = useState<
-    string | null
-  >(null);
-  const [replyPendingDeleteId, setReplyPendingDeleteId] = useState<
-    string | null
-  >(null);
-  const [replyReviewPendingDeleteId, setReplyReviewPendingDeleteId] = useState<
-    string | null
-  >(null);
 
   const showUnexpectedError = useCallback(() => {
     Toast.show({ type: "error", text1: t("errors.unexpected") });
   }, [t]);
+  const deletion = useReviewDeletionWorkflow(
+    subject.id,
+    showUnexpectedError,
+  );
 
   const handleSubmitReview = useCallback(
     (comment: string, rating: number) => {
@@ -142,17 +133,6 @@ export function ReviewsSection({ subject, viewer }: ReviewsSectionProps) {
     },
     [showUnexpectedError, updateMutation],
   );
-
-  const handleConfirmDeleteReview = useCallback(() => {
-    if (!reviewPendingDeleteId) return;
-    deleteMutation.mutate(reviewPendingDeleteId, {
-      onSuccess: () => setReviewPendingDeleteId(null),
-      onError: () => {
-        setReviewPendingDeleteId(null);
-        showUnexpectedError();
-      },
-    });
-  }, [deleteMutation, reviewPendingDeleteId, showUnexpectedError]);
 
   const handleLikeReview = useCallback(
     (reviewId: string, isLiked: boolean) => {
@@ -181,39 +161,6 @@ export function ReviewsSection({ subject, viewer }: ReviewsSectionProps) {
     [editReplyMutation, showUnexpectedError],
   );
 
-  const handleDeleteReply = useCallback((reviewId: string, replyId: string) => {
-    setReplyReviewPendingDeleteId(reviewId);
-    setReplyPendingDeleteId(replyId);
-  }, []);
-
-  const dismissDeleteReply = useCallback(() => {
-    setReplyPendingDeleteId(null);
-    setReplyReviewPendingDeleteId(null);
-  }, []);
-
-  const handleConfirmDeleteReply = useCallback(() => {
-    if (!replyPendingDeleteId || !replyReviewPendingDeleteId) return;
-    deleteReplyMutation.mutate(
-      {
-        reviewId: replyReviewPendingDeleteId,
-        replyId: replyPendingDeleteId,
-      },
-      {
-        onSuccess: dismissDeleteReply,
-        onError: () => {
-          dismissDeleteReply();
-          showUnexpectedError();
-        },
-      },
-    );
-  }, [
-    deleteReplyMutation,
-    dismissDeleteReply,
-    replyPendingDeleteId,
-    replyReviewPendingDeleteId,
-    showUnexpectedError,
-  ]);
-
   const renderItem = useCallback(
     ({ item }: { item: ReviewDto }) => (
       <ReviewCard
@@ -223,9 +170,9 @@ export function ReviewsSection({ subject, viewer }: ReviewsSectionProps) {
         onLike={handleLikeReview}
         onReply={handleReplyToReview}
         onEdit={handleEditReview}
-        onDelete={setReviewPendingDeleteId}
+        onDelete={deletion.requestReviewDelete}
         onEditReply={handleEditReply}
-        onDeleteReply={handleDeleteReply}
+        onDeleteReply={deletion.requestReplyDelete}
         isLikeLoading={
           likeMutation.isPending && likeMutation.variables?.reviewId === item.id
         }
@@ -238,19 +185,15 @@ export function ReviewsSection({ subject, viewer }: ReviewsSectionProps) {
             ? (editReplyMutation.variables?.replyId ?? null)
             : null
         }
-        deletingReplyId={
-          deleteReplyMutation.isPending
-            ? (deleteReplyMutation.variables?.replyId ?? null)
-            : null
-        }
+        deletingReplyId={deletion.deletingReplyId}
       />
     ),
     [
-      deleteReplyMutation.isPending,
-      deleteReplyMutation.variables?.replyId,
+      deletion.deletingReplyId,
+      deletion.requestReplyDelete,
+      deletion.requestReviewDelete,
       editReplyMutation.isPending,
       editReplyMutation.variables?.replyId,
-      handleDeleteReply,
       handleEditReply,
       handleEditReview,
       handleLikeReview,
@@ -369,26 +312,26 @@ export function ReviewsSection({ subject, viewer }: ReviewsSectionProps) {
       />
 
       <ConfirmDialog
-        visible={reviewPendingDeleteId !== null}
+        visible={deletion.reviewDialog.visible}
         title={t(`${translationRoot}.deleteReview`)}
         subtitle={t(`${translationRoot}.confirmDelete`)}
         confirmLabel={t(`${translationRoot}.deleteReview`)}
         dismissLabel={t("common.cancel")}
-        onConfirm={handleConfirmDeleteReview}
-        onDismiss={() => setReviewPendingDeleteId(null)}
+        onConfirm={deletion.reviewDialog.onConfirm}
+        onDismiss={deletion.reviewDialog.onDismiss}
         destructive
-        isLoading={deleteMutation.isPending}
+        isLoading={deletion.reviewDialog.isLoading}
       />
       <ConfirmDialog
-        visible={replyPendingDeleteId !== null}
+        visible={deletion.replyDialog.visible}
         title={t(`${translationRoot}.deleteReview`)}
         subtitle={t(`${translationRoot}.confirmDelete`)}
         confirmLabel={t(`${translationRoot}.deleteReview`)}
         dismissLabel={t("common.cancel")}
-        onConfirm={handleConfirmDeleteReply}
-        onDismiss={dismissDeleteReply}
+        onConfirm={deletion.replyDialog.onConfirm}
+        onDismiss={deletion.replyDialog.onDismiss}
         destructive
-        isLoading={deleteReplyMutation.isPending}
+        isLoading={deletion.replyDialog.isLoading}
       />
     </>
   );

@@ -30,7 +30,9 @@ export function PatientProfileComposition(
   props: PatientProfileCompositionProps,
 ) {
   const { data: currentUser } = useCurrentUser();
-  const { data: currentProfessional } = useGetCurrentProfessional();
+  const { data: currentProfessional } = useGetCurrentProfessional({
+    enabled: currentUser?.role === "Professional",
+  });
   const role = getViewerRole(currentUser?.role);
 
   return (
@@ -55,7 +57,9 @@ export function ProfessionalProfileComposition(
   props: ProfessionalProfileCompositionProps,
 ) {
   const { data: currentUser } = useCurrentUser();
-  const { data: currentPatient } = useGetCurrentPatient();
+  const { data: currentPatient } = useGetCurrentPatient({
+    enabled: currentUser?.role === "Patient",
+  });
   const role = getViewerRole(currentUser?.role);
 
   return (

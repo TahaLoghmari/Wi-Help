@@ -8,10 +8,13 @@ function getCurrentPatient() {
   return api.get<FullPatientDto>(API_ENDPOINTS.PATIENTS.CURRENT_PATIENT);
 }
 
-export function useGetCurrentPatient() {
+export function useGetCurrentPatient(
+  { enabled = true }: { enabled?: boolean } = {},
+) {
   return useQuery<FullPatientDto>({
     queryKey: patientKeys.currentPatient,
     queryFn: getCurrentPatient,
+    enabled,
     retry: false,
   });
 }

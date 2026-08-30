@@ -32,6 +32,10 @@ interface CreateMessagingRealtimeAdapterOptions {
   queryClient: QueryClient;
 }
 
+interface MessagingHubOptions {
+  onReconnected(): void;
+}
+
 export function createMessagingRealtimeAdapter({
   hub,
   queryClient,
@@ -215,12 +219,13 @@ export function createMessagingRealtimeAdapter({
   };
 }
 
-export const messagingRealtimeAdapterFactory: RealtimeAdapterFactory<MessagingRealtimeAdapter> =
-  {
+export function createMessagingRealtimeAdapterFactory(
+  createHub: (options: MessagingHubOptions) => RealtimeHub,
+): RealtimeAdapterFactory<MessagingRealtimeAdapter> {
+  return {
     create(queryClient) {
-      let hub: SignalRService;
-      hub = new SignalRService({
-        hubPath: "/hubs/chat",
+      let hub: RealtimeHub;
+      hub = createHub({
         onReconnected: () => {
           void hub.invoke("GetOnlineUsers").catch(() => undefined);
         },
@@ -228,3 +233,9 @@ export const messagingRealtimeAdapterFactory: RealtimeAdapterFactory<MessagingRe
       return createMessagingRealtimeAdapter({ hub, queryClient });
     },
   };
+}
+
+export const messagingRealtimeAdapterFactory =
+  createMessagingRealtimeAdapterFactory(
+    (options) => new SignalRService({ hubPath: "/hubs/chat", ...options }),
+  );

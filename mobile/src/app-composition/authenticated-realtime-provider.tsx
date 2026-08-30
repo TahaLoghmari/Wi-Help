@@ -3,6 +3,7 @@ import type { QueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
 import { appointmentKeys } from "@/entities/appointment";
 import { messagingKeys } from "@/entities/messaging";
+import { NotificationType } from "@/entities/notification";
 import { reviewKeys } from "@/entities/review";
 import { messagingRealtimeAdapterFactory } from "@/features/messaging";
 import {
@@ -13,31 +14,50 @@ import { SignalRService } from "@/lib/signalr";
 import type {
   RealtimeAdapter,
   RealtimeAdapterFactory,
+  RealtimeHub,
 } from "@/lib/signalr/realtime-types";
 import { SignalRProvider } from "@/providers/signalr-provider";
+
+const appointmentNotificationTypes = new Set<string>([
+  NotificationType.newAppointment,
+  NotificationType.appointmentAccepted,
+  NotificationType.appointmentRejected,
+  NotificationType.appointmentCancelled,
+  NotificationType.appointmentCompleted,
+  NotificationType.appointmentStatusUpdated,
+]);
 
 function invalidateRelatedCaches(
   queryClient: QueryClient,
   notification: NotificationReceived,
 ) {
-  if (notification.role === "Professional") {
-    queryClient.invalidateQueries({ queryKey: appointmentKeys.all });
-  } else if (notification.role === "Patient") {
-    queryClient.invalidateQueries({ queryKey: appointmentKeys.patientList });
-  } else {
+  if (appointmentNotificationTypes.has(notification.type)) {
+    if (notification.role === "Professional") {
+      queryClient.invalidateQueries({ queryKey: appointmentKeys.all });
+    } else if (notification.role === "Patient") {
+      queryClient.invalidateQueries({ queryKey: appointmentKeys.patientList });
+    }
     return;
   }
 
-  queryClient.invalidateQueries({ queryKey: messagingKeys.conversations });
-  queryClient.invalidateQueries({ queryKey: reviewKeys.all });
-  queryClient.invalidateQueries({ queryKey: reviewKeys.allStats });
+  if (notification.type === NotificationType.newMessage) {
+    queryClient.invalidateQueries({ queryKey: messagingKeys.conversations });
+    return;
+  }
+
+  if (notification.type === NotificationType.newReview) {
+    queryClient.invalidateQueries({ queryKey: reviewKeys.all });
+    queryClient.invalidateQueries({ queryKey: reviewKeys.allStats });
+  }
 }
 
-export const authenticatedNotificationRealtimeAdapterFactory: RealtimeAdapterFactory<RealtimeAdapter> =
-  {
+export function createAuthenticatedNotificationRealtimeAdapterFactory(
+  createHub: () => RealtimeHub,
+): RealtimeAdapterFactory<RealtimeAdapter> {
+  return {
     create(queryClient) {
       return createNotificationRealtimeAdapter({
-        hub: new SignalRService({ hubPath: "/hubs/notifications" }),
+        hub: createHub(),
         queryClient,
         showNotification: (notification) => Toast.show(notification),
         onNotification: (notification) =>
@@ -45,6 +65,12 @@ export const authenticatedNotificationRealtimeAdapterFactory: RealtimeAdapterFac
       });
     },
   };
+}
+
+export const authenticatedNotificationRealtimeAdapterFactory =
+  createAuthenticatedNotificationRealtimeAdapterFactory(
+    () => new SignalRService({ hubPath: "/hubs/notifications" }),
+  );
 
 export function AuthenticatedRealtimeProvider({
   children,
