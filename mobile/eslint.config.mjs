@@ -95,7 +95,7 @@ export default [
         "error",
         {
           // Apply only outside app/ — Expo Router uses (groups) which are valid
-          "src/!(app)/**/!(__tests__)": "KEBAB_CASE",
+          "src/!(app)/**": "KEBAB_CASE",
         },
       ],
 

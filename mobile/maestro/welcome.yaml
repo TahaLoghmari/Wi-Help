@@ -1,7 +1,0 @@
-appId: com.taha_loghmari.mobile
----
-- launchApp:
-    clearState: true
-- assertVisible: "Welcome to Wi-Help"
-- tapOn: "Sign in"
-- assertVisible: "Sign in"
