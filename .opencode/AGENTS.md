@@ -43,8 +43,6 @@ The test: Every changed line should trace directly to the user's request.
 
 **Define success criteria. Loop until verified.**
 
-> Always Invoke the `/tdd` skill when implementing something that requires tests.
-
 Transform tasks into verifiable goals:
 
 - "Add validation" → "Write tests for invalid inputs, then make them pass"
@@ -65,19 +63,16 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
 
+## Subagents
+
+Fan out: keep the main context for coordination and implementation, and dispatch all reading, research, and querying to subagents, in parallel when the tasks are independent. Run them in the foreground and block on them: every dispatched subagent has reported back before you act or answer.
+
+- Codebase (features, patterns, file locations) → `codebase-explorer`
+- External docs, APIs, libraries → `web-search`
+- Database queries → `db-query`
+
 ## Agent skills
-
-### Subagent delegation
-
-Delegate liberally to as many subagents as needed, in parallel when possible — spawn as many as needed to keep the main context focused on coordination and implementation.
-
-- For Codebase reading/exploration (understanding features, finding patterns, locating files) → invoke the `codebase-explorer` agent
-- For External information (docs, APIs, libraries) → invoke the `web-search` agent
 
 ### Issue tracker
 
-Issues live as local markdown files under `.scratch/<feature-slug>/`. See `docs/agents/issue-tracker.md`.
-
-### Triage labels
-
-Default canonical strings (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+Issues and specs live as markdown files under `.scratch/`. See `docs/agents/issue-tracker.md`.
