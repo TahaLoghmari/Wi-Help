@@ -1,5 +1,5 @@
-import type { ConversationDto } from "@/entities/messaging";
-import type { PatientDto } from "@/entities/patient";
+import type { ConversationDto } from "@/features/messaging/api";
+import type { PatientDto } from "@/features/patients/api";
 import { getProfessionalPatientMessageRoute } from "./professional-patients";
 
 const patient = {

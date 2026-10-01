@@ -1,3 +1,3 @@
-export { LoginScreen } from "./components/login/login-screen";
-export { RegisterScreen } from "./components/register/register-screen";
-export { WelcomeScreen } from "./components/welcome/welcome-screen";
+export { LoginScreen } from "@/features/auth/screens/login-screen";
+export { RegisterScreen } from "@/features/auth/screens/register-screen";
+export { WelcomeScreen } from "@/features/auth/screens/welcome-screen";

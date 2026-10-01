@@ -1,9 +1,9 @@
 import React from "react";
 import { Controller, type UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
-import { useGetSpecializations } from "@/entities/professional";
+import { Input } from "@/shared/ui/input";
+import { Select } from "@/shared/ui/select";
+import { useGetSpecializations } from "@/features/professionals/api";
 import { type ProfessionalFormValues } from "@/features/auth/lib/auth-validation-schemas";
 
 interface Step3ProfessionalFormProps {

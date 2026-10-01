@@ -1,7 +1,7 @@
 import {
   type AppointmentDto,
   AppointmentStatus,
-} from "@/entities/appointment";
+} from "@/features/appointments/api";
 
 export interface AppointmentStats {
   todayConfirmed: number;

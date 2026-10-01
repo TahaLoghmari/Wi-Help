@@ -1,4 +1,4 @@
-import { AppointmentStatus } from "@/entities/appointment";
+import { AppointmentStatus } from "@/features/appointments/api";
 
 // ─── Date helpers ─────────────────────────────────────────────────────────────
 

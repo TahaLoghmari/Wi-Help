@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { View, Text, Pressable, type ViewStyle } from "react-native";
 import { useTranslation } from "react-i18next";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { ConfirmDialog } from "@/shared/ui/confirm-dialog";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
-import { cn } from "@/lib/utils";
-import { type AppointmentDto } from "@/entities/appointment";
+import { cn } from "@/shared/lib/utils";
+import { type AppointmentDto } from "@/features/appointments/api";
 import { getAppointmentActionPolicy } from "@/features/appointments/lib/appointment-presentation";
 import {
   formatDate,

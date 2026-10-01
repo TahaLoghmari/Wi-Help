@@ -1,14 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
-import { type RegisterProfessionalDto } from "@/features/auth/types/api.types";
-import { type ProblemDetailsDto } from "@/types/enums.types";
-import { API_ENDPOINTS } from "@/config/endpoints";
-import { api } from "@/lib/api-client";
+import { type RegisterProfessionalDto } from "@/features/auth/model/api.types";
+import { type ProblemDetailsDto } from "@/shared/api/enums.types";
+import { PROFESSIONAL_ENDPOINTS } from "@/features/professionals/api";
+import { api } from "@/shared/api/api-client";
 
 export function useRegisterProfessional() {
   return useMutation<void, ProblemDetailsDto, RegisterProfessionalDto>({
     mutationFn: (credentials) =>
       api.post<void>(
-        API_ENDPOINTS.PROFESSIONALS.REGISTER_PROFESSIONAL,
+        PROFESSIONAL_ENDPOINTS.REGISTER_PROFESSIONAL,
         credentials,
       ),
   });

@@ -7,10 +7,10 @@ import {
 } from "@testing-library/react-native";
 import type { ReactNode } from "react";
 import Toast from "react-native-toast-message";
-import { api } from "@/lib/api-client";
+import { api } from "@/shared/api/api-client";
 import { ReviewsSection } from "./reviews-section";
 
-jest.mock("@/lib/api-client", () => ({
+jest.mock("@/shared/api/api-client", () => ({
   api: {
     delete: jest.fn(),
     get: jest.fn(),

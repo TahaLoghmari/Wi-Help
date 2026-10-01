@@ -1,17 +1,17 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react-native";
 import type { ReactNode } from "react";
-import { sessionKeys } from "@/entities/session";
-import { api } from "@/lib/api-client";
-import { session } from "@/lib/session";
+import { sessionKeys } from "@/features/auth/session";
+import { api } from "@/shared/api/api-client";
+import { session } from "@/shared/api/session";
 import { useLogin } from "./login";
 import { useLogout } from "./logout";
 
-jest.mock("@/lib/api-client", () => ({
+jest.mock("@/shared/api/api-client", () => ({
   api: { post: jest.fn() },
 }));
 
-jest.mock("@/lib/session", () => ({
+jest.mock("@/shared/api/session", () => ({
   session: {
     getAccessToken: jest.fn(),
     getRefreshToken: jest.fn(),

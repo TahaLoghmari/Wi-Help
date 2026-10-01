@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react-native";
-import type { SessionRole } from "@/entities/session";
+import type { SessionRole } from "@/features/auth/session";
 import {
   PatientProfileComposition,
   ProfessionalProfileComposition,
@@ -10,16 +10,16 @@ const mockUseGetCurrentPatient = jest.fn();
 const mockUseGetCurrentProfessional = jest.fn();
 const mockReviewsSection = jest.fn((_props: unknown) => null);
 
-jest.mock("@/entities/session", () => ({
+jest.mock("@/features/auth/session", () => ({
   useCurrentUser: () => mockUseCurrentUser(),
 }));
 
-jest.mock("@/entities/patient", () => ({
+jest.mock("@/features/patients/api", () => ({
   useGetCurrentPatient: (options: unknown) =>
     mockUseGetCurrentPatient(options),
 }));
 
-jest.mock("@/entities/professional", () => ({
+jest.mock("@/features/professionals/api", () => ({
   useGetCurrentProfessional: (options: unknown) =>
     mockUseGetCurrentProfessional(options),
 }));

@@ -3,7 +3,7 @@ import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import { useGetSchedule } from "@/entities/professional";
+import { useGetSchedule } from "@/features/professionals/api";
 import {
   DISPLAY_ORDER,
   DAY_KEYS,

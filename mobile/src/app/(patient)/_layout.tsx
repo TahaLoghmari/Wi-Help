@@ -1,8 +1,8 @@
 import React from "react";
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { AuthenticatedRealtimeProvider } from "@/app-composition/authenticated-realtime-provider";
-import { AuthGuard } from "@/components/guards/auth-guard";
+import { AuthenticatedRealtimeProvider } from "@/providers/authenticated-realtime-provider";
+import { AuthGuard } from "@/app-composition/guards/auth-guard";
 
 export default function PatientLayout() {
   return (

@@ -17,28 +17,20 @@ function childDirectoryNames(relativePath) {
     .sort();
 }
 
+// Narrow, acyclic data contracts justified by registration and session identity.
+const featureContracts = {
+  auth: ["./patients/api/index.ts", "./professionals/api/index.ts"],
+  appointments: ["./auth/session.ts"],
+  messaging: ["./auth/session.ts"],
+};
+
 const featureIsolationZones = childDirectoryNames("./src/features/").map(
   (feature) => ({
     target: `./src/features/${feature}`,
     from: "./src/features",
-    except: [`./${feature}`],
+    except: [`./${feature}`, ...(featureContracts[feature] ?? [])],
     message:
-      "Cross-feature imports are forbidden. Import from shared modules or compose at the app level.",
-  }),
-);
-
-const entityExceptions = {
-  patient: ["./location"],
-  professional: ["./location"],
-  session: ["./location"],
-};
-
-const entityIsolationZones = childDirectoryNames("./src/entities/").map(
-  (entity) => ({
-    target: `./src/entities/${entity}`,
-    from: "./src/entities",
-    except: [`./${entity}`, ...(entityExceptions[entity] ?? [])],
-    message: `${entity} cannot depend on sibling entities.`,
+      "Use shared modules or app composition; only documented public feature contracts are allowed.",
   }),
 );
 
@@ -134,43 +126,21 @@ export default [
             // features cannot import from app
             {
               target: "./src/features",
-              from: ["./src/app", "./src/app-composition"],
+              from: ["./src/app", "./src/app-composition", "./src/providers"],
               message:
                 "Features cannot import from the app layer. Flow: shared → features → app.",
             },
-            // entities cannot depend on features or composition
-            {
-              target: "./src/entities",
-              from: ["./src/features", "./src/app", "./src/app-composition"],
-              message:
-                "Entities cannot import feature or composition code. Flow: shared → entities → features → app.",
-            },
-            // entity dependencies are isolated, except for foundational location contracts
-            ...entityIsolationZones,
             // shared modules cannot import from features or app
             {
-              target: [
-                "./src/hooks",
-                "./src/lib",
-                "./src/types",
-                "./src/config",
-                "./src/locales",
-              ],
+              target: "./src/shared",
               from: [
-                "./src/entities",
                 "./src/features",
                 "./src/app",
                 "./src/app-composition",
+                "./src/providers",
               ],
               message:
                 "Shared infrastructure cannot import domain or composition code.",
-            },
-            // application UI/providers may consume entities, but not features or composition
-            {
-              target: ["./src/components", "./src/providers"],
-              from: ["./src/features", "./src/app", "./src/app-composition"],
-              message:
-                "Application UI and providers cannot import feature or composition code.",
             },
           ],
         },
@@ -178,8 +148,7 @@ export default [
     },
   },
   {
-    files: ["src/hooks/**/*.{ts,tsx}", "src/components/**/*.{ts,tsx}"],
-    ignores: ["src/components/guards/**/*.{ts,tsx}"],
+    files: ["src/shared/**/*.{ts,tsx}"],
     rules: {
       "no-restricted-imports": [
         "error",
@@ -221,18 +190,17 @@ export default [
               message:
                 "Relative parent imports are forbidden. Use absolute imports with @/ prefix.",
             },
-            {
-              group: ["@/entities/*/*"],
-              message:
-                "Features must import an entity's public interface from @/entities/<entity>.",
-            },
           ],
         },
       ],
     },
   },
   {
-    files: ["src/app/**/*.{ts,tsx}", "src/app-composition/**/*.{ts,tsx}"],
+    files: [
+      "src/app/**/*.{ts,tsx}",
+      "src/app-composition/**/*.{ts,tsx}",
+      "src/providers/**/*.{ts,tsx}",
+    ],
     rules: {
       "no-restricted-imports": [
         "error",
@@ -244,14 +212,14 @@ export default [
                 "Relative parent imports are forbidden. Use absolute imports with @/ prefix.",
             },
             {
-              group: ["@/features/*/*"],
+              group: [
+                "@/features/*/*",
+                "!@/features/*/api",
+                "!@/features/auth/session",
+                "!@/features/messaging/realtime",
+              ],
               message:
                 "Composition must import a feature's public interface from @/features/<feature>.",
-            },
-            {
-              group: ["@/entities/*/*"],
-              message:
-                "Composition must import an entity's public interface from @/entities/<entity>.",
             },
           ],
         },

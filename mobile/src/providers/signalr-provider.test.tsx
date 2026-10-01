@@ -2,16 +2,16 @@ import { HubConnectionState } from "@microsoft/signalr";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, waitFor } from "@testing-library/react-native";
 import type { ReactNode } from "react";
-import { useCurrentUser } from "@/entities/session";
-import { useRealtimeAdapters } from "@/lib/signalr/realtime-context";
+import { useCurrentUser } from "@/features/auth/session";
+import { useRealtimeAdapters } from "@/providers/realtime-context";
 import type {
-  MessagingRealtimeAdapter,
   RealtimeAdapter,
   RealtimeAdapterFactory,
-} from "@/lib/signalr/realtime-types";
+} from "@/shared/api/signalr/realtime-types";
+import type { MessagingRealtimeAdapter } from "@/features/messaging/realtime";
 import { SignalRProvider } from "./signalr-provider";
 
-jest.mock("@/entities/session", () => ({
+jest.mock("@/features/auth/session", () => ({
   useCurrentUser: jest.fn(),
 }));
 

@@ -13,6 +13,7 @@
     "typecheck": "tsc --noEmit",
     "test": "jest",
     "test:run": "jest --runInBand",
+    "test:architecture": "node --test scripts/architecture.test.mjs",
     "test:e2e": "maestro test maestro",
     "prepare": "lefthook install"
   },

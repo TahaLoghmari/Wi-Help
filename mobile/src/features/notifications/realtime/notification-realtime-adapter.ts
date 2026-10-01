@@ -1,10 +1,10 @@
 import type { QueryClient } from "@tanstack/react-query";
-import { notificationKeys } from "@/entities/notification";
+import { notificationKeys } from "@/features/notifications/api/keys";
 import type {
   RealtimeAdapter,
   RealtimeHub,
   RealtimeLifecycleSnapshot,
-} from "@/lib/signalr/realtime-types";
+} from "@/shared/api/signalr/realtime-types";
 import { HubConnectionState } from "@microsoft/signalr";
 import {
   decodeNotificationReceived,

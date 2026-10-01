@@ -1,4 +1,4 @@
-import { getReviewCapabilities } from "./index";
+import { getReviewCapabilities } from ".";
 
 describe("getReviewCapabilities", () => {
   it("allows a professional author to review and manage their patient review", () => {

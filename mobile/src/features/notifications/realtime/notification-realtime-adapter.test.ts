@@ -3,7 +3,7 @@ import type { QueryClient } from "@tanstack/react-query";
 import type {
   RealtimeHub,
   RealtimeLifecycleError,
-} from "@/lib/signalr/realtime-types";
+} from "@/shared/api/signalr/realtime-types";
 import { createNotificationRealtimeAdapter } from "./notification-realtime-adapter";
 
 class FakeHub implements RealtimeHub {

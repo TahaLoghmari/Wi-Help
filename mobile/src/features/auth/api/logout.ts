@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { type ProblemDetailsDto } from "@/types/enums.types";
-import { API_ENDPOINTS } from "@/config/endpoints";
-import { api } from "@/lib/api-client";
-import { session } from "@/lib/session";
+import { type ProblemDetailsDto } from "@/shared/api/enums.types";
+import { AUTH_ENDPOINTS } from "@/features/auth/api/endpoints";
+import { api } from "@/shared/api/api-client";
+import { session } from "@/shared/api/session";
 
 export function useLogout() {
   const queryClient = useQueryClient();
@@ -11,7 +11,7 @@ export function useLogout() {
     mutationFn: async () => {
       const refreshToken = await session.getRefreshToken();
       return api.post<void>(
-        API_ENDPOINTS.AUTH.LOGOUT,
+        AUTH_ENDPOINTS.LOGOUT,
         refreshToken ? { refreshToken } : undefined,
       );
     },

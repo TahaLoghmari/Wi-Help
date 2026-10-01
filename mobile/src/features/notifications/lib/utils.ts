@@ -2,8 +2,8 @@ import { Ionicons } from "@expo/vector-icons";
 import {
   NotificationType,
   type NotificationDto,
-} from "@/entities/notification";
-import type { NotificationFilter } from "@/features/notifications/types/notifications.types";
+} from "@/features/notifications/api";
+import type { NotificationFilter } from "@/features/notifications/model/notifications.types";
 
 // ─── Date helpers ─────────────────────────────────────────────────────────────
 

@@ -1,15 +1,12 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCurrentUser } from "@/entities/session";
-import {
-  MessagingRealtimeContext,
-  RealtimeAdaptersContext,
-} from "@/lib/signalr/realtime-context";
+import { useCurrentUser } from "@/features/auth/session";
+import { RealtimeAdaptersContext } from "./realtime-context";
+import { MessagingRealtimeContext, type MessagingRealtimeAdapter } from "@/features/messaging/realtime";
 import type {
-  MessagingRealtimeAdapter,
   RealtimeAdapter,
   RealtimeAdapterFactory,
-} from "@/lib/signalr/realtime-types";
+} from "@/shared/api/signalr/realtime-types";
 
 interface SignalRProviderProps {
   children: ReactNode;

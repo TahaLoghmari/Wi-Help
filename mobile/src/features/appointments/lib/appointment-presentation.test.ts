@@ -8,7 +8,7 @@ import {
   AppointmentStatus,
   AppointmentUrgency,
   type AppointmentDto,
-} from "@/entities/appointment";
+} from "@/features/appointments/api";
 
 const baseAppointment: AppointmentDto = {
   id: "appointment-1",
