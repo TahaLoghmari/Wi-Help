@@ -1,7 +1,8 @@
 ---
 name: to-jira
 description: Restate a feature's issue files as QA-verifiable Jira items in the feature's jira-items.md, creating the file or adding to it.
-disable-model-invocation: true
+metadata:
+  opencode/autoinvoke: "false"
 ---
 
 # To Jira
