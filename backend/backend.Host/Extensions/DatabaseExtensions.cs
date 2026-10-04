@@ -1,4 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Modules.Appointments.Infrastructure.Database;
+using Modules.Identity.Infrastructure.Database;
+using Modules.Messaging.Infrastructure.Database;
+using Modules.Notifications.Infrastructure.Database;
+using Modules.Patients.Infrastructure.Database;
+using Modules.Professionals.Infrastructure.Database;
+using Modules.Reviews.Infrastructure.Database;
 
 namespace backend.Host.Extensions;
 
@@ -10,7 +17,16 @@ internal static class DatabaseExtensions
         IServiceProvider services = scope.ServiceProvider;
         ILogger<WebApplication> logger = services.GetRequiredService<ILogger<WebApplication>>();
 
-        IEnumerable<DbContext> dbContexts = services.GetServices<DbContext>();
+        DbContext[] dbContexts =
+        [
+            services.GetRequiredService<IdentityDbContext>(),
+            services.GetRequiredService<AppointmentsDbContext>(),
+            services.GetRequiredService<PatientsDbContext>(),
+            services.GetRequiredService<ProfessionalsDbContext>(),
+            services.GetRequiredService<NotificationsDbContext>(),
+            services.GetRequiredService<MessagingDbContext>(),
+            services.GetRequiredService<ReviewsDbContext>()
+        ];
 
         foreach (DbContext dbContext in dbContexts)
         {
