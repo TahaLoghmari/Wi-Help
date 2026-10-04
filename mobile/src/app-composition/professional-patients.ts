@@ -1,7 +1,7 @@
 import type { Href } from "expo-router";
-import { ROUTE_PATHS } from "@/config/routes";
-import type { ConversationDto } from "@/entities/messaging";
-import type { PatientDto } from "@/entities/patient";
+import { ROUTE_PATHS } from "@/app-composition/routes";
+import type { ConversationDto } from "@/features/messaging/api";
+import type { PatientDto } from "@/features/patients/api";
 
 export function getProfessionalPatientMessageRoute(
   patient: PatientDto,

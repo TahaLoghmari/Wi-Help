@@ -1,7 +1,7 @@
 import type {
   RawAvailabilityDayDto,
   AvailabilityDayDto,
-} from "@/entities/professional";
+} from "@/features/professionals/api";
 
 // ─── Constants ─────────────────────────────────────────────────────────────────
 

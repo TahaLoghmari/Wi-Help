@@ -3,7 +3,7 @@ using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.Domain;
 using Modules.Identity.Domain.DTOs;
-using Modules.Identity.Domain.Ports;
+using Modules.Identity.Domain.Services;
 
 namespace Modules.Identity.Features.Auth.Refresh;
 

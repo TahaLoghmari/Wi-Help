@@ -2,12 +2,12 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 
 namespace Modules.Professionals.Features.Awards.DeleteAward;
 
 public class DeleteAwardCommandHandler(
-    IProfessionalQualificationsOperations qualificationsOperations,
+    IProfessionalQualificationsRepository repository,
     ILogger<DeleteAwardCommandHandler> logger) : ICommandHandler<DeleteAwardCommand>
 {
     public async Task<Result> Handle(DeleteAwardCommand command, CancellationToken cancellationToken)
@@ -15,7 +15,7 @@ public class DeleteAwardCommandHandler(
         logger.LogInformation("Deleting award {AwardId} for professional {ProfessionalId}", 
             command.AwardId, command.ProfessionalId);
 
-        var award = await qualificationsOperations.FindAwardAsync(command.AwardId, command.ProfessionalId, cancellationToken);
+        var award = await repository.FindAwardAsync(command.AwardId, command.ProfessionalId, cancellationToken);
 
         if (award is null)
         {
@@ -23,8 +23,8 @@ public class DeleteAwardCommandHandler(
             return Result.Failure(ProfessionalErrors.AwardNotFound(command.AwardId));
         }
 
-        qualificationsOperations.Remove(award);
-        await qualificationsOperations.SaveChangesAsync(cancellationToken);
+        repository.Remove(award);
+        await repository.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Award {AwardId} deleted successfully", command.AwardId);
 

@@ -5,13 +5,13 @@ using Modules.Identity.PublicApi;
 using Modules.Professionals.Domain;
 using Modules.Professionals.Features.GetServices;
 using Modules.Professionals.Features.GetSpecializations;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 
 namespace Modules.Professionals.Features.GetProfessional;
 
 public sealed class GetProfessionalQueryHandler(
     IIdentityModuleApi identityApi,
-    IProfessionalProfileOperations profileOperations,
+    IProfessionalRepository repository,
     ILogger<GetProfessionalQueryHandler> logger) : IQueryHandler<GetProfessionalQuery, GetProfessionalDto>
 {
     public async Task<Result<GetProfessionalDto>> Handle(
@@ -20,7 +20,7 @@ public sealed class GetProfessionalQueryHandler(
     {
         logger.LogInformation("Retrieving professional profile for ProfessionalId: {ProfessionalId}", query.ProfessionalId);
 
-        var professional = await profileOperations.FindByIdWithDetailsAsync(query.ProfessionalId, cancellationToken);
+        var professional = await repository.FindByIdWithDetailsAsync(query.ProfessionalId, cancellationToken);
 
         if (professional is null)
         {

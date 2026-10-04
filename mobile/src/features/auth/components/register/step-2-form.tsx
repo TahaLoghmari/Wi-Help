@@ -2,9 +2,9 @@ import React from "react";
 import { View } from "react-native";
 import { Controller, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
-import { useGetCountries, useGetStatesByCountry } from "@/entities/location";
+import { Input } from "@/shared/ui/input";
+import { Select } from "@/shared/ui/select";
+import { useGetCountries, useGetStatesByCountry } from "@/shared/api/location";
 import { asRegisterForm, type AnyFormReturn } from "./register-types";
 
 interface Step2FormProps {

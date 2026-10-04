@@ -2,18 +2,19 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Messaging.Domain;
-using Modules.Messaging.Domain.Ports;
+using Modules.Messaging.Domain.Repositories;
+using Modules.Messaging.Domain.Services;
 
 namespace Modules.Messaging.Features.DeleteMessage;
 
 public class DeleteMessageCommandHandler(
-    IConversationOperations conversationOperations,
+    IConversationRepository conversations,
     IMessagingRealtimeEvents realtimeEvents,
     ILogger<DeleteMessageCommandHandler> logger) : ICommandHandler<DeleteMessageCommand>
 {
     public async Task<Result> Handle(DeleteMessageCommand command, CancellationToken cancellationToken)
     {
-        var message = await conversationOperations.GetMessageAsync(command.MessageId, cancellationToken);
+        var message = await conversations.GetMessageAsync(command.MessageId, cancellationToken);
 
         if (message == null)
         {
@@ -30,7 +31,7 @@ public class DeleteMessageCommandHandler(
         }
 
         message.Delete();
-        await conversationOperations.SaveChangesAsync(cancellationToken);
+        await conversations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Message {MessageId} deleted by user {UserId}", command.MessageId, command.UserId);
 

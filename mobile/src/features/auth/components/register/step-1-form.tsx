@@ -3,9 +3,9 @@ import { Pressable, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { cn } from "@/lib/utils";
-import { DateInput } from "@/components/ui/date-input";
-import { Input } from "@/components/ui/input";
+import { cn } from "@/shared/lib/utils";
+import { DateInput } from "@/shared/ui/date-input";
+import { Input } from "@/shared/ui/input";
 import { asRegisterForm, type AnyFormReturn } from "./register-types";
 
 interface Step1FormProps {

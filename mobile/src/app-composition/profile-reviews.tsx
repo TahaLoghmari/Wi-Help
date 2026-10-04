@@ -1,6 +1,6 @@
-import { useGetCurrentPatient } from "@/entities/patient";
-import { useGetCurrentProfessional } from "@/entities/professional";
-import { useCurrentUser } from "@/entities/session";
+import { useGetCurrentPatient } from "@/features/patients/api";
+import { useGetCurrentProfessional } from "@/features/professionals/api";
+import { useCurrentUser } from "@/features/auth/session";
 import {
   PatientProfileScreen,
   type PatientProfileScreenProps,

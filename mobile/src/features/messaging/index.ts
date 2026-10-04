@@ -1,6 +1,6 @@
-export { ConversationScreen } from "./components/conversation-screen";
-export { MessagesScreen } from "./components/messages-screen";
+export { ConversationScreen } from "@/features/messaging/screens/conversation-screen";
+export { MessagesScreen } from "@/features/messaging/screens/messages-screen";
 export {
   createMessagingRealtimeAdapterFactory,
   messagingRealtimeAdapterFactory,
-} from "./realtime/messaging-realtime-adapter";
+} from "@/features/messaging/realtime/messaging-realtime-adapter";

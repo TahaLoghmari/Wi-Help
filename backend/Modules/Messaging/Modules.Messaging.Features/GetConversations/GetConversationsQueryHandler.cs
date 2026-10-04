@@ -2,20 +2,20 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.PublicApi;
-using Modules.Messaging.Domain.Ports;
+using Modules.Messaging.Domain.Repositories;
 using Modules.Messaging.PublicApi.Contracts;
 
 namespace Modules.Messaging.Features.GetConversations;
 
 public class GetConversationsQueryHandler(
-    IConversationOperations conversationOperations,
+    IConversationRepository conversations,
     IIdentityModuleApi identityApi,
     ILogger<GetConversationsQueryHandler> logger) : IQueryHandler<GetConversationsQuery, List<ConversationDto>>
 {
     public async Task<Result<List<ConversationDto>>> Handle(GetConversationsQuery query, CancellationToken cancellationToken)
     {
         // Fetch conversations with last message and unread count in optimized queries
-        var conversationsWithData = await conversationOperations.GetForUserAsync(query.UserId, cancellationToken);
+        var conversationsWithData = await conversations.GetForUserAsync(query.UserId, cancellationToken);
 
         logger.LogInformation("Found {Count} conversations for user {UserId}", conversationsWithData.Count, query.UserId);
 

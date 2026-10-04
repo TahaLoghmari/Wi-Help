@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 
 using Modules.Notifications.PublicApi;
 using Modules.Notifications.PublicApi.Contracts;
@@ -10,7 +10,7 @@ using Modules.Notifications.PublicApi.Contracts;
 namespace Modules.Professionals.Features.UpdateAccountStatus;
 
 internal sealed class UpdateAccountStatusCommandHandler(
-    IProfessionalProfileOperations profileOperations,
+    IProfessionalRepository repository,
     ILogger<UpdateAccountStatusCommandHandler> logger,
     INotificationsModuleApi notificationsModuleApi)
     : ICommandHandler<UpdateAccountStatusCommand>
@@ -19,7 +19,7 @@ internal sealed class UpdateAccountStatusCommandHandler(
     {
         logger.LogInformation("Updating account status for professional {ProfessionalId} to {Status}", request.ProfessionalId, request.Status);
 
-        var professional = await profileOperations.FindByIdAsync(request.ProfessionalId, cancellationToken);
+        var professional = await repository.FindByIdAsync(request.ProfessionalId, cancellationToken);
 
         if (professional is null)
         {
@@ -28,7 +28,7 @@ internal sealed class UpdateAccountStatusCommandHandler(
 
         professional.UpdateVerificationStatus(request.Status);
 
-        await profileOperations.SaveChangesAsync(cancellationToken);
+        await repository.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Account status updated successfully for professional {ProfessionalId}", request.ProfessionalId);
 

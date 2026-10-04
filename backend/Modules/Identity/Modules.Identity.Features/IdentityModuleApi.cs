@@ -3,17 +3,17 @@ using Modules.Common.Features.Results;
 using Modules.Common.Features.Abstractions;
 using Modules.Identity.Domain.Entities;
 using Modules.Identity.Domain;
-using Modules.Identity.Domain.Ports;
+using Modules.Identity.Domain.Services;
 using Modules.Identity.PublicApi;
 using Modules.Identity.PublicApi.Contracts;
 
 namespace Modules.Identity.Features;
 
 public class IdentityModuleApi(
-    IIdentityAccountOperations accounts,
-    IIdentityCredentialOperations credentials,
-    IIdentityClaimOperations claims,
-    IIdentityLockoutOperations lockout,
+    IIdentityAccountService accounts,
+    IIdentityCredentialService credentials,
+    IIdentityClaimService claims,
+    IIdentityLockoutService lockout,
     IIdentityEmail identityEmail,
     IFileStorage fileStorage,
     ILogger<IdentityModuleApi> logger) : IIdentityModuleApi

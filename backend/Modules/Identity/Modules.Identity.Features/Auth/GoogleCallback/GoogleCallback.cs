@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
-using Modules.Identity.Domain.Ports;
+using Modules.Identity.Domain.Services;
 
 namespace Modules.Identity.Features.Auth.GoogleCallback;
 
@@ -20,7 +20,7 @@ internal sealed class GoogleCallback : IEndpoint
                 IGoogleAuthentication googleAuthentication,
                 ITokenManagement tokenManagement,
                 IAuthCookies authCookies,
-                IIdentityAccountOperations accounts,
+                IIdentityAccountService accounts,
                 IConfiguration configuration,
                 ILogger<GoogleCallback> logger,
                 CancellationToken cancellationToken) =>

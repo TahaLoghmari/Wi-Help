@@ -124,6 +124,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "backend.ArchitectureTests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "backend.Host.IntegrationTests", "Tests\backend.Host.IntegrationTests\backend.Host.IntegrationTests.csproj", "{7F725A18-A7B6-49FD-88C3-32431D82757C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "backend.ModuleTests", "Tests\backend.ModuleTests\backend.ModuleTests.csproj", "{5EA26089-91BC-4A82-AF4B-5AB1F35D0901}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -134,6 +136,18 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5EA26089-91BC-4A82-AF4B-5AB1F35D0901}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EA26089-91BC-4A82-AF4B-5AB1F35D0901}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EA26089-91BC-4A82-AF4B-5AB1F35D0901}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5EA26089-91BC-4A82-AF4B-5AB1F35D0901}.Debug|x64.Build.0 = Debug|Any CPU
+		{5EA26089-91BC-4A82-AF4B-5AB1F35D0901}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5EA26089-91BC-4A82-AF4B-5AB1F35D0901}.Debug|x86.Build.0 = Debug|Any CPU
+		{5EA26089-91BC-4A82-AF4B-5AB1F35D0901}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EA26089-91BC-4A82-AF4B-5AB1F35D0901}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EA26089-91BC-4A82-AF4B-5AB1F35D0901}.Release|x64.ActiveCfg = Release|Any CPU
+		{5EA26089-91BC-4A82-AF4B-5AB1F35D0901}.Release|x64.Build.0 = Release|Any CPU
+		{5EA26089-91BC-4A82-AF4B-5AB1F35D0901}.Release|x86.ActiveCfg = Release|Any CPU
+		{5EA26089-91BC-4A82-AF4B-5AB1F35D0901}.Release|x86.Build.0 = Release|Any CPU
 		{5A076D20-10A1-499F-98DA-26C7D72BF895}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5A076D20-10A1-499F-98DA-26C7D72BF895}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A076D20-10A1-499F-98DA-26C7D72BF895}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -691,6 +705,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{5EA26089-91BC-4A82-AF4B-5AB1F35D0901} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{D9527158-7A0C-40B3-8A47-93C815FF4E40} = {7D4C3D21-94FA-4ACF-A762-0AE2DCDC1F7A}
 		{4FFB0E9A-1B32-46DA-9FCD-A8D0A3A1CAF0} = {D9527158-7A0C-40B3-8A47-93C815FF4E40}
 		{EA0C4C05-A2AC-4FA2-B8EA-E06E02008458} = {7D4C3D21-94FA-4ACF-A762-0AE2DCDC1F7A}

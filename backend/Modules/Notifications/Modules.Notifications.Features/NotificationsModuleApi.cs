@@ -1,14 +1,15 @@
 using Microsoft.Extensions.Logging;
 using Modules.Notifications.Domain;
 using Modules.Notifications.Domain.Entities;
-using Modules.Notifications.Domain.Operations;
+using Modules.Notifications.Domain.Repositories;
+using Modules.Notifications.Domain.Services;
 using Modules.Notifications.PublicApi;
 using Modules.Notifications.PublicApi.Contracts;
 
 namespace Modules.Notifications.Features;
 
 public class NotificationsModuleApi(
-    INotificationPublisher notificationPublisher,
+    INotificationRepository notificationRepository,
     INotificationDelivery notificationDelivery,
     ILogger<NotificationsModuleApi> logger) : INotificationsModuleApi
 {
@@ -16,7 +17,8 @@ public class NotificationsModuleApi(
     {
         var notification = new Notification(userId, role, title, message, (Modules.Notifications.Domain.Enums.NotificationType)type);
 
-        await notificationPublisher.PublishAsync(notification, cancellationToken);
+        notificationRepository.Add(notification);
+        await notificationRepository.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Notification created with ID {NotificationId}", notification.Id);
 

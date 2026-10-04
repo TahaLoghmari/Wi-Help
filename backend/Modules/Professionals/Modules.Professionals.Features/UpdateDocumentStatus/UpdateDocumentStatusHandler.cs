@@ -1,20 +1,20 @@
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain.Entities;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 using Modules.Notifications.PublicApi;
 using Modules.Notifications.PublicApi.Contracts;
 
 namespace Modules.Professionals.Features.UpdateDocumentStatus;
 
 internal sealed class UpdateDocumentStatusHandler(
-    IVerificationDocumentOperations documentOperations,
+    IVerificationDocumentRepository repository,
     INotificationsModuleApi notificationsModuleApi)
     : ICommandHandler<UpdateDocumentStatusCommand>
 {
     public async Task<Result> Handle(UpdateDocumentStatusCommand command, CancellationToken cancellationToken)
     {
-        var document = await documentOperations.FindByIdWithProfessionalAsync(command.DocumentId, cancellationToken);
+        var document = await repository.FindByIdWithProfessionalAsync(command.DocumentId, cancellationToken);
 
         if (document is null)
         {
@@ -23,7 +23,7 @@ internal sealed class UpdateDocumentStatusHandler(
 
         document.UpdateStatus(command.Status);
 
-        await documentOperations.SaveChangesAsync(cancellationToken);
+        await repository.SaveChangesAsync(cancellationToken);
 
         await notificationsModuleApi.AddNotificationAsync(
             document.Professional.UserId.ToString(),

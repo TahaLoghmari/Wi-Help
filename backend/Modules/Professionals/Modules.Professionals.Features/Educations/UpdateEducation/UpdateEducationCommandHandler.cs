@@ -2,12 +2,12 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 
 namespace Modules.Professionals.Features.Educations.UpdateEducation;
 
 public class UpdateEducationCommandHandler(
-    IProfessionalQualificationsOperations qualificationsOperations,
+    IProfessionalQualificationsRepository repository,
     ILogger<UpdateEducationCommandHandler> logger) : ICommandHandler<UpdateEducationCommand, EducationDto>
 {
     public async Task<Result<EducationDto>> Handle(UpdateEducationCommand command, CancellationToken cancellationToken)
@@ -15,7 +15,7 @@ public class UpdateEducationCommandHandler(
         logger.LogInformation("Updating education {EducationId} for professional {ProfessionalId}", 
             command.EducationId, command.ProfessionalId);
 
-        var education = await qualificationsOperations.FindEducationAsync(command.EducationId, command.ProfessionalId, cancellationToken);
+        var education = await repository.FindEducationAsync(command.EducationId, command.ProfessionalId, cancellationToken);
 
         if (education is null)
         {
@@ -33,7 +33,7 @@ public class UpdateEducationCommandHandler(
             command.EndYear,
             command.IsCurrentlyStudying);
 
-        await qualificationsOperations.SaveChangesAsync(cancellationToken);
+        await repository.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Education {EducationId} updated successfully", command.EducationId);
 

@@ -3,13 +3,13 @@ using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain;
 using Modules.Professionals.Domain.Entities;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 
 namespace Modules.Professionals.Features.UploadVerificationDocument;
 
 public sealed class UploadVerificationDocumentCommandHandler(
-    IProfessionalProfileOperations profileOperations,
-    IVerificationDocumentOperations documentOperations,
+    IProfessionalRepository repository,
+    IVerificationDocumentRepository documentRepository,
     IFileStorage fileStorage,
     ILogger<UploadVerificationDocumentCommandHandler> logger) : ICommandHandler<UploadVerificationDocumentCommand>
 {
@@ -48,7 +48,7 @@ public sealed class UploadVerificationDocumentCommandHandler(
             }
         }
 
-        var professional = await profileOperations.FindByUserIdAsync(command.UserId, cancellationToken);
+        var professional = await repository.FindByUserIdAsync(command.UserId, cancellationToken);
 
         if (professional is null)
         {
@@ -62,7 +62,7 @@ public sealed class UploadVerificationDocumentCommandHandler(
             "verification-documents",
             cancellationToken);
 
-        var existingDocument = await documentOperations.FindByProfessionalAndTypeAsync(
+        var existingDocument = await documentRepository.FindByProfessionalAndTypeAsync(
             professional.Id, command.DocumentType, cancellationToken);
 
         if (existingDocument is not null)
@@ -78,12 +78,12 @@ public sealed class UploadVerificationDocumentCommandHandler(
                 command.DocumentType,
                 documentUrl);
             
-            documentOperations.Add(newDocument);
+            documentRepository.Add(newDocument);
             logger.LogInformation("Created new verification document for ProfessionalId: {ProfessionalId}, Type: {Type}", 
                 professional.Id, command.DocumentType);
         }
 
-        await documentOperations.SaveChangesAsync(cancellationToken);
+        await documentRepository.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }

@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Pressable } from "react-native";
 import { Image } from "expo-image";
-import { type ConversationDto } from "@/entities/messaging";
+import { type ConversationDto } from "@/features/messaging/api";
 import {
   getInitials,
   formatMessageTime,

@@ -19,8 +19,8 @@ import {
   useSubmitReview,
   useToggleReviewLike,
   useUpdateReview,
-} from "@/entities/review";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+} from "@/features/reviews/api";
+import { ConfirmDialog } from "@/shared/ui/confirm-dialog";
 import {
   getReviewCapabilities,
   type ReviewSubject,
@@ -28,7 +28,7 @@ import {
 } from "@/features/reviews/review-capabilities";
 import { ReviewCard } from "./review-card";
 import { ReviewForm } from "./review-form";
-import { useReviewDeletionWorkflow } from "./use-review-deletion-workflow";
+import { useReviewDeletionWorkflow } from "@/features/reviews/hooks/use-review-deletion-workflow";
 
 interface ReviewsSectionProps {
   subject: ReviewSubject;

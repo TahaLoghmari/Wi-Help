@@ -1,5 +1,5 @@
 using Modules.Common.Features.Results;
-using Modules.Messaging.Domain.Ports;
+using Modules.Messaging.Domain.Repositories;
 using Modules.Messaging.PublicApi;
 
 namespace Modules.Messaging.Features;
@@ -9,7 +9,7 @@ namespace Modules.Messaging.Features;
 /// Provides methods for other modules to interact with the Messaging module.
 /// </summary>
 public class MessagingModuleApi(
-    IConversationOperations conversationOperations) : IMessagingModuleApi
+    IConversationRepository conversations) : IMessagingModuleApi
 {
     public async Task<Result<Guid>> CreateConversationAsync(
         Guid participant1Id,
@@ -17,7 +17,7 @@ public class MessagingModuleApi(
         CancellationToken cancellationToken = default)
     {
         // Check if conversation already exists
-        var existingConversation = await conversationOperations.FindAsync(participant1Id, participant2Id, cancellationToken);
+        var existingConversation = await conversations.FindAsync(participant1Id, participant2Id, cancellationToken);
 
         if (existingConversation != null)
         {
@@ -29,7 +29,8 @@ public class MessagingModuleApi(
             participant2Id,
             Domain.Enums.ConversationType.ProfessionalPatient);
 
-        await conversationOperations.CreateAsync(conversation, cancellationToken);
+        conversations.Add(conversation);
+        await conversations.SaveChangesAsync(cancellationToken);
 
         return Result<Guid>.Success(conversation.Id);
     }

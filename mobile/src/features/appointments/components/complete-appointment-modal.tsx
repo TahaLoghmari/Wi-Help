@@ -15,8 +15,8 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import { useTranslation } from "react-i18next";
-import { type AppointmentDto } from "@/entities/appointment";
-import { type CompleteAppointmentFormValues } from "@/features/appointments/types/completion-form.types";
+import { type AppointmentDto } from "@/features/appointments/api";
+import { type CompleteAppointmentFormValues } from "@/features/appointments/model/completion-form.types";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Modules.Identity.Domain.DTOs;
-using Modules.Identity.Domain.Ports;
+using Modules.Identity.Domain.Services;
 using Modules.Identity.Infrastructure.Settings;
 
 namespace Modules.Identity.Infrastructure.Services;

@@ -2,20 +2,20 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Reviews.Domain;
-using Modules.Reviews.Domain.Abstractions;
+using Modules.Reviews.Domain.Repositories;
 using Modules.Reviews.Domain.Enums;
 
 namespace Modules.Reviews.Features.EditReview;
 
 internal sealed class EditReviewCommandHandler(
-    IEditReviewPort reviews,
+    IReviewRepository reviews,
     ILogger<EditReviewCommandHandler> logger) : ICommandHandler<EditReviewCommand>
 {
     public async Task<Result> Handle(EditReviewCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Editing review {ReviewId}", command.ReviewId);
 
-        var review = await reviews.GetAsync(command.ReviewId, cancellationToken);
+        var review = await reviews.GetByIdAsync(command.ReviewId, cancellationToken);
 
         if (review is null)
             return Result.Failure(ReviewErrors.NotFound(command.ReviewId));

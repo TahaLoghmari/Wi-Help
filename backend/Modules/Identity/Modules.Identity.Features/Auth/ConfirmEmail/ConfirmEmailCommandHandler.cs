@@ -2,12 +2,12 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.Domain;
-using Modules.Identity.Domain.Ports;
+using Modules.Identity.Domain.Services;
 
 namespace Modules.Identity.Features.Auth.ConfirmEmail;
 
 public sealed class ConfirmEmailCommandHandler(
-    IIdentityAccountOperations accounts,
+    IIdentityAccountService accounts,
     ILogger<ConfirmEmailCommandHandler> logger) : ICommandHandler<ConfirmEmailCommand>
 {
     public async Task<Result> Handle(

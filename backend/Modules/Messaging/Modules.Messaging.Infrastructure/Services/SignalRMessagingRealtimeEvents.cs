@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 using Modules.Messaging.Domain.Entities;
-using Modules.Messaging.Domain.Ports;
+using Modules.Messaging.Domain.Services;
 
 namespace Modules.Messaging.Infrastructure.Services;
 

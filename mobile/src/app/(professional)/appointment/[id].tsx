@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { ROUTE_PATHS } from "@/config/routes";
+import { ROUTE_PATHS } from "@/app-composition/routes";
 import { AppointmentDetailScreen } from "@/features/appointments";
 
 export default function AppointmentDetailRoute() {

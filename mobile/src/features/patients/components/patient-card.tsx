@@ -4,7 +4,7 @@ import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
-import { type PatientDto } from "@/entities/patient";
+import { type PatientDto } from "@/features/patients/api";
 import { calcAge, getInitials } from "@/features/patients/lib/utils";
 
 interface PatientCardProps {

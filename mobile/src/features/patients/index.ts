@@ -1,5 +1,5 @@
 export {
   PatientProfileScreen,
   type PatientProfileScreenProps,
-} from "./components/patient-profile-screen";
-export { PatientsScreen } from "./components/patients-screen";
+} from "@/features/patients/screens/patient-profile-screen";
+export { PatientsScreen } from "@/features/patients/screens/patients-screen";

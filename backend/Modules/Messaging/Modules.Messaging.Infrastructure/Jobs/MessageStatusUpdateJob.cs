@@ -1,12 +1,13 @@
 using Hangfire;
 using Microsoft.Extensions.Logging;
-using Modules.Messaging.Domain.Ports;
+using Modules.Messaging.Domain.Repositories;
+using Modules.Messaging.Domain.Services;
 using Modules.Messaging.Infrastructure.Services;
 
 namespace Modules.Messaging.Infrastructure.Jobs;
 
 public class MessageStatusUpdateJob(
-    IMessageStatusUpdateStore messageStore,
+    IMessageDeliveryRepository messageRepository,
     ConnectionTracker connectionTracker,
     IMessagingRealtimeEvents realtimeEvents,
     ILogger<MessageStatusUpdateJob> logger)
@@ -20,15 +21,25 @@ public class MessageStatusUpdateJob(
             return;
         }
 
-        var deliveredMessages = await messageStore.DeliverForOnlineUsersAsync(onlineUserIds, cancellationToken);
-        if (deliveredMessages.Count == 0)
+        var messages = await messageRepository.GetPendingForOnlineUsersAsync(onlineUserIds, cancellationToken);
+        if (messages.Count == 0)
         {
             return;
         }
 
-        logger.LogInformation("Marked {Count} messages as delivered for online users", deliveredMessages.Count);
+        foreach (var message in messages)
+        {
+            message.MarkAsDelivered();
+        }
+        await messageRepository.SaveChangesAsync(cancellationToken);
+        logger.LogInformation("Marked {Count} messages as delivered for online users", messages.Count);
 
-        foreach (var notification in deliveredMessages.Notifications)
+        foreach (var notification in messages.GroupBy(m => new { m.SenderId, m.ConversationId }).Select(g => new
+        {
+            g.Key.SenderId,
+            g.Key.ConversationId,
+            DeliveredBy = g.First().Conversation.GetOtherParticipant(g.Key.SenderId)
+        }))
         {
             try
             {

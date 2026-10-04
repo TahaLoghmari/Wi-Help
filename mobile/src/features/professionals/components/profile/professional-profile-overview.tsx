@@ -3,7 +3,7 @@ import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import { useGetCountries, useGetStatesByCountry } from "@/entities/location";
+import { useGetCountries, useGetStatesByCountry } from "@/shared/api/location";
 import type {
   DocumentType,
   FullProfessionalDto,
@@ -11,7 +11,7 @@ import type {
   ProfessionalDocumentDto,
   ProfessionalEducationDto,
   ProfessionalExperienceDto,
-} from "@/entities/professional";
+} from "@/features/professionals/api";
 
 function calcAge(dob: string, now: Date): number {
   const birth = new Date(dob);

@@ -1,4 +1,4 @@
-using Modules.Appointments.Domain.Ports;
+using Modules.Appointments.Domain.Repositories;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Common.Features.DTOs;
@@ -8,7 +8,7 @@ using Modules.Professionals.PublicApi;
 namespace Modules.Appointments.Features.GetAllPrescriptionsForAdmin;
 
 internal sealed class GetAllPrescriptionsForAdminHandler(
-    IAppointmentRead appointments,
+    IAppointmentRepository appointments,
     IPatientsModuleApi patientsModuleApi,
     IProfessionalModuleApi professionalModuleApi)
     : IQueryHandler<GetAllPrescriptionsForAdminQuery, PaginationResultDto<PrescriptionAdminDto>>

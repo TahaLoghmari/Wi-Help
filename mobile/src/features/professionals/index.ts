@@ -1,6 +1,6 @@
-export { MoreScreen } from "./components/more/more-screen";
+export { MoreScreen } from "@/features/professionals/screens/more-screen";
 export {
   ProfessionalProfileScreen,
   type ProfessionalProfileScreenProps,
-} from "./components/profile/professional-profile-screen";
-export { ScheduleScreen } from "./components/schedule/schedule-screen";
+} from "@/features/professionals/screens/professional-profile-screen";
+export { ScheduleScreen } from "@/features/professionals/screens/schedule-screen";

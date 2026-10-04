@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import type { MessageDto } from "@/entities/messaging";
+import type { MessageDto } from "@/features/messaging/api";
 
 export const CARD_SHADOW = StyleSheet.create({
   card: {

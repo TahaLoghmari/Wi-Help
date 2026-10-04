@@ -4,9 +4,9 @@ import {
   useCancelAppointmentByProfessional,
   useCompleteAppointment,
   useRespondToAppointment,
-} from "@/entities/appointment";
-import { useHandleApiError } from "@/hooks/use-handle-api-error";
-import type { CompleteAppointmentFormValues } from "@/features/appointments/types/completion-form.types";
+} from "@/features/appointments/api";
+import { useHandleApiError } from "@/shared/hooks/use-handle-api-error";
+import type { CompleteAppointmentFormValues } from "@/features/appointments/model/completion-form.types";
 
 export function useAppointmentActions() {
   const respondMutation = useRespondToAppointment();

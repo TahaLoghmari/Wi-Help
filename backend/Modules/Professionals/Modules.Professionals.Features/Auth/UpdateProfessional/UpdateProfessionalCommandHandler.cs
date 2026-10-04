@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Identity.PublicApi;
 using Modules.Professionals.Domain;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 using System.Transactions;
 using Modules.Common.Features.Results;
 using Modules.Identity.PublicApi.Contracts;
@@ -11,8 +11,8 @@ namespace Modules.Professionals.Features.Auth.UpdateProfessional;
 
 public sealed class UpdateProfessionalCommandHandler(
     IIdentityModuleApi identityApi,
-    IProfessionalProfileOperations profileOperations,
-    IProfessionalCatalogOperations catalogOperations,
+    IProfessionalRepository repository,
+    IProfessionalCatalogRepository catalogRepository,
     IFileStorage fileStorage,
     ILogger<UpdateProfessionalCommandHandler> logger) : ICommandHandler<UpdateProfessionalCommand>
 {
@@ -62,7 +62,7 @@ public sealed class UpdateProfessionalCommandHandler(
 
             logger.LogInformation("Identity fields updated successfully for UserId: {UserId}", command.UserId);
             
-            var professional = await profileOperations.FindByUserIdWithDetailsAsync(command.UserId, cancellationToken);
+            var professional = await repository.FindByUserIdWithDetailsAsync(command.UserId, cancellationToken);
 
             if (professional is null)
             {
@@ -72,7 +72,7 @@ public sealed class UpdateProfessionalCommandHandler(
 
             if (command.SpecializationId.HasValue)
             {
-                var specialization = await catalogOperations.FindSpecializationAsync(command.SpecializationId.Value, cancellationToken);
+                var specialization = await catalogRepository.FindSpecializationAsync(command.SpecializationId.Value, cancellationToken);
 
                 if (specialization is null)
                 {
@@ -91,7 +91,7 @@ public sealed class UpdateProfessionalCommandHandler(
             {
                 var serviceIdsSet = command.ServiceIds.ToHashSet();
 
-                var newServices = await catalogOperations.GetServicesByIdsAsync(serviceIdsSet, cancellationToken);
+                var newServices = await catalogRepository.GetServicesByIdsAsync(serviceIdsSet, cancellationToken);
                 var missingIds = serviceIdsSet
                     .Except(newServices.Select(s => s.Id))
                     .ToList();
@@ -105,7 +105,7 @@ public sealed class UpdateProfessionalCommandHandler(
                 professional.UpdateServices(newServices.ToList());
             }
 
-            await profileOperations.SaveChangesAsync(cancellationToken);
+            await repository.SaveChangesAsync(cancellationToken);
 
             logger.LogInformation("Professional updated successfully for UserId: {UserId}, ProfessionalId: {ProfessionalId}",
                 command.UserId, professional.Id);

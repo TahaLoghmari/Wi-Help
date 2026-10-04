@@ -3,7 +3,7 @@ using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.PublicApi;
 using Modules.Patients.Domain;
-using Modules.Patients.Domain.Ports;
+using Modules.Patients.Domain.Repositories;
 using Modules.Patients.Features.GetAllergies;
 using Modules.Patients.Features.GetConditions;
 using Modules.Patients.Features.GetMedications;
@@ -12,7 +12,7 @@ namespace Modules.Patients.Features.Auth.GetCurrentPatient;
 
 public sealed class GetCurrentPatientQueryHandler(
     IIdentityModuleApi identityApi,
-    IPatientProfileOperations patientProfile,
+    IPatientRepository repository,
     ILogger<GetCurrentPatientQueryHandler> logger) : IQueryHandler<GetCurrentPatientQuery, GetCurrentPatientDto>
 {
     public async Task<Result<GetCurrentPatientDto>> Handle(
@@ -30,7 +30,7 @@ public sealed class GetCurrentPatientQueryHandler(
 
         var user = userResult.Value;
 
-        var patient = await patientProfile.GetByUserIdAsync(query.UserId, cancellationToken);
+        var patient = await repository.GetByUserIdAsync(query.UserId, cancellationToken);
 
         if (patient is null)
         {

@@ -2,10 +2,10 @@ import { useCallback } from "react";
 import { router } from "expo-router";
 import { ProfessionalAppHeader } from "@/app-composition/professional-app-header";
 import { getProfessionalPatientMessageRoute } from "@/app-composition/professional-patients";
-import { ROUTE_PATHS } from "@/config/routes";
-import { useGetConversations } from "@/entities/messaging";
+import { ROUTE_PATHS } from "@/app-composition/routes";
+import { useGetConversations } from "@/features/messaging/api";
 import { PatientsScreen } from "@/features/patients";
-import type { PatientDto } from "@/entities/patient";
+import type { PatientDto } from "@/features/patients/api";
 
 export default function ProfessionalPatientsRoute() {
   const { data: conversations = [] } = useGetConversations();

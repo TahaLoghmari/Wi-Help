@@ -1,13 +1,12 @@
 import { HubConnectionState } from "@microsoft/signalr";
 import type { QueryClient } from "@tanstack/react-query";
-import { messagingKeys } from "@/entities/messaging";
-import { SignalRService } from "@/lib/signalr/signalr-service";
+import { messagingKeys } from "@/features/messaging/api/keys";
+import { SignalRService } from "@/shared/api/signalr/signalr-service";
 import type {
-  MessagingRealtimeAdapter,
-  MessagingRealtimeSnapshot,
   RealtimeAdapterFactory,
   RealtimeHub,
-} from "@/lib/signalr/realtime-types";
+} from "@/shared/api/signalr/realtime-types";
+import type { MessagingRealtimeAdapter, MessagingRealtimeSnapshot } from "./types";
 import {
   decodeMessagingEvent,
   type MessagingEvent,

@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Modules.Messaging.Domain.Ports;
+using Modules.Messaging.Domain.Repositories;
+using Modules.Messaging.Domain.Services;
 using Modules.Messaging.Infrastructure.Database;
 using Modules.Messaging.Infrastructure.Jobs;
 using Modules.Messaging.Infrastructure.Services;
+using Modules.Messaging.Infrastructure.Database.Repositories;
 
 namespace Modules.Messaging.Infrastructure;
 
@@ -21,8 +23,8 @@ public static class DependencyInjection
         );
 
         services.AddScoped<IConversationAccessService, ConversationAccessService>();
-        services.AddScoped<IConversationOperations, ConversationOperations>();
-        services.AddScoped<IMessageStatusUpdateStore, MessageStatusUpdateStore>();
+        services.AddScoped<IConversationRepository, ConversationRepository>();
+        services.AddScoped<IMessageDeliveryRepository, MessageDeliveryRepository>();
         services.AddSingleton<ConnectionTracker>();
         services.AddScoped<IMessagingRealtimeEvents, SignalRMessagingRealtimeEvents>();
         services.AddScoped<MessageStatusUpdateJob>();

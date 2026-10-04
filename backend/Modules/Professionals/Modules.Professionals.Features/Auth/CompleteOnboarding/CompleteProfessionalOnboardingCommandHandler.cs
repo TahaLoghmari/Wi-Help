@@ -5,14 +5,14 @@ using Modules.Identity.PublicApi;
 using Modules.Identity.PublicApi.Contracts;
 using Modules.Professionals.Domain;
 using Modules.Professionals.Domain.Entities;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 
 namespace Modules.Professionals.Features.Auth.CompleteOnboarding;
 
 public sealed class CompleteProfessionalOnboardingCommandHandler(
     IIdentityModuleApi identityApi,
-    IProfessionalProfileOperations profileOperations,
-    IProfessionalCatalogOperations catalogOperations,
+    IProfessionalRepository repository,
+    IProfessionalCatalogRepository catalogRepository,
     ILogger<CompleteProfessionalOnboardingCommandHandler> logger) : ICommandHandler<CompleteProfessionalOnboardingCommand>
 {
     public async Task<Result> Handle(
@@ -21,7 +21,7 @@ public sealed class CompleteProfessionalOnboardingCommandHandler(
     {
         logger.LogInformation("Completing onboarding for professional with UserId: {UserId}", command.UserId);
 
-        var specialization = await catalogOperations.FindSpecializationAsync(command.SpecializationId, cancellationToken);
+        var specialization = await catalogRepository.FindSpecializationAsync(command.SpecializationId, cancellationToken);
 
         if (specialization is null)
         {
@@ -46,14 +46,14 @@ public sealed class CompleteProfessionalOnboardingCommandHandler(
             return Result.Failure(onboardingResult.Error);
         }
 
-        var existingProfessional = await profileOperations.FindByUserIdAsync(command.UserId, cancellationToken);
+        var existingProfessional = await repository.FindByUserIdAsync(command.UserId, cancellationToken);
 
         if (existingProfessional is not null)
         {
             existingProfessional.Update(
                 specializationId: command.SpecializationId,
                 experience: command.Experience);
-            await profileOperations.SaveChangesAsync(cancellationToken);
+            await repository.SaveChangesAsync(cancellationToken);
             
             logger.LogInformation("Updated existing professional for UserId: {UserId}", command.UserId);
             return Result.Success();
@@ -64,8 +64,8 @@ public sealed class CompleteProfessionalOnboardingCommandHandler(
             command.SpecializationId,
             command.Experience);
 
-        profileOperations.Add(professional);
-        await profileOperations.SaveChangesAsync(cancellationToken);
+        repository.Add(professional);
+        await repository.SaveChangesAsync(cancellationToken);
 
         var addClaimResult = await identityApi.AddClaimAsync(
             command.UserId, 

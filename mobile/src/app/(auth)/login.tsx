@@ -1,6 +1,6 @@
 import React from "react";
 import { router } from "expo-router";
-import { ROUTE_PATHS } from "@/config/routes";
+import { ROUTE_PATHS } from "@/app-composition/routes";
 import { LoginScreen } from "@/features/auth";
 
 export default function LoginRoute() {

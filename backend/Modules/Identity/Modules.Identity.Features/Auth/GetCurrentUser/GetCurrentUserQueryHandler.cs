@@ -1,12 +1,12 @@
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Identity.Domain.Ports;
+using Modules.Identity.Domain.Services;
 
 namespace Modules.Identity.Features.Auth.GetCurrentUser;
 
 public sealed class GetCurrentUserQueryHandler(
-    IIdentityAccountOperations accounts,
+    IIdentityAccountService accounts,
     ILogger<GetCurrentUserQueryHandler> logger) : IQueryHandler<GetCurrentUserQuery, GetCurrentUserDto>
 {
     public async Task<Result<GetCurrentUserDto>> Handle(

@@ -3,20 +3,20 @@ using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain;
 using Modules.Professionals.Domain.Entities;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 
 namespace Modules.Professionals.Features.Educations.CreateEducation;
 
 public class CreateEducationCommandHandler(
-    IProfessionalProfileOperations profileOperations,
-    IProfessionalQualificationsOperations qualificationsOperations,
+    IProfessionalRepository profileRepository,
+    IProfessionalQualificationsRepository repository,
     ILogger<CreateEducationCommandHandler> logger) : ICommandHandler<CreateEducationCommand, EducationDto>
 {
     public async Task<Result<EducationDto>> Handle(CreateEducationCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Creating education for professional {ProfessionalId}", command.ProfessionalId);
 
-        var professional = await profileOperations.FindByIdReadOnlyAsync(command.ProfessionalId, cancellationToken);
+        var professional = await profileRepository.FindByIdReadOnlyAsync(command.ProfessionalId, cancellationToken);
 
         if (professional is null)
         {
@@ -35,8 +35,8 @@ public class CreateEducationCommandHandler(
             command.EndYear,
             command.IsCurrentlyStudying);
 
-        qualificationsOperations.Add(education);
-        await qualificationsOperations.SaveChangesAsync(cancellationToken);
+        repository.Add(education);
+        await repository.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Education created with ID {EducationId} for professional {ProfessionalId}", 
             education.Id, command.ProfessionalId);

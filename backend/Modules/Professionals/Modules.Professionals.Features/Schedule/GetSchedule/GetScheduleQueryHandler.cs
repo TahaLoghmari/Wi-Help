@@ -1,11 +1,11 @@
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 
 namespace Modules.Professionals.Features.Schedule.Get;
 
-public class GetScheduleQueryHandler(IProfessionalScheduleOperations scheduleOperations, ILogger<GetScheduleQuery> logger)
+public class GetScheduleQueryHandler(IProfessionalScheduleRepository repository, ILogger<GetScheduleQuery> logger)
     : IQueryHandler<GetScheduleQuery, GetScheduleDto>
 {
     public async Task<Result<GetScheduleDto>> Handle(
@@ -16,7 +16,7 @@ public class GetScheduleQueryHandler(IProfessionalScheduleOperations scheduleOpe
         logger.LogInformation("Getting schedule for professional {ProfessionalId}", query.ProfessionalId);
         
         // retrieve all professional available days with availability slots
-        var dayAvailabilities = await scheduleOperations.GetAvailabilityDaysReadOnlyAsync(query.ProfessionalId, cancellationToken);
+        var dayAvailabilities = await repository.GetAvailabilityDaysReadOnlyAsync(query.ProfessionalId, cancellationToken);
 
         var dayAvailabilitiesResult = new List<AvailabilityDayDto>();
     

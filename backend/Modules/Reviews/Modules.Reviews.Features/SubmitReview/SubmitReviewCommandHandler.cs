@@ -6,14 +6,14 @@ using Modules.Notifications.PublicApi.Contracts;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
 using Modules.Reviews.Domain;
-using Modules.Reviews.Domain.Abstractions;
+using Modules.Reviews.Domain.Repositories;
 using Modules.Reviews.Domain.Entities;
 using Modules.Reviews.Domain.Enums;
 
 namespace Modules.Reviews.Features.SubmitReview;
 
 internal sealed class SubmitReviewCommandHandler(
-    ISubmitReviewPort reviews,
+    IReviewRepository reviews,
     ILogger<SubmitReviewCommandHandler> logger,
     IPatientsModuleApi patientsApi,
     IProfessionalModuleApi professionalsApi,
@@ -47,7 +47,8 @@ internal sealed class SubmitReviewCommandHandler(
             command.Rating,
             command.Type);
 
-        await reviews.AddAsync(review, cancellationToken);
+        reviews.Add(review);
+        await reviews.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Review submitted with ID {ReviewId}", review.Id);
 

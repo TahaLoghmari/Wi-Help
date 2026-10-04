@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Modules.Appointments.Domain;
-using Modules.Appointments.Domain.Ports;
+using Modules.Appointments.Domain.Enums;
+using Modules.Appointments.Domain.Repositories;
 using Modules.Appointments.PublicApi;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
@@ -17,7 +18,7 @@ using Modules.Identity.PublicApi;
 namespace Modules.Appointments.Features.RespondToAppointment;
 
 public class RespondToAppointmentCommandHandler(
-    IAppointmentWorkflow appointmentsWorkflow,
+    IAppointmentRepository appointments,
     ILogger<RespondToAppointmentCommandHandler> logger,
     INotificationsModuleApi notificationsModuleApi,
     IPatientsModuleApi patientsModuleApi,
@@ -32,20 +33,18 @@ public class RespondToAppointmentCommandHandler(
             "Professional user {UserId} responding to appointment {AppointmentId} with action: {Action}",
             command.ProfessionalId, command.AppointmentId, command.IsAccepted ? "Accept" : "Cancel");
         
-        var intent = await appointmentsWorkflow.PrepareProfessionalResponseAsync(
+        var appointment = await appointments.GetForProfessionalAsync(
             command.AppointmentId,
             command.ProfessionalId,
-            command.IsAccepted,
             cancellationToken);
             
-        if (intent is null)
+        if (appointment is null)
         {
             logger.LogWarning("Appointment {AppointmentId} not found", command.AppointmentId);
             return Result.Failure(AppointmentErrors.AppointmentNotFound(command.AppointmentId));
         }
 
-        var appointment = intent.Appointment;
-        if (!intent.CanTransition)
+        if (appointment.Status != AppointmentStatus.Offered)
         {
             logger.LogWarning(
                 "Cannot respond to appointment {AppointmentId} in status {Status}",
@@ -54,6 +53,15 @@ public class RespondToAppointmentCommandHandler(
         }
 
         // Get patient information before updating appointment status
+        if (command.IsAccepted)
+        {
+            appointment.Confirm();
+        }
+        else
+        {
+            appointment.Cancel();
+        }
+
         var patientResult = await patientsModuleApi.GetPatientsByIdsAsync([appointment.PatientId], cancellationToken);
         if (!patientResult.IsSuccess)
         {
@@ -198,7 +206,7 @@ public class RespondToAppointmentCommandHandler(
             }
         }
 
-        await appointmentsWorkflow.FinalizeProfessionalResponseAsync(intent, cancellationToken);
+        await appointments.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }

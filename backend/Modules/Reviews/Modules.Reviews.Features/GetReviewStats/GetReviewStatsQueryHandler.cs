@@ -1,12 +1,12 @@
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Reviews.Domain;
-using Modules.Reviews.Domain.Abstractions;
+using Modules.Reviews.Domain.Repositories;
 
 namespace Modules.Reviews.Features.GetReviewStats;
 
 internal sealed class GetReviewStatsQueryHandler(
-    IGetReviewStatsPort reviewsPort)
+    IReviewRepository reviews)
     : IQueryHandler<GetReviewStatsQuery, ReviewStatsDto>
 {
     public async Task<Result<ReviewStatsDto>> Handle(
@@ -33,7 +33,7 @@ internal sealed class GetReviewStatsQueryHandler(
             return Result<ReviewStatsDto>.Failure(ReviewErrors.Unauthorized());
         }
 
-        var stats = await reviewsPort.GetAsync(subjectId, cancellationToken);
+        var stats = await reviews.GetStatsAsync(subjectId, cancellationToken);
 
         return Result<ReviewStatsDto>.Success(
             new ReviewStatsDto(Math.Round(stats.Average, 1), stats.Count));

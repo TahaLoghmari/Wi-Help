@@ -8,7 +8,7 @@ import Animated, {
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { CARD_SHADOW, DAY_KEYS } from "@/features/professionals/lib/utils";
-import { type AvailabilityDayDto } from "@/entities/professional";
+import { type AvailabilityDayDto } from "@/features/professionals/api";
 
 export interface DayCardProps {
   dayData: AvailabilityDayDto;

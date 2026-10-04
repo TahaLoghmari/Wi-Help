@@ -3,8 +3,8 @@ import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
-import { AuthenticatedRealtimeProvider } from "@/app-composition/authenticated-realtime-provider";
-import { AuthGuard } from "@/components/guards/auth-guard";
+import { AuthenticatedRealtimeProvider } from "@/providers/authenticated-realtime-provider";
+import { AuthGuard } from "@/app-composition/guards/auth-guard";
 
 export default function ProfessionalLayout() {
   const insets = useSafeAreaInsets();

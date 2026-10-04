@@ -2,7 +2,7 @@ import type {
   ConversationDto,
   MessageDto,
   MessagesResponseDto,
-} from "@/entities/messaging";
+} from "@/features/messaging/api";
 import { getDateLabel, isSameDay } from "./utils";
 
 export type ConversationListItem =

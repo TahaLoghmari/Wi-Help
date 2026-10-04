@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { clsx } from "clsx";
-import type { NotificationDto } from "@/entities/notification";
+import type { NotificationDto } from "@/features/notifications/api";
 import {
   getIconConfig,
   getRelativeTime,

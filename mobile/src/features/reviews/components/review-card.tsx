@@ -9,7 +9,7 @@ import {
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import { type ReviewDto } from "@/entities/review";
+import { type ReviewDto } from "@/features/reviews/api";
 import {
   getReviewCapabilities,
   type ReviewSubject,

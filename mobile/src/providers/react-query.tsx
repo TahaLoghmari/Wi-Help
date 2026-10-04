@@ -11,9 +11,10 @@
  * - gcTime: 10 minutes
  * - mutations retry: 0
  *
- * Note: `refetchOnWindowFocus` has no direct equivalent in React Native,
- * but TanStack Query handles this gracefully — it is simply a no-op on
- * platforms without a window focus event.
+ * Native focus refetch remains intentionally disabled. Native connectivity
+ * refetch would require an onlineManager network listener; this app currently
+ * has no NetInfo/expo-network integration. On web, the built-in browser listeners
+ * apply. Do not treat refetchOnReconnect alone as native network detection.
  */
 
 import { QueryClient, type DefaultOptions } from "@tanstack/react-query";

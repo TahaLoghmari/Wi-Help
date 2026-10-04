@@ -1,9 +1,9 @@
 import { router } from "expo-router";
 import type { SharedValue } from "react-native-reanimated";
-import { AppHeader } from "@/components/app-header";
-import { ROUTE_PATHS } from "@/config/routes";
-import { useHasUnreadNotifications } from "@/entities/notification";
-import { useCurrentUser } from "@/entities/session";
+import { AppHeader } from "@/shared/ui/app-header";
+import { ROUTE_PATHS } from "@/app-composition/routes";
+import { useHasUnreadNotifications } from "@/features/notifications/api";
+import { useCurrentUser } from "@/features/auth/session";
 
 interface ProfessionalAppHeaderProps {
   scrollY: SharedValue<number>;
