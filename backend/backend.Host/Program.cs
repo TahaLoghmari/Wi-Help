@@ -1,10 +1,8 @@
 using backend.Host;
 using backend.Host.Extensions;
-using backend.Host.Authentication;
-using Modules.Identity.Features.Auth;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.SignalR;
+using Modules.Identity.Domain.Entities;
 using Modules.Identity.Infrastructure.Database;
 using Modules.Notifications.Infrastructure;
 using Modules.Messaging.Infrastructure;
@@ -27,9 +25,6 @@ builder
 
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
-
-
-builder.Services.AddScoped<IAuthCookies, CookieService>();
 
 WebApplication app = builder.Build();
 
