@@ -3,19 +3,20 @@ using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Messaging.Domain;
 using Modules.Messaging.Domain.Enums;
-using Modules.Messaging.Domain.Ports;
+using Modules.Messaging.Domain.Repositories;
+using Modules.Messaging.Domain.Services;
 
 namespace Modules.Messaging.Features.MarkMessagesAsDelivered;
 
 public class MarkMessagesAsDeliveredCommandHandler(
-    IConversationOperations conversationOperations,
+    IConversationRepository conversations,
     IMessagingRealtimeEvents realtimeEvents,
     ILogger<MarkMessagesAsDeliveredCommandHandler> logger) : ICommandHandler<MarkMessagesAsDeliveredCommand>
 {
     public async Task<Result> Handle(MarkMessagesAsDeliveredCommand command, CancellationToken cancellationToken)
     {
         // Verify conversation exists and user is a participant
-        var conversation = await conversationOperations.GetConversationAsync(command.ConversationId, cancellationToken);
+        var conversation = await conversations.GetConversationAsync(command.ConversationId, cancellationToken);
 
         if (conversation == null)
         {
@@ -30,7 +31,7 @@ public class MarkMessagesAsDeliveredCommandHandler(
             return Result.Failure(MessagingErrors.NotParticipant());
         }
 
-        var sentMessages = await conversationOperations.GetSentMessagesAsync(
+        var sentMessages = await conversations.GetSentMessagesAsync(
             command.ConversationId,
             command.UserId,
             cancellationToken);
@@ -42,7 +43,7 @@ public class MarkMessagesAsDeliveredCommandHandler(
 
         if (sentMessages.Count > 0)
         {
-            await conversationOperations.SaveChangesAsync(cancellationToken);
+            await conversations.SaveChangesAsync(cancellationToken);
             logger.LogInformation("Marked {Count} messages as delivered in conversation {ConversationId} by user {UserId}",
                 sentMessages.Count, command.ConversationId, command.UserId);
 

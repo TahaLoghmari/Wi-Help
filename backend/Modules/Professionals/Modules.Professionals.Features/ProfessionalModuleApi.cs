@@ -4,21 +4,21 @@ using Modules.Common.Features.Results;
 using Modules.Common.Features.DTOs;
 using Modules.Identity.PublicApi;
 using Modules.Professionals.Domain;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 using Modules.Professionals.PublicApi;
 using Modules.Professionals.PublicApi.Contracts;
 
 namespace Modules.Professionals.Features;
 
 public class ProfessionalModuleApi(
-    IProfessionalProfileOperations profileOperations,
+    IProfessionalRepository repository,
     IIdentityModuleApi identityApi,
     ILogger<ProfessionalModuleApi> logger)
     : IProfessionalModuleApi
 {
     public async Task<Result<ProfessionalDto>> GetProfessionalByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        var professional = await profileOperations.FindByUserIdWithDetailsReadOnlyAsync(userId, cancellationToken);
+        var professional = await repository.FindByUserIdWithDetailsReadOnlyAsync(userId, cancellationToken);
 
         if (professional is null)
         {
@@ -55,7 +55,7 @@ public class ProfessionalModuleApi(
 
     public async Task<Result<List<ProfessionalDto>>> GetProfessionalsByIdsAsync(IEnumerable<Guid> professionalIds, CancellationToken cancellationToken = default)
     {
-        var professionals = await profileOperations.GetByIdsWithDetailsAsync(professionalIds, cancellationToken);
+        var professionals = await repository.GetByIdsWithDetailsAsync(professionalIds, cancellationToken);
 
         if (professionals.Count == 0)
         {
@@ -107,9 +107,9 @@ public class ProfessionalModuleApi(
         int pageSize, 
         CancellationToken cancellationToken = default)
     {
-        var totalCount = await profileOperations.CountAsync(cancellationToken);
+        var totalCount = await repository.CountAsync(cancellationToken);
 
-        var professionals = await profileOperations.GetPublicApiAdminPageAsync(page, pageSize, cancellationToken);
+        var professionals = await repository.GetPublicApiAdminPageAsync(page, pageSize, cancellationToken);
 
         // Get user IDs
         var userIds = professionals.Select(p => p.UserId).ToList();
@@ -158,7 +158,7 @@ public class ProfessionalModuleApi(
         VerificationStatus verificationStatus,
         CancellationToken cancellationToken = default)
     {
-        var professional = await profileOperations.FindByIdAsync(professionalId, cancellationToken);
+        var professional = await repository.FindByIdAsync(professionalId, cancellationToken);
 
         if (professional is null)
         {
@@ -167,7 +167,7 @@ public class ProfessionalModuleApi(
 
         professional.UpdateVerificationStatus((Modules.Professionals.Domain.Enums.VerificationStatus)verificationStatus);
 
-        await profileOperations.SaveChangesAsync(cancellationToken);
+        await repository.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }

@@ -3,7 +3,7 @@ using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.PublicApi;
 using Modules.Patients.Domain;
-using Modules.Patients.Domain.Ports;
+using Modules.Patients.Domain.Repositories;
 using Modules.Patients.Features.GetAllergies;
 using Modules.Patients.Features.GetConditions;
 using Modules.Patients.Features.GetMedications;
@@ -12,7 +12,7 @@ namespace Modules.Patients.Features.GetPatient;
 
 public sealed class GetPatientQueryHandler(
     IIdentityModuleApi identityApi,
-    IPatientProfileOperations patientProfile,
+    IPatientRepository repository,
     ILogger<GetPatientQueryHandler> logger) : IQueryHandler<GetPatientQuery, GetPatientDto>
 {
     public async Task<Result<GetPatientDto>> Handle(
@@ -21,7 +21,7 @@ public sealed class GetPatientQueryHandler(
     {
         logger.LogInformation("Retrieving patient profile for PatientId: {PatientId}", query.PatientId);
 
-        var patient = await patientProfile.GetByIdAsync(query.PatientId, cancellationToken);
+        var patient = await repository.GetByIdAsync(query.PatientId, cancellationToken);
 
         if (patient is null)
         {

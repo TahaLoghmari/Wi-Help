@@ -1,12 +1,12 @@
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 
 namespace Modules.Professionals.Features.GetSpecializations;
 
 public sealed class GetSpecializationsQueryHandler(
-    IProfessionalCatalogOperations catalogOperations,
+    IProfessionalCatalogRepository catalogRepository,
     ILogger<GetSpecializationsQueryHandler> logger) : IQueryHandler<GetSpecializationsQuery, List<SpecializationDto>>
 {
     public async Task<Result<List<SpecializationDto>>> Handle(
@@ -15,7 +15,7 @@ public sealed class GetSpecializationsQueryHandler(
     {
         logger.LogInformation("Retrieving all specializations");
 
-        var specializations = (await catalogOperations.GetSpecializationsAsync(cancellationToken))
+        var specializations = (await catalogRepository.GetSpecializationsAsync(cancellationToken))
             .Select(s => new SpecializationDto(s.Id, s.Key))
             .ToList();
 

@@ -5,12 +5,12 @@ using Modules.Identity.PublicApi;
 using Modules.Messaging.Domain;
 using Modules.Messaging.Domain.Entities;
 using Modules.Messaging.Domain.Enums;
-using Modules.Messaging.Domain.Ports;
+using Modules.Messaging.Domain.Repositories;
 
 namespace Modules.Messaging.Features.CreateConversation;
 
 public class CreateConversationCommandHandler(
-    IConversationOperations conversationOperations,
+    IConversationRepository conversations,
     IIdentityModuleApi identityApi,
     ILogger<CreateConversationCommandHandler> logger) : ICommandHandler<CreateConversationCommand, Guid>
 {
@@ -31,7 +31,7 @@ public class CreateConversationCommandHandler(
         }
 
         // Check if conversation already exists between these participants
-        var existingConversation = await conversationOperations.FindAsync(
+        var existingConversation = await conversations.FindAsync(
             command.Participant1Id,
             command.Participant2Id,
             cancellationToken);
@@ -48,7 +48,8 @@ public class CreateConversationCommandHandler(
             command.Participant2Id,
             ConversationType.ProfessionalPatient);
 
-        await conversationOperations.CreateAsync(conversation, cancellationToken);
+        conversations.Add(conversation);
+        await conversations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Created conversation {ConversationId} between {Participant1Id} and {Participant2Id}",
             conversation.Id, command.Participant1Id, command.Participant2Id);

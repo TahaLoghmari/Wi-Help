@@ -5,13 +5,13 @@ using Modules.Identity.PublicApi;
 using Modules.Identity.PublicApi.Contracts;
 using Modules.Patients.Domain;
 using Modules.Patients.Domain.Entities;
-using Modules.Patients.Domain.Ports;
+using Modules.Patients.Domain.Repositories;
 
 namespace Modules.Patients.Features.Auth.CompleteOnboarding;
 
 public sealed class CompletePatientOnboardingCommandHandler(
     IIdentityModuleApi identityApi,
-    IPatientOnboardingOperations patientOnboarding,
+    IPatientRepository repository,
     ILogger<CompletePatientOnboardingCommandHandler> logger) : ICommandHandler<CompletePatientOnboardingCommand>
 {
     public async Task<Result> Handle(
@@ -24,7 +24,7 @@ public sealed class CompletePatientOnboardingCommandHandler(
         if (command.EmergencyContact.RelationshipId.HasValue)
         {
             var relationshipId = command.EmergencyContact.RelationshipId.Value;
-            if (!await patientOnboarding.RelationshipExistsAsync(relationshipId, cancellationToken))
+            if (!await repository.RelationshipExistsAsync(relationshipId, cancellationToken))
             {
                 logger.LogWarning("Relationship not found: {RelationshipId}", relationshipId);
                 return Result.Failure(PatientErrors.RelationshipNotFound(relationshipId));
@@ -50,13 +50,13 @@ public sealed class CompletePatientOnboardingCommandHandler(
         }
 
         // Check if patient already exists
-        var existingPatient = await patientOnboarding.GetPatientByUserIdAsync(command.UserId, cancellationToken);
+        var existingPatient = await repository.GetByUserIdAsync(command.UserId, cancellationToken);
 
         if (existingPatient is not null)
         {
             // Update existing patient's emergency contact
             existingPatient.Update(emergencyContact: command.EmergencyContact);
-            await patientOnboarding.SaveChangesAsync(cancellationToken);
+            await repository.SaveChangesAsync(cancellationToken);
             
             logger.LogInformation("Updated existing patient for UserId: {UserId}", command.UserId);
             return Result.Success();
@@ -65,8 +65,8 @@ public sealed class CompletePatientOnboardingCommandHandler(
         // Create new patient
         var patient = new Patient(command.UserId, command.EmergencyContact);
 
-        await patientOnboarding.AddPatientAsync(patient, cancellationToken);
-        await patientOnboarding.SaveChangesAsync(cancellationToken);
+        repository.Add(patient);
+        await repository.SaveChangesAsync(cancellationToken);
 
         var addClaimResult = await identityApi.AddClaimAsync(
             command.UserId, 

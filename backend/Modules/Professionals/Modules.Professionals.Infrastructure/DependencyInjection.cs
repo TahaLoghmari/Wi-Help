@@ -2,8 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Modules.Professionals.Infrastructure.Database;
-using Modules.Professionals.Infrastructure.Database.Operations;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Infrastructure.Database.Repositories;
+using Modules.Professionals.Domain.Repositories;
 
 namespace Modules.Professionals.Infrastructure;
 
@@ -18,11 +18,11 @@ public static class DependencyInjection
                 npgsqlOptions.MigrationsHistoryTable(DbConsts.MigrationHistoryTableName, DbConsts.ProfessionalsSchemaName))
             .UseSnakeCaseNamingConvention()
         );
-        services.AddScoped<IProfessionalProfileOperations, ProfessionalProfileOperations>();
-        services.AddScoped<IProfessionalCatalogOperations, ProfessionalCatalogOperations>();
-        services.AddScoped<IProfessionalScheduleOperations, ProfessionalScheduleOperations>();
-        services.AddScoped<IVerificationDocumentOperations, VerificationDocumentOperations>();
-        services.AddScoped<IProfessionalQualificationsOperations, ProfessionalQualificationsOperations>();
+        services.AddScoped<IProfessionalRepository, ProfessionalRepository>();
+        services.AddScoped<IProfessionalCatalogRepository, ProfessionalCatalogRepository>();
+        services.AddScoped<IProfessionalScheduleRepository, ProfessionalScheduleRepository>();
+        services.AddScoped<IVerificationDocumentRepository, VerificationDocumentRepository>();
+        services.AddScoped<IProfessionalQualificationsRepository, ProfessionalQualificationsRepository>();
         return services;
     }
 }

@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Using Include="Xunit" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../Modules/Identity/Modules.Identity.Infrastructure/Modules.Identity.Infrastructure.csproj" />
+    <ProjectReference Include="../../Modules/Messaging/Modules.Messaging.Infrastructure/Modules.Messaging.Infrastructure.csproj" />
+    <ProjectReference Include="../../Modules/Patients/Modules.Patients.Infrastructure/Modules.Patients.Infrastructure.csproj" />
+    <ProjectReference Include="../../Modules/Professionals/Modules.Professionals.Infrastructure/Modules.Professionals.Infrastructure.csproj" />
+    <ProjectReference Include="../../Modules/Appointments/Modules.Appointments.Features/Modules.Appointments.Features.csproj" />
+    <ProjectReference Include="../../Modules/Appointments/Modules.Appointments.Infrastructure/Modules.Appointments.Infrastructure.csproj" />
+    <ProjectReference Include="../../Modules/Notifications/Modules.Notifications.Features/Modules.Notifications.Features.csproj" />
+    <ProjectReference Include="../../Modules/Notifications/Modules.Notifications.Infrastructure/Modules.Notifications.Infrastructure.csproj" />
+    <ProjectReference Include="../../Modules/Reviews/Modules.Reviews.Infrastructure/Modules.Reviews.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,13 +1,13 @@
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Identity.Domain.Ports;
+using Modules.Identity.Domain.Services;
 
 namespace Modules.Identity.Features.BanUser;
 
 internal sealed class BanUserCommandHandler(
-    IIdentityAccountOperations accounts,
-    IIdentityLockoutOperations lockout,
+    IIdentityAccountService accounts,
+    IIdentityLockoutService lockout,
     ILogger<BanUserCommandHandler> logger)
     : ICommandHandler<BanUserCommand>
 {

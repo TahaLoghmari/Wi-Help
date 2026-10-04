@@ -2,18 +2,18 @@ using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Common.Features.DTOs;
 using Modules.Identity.PublicApi;
-using Modules.Patients.Domain.Ports;
+using Modules.Patients.Domain.Repositories;
 
 namespace Modules.Patients.Features.GetAllPatients;
 
 internal sealed class GetAllPatientsQueryHandler(
-    IPatientAdminOperations patientAdmin,
+    IPatientRepository repository,
     IIdentityModuleApi identityModuleApi)
     : IQueryHandler<GetAllPatientsQuery, PaginationResultDto<GetAllPatientsDto>>
 {
     public async Task<Result<PaginationResultDto<GetAllPatientsDto>>> Handle(GetAllPatientsQuery request, CancellationToken cancellationToken)
     {
-        var (patients, totalCount) = await patientAdmin.GetPageAsync(
+        var (patients, totalCount) = await repository.GetPageAsync(
             request.Page,
             request.PageSize,
             cancellationToken);

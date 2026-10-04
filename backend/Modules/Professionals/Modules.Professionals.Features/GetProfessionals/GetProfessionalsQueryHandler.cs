@@ -6,13 +6,13 @@ using Modules.Identity.PublicApi;
 using Modules.Professionals.Features.GetProfessional;
 using Modules.Professionals.Features.GetServices;
 using Modules.Professionals.Features.GetSpecializations;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 
 namespace Modules.Professionals.Features.GetProfessionals;
 
 public sealed class GetProfessionalsQueryHandler(
     IIdentityModuleApi identityApi,
-    IProfessionalProfileOperations profileOperations,
+    IProfessionalRepository repository,
     ILogger<GetProfessionalsQueryHandler> logger) : IQueryHandler<GetProfessionalsQuery, PaginationResultDto<GetProfessionalDto>>
 {
     public async Task<Result<PaginationResultDto<GetProfessionalDto>>> Handle(
@@ -21,7 +21,7 @@ public sealed class GetProfessionalsQueryHandler(
     {
         logger.LogInformation("Retrieving professionals with filters: {@Query}", query);
 
-        var professionals = await profileOperations.GetAllWithDetailsAsync(query.MaxPrice, cancellationToken);
+        var professionals = await repository.GetAllWithDetailsAsync(query.MaxPrice, cancellationToken);
 
         if (professionals.Count == 0)
         {

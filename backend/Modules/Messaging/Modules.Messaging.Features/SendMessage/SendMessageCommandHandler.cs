@@ -3,7 +3,8 @@ using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Messaging.Domain;
 using Modules.Messaging.Domain.Entities;
-using Modules.Messaging.Domain.Ports;
+using Modules.Messaging.Domain.Repositories;
+using Modules.Messaging.Domain.Services;
 using Modules.Notifications.PublicApi;
 using Modules.Notifications.PublicApi.Contracts;
 using Modules.Identity.PublicApi;
@@ -11,7 +12,7 @@ using Modules.Identity.PublicApi;
 namespace Modules.Messaging.Features.SendMessage;
 
 public class SendMessageCommandHandler(
-    IConversationOperations conversationOperations,
+    IConversationRepository conversations,
     IMessagingRealtimeEvents realtimeEvents,
     INotificationsModuleApi notificationsModuleApi,
     IIdentityModuleApi identityModuleApi,
@@ -20,7 +21,7 @@ public class SendMessageCommandHandler(
     public async Task<Result<Guid>> Handle(SendMessageCommand command, CancellationToken cancellationToken)
     {
         // Verify conversation exists and user is a participant
-        var conversation = await conversationOperations.GetConversationAsync(command.ConversationId, cancellationToken);
+        var conversation = await conversations.GetConversationAsync(command.ConversationId, cancellationToken);
 
         if (conversation == null)
         {
@@ -40,7 +41,9 @@ public class SendMessageCommandHandler(
             command.SenderId,
             command.Content);
 
-        await conversationOperations.SaveMessageAsync(conversation, message, cancellationToken);
+        conversations.AddMessage(message);
+        conversation.UpdateLastMessageAt();
+        await conversations.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Message {MessageId} sent in conversation {ConversationId} by user {SenderId}",
             message.Id, command.ConversationId, command.SenderId);

@@ -3,19 +3,19 @@ using Modules.Common.Features.Results;
 using Modules.Common.Features.DTOs;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
-using Modules.Reviews.Domain.Abstractions;
+using Modules.Reviews.Domain.Repositories;
 
 namespace Modules.Reviews.Features.GetReviewsForAdmin;
 
 internal sealed class GetReviewsForAdminHandler(
-    IGetReviewsForAdminPort reviewsPort,
+    IReviewRepository reviewsRepository,
     IPatientsModuleApi patientsModuleApi,
     IProfessionalModuleApi professionalModuleApi)
     : IQueryHandler<GetReviewsForAdminQuery, PaginationResultDto<ReviewAdminDto>>
 {
     public async Task<Result<PaginationResultDto<ReviewAdminDto>>> Handle(GetReviewsForAdminQuery query, CancellationToken cancellationToken)
     {
-        var reviewsPage = await reviewsPort.GetAsync(query.Page, query.PageSize, cancellationToken);
+        var reviewsPage = await reviewsRepository.GetAdminPageAsync(query.Page, query.PageSize, cancellationToken);
         var reviews = reviewsPage.Reviews;
         var totalCount = reviewsPage.TotalCount;
 

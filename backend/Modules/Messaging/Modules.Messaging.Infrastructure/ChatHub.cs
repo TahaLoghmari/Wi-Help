@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using Modules.Messaging.Domain.Ports;
+using Modules.Messaging.Domain.Services;
 using Modules.Messaging.Infrastructure.Services;
 
 namespace Modules.Messaging.Infrastructure;

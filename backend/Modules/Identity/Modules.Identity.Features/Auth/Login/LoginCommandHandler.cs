@@ -3,14 +3,14 @@ using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.Domain;
 using Modules.Identity.Domain.DTOs;
-using Modules.Identity.Domain.Ports;
+using Modules.Identity.Domain.Services;
 
 namespace Modules.Identity.Features.Auth.Login;
 
 public sealed class LoginCommandHandler(
-    IIdentityAccountOperations accounts,
-    IIdentityCredentialOperations credentials,
-    IIdentityLockoutOperations lockout,
+    IIdentityAccountService accounts,
+    IIdentityCredentialService credentials,
+    IIdentityLockoutService lockout,
     ITokenManagement tokenManagement,
     ILogger<LoginCommandHandler> logger) : ICommandHandler<LoginCommand,AccessTokensDto>
 {

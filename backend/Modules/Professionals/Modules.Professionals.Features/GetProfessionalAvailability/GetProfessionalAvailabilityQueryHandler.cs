@@ -2,14 +2,14 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Appointments.PublicApi;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 using Modules.Professionals.PublicApi;
 using Modules.Professionals.PublicApi.Contracts;
 
 namespace Modules.Professionals.Features.GetProfessionalAvailability;
 
 internal sealed class GetProfessionalAvailabilityQueryHandler(
-    IProfessionalScheduleOperations scheduleOperations,
+    IProfessionalScheduleRepository repository,
     IAppointmentsModuleApi appointmentsModuleApi,
     TimeProvider timeProvider,
     ILogger<GetProfessionalAvailabilityQueryHandler> logger)
@@ -20,7 +20,7 @@ internal sealed class GetProfessionalAvailabilityQueryHandler(
         CancellationToken cancellationToken)
     {
         // Retrieve all availability days for the professional, including their slots
-        var availabilityDays = await scheduleOperations.GetAvailabilityDaysAsync(query.ProfessionalId, cancellationToken);
+        var availabilityDays = await repository.GetAvailabilityDaysAsync(query.ProfessionalId, cancellationToken);
 
         var monthStart = new DateTime(query.Year, query.Month, 1, 0, 0, 0, DateTimeKind.Utc);
         var monthEnd = monthStart.AddMonths(1);

@@ -2,12 +2,12 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Reviews.Domain;
-using Modules.Reviews.Domain.Abstractions;
+using Modules.Reviews.Domain.Repositories;
 
 namespace Modules.Reviews.Features.UnlikeReview;
 
 internal sealed class UnlikeReviewCommandHandler(
-    IUnlikeReviewPort reviews,
+    IReviewRepository reviews,
     ILogger<UnlikeReviewCommandHandler> logger) : ICommandHandler<UnlikeReviewCommand>
 {
     public async Task<Result> Handle(UnlikeReviewCommand command, CancellationToken cancellationToken)
@@ -26,7 +26,8 @@ internal sealed class UnlikeReviewCommandHandler(
             return Result.Failure(ReviewErrors.LikeNotFound(command.ReviewId, command.UserId));
         }
 
-        await reviews.RemoveLikeAsync(like, cancellationToken);
+        reviews.RemoveLike(like);
+        await reviews.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Review {ReviewId} unliked by user {UserId}", command.ReviewId, command.UserId);
 

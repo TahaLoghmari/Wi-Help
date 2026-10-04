@@ -5,14 +5,14 @@ using Modules.Identity.PublicApi;
 using Modules.Identity.PublicApi.Contracts;
 using Modules.Professionals.Domain;
 using Modules.Professionals.Domain.Entities;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 
 namespace Modules.Professionals.Features.Auth.RegisterProfessional;
 
 public sealed class RegisterProfessionalCommandHandler(
     IIdentityModuleApi identityApi,
-    IProfessionalProfileOperations profileOperations,
-    IProfessionalCatalogOperations catalogOperations,
+    IProfessionalRepository repository,
+    IProfessionalCatalogRepository catalogRepository,
     ILogger<RegisterProfessionalCommandHandler> logger) : ICommandHandler<RegisterProfessionalCommand>
 {
     public async Task<Result> Handle(
@@ -45,7 +45,7 @@ public sealed class RegisterProfessionalCommandHandler(
         Guid userId = createUserResult.Value;
         logger.LogInformation("User created successfully, creating professional profile for UserId: {UserId}", userId);
 
-        var existingProfessional = await profileOperations.FindByUserIdAsync(userId, cancellationToken);
+        var existingProfessional = await repository.FindByUserIdAsync(userId, cancellationToken);
 
         if (existingProfessional is not null)
         {
@@ -53,7 +53,7 @@ public sealed class RegisterProfessionalCommandHandler(
             return Result.Failure(ProfessionalErrors.AlreadyExists(userId));
         }
 
-        var specialization = await catalogOperations.FindSpecializationAsync(command.SpecializationId, cancellationToken);
+        var specialization = await catalogRepository.FindSpecializationAsync(command.SpecializationId, cancellationToken);
 
         if (specialization is null)
         {
@@ -66,8 +66,8 @@ public sealed class RegisterProfessionalCommandHandler(
             command.SpecializationId,
             command.Experience);
 
-        profileOperations.Add(professional);
-        await profileOperations.SaveChangesAsync(cancellationToken);
+        repository.Add(professional);
+        await repository.SaveChangesAsync(cancellationToken);
 
         var addClaimResult = await identityApi.AddClaimAsync(userId, "ProfessionalId", professional.Id.ToString(), cancellationToken);
         if (!addClaimResult.IsSuccess)

@@ -2,13 +2,13 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.Domain;
-using Modules.Identity.Domain.Ports;
+using Modules.Identity.Domain.Services;
 
 namespace Modules.Identity.Features.Auth.ChangePassword;
 
 public sealed class ChangePasswordCommandHandler(
-    IIdentityAccountOperations accounts,
-    IIdentityCredentialOperations credentials,
+    IIdentityAccountService accounts,
+    IIdentityCredentialService credentials,
     ILogger<ChangePasswordCommandHandler> logger) : ICommandHandler<ChangePasswordCommand>
 {
     public async Task<Result> Handle(

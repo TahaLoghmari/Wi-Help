@@ -1,13 +1,13 @@
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Identity.Domain.Ports;
+using Modules.Identity.Domain.Services;
 
 namespace Modules.Identity.Features.AdminChangePassword;
 
 internal sealed class AdminChangePasswordCommandHandler(
-    IIdentityAccountOperations accounts,
-    IIdentityCredentialOperations credentials,
+    IIdentityAccountService accounts,
+    IIdentityCredentialService credentials,
     ILogger<AdminChangePasswordCommandHandler> logger)
     : ICommandHandler<AdminChangePasswordCommand>
 {

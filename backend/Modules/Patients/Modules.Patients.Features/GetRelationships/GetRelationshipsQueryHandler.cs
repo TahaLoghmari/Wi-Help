@@ -1,12 +1,12 @@
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Patients.Domain.Ports;
+using Modules.Patients.Domain.Repositories;
 
 namespace Modules.Patients.Features.GetRelationships;
 
 public sealed class GetRelationshipsQueryHandler(
-    IPatientCatalogOperations patientCatalog,
+    IPatientCatalogRepository catalogRepository,
     ILogger<GetRelationshipsQueryHandler> logger) : IQueryHandler<GetRelationshipsQuery, List<RelationshipDto>>
 {
     public async Task<Result<List<RelationshipDto>>> Handle(
@@ -15,7 +15,7 @@ public sealed class GetRelationshipsQueryHandler(
     {
         logger.LogInformation("Retrieving all relationships");
 
-        var relationships = (await patientCatalog.GetRelationshipsAsync(cancellationToken))
+        var relationships = (await catalogRepository.GetRelationshipsAsync(cancellationToken))
             .Select(relationship => new RelationshipDto(relationship.Id, relationship.Key))
             .ToList();
 

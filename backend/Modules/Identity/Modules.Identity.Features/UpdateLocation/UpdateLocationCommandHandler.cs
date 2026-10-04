@@ -3,7 +3,7 @@ using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Common.Features.ValueObjects;
 using Modules.Identity.Domain;
-using Modules.Identity.Domain.Ports;
+using Modules.Identity.Domain.Services;
 
 namespace Modules.Identity.Features.UpdateLocation;
 
@@ -11,7 +11,7 @@ namespace Modules.Identity.Features.UpdateLocation;
 /// Handles the UpdateLocation command - validates and persists user location coordinates.
 /// </summary>
 public sealed class UpdateLocationCommandHandler(
-    IIdentityAccountOperations accounts,
+    IIdentityAccountService accounts,
     ILogger<UpdateLocationCommandHandler> logger) : ICommandHandler<UpdateLocationCommand>
 {
     public async Task<Result> Handle(UpdateLocationCommand command, CancellationToken cancellationToken)

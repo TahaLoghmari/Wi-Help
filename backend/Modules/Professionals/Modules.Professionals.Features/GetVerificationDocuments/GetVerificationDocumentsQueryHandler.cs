@@ -2,13 +2,13 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 
 namespace Modules.Professionals.Features.GetVerificationDocuments;
 
 public sealed class GetVerificationDocumentsQueryHandler(
-    IProfessionalProfileOperations profileOperations,
-    IVerificationDocumentOperations documentOperations,
+    IProfessionalRepository repository,
+    IVerificationDocumentRepository documentRepository,
     ILogger<GetVerificationDocumentsQueryHandler> logger) : IQueryHandler<GetVerificationDocumentsQuery, List<VerificationDocumentDto>>
 {
     public async Task<Result<List<VerificationDocumentDto>>> Handle(
@@ -17,7 +17,7 @@ public sealed class GetVerificationDocumentsQueryHandler(
     {
         logger.LogInformation("Retrieving verification documents for UserId: {UserId}", query.UserId);
 
-        var professional = await profileOperations.FindByUserIdReadOnlyAsync(query.UserId, cancellationToken);
+        var professional = await repository.FindByUserIdReadOnlyAsync(query.UserId, cancellationToken);
 
         if (professional is null)
         {
@@ -25,7 +25,7 @@ public sealed class GetVerificationDocumentsQueryHandler(
             return Result<List<VerificationDocumentDto>>.Failure(ProfessionalErrors.NotFound(query.UserId));
         }
 
-        var documents = (await documentOperations.GetByProfessionalIdAsync(professional.Id, cancellationToken))
+        var documents = (await documentRepository.GetByProfessionalIdAsync(professional.Id, cancellationToken))
             .Select(vd => new VerificationDocumentDto(
                 vd.Id,
                 vd.Type,

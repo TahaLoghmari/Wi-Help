@@ -1,23 +1,10 @@
-using Microsoft.EntityFrameworkCore;
-using Modules.Messaging.Domain.Ports;
-using Modules.Messaging.Infrastructure.Database;
+using Modules.Messaging.Domain.Repositories;
+using Modules.Messaging.Domain.Services;
 
 namespace Modules.Messaging.Infrastructure.Services;
 
-public class ConversationAccessService : IConversationAccessService
+public class ConversationAccessService(IConversationRepository conversationRepository) : IConversationAccessService
 {
-    private readonly MessagingDbContext _messagingDbContext;
-
-    public ConversationAccessService(MessagingDbContext messagingDbContext)
-    {
-        _messagingDbContext = messagingDbContext;
-    }
-
-    public async Task<bool> IsUserParticipantAsync(Guid conversationId, Guid userId)
-    {
-        return await _messagingDbContext.Conversations
-            .AsNoTracking()
-            .AnyAsync(c => c.Id == conversationId &&
-                           (c.Participant1Id == userId || c.Participant2Id == userId));
-    }
+    public Task<bool> IsUserParticipantAsync(Guid conversationId, Guid userId) =>
+        conversationRepository.IsParticipantAsync(conversationId, userId, CancellationToken.None);
 }

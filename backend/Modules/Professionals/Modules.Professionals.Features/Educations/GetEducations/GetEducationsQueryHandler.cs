@@ -1,19 +1,19 @@
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 
 namespace Modules.Professionals.Features.Educations.GetEducations;
 
 public class GetEducationsQueryHandler(
-    IProfessionalQualificationsOperations qualificationsOperations,
+    IProfessionalQualificationsRepository repository,
     ILogger<GetEducationsQueryHandler> logger) : IQueryHandler<GetEducationsQuery, List<EducationDto>>
 {
     public async Task<Result<List<EducationDto>>> Handle(GetEducationsQuery query, CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting educations for professional {ProfessionalId}", query.ProfessionalId);
 
-        var educations = (await qualificationsOperations.GetEducationsAsync(query.ProfessionalId, cancellationToken))
+        var educations = (await repository.GetEducationsAsync(query.ProfessionalId, cancellationToken))
             .Select(e => new EducationDto(
                 e.Id,
                 e.Institution,

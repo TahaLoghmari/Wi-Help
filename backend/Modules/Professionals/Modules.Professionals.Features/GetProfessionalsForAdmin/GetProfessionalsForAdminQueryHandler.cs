@@ -2,20 +2,20 @@ using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Common.Features.DTOs;
 using Modules.Identity.PublicApi;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 
 namespace Modules.Professionals.Features.GetProfessionalsForAdmin;
 
 internal sealed class GetProfessionalsForAdminQueryHandler(
-    IProfessionalProfileOperations profileOperations,
+    IProfessionalRepository repository,
     IIdentityModuleApi identityModuleApi)
     : IQueryHandler<GetProfessionalsForAdminQuery, PaginationResultDto<GetProfessionalsForAdminDto>>
 {
     public async Task<Result<PaginationResultDto<GetProfessionalsForAdminDto>>> Handle(GetProfessionalsForAdminQuery request, CancellationToken cancellationToken)
     {
-        var totalCount = await profileOperations.CountAsync(cancellationToken);
+        var totalCount = await repository.CountAsync(cancellationToken);
 
-        var professionals = await profileOperations.GetAdminPageAsync(request.Page, request.PageSize, cancellationToken);
+        var professionals = await repository.GetAdminPageAsync(request.Page, request.PageSize, cancellationToken);
 
         var userIds = professionals.Select(p => p.UserId).Distinct();
 

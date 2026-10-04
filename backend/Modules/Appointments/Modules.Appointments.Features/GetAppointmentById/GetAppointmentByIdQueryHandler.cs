@@ -1,5 +1,5 @@
 using Modules.Appointments.Domain;
-using Modules.Appointments.Domain.Ports;
+using Modules.Appointments.Domain.Repositories;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Patients.PublicApi;
@@ -7,7 +7,7 @@ using Modules.Patients.PublicApi;
 namespace Modules.Appointments.Features.GetAppointmentById;
 
 public sealed class GetAppointmentByIdQueryHandler(
-    IAppointmentRead appointments,
+    IAppointmentRepository appointments,
     IPatientsModuleApi patientsApi)
     : IQueryHandler<GetAppointmentByIdQuery, GetAppointmentByIdDto>
 {

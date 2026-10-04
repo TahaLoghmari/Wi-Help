@@ -3,7 +3,7 @@ using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Identity.PublicApi;
 using Modules.Patients.Domain;
-using Modules.Patients.Domain.Ports;
+using Modules.Patients.Domain.Repositories;
 using System.Transactions;
 using Modules.Identity.PublicApi.Contracts;
 
@@ -11,7 +11,7 @@ namespace Modules.Patients.Features.Auth.UpdatePatient;
 
 public sealed class UpdatePatientCommandHandler(
     IIdentityModuleApi identityApi,
-    IPatientProfileOperations patientProfile,
+    IPatientRepository repository,
     IFileStorage fileStorage,
     ILogger<UpdatePatientCommandHandler> logger) : ICommandHandler<UpdatePatientCommand>
 {
@@ -61,7 +61,7 @@ public sealed class UpdatePatientCommandHandler(
 
             logger.LogInformation("Identity fields updated successfully for UserId: {UserId}", command.UserId);
             
-            var patient = await patientProfile.GetByUserIdAsync(command.UserId, cancellationToken);
+            var patient = await repository.GetByUserIdAsync(command.UserId, cancellationToken);
 
             if (patient is null)
             {
@@ -73,7 +73,7 @@ public sealed class UpdatePatientCommandHandler(
             if (command.EmergencyContact?.RelationshipId.HasValue == true)
             {
                 var relationshipId = command.EmergencyContact.RelationshipId.Value;
-                if (!await patientProfile.RelationshipExistsAsync(relationshipId, cancellationToken))
+                if (!await repository.RelationshipExistsAsync(relationshipId, cancellationToken))
                 {
                     logger.LogWarning("Relationship not found: {RelationshipId}", relationshipId);
                     return Result.Failure(PatientErrors.RelationshipNotFound(relationshipId));
@@ -85,7 +85,7 @@ public sealed class UpdatePatientCommandHandler(
             // Update M2M collections
             if (command.AllergyIds is not null)
             {
-                var allergies = await patientProfile.GetAllergiesAsync(command.AllergyIds, cancellationToken);
+                var allergies = await repository.GetAllergiesAsync(command.AllergyIds, cancellationToken);
 
                 if (allergies.Count != command.AllergyIds.Count)
                 {
@@ -98,7 +98,7 @@ public sealed class UpdatePatientCommandHandler(
 
             if (command.ConditionIds is not null)
             {
-                var conditions = await patientProfile.GetConditionsAsync(command.ConditionIds, cancellationToken);
+                var conditions = await repository.GetConditionsAsync(command.ConditionIds, cancellationToken);
 
                 if (conditions.Count != command.ConditionIds.Count)
                 {
@@ -111,7 +111,7 @@ public sealed class UpdatePatientCommandHandler(
 
             if (command.MedicationIds is not null)
             {
-                var medications = await patientProfile.GetMedicationsAsync(command.MedicationIds, cancellationToken);
+                var medications = await repository.GetMedicationsAsync(command.MedicationIds, cancellationToken);
 
                 if (medications.Count != command.MedicationIds.Count)
                 {
@@ -122,7 +122,7 @@ public sealed class UpdatePatientCommandHandler(
                 patient.UpdateMedications(medications);
             }
 
-            await patientProfile.SaveChangesAsync(cancellationToken);
+            await repository.SaveChangesAsync(cancellationToken);
 
             logger.LogInformation("Patient updated successfully for UserId: {UserId}, PatientId: {PatientId}",
                 command.UserId, patient.Id);

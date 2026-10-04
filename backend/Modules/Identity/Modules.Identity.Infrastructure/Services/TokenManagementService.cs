@@ -1,20 +1,19 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Modules.Common.Features.Results;
 using Modules.Identity.Domain.Entities;
 using Modules.Identity.Domain;
 using Modules.Identity.Domain.DTOs;
-using Modules.Identity.Domain.Ports;
-using Modules.Identity.Infrastructure.Database;
+using Modules.Identity.Domain.Repositories;
+using Modules.Identity.Domain.Services;
 using Modules.Identity.Infrastructure.DTOs;
 using Modules.Identity.Infrastructure.Settings;
 
 namespace Modules.Identity.Infrastructure.Services;
 
 public sealed class TokenManagementService(
-    IdentityDbContext identityDbContext,
+    IRefreshTokenRepository refreshTokenRepository,
     IOptions<JwtSettings> jwtAuthSettings,
     TokenProvider tokenProvider,
     ILogger<TokenManagementService> logger,
@@ -33,9 +32,7 @@ public sealed class TokenManagementService(
 
         var claims = await userManager.GetClaimsAsync(user!);
 
-        var oldRefreshTokens = identityDbContext.RefreshTokens
-            .Where(rt => rt.UserId == userId);
-        identityDbContext.RefreshTokens.RemoveRange(oldRefreshTokens);
+        await refreshTokenRepository.RemoveByUserIdAsync(userId, cancellationToken);
 
         TokenRequest tokenRequest = new TokenRequest(userId, email);
         AccessTokensDto accessTokens = tokenProvider.Create(tokenRequest, role, claims);
@@ -49,9 +46,9 @@ public sealed class TokenManagementService(
             CreatedAtUtc = DateTime.UtcNow
         };
 
-        identityDbContext.RefreshTokens.Add(refreshToken);
+        refreshTokenRepository.Add(refreshToken);
 
-        await identityDbContext.SaveChangesAsync(cancellationToken);
+        await refreshTokenRepository.SaveChangesAsync(cancellationToken);
 
         return accessTokens;
     }
@@ -60,9 +57,7 @@ public sealed class TokenManagementService(
         string refreshTokenValue,
         CancellationToken cancellationToken)
     {
-        var refreshToken = await identityDbContext.RefreshTokens
-            .Include(rt => rt.User)
-            .FirstOrDefaultAsync(rt => rt.Token == refreshTokenValue, cancellationToken);
+        var refreshToken = await refreshTokenRepository.GetByTokenAsync(refreshTokenValue, cancellationToken);
 
         if (refreshToken is null)
         {
@@ -73,8 +68,8 @@ public sealed class TokenManagementService(
         if (refreshToken.ExpiresAtUtc < DateTime.UtcNow)
         {
             logger.LogWarning("Token refresh failed - expired refresh token");
-            identityDbContext.RefreshTokens.Remove(refreshToken);
-            await identityDbContext.SaveChangesAsync(cancellationToken);
+            refreshTokenRepository.Remove(refreshToken);
+            await refreshTokenRepository.SaveChangesAsync(cancellationToken);
             return Result<AccessTokensDto>.Failure(IdentityErrors.RefreshTokenExpired(refreshToken.Id));
         }
 
@@ -103,7 +98,7 @@ public sealed class TokenManagementService(
         refreshToken.Token = tokens.RefreshToken;
         refreshToken.ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthSettings.RefreshTokenExpirationDays);
 
-        await identityDbContext.SaveChangesAsync(cancellationToken);
+        await refreshTokenRepository.SaveChangesAsync(cancellationToken);
 
         return Result<AccessTokensDto>.Success(tokens);
     }
@@ -112,8 +107,7 @@ public sealed class TokenManagementService(
         string refreshTokenValue,
         CancellationToken cancellationToken)
     {
-        var refreshToken = await identityDbContext.RefreshTokens
-            .FirstOrDefaultAsync(rt => rt.Token == refreshTokenValue,cancellationToken);
+        var refreshToken = await refreshTokenRepository.GetByTokenAsync(refreshTokenValue, cancellationToken);
 
         if (refreshToken is null)
         {
@@ -121,18 +115,15 @@ public sealed class TokenManagementService(
             return;
         }
 
-        identityDbContext.RefreshTokens.Remove(refreshToken);
-        await identityDbContext.SaveChangesAsync(cancellationToken);
+        refreshTokenRepository.Remove(refreshToken);
+        await refreshTokenRepository.SaveChangesAsync(cancellationToken);
     }
     
     public async Task CleanupExpiredTokens()
     {
         logger.LogInformation("Starting cleanup of expired refresh tokens");
     
-        var expiredTokens = identityDbContext.RefreshTokens
-            .Where(rt => rt.ExpiresAtUtc < DateTime.UtcNow);
-    
-        var deletedCount = await expiredTokens.ExecuteDeleteAsync();
+        var deletedCount = await refreshTokenRepository.DeleteExpiredAsync(DateTime.UtcNow, CancellationToken.None);
     
         logger.LogInformation("Cleaned up {DeletedCount} expired refresh tokens", deletedCount);
     }

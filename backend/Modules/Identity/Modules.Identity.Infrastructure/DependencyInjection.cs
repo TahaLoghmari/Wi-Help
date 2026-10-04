@@ -6,7 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Modules.Identity.Domain.Entities;
-using Modules.Identity.Domain.Ports;
+using Modules.Identity.Domain.Repositories;
+using Modules.Identity.Domain.Services;
+using Modules.Identity.Infrastructure.Database.Repositories;
 using Modules.Identity.Infrastructure.Database;
 using Modules.Identity.Infrastructure.Services;
 using Modules.Identity.Infrastructure.Settings;
@@ -57,16 +59,17 @@ public static class DependencyInjection
 
         services.AddHttpContextAccessor();
 
-        services.AddScoped<IIdentityAccountOperations, IdentityAccountOperations>();
-        services.AddScoped<IIdentityCredentialOperations, IdentityCredentialOperations>();
-        services.AddScoped<IIdentityClaimOperations, IdentityClaimOperations>();
-        services.AddScoped<IIdentityLockoutOperations, IdentityLockoutOperations>();
+        services.AddScoped<IIdentityAccountService, IdentityAccountService>();
+        services.AddScoped<IIdentityCredentialService, IdentityCredentialService>();
+        services.AddScoped<IIdentityClaimService, IdentityClaimService>();
+        services.AddScoped<IIdentityLockoutService, IdentityLockoutService>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<ITokenManagement, TokenManagementService>();
         services.AddScoped<TokenProvider>();
         services.AddScoped<IIdentityEmail, IdentityEmailService>();
         services.AddScoped<IAuthCookies, CookieService>();
         services.AddScoped<IGoogleAuthentication, GoogleTokensProvider>();
-        services.AddScoped<IIdentityLocationLookup, IdentityLocationLookup>();
+        services.AddScoped<IIdentityLocationRepository, IdentityLocationRepository>();
 
         services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
         services.Configure<GoogleSettings>(configuration.GetSection("Google"));

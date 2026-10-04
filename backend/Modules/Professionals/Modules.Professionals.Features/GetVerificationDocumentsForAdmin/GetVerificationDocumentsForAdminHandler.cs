@@ -1,21 +1,21 @@
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Common.Features.DTOs;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 using Modules.Professionals.PublicApi;
 
 namespace Modules.Professionals.Features.GetVerificationDocumentsForAdmin;
 
 internal sealed class GetVerificationDocumentsForAdminHandler(
-    IProfessionalProfileOperations profileOperations,
+    IProfessionalRepository repository,
     IProfessionalModuleApi professionalModuleApi)
     : IQueryHandler<GetVerificationDocumentsForAdminQuery, PaginationResultDto<ProfessionalVerificationDto>>
 {
     public async Task<Result<PaginationResultDto<ProfessionalVerificationDto>>> Handle(GetVerificationDocumentsForAdminQuery query, CancellationToken cancellationToken)
     {
-        var totalCount = await profileOperations.CountAsync(cancellationToken);
+        var totalCount = await repository.CountAsync(cancellationToken);
 
-        var professionals = await profileOperations.GetVerificationPageAsync(query.Page, query.PageSize, cancellationToken);
+        var professionals = await repository.GetVerificationPageAsync(query.Page, query.PageSize, cancellationToken);
 
         var professionalIds = professionals.Select(p => p.Id).ToList();
         var professionalDtosResult = await professionalModuleApi.GetProfessionalsByIdsAsync(professionalIds, cancellationToken);

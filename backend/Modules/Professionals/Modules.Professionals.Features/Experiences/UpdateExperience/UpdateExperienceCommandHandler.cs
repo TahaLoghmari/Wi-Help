@@ -2,12 +2,12 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 
 namespace Modules.Professionals.Features.Experiences.UpdateExperience;
 
 public class UpdateExperienceCommandHandler(
-    IProfessionalQualificationsOperations qualificationsOperations,
+    IProfessionalQualificationsRepository repository,
     ILogger<UpdateExperienceCommandHandler> logger) : ICommandHandler<UpdateExperienceCommand, ExperienceDto>
 {
     public async Task<Result<ExperienceDto>> Handle(UpdateExperienceCommand command, CancellationToken cancellationToken)
@@ -15,7 +15,7 @@ public class UpdateExperienceCommandHandler(
         logger.LogInformation("Updating experience {ExperienceId} for professional {ProfessionalId}", 
             command.ExperienceId, command.ProfessionalId);
 
-        var experience = await qualificationsOperations.FindExperienceAsync(command.ExperienceId, command.ProfessionalId, cancellationToken);
+        var experience = await repository.FindExperienceAsync(command.ExperienceId, command.ProfessionalId, cancellationToken);
 
         if (experience is null)
         {
@@ -32,7 +32,7 @@ public class UpdateExperienceCommandHandler(
             command.EndYear,
             command.IsCurrentPosition);
 
-        await qualificationsOperations.SaveChangesAsync(cancellationToken);
+        await repository.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Experience {ExperienceId} updated successfully", command.ExperienceId);
 

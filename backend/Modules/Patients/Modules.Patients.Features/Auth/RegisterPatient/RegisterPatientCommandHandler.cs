@@ -5,13 +5,13 @@ using Modules.Identity.PublicApi;
 using Modules.Identity.PublicApi.Contracts;
 using Modules.Patients.Domain;
 using Modules.Patients.Domain.Entities;
-using Modules.Patients.Domain.Ports;
+using Modules.Patients.Domain.Repositories;
 
 namespace Modules.Patients.Features.Auth.RegisterPatient;
 
 public sealed class RegisterPatientCommandHandler(
     IIdentityModuleApi identityApi,
-    IPatientOnboardingOperations patientOnboarding,
+    IPatientRepository repository,
     ILogger<RegisterPatientCommandHandler> logger) : ICommandHandler<RegisterPatientCommand>
 {
     public async Task<Result> Handle(
@@ -24,7 +24,7 @@ public sealed class RegisterPatientCommandHandler(
         if (command.EmergencyContact.RelationshipId.HasValue)
         {
             var relationshipId = command.EmergencyContact.RelationshipId.Value;
-            if (!await patientOnboarding.RelationshipExistsAsync(relationshipId, cancellationToken))
+            if (!await repository.RelationshipExistsAsync(relationshipId, cancellationToken))
             {
                 logger.LogWarning("Relationship not found: {RelationshipId}", relationshipId);
                 return Result.Failure(PatientErrors.RelationshipNotFound(relationshipId));
@@ -55,7 +55,7 @@ public sealed class RegisterPatientCommandHandler(
         Guid userId = createUserResult.Value;
         logger.LogInformation("User created successfully, creating patient profile for UserId: {UserId}", userId);
 
-        if (await patientOnboarding.PatientExistsAsync(userId, cancellationToken))
+        if (await repository.PatientExistsAsync(userId, cancellationToken))
         {
             logger.LogWarning("Patient already exists for UserId: {UserId}", userId);
             return Result.Failure(PatientErrors.AlreadyExists(userId));
@@ -63,8 +63,8 @@ public sealed class RegisterPatientCommandHandler(
 
         var patient = new Patient(userId, command.EmergencyContact);
 
-        await patientOnboarding.AddPatientAsync(patient, cancellationToken);
-        await patientOnboarding.SaveChangesAsync(cancellationToken);
+        repository.Add(patient);
+        await repository.SaveChangesAsync(cancellationToken);
 
         var addClaimResult = await identityApi.AddClaimAsync(userId, "PatientId", patient.Id.ToString(), cancellationToken);
         if (!addClaimResult.IsSuccess)

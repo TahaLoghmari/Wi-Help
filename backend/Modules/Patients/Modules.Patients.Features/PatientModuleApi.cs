@@ -2,19 +2,19 @@ using Modules.Common.Features.Results;
 using Modules.Common.Features.DTOs;
 using Modules.Identity.PublicApi;
 using Modules.Patients.Domain;
-using Modules.Patients.Domain.Ports;
+using Modules.Patients.Domain.Repositories;
 using Modules.Patients.PublicApi;
 using Modules.Patients.PublicApi.Contracts;
 
 namespace Modules.Patients.Features;
 
 public class PatientModuleApi(
-    IPatientModuleApiPort patientPort,
+    IPatientRepository repository,
     IIdentityModuleApi identityApi) : IPatientsModuleApi
 {
     public async Task<Result<List<PatientDto>>> GetPatientsByIdsAsync(IEnumerable<Guid> patientIds, CancellationToken cancellationToken = default)
     {
-        var patients = await patientPort.GetPatientsByIdsAsync(patientIds, cancellationToken);
+        var patients = await repository.GetByIdsReadOnlyAsync(patientIds, cancellationToken);
 
         if (patients.Count == 0)
         {
@@ -65,7 +65,7 @@ public class PatientModuleApi(
 
     public async Task<Result<PatientDto>> GetPatientByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        var patient = await patientPort.GetPatientByUserIdAsync(userId, cancellationToken);
+        var patient = await repository.GetByUserIdReadOnlyAsync(userId, cancellationToken);
 
         if (patient is null)
         {
@@ -108,7 +108,7 @@ public class PatientModuleApi(
         int pageSize,
         CancellationToken cancellationToken = default)
     {
-        var (patients, totalCount) = await patientPort.GetPatientsForAdminAsync(page, pageSize, cancellationToken);
+        var (patients, totalCount) = await repository.GetAdminPageReadOnlyAsync(page, pageSize, cancellationToken);
 
         // Get user IDs
         var userIds = patients.Select(p => p.UserId).ToList();

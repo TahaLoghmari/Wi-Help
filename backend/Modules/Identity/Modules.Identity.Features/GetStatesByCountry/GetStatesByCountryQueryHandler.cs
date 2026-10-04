@@ -1,12 +1,12 @@
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Identity.Domain.Ports;
+using Modules.Identity.Domain.Repositories;
 
 namespace Modules.Identity.Features.GetStatesByCountry;
 
 public sealed class GetStatesByCountryQueryHandler(
-    IIdentityLocationLookup locationLookup,
+    IIdentityLocationRepository locationLookup,
     ILogger<GetStatesByCountryQueryHandler> logger) : IQueryHandler<GetStatesByCountryQuery, List<StateDto>>
 {
     public async Task<Result<List<StateDto>>> Handle(

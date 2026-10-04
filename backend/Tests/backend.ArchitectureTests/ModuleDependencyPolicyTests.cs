@@ -1,4 +1,5 @@
 using System.Xml.Linq;
+using System.Text.RegularExpressions;
 using FluentAssertions;
 
 namespace backend.ArchitectureTests;
@@ -57,6 +58,65 @@ public sealed class ModuleDependencyPolicyTests
 
         violations.Should().BeEmpty(string.Join(Environment.NewLine, violations));
     }
+
+    [Fact]
+    public void ModuleContracts_ShouldUseRepositoriesAndServicesInsteadOfOperationPorts()
+    {
+        var violations = LoadModuleProjects()
+            .Where(project => project.Layer is "Domain" or "Infrastructure")
+            .SelectMany(project => GetSourceFiles(project)
+                .Where(path => Path.GetRelativePath(Path.GetDirectoryName(project.Path)!, path)
+                    .Split(Path.DirectorySeparatorChar)
+                    .Any(part => part is "Ports" or "Operations" or "Adapters"))
+                .Select(path => $"{path} must use Repositories or Services rather than operation ports/adapters"))
+            .ToArray();
+
+        violations.Should().BeEmpty(string.Join(Environment.NewLine, violations));
+    }
+
+    [Fact]
+    public void RepositoryImplementations_ShouldHaveConsistentPlacementAndNames()
+    {
+        var violations = LoadModuleProjects()
+            .Where(project => project.Layer == "Infrastructure")
+            .SelectMany(project => GetSourceFiles(project).SelectMany(path =>
+            {
+                string source = File.ReadAllText(path);
+                return Regex.Matches(source, @"\bclass\s+(\w+Repository)\b")
+                    .Select(match => match.Groups[1].Value)
+                    .Where(name => Path.GetRelativePath(Path.GetDirectoryName(project.Path)!, path) !=
+                                   Path.Combine("Database", "Repositories", $"{name}.cs") ||
+                                   !source.Contains($"namespace Modules.{project.Module}.Infrastructure.Database.Repositories;", StringComparison.Ordinal))
+                    .Select(name => $"{path}: {name} must live in Infrastructure/Database/Repositories");
+            }))
+            .ToArray();
+
+        violations.Should().BeEmpty(string.Join(Environment.NewLine, violations));
+    }
+
+    [Fact]
+    public void Repositories_ShouldNotDependOnServiceOrTransportContracts()
+    {
+        var violations = LoadModuleProjects()
+            .Where(project => project.Layer is "Domain" or "Infrastructure")
+            .SelectMany(project => GetSourceFiles(project)
+                .Where(path => path.Split(Path.DirectorySeparatorChar).Contains("Repositories"))
+                .SelectMany(path => GetUsingNamespaces(path)
+                    .Where(@namespace => @namespace.Contains(".Domain.Services", StringComparison.Ordinal) ||
+                                         @namespace.Contains(".Infrastructure.Services", StringComparison.Ordinal) ||
+                                         @namespace.Contains(".PublicApi", StringComparison.Ordinal) ||
+                                         @namespace == "Modules.Common.Features.Abstractions" ||
+                                         @namespace.StartsWith("Microsoft.AspNetCore.SignalR", StringComparison.Ordinal) ||
+                                         @namespace.StartsWith("Hangfire", StringComparison.Ordinal))
+                    .Select(@namespace => $"{path}: repositories must not coordinate {@namespace}")))
+            .ToArray();
+
+        violations.Should().BeEmpty(string.Join(Environment.NewLine, violations));
+    }
+
+    private static IEnumerable<string> GetSourceFiles(ModuleProject project) => Directory
+        .EnumerateFiles(Path.GetDirectoryName(project.Path)!, "*.cs", SearchOption.AllDirectories)
+        .Where(path => !path.Split(Path.DirectorySeparatorChar).Any(part => part is "bin" or "obj"));
 
     private static IEnumerable<string> GetViolations(ModuleProject project)
     {
@@ -139,7 +199,9 @@ public sealed class ModuleDependencyPolicyTests
 
     private static bool IsAllowedNamespace(ModuleProject project, string @namespace)
     {
-        if (@namespace is "Microsoft.EntityFrameworkCore" or "Microsoft.AspNetCore.SignalR" or "Hangfire")
+        if (@namespace.StartsWith("Microsoft.EntityFrameworkCore", StringComparison.Ordinal) ||
+            @namespace.StartsWith("Microsoft.AspNetCore.SignalR", StringComparison.Ordinal) ||
+            @namespace.StartsWith("Hangfire", StringComparison.Ordinal))
         {
             return project.Layer == "Infrastructure";
         }

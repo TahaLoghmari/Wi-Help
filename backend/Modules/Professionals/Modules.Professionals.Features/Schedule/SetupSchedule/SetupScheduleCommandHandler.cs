@@ -3,12 +3,12 @@ using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain.Entities;
 using Modules.Professionals.Features.Schedule.SetupSchedule;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 
 namespace Modules.Professionals.Features.Schedule.SetupSchedule;
 
 public class SetupScheduleCommandHandler(
-    IProfessionalScheduleOperations scheduleOperations,
+    IProfessionalScheduleRepository repository,
     ILogger<SetupScheduleCommand> logger) : ICommandHandler<SetupScheduleCommand>
 {
     public async Task<Result> Handle(SetupScheduleCommand command, CancellationToken cancellationToken)
@@ -16,7 +16,7 @@ public class SetupScheduleCommandHandler(
         logger.LogInformation("Setting schedule for professional {ProfessionalId}", command.ProfessionalId);
 
         // fetch all professional's days with available slots
-        var exisitingDayAvailabilities = await scheduleOperations.GetAvailabilityDaysAsync(command.ProfessionalId, cancellationToken);
+        var exisitingDayAvailabilities = await repository.GetAvailabilityDaysAsync(command.ProfessionalId, cancellationToken);
 
         foreach (var dayRequest in command.DayAvailabilities)
         {
@@ -28,7 +28,7 @@ public class SetupScheduleCommandHandler(
                     dayRequest.DayOfWeek,
                     dayRequest.IsActive);
                 
-                scheduleOperations.AddAvailabilityDay(availabilityDay);
+                repository.AddAvailabilityDay(availabilityDay);
             }
 
             // Update day active status 
@@ -38,9 +38,9 @@ public class SetupScheduleCommandHandler(
             if (!dayRequest.IsActive) continue;
 
             // Remove existing availabilities for this day
-            var existingAvailabilities = await scheduleOperations.GetAvailabilitySlotsAsync(availabilityDay.Id, cancellationToken);
+            var existingAvailabilities = await repository.GetAvailabilitySlotsAsync(availabilityDay.Id, cancellationToken);
 
-            scheduleOperations.RemoveAvailabilitySlots(existingAvailabilities);
+            repository.RemoveAvailabilitySlots(existingAvailabilities);
 
             // Create new availabilities
             foreach (var timeSlot in dayRequest.AvailabilitySlots)
@@ -81,11 +81,11 @@ public class SetupScheduleCommandHandler(
                     timeStart,
                     timeEnd);
 
-                scheduleOperations.AddAvailabilitySlot(availability);
+                repository.AddAvailabilitySlot(availability);
             }
         }
 
-        await scheduleOperations.SaveChangesAsync(cancellationToken);
+        await repository.SaveChangesAsync(cancellationToken);
         logger.LogInformation("Successfully set schedule for professional {ProfessionalId}",
             command.ProfessionalId);
         

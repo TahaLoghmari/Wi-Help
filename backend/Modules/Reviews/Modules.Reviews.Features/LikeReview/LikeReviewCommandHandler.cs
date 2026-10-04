@@ -3,12 +3,12 @@ using Modules.Reviews.Domain.Entities;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Reviews.Domain;
-using Modules.Reviews.Domain.Abstractions;
+using Modules.Reviews.Domain.Repositories;
 
 namespace Modules.Reviews.Features.LikeReview;
 
 internal sealed class LikeReviewCommandHandler(
-    ILikeReviewPort reviews,
+    IReviewRepository reviews,
     ILogger<LikeReviewCommandHandler> logger) : ICommandHandler<LikeReviewCommand>
 {
     public async Task<Result> Handle(LikeReviewCommand command, CancellationToken cancellationToken)
@@ -39,7 +39,8 @@ internal sealed class LikeReviewCommandHandler(
 
         var like = new ReviewLike(command.ReviewId, command.UserId);
 
-        await reviews.AddLikeAsync(like, cancellationToken);
+        reviews.AddLike(like);
+        await reviews.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Review {ReviewId} liked by user {UserId}", command.ReviewId, command.UserId);
 

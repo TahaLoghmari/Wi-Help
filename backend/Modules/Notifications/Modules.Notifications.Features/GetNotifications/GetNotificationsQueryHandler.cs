@@ -1,11 +1,11 @@
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Common.Features.DTOs;
-using Modules.Notifications.Domain.Operations;
+using Modules.Notifications.Domain.Repositories;
 
 namespace Modules.Notifications.Features.GetNotifications;
 
-public sealed class GetNotificationsQueryHandler(INotificationInbox notificationInbox)
+public sealed class GetNotificationsQueryHandler(INotificationRepository notificationInbox)
     : IQueryHandler<GetNotificationsQuery, PaginationResultDto<GetNotificationsDto>>
 {
     public async Task<Result<PaginationResultDto<GetNotificationsDto>>> Handle(

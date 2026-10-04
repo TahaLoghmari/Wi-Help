@@ -2,19 +2,19 @@ using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Messaging.Domain;
-using Modules.Messaging.Domain.Ports;
+using Modules.Messaging.Domain.Repositories;
 using Modules.Messaging.PublicApi.Contracts;
 
 namespace Modules.Messaging.Features.GetMessages;
 
 public class GetMessagesQueryHandler(
-    IConversationOperations conversationOperations,
+    IConversationRepository conversations,
     ILogger<GetMessagesQueryHandler> logger) : IQueryHandler<GetMessagesQuery, MessagesResponseDto>
 {
     public async Task<Result<MessagesResponseDto>> Handle(GetMessagesQuery query, CancellationToken cancellationToken)
     {
         // Verify conversation exists and user is a participant
-        var conversation = await conversationOperations.GetConversationAsync(query.ConversationId, cancellationToken);
+        var conversation = await conversations.GetConversationAsync(query.ConversationId, cancellationToken);
 
         if (conversation == null)
         {
@@ -29,7 +29,7 @@ public class GetMessagesQueryHandler(
             return Result<MessagesResponseDto>.Failure(MessagingErrors.NotParticipant());
         }
 
-        var page = await conversationOperations.GetPageAsync(
+        var page = await conversations.GetPageAsync(
             query.ConversationId,
             query.PageNumber,
             query.PageSize,

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Modules.Identity.Domain.Entities;
 using Modules.Identity.Domain.DTOs;
-using Modules.Identity.Domain.Ports;
+using Modules.Identity.Domain.Services;
 using Modules.Identity.Infrastructure.Settings;
 
 namespace Modules.Identity.Infrastructure.Services;

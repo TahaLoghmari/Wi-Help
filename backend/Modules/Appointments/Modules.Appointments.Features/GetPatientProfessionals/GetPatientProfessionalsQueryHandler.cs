@@ -1,4 +1,4 @@
-using Modules.Appointments.Domain.Ports;
+using Modules.Appointments.Domain.Repositories;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Common.Features.DTOs;
@@ -8,7 +8,7 @@ using Modules.Professionals.PublicApi.Contracts;
 namespace Modules.Appointments.Features.GetPatientProfessionals;
 
 internal sealed class GetPatientProfessionalsQueryHandler(
-    IAppointmentRead appointments,
+    IAppointmentRepository appointments,
     IProfessionalModuleApi professionalsApi)
     : IQueryHandler<GetPatientProfessionalsQuery, PaginationResultDto<ProfessionalDto>>
 {

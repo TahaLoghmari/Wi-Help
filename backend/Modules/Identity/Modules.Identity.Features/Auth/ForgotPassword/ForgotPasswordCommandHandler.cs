@@ -1,12 +1,12 @@
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Identity.Domain.Ports;
+using Modules.Identity.Domain.Services;
 
 namespace Modules.Identity.Features.Auth.ForgotPassword;
 
 internal sealed class ForgotPasswordCommandHandler(
-    IIdentityAccountOperations accounts,
+    IIdentityAccountService accounts,
     IIdentityEmail emailService,
     ILogger<ForgotPasswordCommandHandler> logger)
     : ICommandHandler<ForgotPasswordCommand>

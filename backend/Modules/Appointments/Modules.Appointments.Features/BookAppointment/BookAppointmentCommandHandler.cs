@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Modules.Appointments.Domain.Entities;
-using Modules.Appointments.Domain.Ports;
+using Modules.Appointments.Domain.Repositories;
 using Modules.Appointments.PublicApi;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
@@ -15,7 +15,7 @@ using Modules.Identity.PublicApi;
 namespace Modules.Appointments.Features.BookAppointment;
 
 public class BookAppointmentCommandHandler(
-    IBookAppointmentStore appointmentsStore,
+    IAppointmentRepository appointmentsStore,
     ILogger<BookAppointmentCommandHandler> logger,
     INotificationsModuleApi notificationsModuleApi,
     IProfessionalModuleApi professionalModuleApi,
@@ -38,7 +38,8 @@ public class BookAppointmentCommandHandler(
             command.Urgency,
             command.Notes);
 
-        await appointmentsStore.AddAsync(appointment, cancellationToken);
+        appointmentsStore.Add(appointment);
+        await appointmentsStore.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Appointment scheduled with ID {AppointmentId}", appointment.Id);
 

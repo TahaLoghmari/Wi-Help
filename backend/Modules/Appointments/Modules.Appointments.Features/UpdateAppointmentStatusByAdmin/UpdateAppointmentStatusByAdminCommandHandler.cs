@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Modules.Appointments.Domain;
-using Modules.Appointments.Domain.Ports;
+using Modules.Appointments.Domain.Repositories;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Notifications.PublicApi;
@@ -12,7 +12,7 @@ using Modules.Appointments.Domain.Enums;
 namespace Modules.Appointments.Features.UpdateAppointmentStatusByAdmin;
 
 public sealed class UpdateAppointmentStatusByAdminCommandHandler(
-    IAppointmentWorkflow appointmentsWorkflow,
+    IAppointmentRepository appointments,
     ILogger<UpdateAppointmentStatusByAdminCommandHandler> logger,
     INotificationsModuleApi notificationsModuleApi,
     IPatientsModuleApi patientsModuleApi,
@@ -28,9 +28,8 @@ public sealed class UpdateAppointmentStatusByAdminCommandHandler(
             command.AppointmentId,
             command.Status);
 
-        var appointment = await appointmentsWorkflow.UpdateStatusForAdminAsync(
+        var appointment = await appointments.GetByIdAsync(
             command.AppointmentId,
-            command.Status,
             cancellationToken);
 
         if (appointment is null)
@@ -38,6 +37,9 @@ public sealed class UpdateAppointmentStatusByAdminCommandHandler(
             logger.LogWarning("Appointment {AppointmentId} not found", command.AppointmentId);
             return Result.Failure(AppointmentErrors.AppointmentNotFound(command.AppointmentId));
         }
+
+        appointment.UpdateStatus(command.Status);
+        await appointments.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation(
             "Successfully updated appointment {AppointmentId} status to {Status}",

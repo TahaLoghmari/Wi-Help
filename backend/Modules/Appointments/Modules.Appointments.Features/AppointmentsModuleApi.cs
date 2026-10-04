@@ -1,10 +1,10 @@
-using Modules.Appointments.Domain.Ports;
+using Modules.Appointments.Domain.Repositories;
 using Modules.Appointments.PublicApi;
 using Modules.Common.Features.Results;
 
 namespace Modules.Appointments.Features;
 
-public sealed class AppointmentsModuleApi(IAppointmentScheduling scheduling) : IAppointmentsModuleApi
+public sealed class AppointmentsModuleApi(IAppointmentRepository scheduling) : IAppointmentsModuleApi
 {
     public async Task<Result<IReadOnlyList<BookedSession>>> GetBookedSessionsAsync(
         Guid professionalId,

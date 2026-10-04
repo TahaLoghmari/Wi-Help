@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Modules.Appointments.Domain.Ports;
+using Modules.Appointments.Domain.Repositories;
 using Modules.Appointments.Infrastructure.Database;
+using Modules.Appointments.Infrastructure.Database.Repositories;
 
 namespace Modules.Appointments.Infrastructure;
 
@@ -17,10 +18,7 @@ public static class DependencyInjection
                 npgsqlOptions.MigrationsHistoryTable(DbConsts.MigrationHistoryTableName, DbConsts.AppointmentsSchemaName))
             .UseSnakeCaseNamingConvention()
         );
-        services.AddScoped<IBookAppointmentStore, BookAppointmentStore>();
-        services.AddScoped<IAppointmentWorkflow, AppointmentWorkflow>();
-        services.AddScoped<IAppointmentRead, AppointmentRead>();
-        services.AddScoped<IAppointmentScheduling, AppointmentScheduling>();
+        services.AddScoped<IAppointmentRepository, AppointmentRepository>();
         return services;
     }
 }

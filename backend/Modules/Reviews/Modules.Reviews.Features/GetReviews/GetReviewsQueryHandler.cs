@@ -5,14 +5,14 @@ using Modules.Identity.PublicApi;
 using Modules.Patients.PublicApi;
 using Modules.Professionals.PublicApi;
 using Modules.Reviews.Domain;
-using Modules.Reviews.Domain.Abstractions;
+using Modules.Reviews.Domain.Repositories;
 using Modules.Reviews.Domain.Entities;
 using Modules.Reviews.Domain.Enums;
 
 namespace Modules.Reviews.Features.GetReviews;
 
 internal sealed class GetReviewsQueryHandler(
-    IGetReviewsPort reviewsPort,
+    IReviewRepository reviewsRepository,
     IPatientsModuleApi patientsApi,
     IProfessionalModuleApi professionalsApi,
     IIdentityModuleApi identityApi)
@@ -23,7 +23,7 @@ internal sealed class GetReviewsQueryHandler(
         CancellationToken cancellationToken)
     {
         var criteria = CreateCriteria(query);
-        var reviewsPage = await reviewsPort.GetAsync(criteria, cancellationToken);
+        var reviewsPage = await reviewsRepository.GetPageAsync(criteria, cancellationToken);
         var reviews = reviewsPage.Reviews;
         var paginatedReviews = PaginationResultDto<Review>.Create(
             reviews, query.Page, query.PageSize, reviewsPage.TotalCount);

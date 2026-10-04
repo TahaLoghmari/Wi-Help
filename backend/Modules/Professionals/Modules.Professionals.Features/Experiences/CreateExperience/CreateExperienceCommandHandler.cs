@@ -3,20 +3,20 @@ using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
 using Modules.Professionals.Domain;
 using Modules.Professionals.Domain.Entities;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 
 namespace Modules.Professionals.Features.Experiences.CreateExperience;
 
 public class CreateExperienceCommandHandler(
-    IProfessionalProfileOperations profileOperations,
-    IProfessionalQualificationsOperations qualificationsOperations,
+    IProfessionalRepository profileRepository,
+    IProfessionalQualificationsRepository repository,
     ILogger<CreateExperienceCommandHandler> logger) : ICommandHandler<CreateExperienceCommand, ExperienceDto>
 {
     public async Task<Result<ExperienceDto>> Handle(CreateExperienceCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Creating experience for professional {ProfessionalId}", command.ProfessionalId);
 
-        var professional = await profileOperations.FindByIdReadOnlyAsync(command.ProfessionalId, cancellationToken);
+        var professional = await profileRepository.FindByIdReadOnlyAsync(command.ProfessionalId, cancellationToken);
 
         if (professional is null)
         {
@@ -34,8 +34,8 @@ public class CreateExperienceCommandHandler(
             command.EndYear,
             command.IsCurrentPosition);
 
-        qualificationsOperations.Add(experience);
-        await qualificationsOperations.SaveChangesAsync(cancellationToken);
+        repository.Add(experience);
+        await repository.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Experience created with ID {ExperienceId} for professional {ProfessionalId}", 
             experience.Id, command.ProfessionalId);

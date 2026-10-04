@@ -1,12 +1,12 @@
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Professionals.Domain.Ports;
+using Modules.Professionals.Domain.Repositories;
 
 namespace Modules.Professionals.Features.GetServices;
 
 public sealed class GetServicesQueryHandler(
-    IProfessionalCatalogOperations catalogOperations,
+    IProfessionalCatalogRepository catalogRepository,
     ILogger<GetServicesQueryHandler> logger) : IQueryHandler<GetServicesQuery, List<ServiceDto>>
 {
     public async Task<Result<List<ServiceDto>>> Handle(
@@ -15,7 +15,7 @@ public sealed class GetServicesQueryHandler(
     {
         logger.LogInformation("Retrieving services for SpecializationId: {SpecializationId}", query.SpecializationId);
 
-        var services = (await catalogOperations.GetServicesAsync(query.SpecializationId, cancellationToken))
+        var services = (await catalogRepository.GetServicesAsync(query.SpecializationId, cancellationToken))
             .Select(s => new ServiceDto(s.Id, s.Key))
             .ToList();
 

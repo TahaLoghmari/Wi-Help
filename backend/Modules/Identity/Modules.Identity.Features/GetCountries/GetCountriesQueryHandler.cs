@@ -1,12 +1,12 @@
 using Microsoft.Extensions.Logging;
 using Modules.Common.Features.Abstractions;
 using Modules.Common.Features.Results;
-using Modules.Identity.Domain.Ports;
+using Modules.Identity.Domain.Repositories;
 
 namespace Modules.Identity.Features.GetCountries;
 
 public sealed class GetCountriesQueryHandler(
-    IIdentityLocationLookup locationLookup,
+    IIdentityLocationRepository locationLookup,
     ILogger<GetCountriesQueryHandler> logger) : IQueryHandler<GetCountriesQuery, List<CountryDto>>
 {
     public async Task<Result<List<CountryDto>>> Handle(
